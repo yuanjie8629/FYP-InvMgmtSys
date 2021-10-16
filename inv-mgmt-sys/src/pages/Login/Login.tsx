@@ -1,70 +1,83 @@
-import * as React from "react";
-import { Button, Col, Form, Input, Image, Row, Space, Typography } from "antd";
-import "./Login.less";
-import Hashtag from "../../assets/Hashtag.svg";
-import Inventory from "../../assets/LoginBackground.jpg";
-import FormItem from "antd/lib/form/FormItem";
+import * as React from 'react';
+import { Col, Form, Input, Image, Row, Space, Typography } from 'antd';
+import Button from '../../components/Button';
+import './Login.less';
+import Hashtag from '../../assets/Hashtag.svg';
+import Inventory from '../../assets/LoginBackground.jpg';
 
 const Login = () => {
   return (
     <>
       {/*Left half screen*/}
-      <Row> 
+      <Row>
         <Col span={14}>
           {/* Top-left image*/}
-          <Image src={Hashtag} width="40%" height="auto" preview={false} />
+          <Image
+            src={Hashtag}
+            alt='inventory'
+            width='40%'
+            height='auto'
+            preview={false}
+          />
           {/*Login Form*/}
-          <div className="container">
-            <Space direction="vertical" size={10}>
+          <div className='container'>
+            <Space direction='vertical' size={10}>
               {/*Title*/}
-              <Typography.Title level={1}> Login</Typography.Title>
-              <Form name="login">
+              <Typography.Title level={3}> Login</Typography.Title>
+              <Form name='login'>
                 <Form.Item
-                  name="username"
+                  name='username'
                   rules={[
-                    { required: true, message: "Please enter your Username!" },
+                    {
+                      required: true,
+                      message: 'Please enter your Username!',
+                    },
                   ]}
                 >
                   <Input
-                    size="large"
-                    placeholder="Username"
+                    size='large'
+                    placeholder='Username'
                     allowClear
-                    className="input"
+                    className='input'
                   />
                 </Form.Item>
                 <Form.Item
-                  name="password"
+                  name='password'
                   rules={[
-                    { required: true, message: "Please enter your Password!" },
+                    {
+                      required: true,
+                      message: 'Please enter your Password!',
+                    },
                   ]}
                 >
                   <Input.Password
-                    size="large"
-                    placeholder="Password"
-                    className="input"
+                    size='large'
+                    placeholder='Password'
+                    className='input'
                     allowClear
                   />
                 </Form.Item>
 
                 <Form.Item>
-                  <Button type="primary" size="large" htmlType="submit" block>
+                  <Button type='primary' size='large' htmlType='submit' block>
                     Login
                   </Button>
                 </Form.Item>
-            </Form>
-              <Button type="link">
+              </Form>
+              <Button type='link' color='info'>
                 Forgot Password
-            </Button>
+              </Button>
             </Space>
           </div>
         </Col>
-        <Col span={10} style={{ height: "100vh" }}>
+        <Col span={10} style={{ height: '100vh' }}>
           <Image
             src={Inventory}
-            width="100%"
-            height="100vh"
+            alt='inventory'
+            width='100%'
+            height='100vh'
             preview={false}
-            style={{ objectFit: "cover" }}
+            style={{ objectFit: 'cover' }}
           />
         </Col>
       </Row>
