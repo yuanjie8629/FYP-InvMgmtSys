@@ -1,5 +1,5 @@
-const CracoLessPlugin = require("craco-less");
-const path = require("path");
+const CracoLessPlugin = require('craco-less');
+const path = require('path');
 module.exports = {
   plugins: [
     {
@@ -8,7 +8,7 @@ module.exports = {
         lessLoaderOptions: {
           lessOptions: {
             modifyVars: {
-              hack: `true; @import "${path.resolve(__dirname, "theme.less")}";`,
+              hack: `true; @import "${path.resolve(__dirname, 'theme.less')}";`,
             },
             javascriptEnabled: true,
           },
@@ -19,13 +19,13 @@ module.exports = {
   babel: {
     plugins: [
       [
-        "import",
+        'import',
         {
-          libraryName: "antd",
-          libraryDirectory: "es",
+          libraryName: 'antd',
+          libraryDirectory: 'es',
           style: true,
         },
-        "antd",
+        'antd',
       ],
     ],
   },
