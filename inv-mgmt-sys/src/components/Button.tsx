@@ -10,7 +10,7 @@ export default function CustomButton(props: ButtonProps) {
   return (
     <Button
       {...rest}
-      className={props.color}
+      className={props.className + ' ' + props.color}
       // Cancel focus style
       onFocus={(e) => {
         e.target.blur();
