@@ -1,17 +1,21 @@
-div {
-  .container {
+div.container {
+  width: 100%;
+  position: relative;
+}
+
+div.form {
+  & {
     text-align: center;
-    position: relative;
-    left: 50%;
-    transform: translate(-50%);
-  }
-
-  .container h1 {
-    font-weight: 600px;
-  }
-
-  .ant-space {
+    position: absolute;
     width: 40%;
+    top: 125%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+
+  h1 {
+    text-align: center;
+    font-weight: 600px;
   }
 
   [role='alert'] {
@@ -22,4 +26,26 @@ div {
 
 span.input {
   height: 45px;
+}
+
+button.rightAlign {
+  display: block;
+  margin-left: auto;
+  margin-right: 0;
+  padding: 0;
+}
+
+button.leftAlign {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+h2.ant-typography.title {
+  color: @white;
+  position: absolute;
+  top: 85%;
+  left: 50%;
+  white-space: nowrap;
+  transform: translateX(-50%);
 }

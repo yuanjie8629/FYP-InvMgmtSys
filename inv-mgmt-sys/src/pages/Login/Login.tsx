@@ -1,27 +1,28 @@
 import * as React from 'react';
 import { Col, Form, Input, Image, Row, Space, Typography } from 'antd';
+import { CaretLeftOutlined } from '@ant-design/icons';
 import Button from '../../components/Button';
 import './Login.less';
 import Hashtag from '../../assets/Hashtag.svg';
-import Inventory from '../../assets/LoginBackground.jpg';
+import Inventory from '../../assets/LoginBackground.webp';
 
 const Login = () => {
   return (
-    <>
+    <div>
       {/*Left half screen*/}
       <Row>
         <Col span={14}>
-          {/* Top-left image*/}
-          <Image
-            src={Hashtag}
-            alt='inventory'
-            width='40%'
-            height='auto'
-            preview={false}
-          />
-          {/*Login Form*/}
-          <div className='container'>
-            <Space direction='vertical' size={10}>
+          <Space direction='vertical' className='container'>
+            {/* Top-left image*/}
+            <Image
+              src={Hashtag}
+              alt='hashtag'
+              width='40%'
+              height='auto'
+              preview={false}
+            />
+            {/*Login Form*/}
+            <Space direction='vertical' size={10} className='form'>
               {/*Title*/}
               <Typography.Title level={3}> Login</Typography.Title>
               <Form name='login'>
@@ -31,6 +32,7 @@ const Login = () => {
                     {
                       required: true,
                       message: 'Please enter your Username!',
+                      whitespace: true,
                     },
                   ]}
                 >
@@ -63,25 +65,45 @@ const Login = () => {
                     Login
                   </Button>
                 </Form.Item>
+                <Form.Item style={{ marginTop: -20 }}>
+                  <Button type='link' color='info' className='rightAlign'>
+                    Forgot Password
+                  </Button>
+                </Form.Item>
+                <Form.Item style={{ marginTop: -20, marginBottom: 0 }}>
+                  <Button
+                    type='link'
+                    color='info'
+                    icon={
+                      <CaretLeftOutlined
+                        style={{ position: 'relative', left: 5 }}
+                      />
+                    }
+                    className='leftAlign'
+                  >
+                    Go back to Sharifah Food E-commerce
+                  </Button>
+                </Form.Item>
               </Form>
-              <Button type='link' color='info'>
-                Forgot Password
-              </Button>
             </Space>
-          </div>
+          </Space>
         </Col>
         <Col span={10} style={{ height: '100vh' }}>
           <Image
             src={Inventory}
             alt='inventory'
             width='100%'
-            height='100vh'
+            height='100%'
             preview={false}
             style={{ objectFit: 'cover' }}
           />
+
+          <Typography.Title level={2} className='title'>
+            Inventory Management System
+          </Typography.Title>
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 
