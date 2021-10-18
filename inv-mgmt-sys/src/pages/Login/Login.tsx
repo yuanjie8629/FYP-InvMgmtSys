@@ -8,10 +8,16 @@ import Inventory from '../../assets/LoginBackground.webp';
 
 const Login = () => {
   return (
-    <div>
+    <div className='wrapper'>
       {/*Left half screen*/}
       <Row>
-        <Col span={14}>
+        <Col
+          xs={{ span: 24, order: 2 }}
+          sm={{ span: 24, order: 2 }}
+          md={{ span: 13, order: 1 }}
+          lg={{ span: 14, order: 1 }}
+          xl={{ span: 14, order: 1 }}
+        >
           <Space direction='vertical' className='container'>
             {/* Top-left image*/}
             <Image
@@ -88,7 +94,14 @@ const Login = () => {
             </Space>
           </Space>
         </Col>
-        <Col span={10} style={{ height: '100vh' }}>
+        <Col
+          xs={{ span: 24, order: 1 }}
+          sm={{ span: 24, order: 1 }}
+          md={{ span: 11, order: 2 }}
+          lg={{ span: 10, order: 2 }}
+          xl={{ span: 10, order: 2 }}
+          style={{ height: '100vh' }}
+        >
           <Image
             src={Inventory}
             alt='inventory'
