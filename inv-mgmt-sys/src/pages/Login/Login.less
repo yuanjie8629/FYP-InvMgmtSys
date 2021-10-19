@@ -1,4 +1,3 @@
-
 div.container {
   max-width: 100%;
   width: 100vw;
@@ -6,7 +5,7 @@ div.container {
   margin: 0;
   padding: 0;
 
-  @media @tablet-sm, @mobile-xs, @mobile-xxs {
+  @media @tablet-sm, @mobile-xs {
     height: 100%;
   }
 }
@@ -18,7 +17,7 @@ div.formContainer {
 
 div.hashtag {
   position: absolute;
-  @media @mobile-xxs, @mobile-xs, @tablet-sm {
+  @media @mobile-xs, @tablet-sm {
     visibility: hidden;
   }
 }
@@ -28,7 +27,7 @@ div.rightPanel {
   background-color: #279570;
   display: flex;
 
-  @media @tablet-sm, @mobile-xs, @mobile-xxs {
+  @media @tablet-sm, @mobile-xs {
     margin-bottom: 30px;
     height: fit-content;
   }
@@ -42,7 +41,7 @@ div.form {
   transform: translate(-50%, -50%);
   width: 40%;
 
-  @media @mobile-xxs, @mobile-xs, @tablet-sm {
+  @media @mobile-xs, @tablet-sm {
     width: 70%;
   }
 
@@ -87,10 +86,6 @@ h2 {
     white-space: nowrap;
     padding-top: 20px;
 
-    @media @mobile-xxs {
-      font-size: @font-size-lg;
-    }
-
     @media @mobile-xs, @tablet-md {
       font-size: @heading-4-size;
     }
@@ -119,7 +114,7 @@ div.logoWrapper {
   padding: 0px 20px 5px 0;
   margin: 0;
 
-  @media @tablet-sm, @mobile-xs, @mobile-xxs {
+  @media @tablet-sm, @mobile-xs {
     height: fit-content;
     margin: 0;
   }
@@ -129,8 +124,7 @@ div.responsiveImg {
   display: flex;
   justify-content: center;
   align-content: center;
-
-  @media @tablet-sm, @mobile-xs, @mobile-xxs {
+  @media @tablet-sm, @mobile-xs {
     height: 60%;
     margin: 0;
   }
@@ -141,7 +135,7 @@ img.responsiveImg {
   margin: auto;
   width: 90%;
 
-  @media @tablet-sm,@mobile-xxs {
+  @media @tablet-sm {
     width: 60%;
   }
 }
@@ -149,7 +143,11 @@ img.responsiveImg {
 div.displayPanel {
   padding: 0;
   margin: 0;
-  @media @tablet-sm, @mobile-xs, @mobile-xxs {
+  @media @tablet-sm, @mobile-xs {
     height: fit-content;
   }
+}
+
+div.titleContainer {
+  max-height: 50px;
 }

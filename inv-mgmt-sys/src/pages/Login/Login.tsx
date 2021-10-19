@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Col, Form, Input, Image, Row, Space, Typography } from 'antd';
-import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
 import { CaretLeftOutlined } from '@ant-design/icons';
 import Button from '../../components/Button/Button';
 import './Login.less';
@@ -8,9 +7,8 @@ import Hashtag from '../../assets/Hashtag.svg';
 import Inventory from '../../assets/LoginBackground.webp';
 import Logo from '../../assets/logo.webp';
 
-
 const Login = () => {
-  const screen = useBreakpoint();
+  const { Title } = Typography;
   return (
     <>
       {/*Left half screen*/}
@@ -37,7 +35,7 @@ const Login = () => {
             <Col span={24}>
               <Space direction='vertical' size={10} className='form'>
                 {/*Title*/}
-                <Typography.Title level={3}> Login</Typography.Title>
+                <Title level={3}> Login</Title>
                 <Form name='login'>
                   <Form.Item
                     name='username'
@@ -94,7 +92,7 @@ const Login = () => {
                       }
                       className='leftAlign'
                     >
-                      Go back to Sharifah Food E-commerce
+                      Go to Sharifah Food E-commerce
                     </Button>
                   </Form.Item>
                 </Form>
@@ -143,9 +141,11 @@ const Login = () => {
               lg={{ span: 24, order: 3 }}
               xl={{ span: 24, order: 3 }}
             >
-              <Typography.Title level={2} className='title'>
-                Inventory Management System
-              </Typography.Title>
+              <div className='titleContainer'>
+                <Title level={2} className='title'>
+                  Inventory Management System
+                </Title>
+              </div>
             </Col>
           </Row>
         </Col>
