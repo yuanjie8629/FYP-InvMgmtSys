@@ -84,7 +84,7 @@ h2 {
     text-align: center;
     color: @white;
     white-space: nowrap;
-    padding-top: 20px;
+    padding: 20px;
 
     @media @mobile-xs, @tablet-md {
       font-size: @heading-4-size;
@@ -111,12 +111,14 @@ h2 {
 div.logoWrapper {
   display: flex;
   justify-content: end;
-  padding: 0px 20px 5px 0;
-  margin: 0;
+  padding: 20px;
 
   @media @tablet-sm, @mobile-xs {
     height: fit-content;
-    margin: 0;
+    position: relative;
+    padding: 0px 20px 0;
+    bottom: 15px;
+    z-index: 1;
   }
 }
 
@@ -136,7 +138,7 @@ img.responsiveImg {
   width: 90%;
 
   @media @tablet-sm {
-    width: 60%;
+    width: 65%;
   }
 }
 
@@ -149,5 +151,5 @@ div.displayPanel {
 }
 
 div.titleContainer {
-  max-height: 50px;
+  max-height: 70px;
 }
