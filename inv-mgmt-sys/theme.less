@@ -43,38 +43,44 @@
 // @screen-xs and @screen-xs-min is not used in Grid
 // smallest break point is @screen-md
 
+//Extra extra small screen / phone
+@screen-xxs: 0px;
+@screen-xxs-min: @screen-xxs;
+@screen-xxs-max: (@screen-xs-min - 1px);
+
 // Extra small screen / phone
-@screen-xs: 480px;
+@screen-xs: 400px;
 @screen-xs-min: @screen-xs;
 @screen-xs-max: (@screen-sm-min - 1px);
 
 // Small screen / tablet
-@screen-sm: 576px;
+@screen-sm: 600px;
 @screen-sm-min: @screen-sm;
 @screen-sm-max: (@screen-md-min - 1px);
 
-// Medium screen / desktop
-@screen-md: 768px;
+// Medium screen / tablet landscape
+@screen-md: 960px;
 @screen-md-min: @screen-md;
 @screen-md-max: (@screen-lg-min - 1px);
 
-// Large screen / wide desktop
-@screen-lg: 992px;
+// Large screen / desktop
+@screen-lg: 1280px;
 @screen-lg-min: @screen-lg;
 @screen-lg-max: (@screen-xl-min - 1px);
 
 // Extra large screen / full hd
-@screen-xl: 1200px;
+@screen-xl: 1600px;
 @screen-xl-min: @screen-xl;
 @screen-xl-max: (@screen-xxl-min - 1px);
 
 // Extra extra large screen / large desktop
-@screen-xxl: 1600px;
+@screen-xxl: 1920px;
 @screen-xxl-min: @screen-xxl;
 
 @desktop-xxl: ~'only screen and (min-width: @{screen-xxl-min})';
 @desktop-xl: ~'only screen and (min-width: @{screen-xl-min}) and (max-width: @{screen-xl-max})';
 @desktop-lg: ~'only screen and (min-width: @{screen-lg-min}) and (max-width: @{screen-lg-max})';
-@desktop-md: ~'only screen and (min-width: @{screen-md-min}) and (max-width: @{screen-md-max})';
-@tablet: ~'only screen and (min-width: @{screen-sm-min}) and (max-width: @{screen-sm-max})';
-@mobile: ~'only screen and (min-width: @{screen-xs}) and (max-width: @{screen-xs-max})';
+@tablet-md: ~'only screen and (min-width: @{screen-md-min}) and (max-width: @{screen-md-max})';
+@tablet-sm: ~'only screen and (min-width: @{screen-sm-min}) and (max-width: @{screen-sm-max})';
+@mobile-xs: ~'only screen and (min-width: @{screen-xs}) and (max-width: @{screen-xs-max})';
+@mobile-xxs: ~'only screen and (min-width: @{screen-xxs}) and (max-width: @{screen-xxs-max})';
