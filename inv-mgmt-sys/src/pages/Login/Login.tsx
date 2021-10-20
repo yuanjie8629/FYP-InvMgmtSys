@@ -28,6 +28,7 @@ const Login = () => {
               width='70%'
               height='auto'
               preview={false}
+              style={{ pointerEvents: 'none' }}
             />
           </div>
           {/*Login Form*/}
@@ -117,7 +118,13 @@ const Login = () => {
               xl={{ span: 24, order: 1 }}
               className='logoWrapper'
             >
-              <Image src={Logo} alt='logo' width='20%' preview={false} />
+              <Image
+                src={Logo}
+                alt='logo'
+                width='20%'
+                preview={false}
+                style={{ pointerEvents: 'none' }}
+              />
             </Col>
             <Col
               xs={{ span: 24, order: 2 }}
@@ -127,12 +134,7 @@ const Login = () => {
               xl={{ span: 24, order: 2 }}
               className='responsiveImg'
             >
-              <Image
-                src={Inventory}
-                alt='inventory'
-                preview={false}
-                className='responsiveImg'
-              />
+              <Image src={Inventory} alt='inventory' preview={false} />
             </Col>
             <Col
               xs={{ span: 24, order: 1 }}
