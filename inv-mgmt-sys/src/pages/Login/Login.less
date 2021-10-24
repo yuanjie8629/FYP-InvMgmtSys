@@ -1,3 +1,9 @@
+.centerFlex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 div {
   &.container {
     max-width: 100%;
@@ -14,9 +20,7 @@ div {
   &.formContainer {
     width: 100%;
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    .centerFlex();
   }
 
   &.hashtag {
@@ -60,14 +64,11 @@ div {
   &.rightAlign {
     display: flex;
     justify-content: end;
-    margin: 20px;
+    padding: 20px;
   }
 
   &.logoWrapper {
-    display: flex;
-    justify-content: end;
-    padding: 20px;
-
+    .rightAlign();
     @media @tablet-sm, @mobile-xs {
       height: fit-content;
       position: relative;
@@ -78,19 +79,16 @@ div {
   }
 
   &.responsiveImg {
-    display: flex;
-    justify-content: center;
-    align-content: center;
+    .centerFlex();
     @media @tablet-sm, @mobile-xs {
       height: 60%;
       margin: 0;
     }
-    img {
-      display: block;
-      margin: auto;
+
+    .ant-image {
       width: 90%;
       pointer-events: none;
-
+      user-select: none;
       @media @tablet-sm {
         width: 65%;
       }
@@ -133,20 +131,12 @@ h2 {
     color: @white;
     white-space: nowrap;
     padding: 20px;
-
+    user-select: none;
     @media @mobile-xs, @tablet-md {
       font-size: @heading-4-size;
     }
 
-    @media @tablet-sm {
-      font-size: @heading-3-size;
-    }
-
-    @media @tablet-md {
-      font-size: @heading-4-size;
-    }
-
-    @media @desktop-lg {
+    @media @desktop-lg, @tablet-sm {
       font-size: @heading-3-size;
     }
 
