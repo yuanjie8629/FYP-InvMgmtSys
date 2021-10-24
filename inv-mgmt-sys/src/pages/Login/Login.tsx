@@ -1,13 +1,16 @@
 import * as React from 'react';
+import { useHistory } from 'react-router-dom';
 import { Col, Form, Input, Image, Row, Space, Typography } from 'antd';
 import { CaretLeftOutlined } from '@ant-design/icons';
-import Button from '../../components/Button/Button';
+import Button from '@components/Button/Button';
+
 import './Login.less';
-import Hashtag from '../../assets/Hashtag.svg';
-import Inventory from '../../assets/LoginBackground.webp';
-import Logo from '../../assets/logo.webp';
+import Hashtag from '@assets/Hashtag.svg';
+import Inventory from '@assets/LoginBackground.webp';
+import Logo from '@assets/logo.webp';
 
 const Login = () => {
+  let history = useHistory();
   const { Title } = Typography;
   return (
     <>
@@ -28,7 +31,7 @@ const Login = () => {
               width='70%'
               height='auto'
               preview={false}
-              style={{ pointerEvents: 'none' }}
+              style={{ pointerEvents: 'none', userSelect: 'none' }}
             />
           </div>
           {/*Login Form*/}
@@ -73,7 +76,15 @@ const Login = () => {
                   </Form.Item>
 
                   <Form.Item>
-                    <Button type='primary' size='large' htmlType='submit' block>
+                    <Button
+                      type='primary'
+                      size='large'
+                      htmlType='submit'
+                      block
+                      onClick={() => {
+                        history.push('/dashboard');
+                      }}
+                    >
                       Login
                     </Button>
                   </Form.Item>
@@ -123,7 +134,11 @@ const Login = () => {
                 alt='logo'
                 width='20%'
                 preview={false}
-                style={{ pointerEvents: 'none' }}
+                style={{
+                  pointerEvents: 'none',
+                  userSelect: 'none',
+                  float: 'right',
+                }}
               />
             </Col>
             <Col

@@ -3,20 +3,24 @@ import { Button, ButtonProps as AntdButtonProps } from 'antd';
 
 interface ButtonProps extends AntdButtonProps {
   color?: 'success' | 'warning' | 'info';
+  children?: React.ReactNode;
 }
 
-export default function CustomButton(props: ButtonProps) {
-  const { className, ...rest } = props;
+const CustomButton = (props: ButtonProps) => {
   return (
     <Button
-      {...rest}
-      className={props.className + ' ' + props.color}
+      {...props}
+      className={
+        props.className === undefined ? '' : props.className + ' ' + props.color
+      }
       // Cancel focus style
-      onFocus={(e) => {
-        e.target.blur();
+      onMouseDown={(e) => {
+        e.preventDefault();
       }}
     >
       {props.children}
     </Button>
   );
 }
+
+export default CustomButton;
