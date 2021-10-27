@@ -1,4 +1,4 @@
-import './Button.less';
+import './Button.module.less';
 import { Button, ButtonProps as AntdButtonProps } from 'antd';
 
 interface ButtonProps extends AntdButtonProps {
@@ -21,6 +21,6 @@ const CustomButton = (props: ButtonProps) => {
       {props.children}
     </Button>
   );
-}
+};
 
 export default CustomButton;

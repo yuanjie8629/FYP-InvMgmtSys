@@ -4,7 +4,7 @@ import { Col, Form, Input, Image, Row, Space, Typography } from 'antd';
 import { CaretLeftOutlined } from '@ant-design/icons';
 import Button from '@components/Button/Button';
 
-import './Login.less';
+import styles from './Login.module.less';
 import Hashtag from '@assets/Hashtag.svg';
 import Inventory from '@assets/LoginBackground.webp';
 import Logo from '@assets/logo.webp';
@@ -15,7 +15,7 @@ const Login = () => {
   return (
     <>
       {/*Left half screen*/}
-      <Row className='container'>
+      <Row className={styles.container}>
         <Col
           xs={{ span: 24, order: 2 }}
           sm={{ span: 24, order: 2 }}
@@ -24,7 +24,7 @@ const Login = () => {
           xl={{ span: 14, order: 1 }}
         >
           {/* Top-left image*/}
-          <div className='hashtag'>
+          <div className={styles.hashtag}>
             <Image
               src={Hashtag}
               alt='hashtag'
@@ -35,9 +35,9 @@ const Login = () => {
             />
           </div>
           {/*Login Form*/}
-          <Row className='formContainer'>
+          <Row className={styles.formContainer}>
             <Col span={24}>
-              <Space direction='vertical' size={10} className='form'>
+              <Space direction='vertical' size={10} className={styles.form}>
                 {/*Title*/}
                 <Title level={3}> Login</Title>
                 <Form name='login'>
@@ -55,7 +55,7 @@ const Login = () => {
                       size='large'
                       placeholder='Username'
                       allowClear
-                      className='input'
+                      className={styles.input}
                     />
                   </Form.Item>
                   <Form.Item
@@ -70,7 +70,7 @@ const Login = () => {
                     <Input.Password
                       size='large'
                       placeholder='Password'
-                      className='input'
+                      className={styles.input}
                       allowClear
                     />
                   </Form.Item>
@@ -89,7 +89,11 @@ const Login = () => {
                     </Button>
                   </Form.Item>
                   <Form.Item style={{ marginTop: -20 }}>
-                    <Button type='link' color='info' className='rightAlign'>
+                    <Button
+                      type='link'
+                      color='info'
+                      className={styles.rightAlign}
+                    >
                       Forgot Password
                     </Button>
                   </Form.Item>
@@ -102,7 +106,7 @@ const Login = () => {
                           style={{ position: 'relative', left: 5 }}
                         />
                       }
-                      className='leftAlign'
+                      className={styles.leftAlign}
                     >
                       Go to Sharifah Food E-commerce
                     </Button>
@@ -118,16 +122,16 @@ const Login = () => {
           md={{ span: 10, order: 2 }}
           lg={{ span: 10, order: 2 }}
           xl={{ span: 10, order: 2 }}
-          className='rightPanel'
+          className={styles.rightPanel}
         >
-          <Row justify='center' className='displayPanel'>
+          <Row justify='center' className={styles.displayPanel}>
             <Col
               xs={{ span: 24, order: 3 }}
               sm={{ span: 24, order: 3 }}
               md={{ span: 24, order: 1 }}
               lg={{ span: 24, order: 1 }}
               xl={{ span: 24, order: 1 }}
-              className='logoWrapper'
+              className={styles.logoWrapper}
             >
               <Image
                 src={Logo}
@@ -147,7 +151,7 @@ const Login = () => {
               md={{ span: 24, order: 2 }}
               lg={{ span: 24, order: 2 }}
               xl={{ span: 24, order: 2 }}
-              className='responsiveImg'
+              className={styles.responsiveImg}
             >
               <Image src={Inventory} alt='inventory' preview={false} />
             </Col>
@@ -158,8 +162,8 @@ const Login = () => {
               lg={{ span: 24, order: 3 }}
               xl={{ span: 24, order: 3 }}
             >
-              <div className='titleContainer'>
-                <Title level={2} className='title'>
+              <div className={styles.titleContainer}>
+                <Title level={2} className={styles.title}>
                   Inventory Management System
                 </Title>
               </div>
