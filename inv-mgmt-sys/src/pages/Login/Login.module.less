@@ -1,3 +1,4 @@
+@import '~antd/lib/style/themes/default.less';
 .centerFlex {
   display: flex;
   justify-content: center;
@@ -85,7 +86,9 @@ div {
       margin: 0;
     }
 
-    .ant-image {
+    .invImage {
+      display: block;
+      margin: 0 auto;
       width: 90%;
       pointer-events: none;
       user-select: none;
@@ -125,12 +128,13 @@ button.leftAlign {
   padding: 0;
 }
 
-h2.title {
+.title {
   text-align: center;
   color: @white;
   white-space: nowrap;
   padding: 20px;
   user-select: none;
+
   @media @mobile-xs, @tablet-md {
     font-size: @heading-4-size;
   }
