@@ -52,11 +52,6 @@ div {
       width: 70%;
     }
 
-    h1 {
-      text-align: center;
-      font-weight: 600px;
-    }
-
     [role='alert'] {
       margin-bottom: 15px;
       text-align: left;
@@ -108,6 +103,25 @@ div {
 
   &.titleContainer {
     max-height: 70px;
+
+    .title {
+      text-align: center;
+      color: @white;
+      white-space: nowrap;
+      user-select: none;
+
+      @media @mobile-xs, @tablet-md {
+        font-size: @heading-4-size;
+      }
+
+      @media @desktop-lg, @tablet-sm {
+        font-size: @heading-3-size;
+      }
+
+      @media @desktop-xl {
+        font-size: @heading-2-size;
+      }
+    }
   }
 }
 
@@ -126,24 +140,4 @@ button.leftAlign {
   display: block;
   margin: 0;
   padding: 0;
-}
-
-.title {
-  text-align: center;
-  color: @white;
-  white-space: nowrap;
-  padding: 20px;
-  user-select: none;
-
-  @media @mobile-xs, @tablet-md {
-    font-size: @heading-4-size;
-  }
-
-  @media @desktop-lg, @tablet-sm {
-    font-size: @heading-3-size;
-  }
-
-  @media @desktop-xl {
-    font-size: @heading-2-size;
-  }
 }

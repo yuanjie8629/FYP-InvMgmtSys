@@ -153,7 +153,12 @@ const Login = () => {
               xl={{ span: 24, order: 2 }}
               className={styles.responsiveImg}
             >
-              <Image src={Inventory} alt='inventory' preview={false} className={styles.invImage} />
+              <Image
+                src={Inventory}
+                alt='inventory'
+                preview={false}
+                className={styles.invImage}
+              />
             </Col>
             <Col
               xs={{ span: 24, order: 1 }}
