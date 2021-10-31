@@ -1,43 +1,43 @@
-@import '~antd/lib/style/themes/default.less';
+@btn-prefix-cls: ~'@{ant-prefix}-btn';
 
-.color-selection(@color-selected) {
+.btn-color-selection(@color-selected) {
   @color: @color-selected;
   @color-hover: fade(@color, 80%);
   @color-hover-border: fade(@color, 10%);
   @color-active: darken(@color, 5%);
 
-  .hover-cbo {
+  .btn-hover-cbo {
     &:hover {
       color: @color-hover;
       border-color: @color-hover;
     }
   }
 
-  .active-cbo {
+  .btn-active-cbo {
     &:active {
       color: @color-active;
       border-color: @color-active;
     }
   }
 
-  .hover-active-cbo {
-    .hover-cbo;
-    .active-cbo;
+  .btn-hover-active-cbo {
+    .btn-hover-cbo;
+    .btn-active-cbo;
   }
 
-  &.ant-btn {
+  &.@{btn-prefix-cls} {
     &:active {
       transform: scale(0.99);
       transition-duration: 0.1s;
     }
 
     &,
-    &.ant-btn-dashed {
-      .hover-active-cbo;
+    &.@{btn-prefix-cls}-dashed {
+      .btn-hover-active-cbo;
     }
-    &.ant-btn-primary {
+    &.@{btn-prefix-cls}-primary {
       color: white;
-      &:not(.ant-btn-background-ghost):not(:disabled) {
+      &:not(.@{btn-prefix-cls}-background-ghost):not(:disabled) {
         &:hover {
           background-color: @color-hover;
           border-color: @color-hover;
@@ -45,12 +45,10 @@
         &:active {
           background-color: @color-active;
           border-color: @color-active;
-          transform: scale(0.99);
-          transition-duration: 0.1s;
         }
       }
 
-      &.ant-btn-background-ghost {
+      &.@{btn-prefix-cls}-background-ghost {
         color: @color;
         background: transparent;
         border-color: @color;
@@ -58,7 +56,7 @@
       }
     }
 
-    &.ant-btn-link {
+    &.@{btn-prefix-cls}-link {
       border: none;
       background: none;
       & {
@@ -72,8 +70,8 @@
       }
     }
 
-    &.ant-btn-dashed {
-      &.ant-btn-background-ghost {
+    &.@{btn-prefix-cls}-dashed {
+      &.@{btn-prefix-cls}-background-ghost {
         color: white;
         background: transparent;
         border-color: white;
@@ -82,25 +80,25 @@
     }
 
     &,
-    &.ant-btn-dashed {
-      &.ant-btn-background-ghost {
+    &.@{btn-prefix-cls}-dashed {
+      &.@{btn-prefix-cls}-background-ghost {
         background: transparent;
-        .hover-active-cbo;
+        .btn-hover-active-cbo;
       }
     }
   }
 }
 
 .success {
-  .color-selection(@success-color);
+  .btn-color-selection(@success-color);
 }
 
 .warning {
-  .color-selection(@warning-color);
+  .btn-color-selection(@warning-color);
 }
 
 .info {
-  .color-selection(@info-color);
+  .btn-color-selection(@info-color);
 }
 
-.color-selection(@primary-color);
+.btn-color-selection(@primary-color);
