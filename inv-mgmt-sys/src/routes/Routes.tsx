@@ -6,9 +6,7 @@ import {
   Switch,
 } from 'react-router-dom';
 
-import Login from '@pages/Login/Login';
-import Dashboard from '@pages/Dashboard/Dashboard';
-
+import routeList from './RouteList';
 
 export default function Routes() {
   return (
@@ -17,8 +15,9 @@ export default function Routes() {
         <Route exact path='/'>
           <Redirect to='/dashboard' />
         </Route>
-        <Route path='/login' component={Login}></Route>
-        <Route path='/dashboard' component={Dashboard}></Route>
+        {routeList.map((route) => (
+          <Route path={route.path} component={route.component} />
+        ))}
       </Switch>
     </Router>
   );

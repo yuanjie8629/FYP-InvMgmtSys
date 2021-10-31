@@ -3,8 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Col, Form, Input, Image, Row, Space, Typography } from 'antd';
 import { CaretLeftOutlined } from '@ant-design/icons';
 import Button from '@components/Button/Button';
-
-import styles from './Login.module.less';
+import './Login.less';
 import Hashtag from '@assets/Hashtag.svg';
 import Inventory from '@assets/LoginBackground.webp';
 import Logo from '@assets/logo.webp';
@@ -15,7 +14,7 @@ const Login = () => {
   return (
     <>
       {/*Left half screen*/}
-      <Row className={styles.container}>
+      <Row className='login-container'>
         <Col
           xs={{ span: 24, order: 2 }}
           sm={{ span: 24, order: 2 }}
@@ -24,7 +23,7 @@ const Login = () => {
           xl={{ span: 14, order: 1 }}
         >
           {/* Top-left image*/}
-          <div className={styles.hashtag}>
+          <div className='login-hashtag'>
             <Image
               src={Hashtag}
               alt='hashtag'
@@ -35,9 +34,9 @@ const Login = () => {
             />
           </div>
           {/*Login Form*/}
-          <Row className={styles.formContainer}>
+          <Row className='login-form-container'>
             <Col span={24}>
-              <Space direction='vertical' size={10} className={styles.form}>
+              <Space direction='vertical' size={10} className='login-form'>
                 {/*Title*/}
                 <Title level={3}> Login</Title>
                 <Form name='login'>
@@ -55,7 +54,7 @@ const Login = () => {
                       size='large'
                       placeholder='Username'
                       allowClear
-                      className={styles.input}
+                      className='login-input'
                     />
                   </Form.Item>
                   <Form.Item
@@ -70,7 +69,7 @@ const Login = () => {
                     <Input.Password
                       size='large'
                       placeholder='Password'
-                      className={styles.input}
+                      className='login-input'
                       allowClear
                     />
                   </Form.Item>
@@ -92,7 +91,7 @@ const Login = () => {
                     <Button
                       type='link'
                       color='info'
-                      className={styles.rightAlign}
+                      className='login-right-align'
                     >
                       Forgot Password
                     </Button>
@@ -106,7 +105,7 @@ const Login = () => {
                           style={{ position: 'relative', left: 5 }}
                         />
                       }
-                      className={styles.leftAlign}
+                      className='login-left-align'
                     >
                       Go to Sharifah Food E-commerce
                     </Button>
@@ -122,16 +121,16 @@ const Login = () => {
           md={{ span: 10, order: 2 }}
           lg={{ span: 10, order: 2 }}
           xl={{ span: 10, order: 2 }}
-          className={styles.rightPanel}
+          className='login-right-panel'
         >
-          <Row justify='center' className={styles.displayPanel}>
+          <Row justify='center' className='login-display-panel'>
             <Col
               xs={{ span: 24, order: 3 }}
               sm={{ span: 24, order: 3 }}
               md={{ span: 24, order: 1 }}
               lg={{ span: 24, order: 1 }}
               xl={{ span: 24, order: 1 }}
-              className={styles.logoWrapper}
+              className='login-logo-wrapper'
             >
               <Image
                 src={Logo}
@@ -139,8 +138,6 @@ const Login = () => {
                 width='20%'
                 preview={false}
                 style={{
-                  pointerEvents: 'none',
-                  userSelect: 'none',
                   float: 'right',
                 }}
               />
@@ -151,13 +148,13 @@ const Login = () => {
               md={{ span: 24, order: 2 }}
               lg={{ span: 24, order: 2 }}
               xl={{ span: 24, order: 2 }}
-              className={styles.responsiveImg}
+              className='login-responsive-img-wrapper'
             >
               <Image
                 src={Inventory}
                 alt='inventory'
                 preview={false}
-                className={styles.invImage}
+                className='login-responsive-img'
               />
             </Col>
             <Col
@@ -167,10 +164,8 @@ const Login = () => {
               lg={{ span: 24, order: 3 }}
               xl={{ span: 24, order: 3 }}
             >
-              <div className={styles.titleContainer}>
-                <Title level={2} className={styles.title}>
-                  Inventory Management System
-                </Title>
+              <div className='login-title-container'>
+                <Title level={2}>Inventory Management System</Title>
               </div>
             </Col>
           </Row>

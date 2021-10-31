@@ -1,0 +1,74 @@
+@import (reference) '../../App.less';
+
+// Header
+.header {
+    box-shadow: 2px 0px 4px 0px #0000000d;
+  }
+
+
+
+// Sider
+.sider {
+  overflow: auto;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  box-shadow: 2px 0px 4px 0px #0000000D;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &-menu {
+    font-weight: 500;
+  }
+
+  &-logo-fixed {
+    background-color: @layout-sider-background;
+    position: relative;
+    height: 80px;
+  }
+
+  &-logo-wrapper {
+    .centerFlex();
+    position: fixed;
+    height: 80px;
+    width: 220px;
+    background-color: @layout-sider-background;
+    z-index: 5;
+    cursor: pointer;
+
+    &:hover{
+        opacity: 90%;
+    }
+  }
+
+  &-logo {
+    pointer-events: none;
+  }
+}
+
+.@{ant-prefix} {
+    &-menu-item {
+        &-only-child {
+            .@{ant-prefix}-menu-title-content{
+                padding-left: 15px;
+            }
+            &:hover, &:active{
+                background-color: @grey-100 !important;
+            }
+        }
+    }
+    &-selected {
+      font-weight: bold;
+    }
+}
+
+//Footer
+footer.footer{
+    color: @grey;
+    font-weight: 500;
+    user-select: none;
+}

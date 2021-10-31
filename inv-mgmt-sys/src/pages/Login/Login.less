@@ -1,12 +1,7 @@
-@import '~antd/lib/style/themes/default.less';
-.centerFlex {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+@import (reference) '../../App.less';
 
 div {
-  &.container {
+  &.login-container {
     max-width: 100%;
     width: 100vw;
     height: 100vh;
@@ -18,31 +13,32 @@ div {
     }
   }
 
-  &.formContainer {
+  &.login-form-container {
     width: 100%;
     height: 100%;
     .centerFlex();
   }
 
-  &.hashtag {
+  &.login-hashtag {
     position: absolute;
     @media @mobile-xs, @tablet-sm {
       visibility: hidden;
     }
   }
 
-  &.rightPanel {
+  &.login-right-panel {
     width: 100vw;
     background-color: #279570;
     display: flex;
-
+    pointer-events: none;
+    user-select: none;
     @media @tablet-sm, @mobile-xs {
       margin-bottom: 30px;
       height: fit-content;
     }
   }
 
-  &.form {
+  &.login-form {
     text-align: center;
     display: block;
     margin: auto;
@@ -57,14 +53,16 @@ div {
       text-align: left;
     }
   }
-  &.rightAlign {
+
+  &.login-right-align {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     padding: 20px;
   }
 
-  &.logoWrapper {
-    .rightAlign();
+  &.login-logo-wrapper {
+    .login-right-align();
+
     @media @tablet-sm, @mobile-xs {
       height: fit-content;
       position: relative;
@@ -74,26 +72,24 @@ div {
     }
   }
 
-  &.responsiveImg {
+  &.login-responsive-img-wrapper {
     .centerFlex();
     @media @tablet-sm, @mobile-xs {
       height: 60%;
       margin: 0;
     }
 
-    .invImage {
+    .login-responsive-img {
       display: block;
       margin: 0 auto;
       width: 90%;
-      pointer-events: none;
-      user-select: none;
       @media @tablet-sm {
         width: 65%;
       }
     }
   }
 
-  &.displayPanel {
+  &.login-display-panel {
     padding: 0;
     margin: 0;
     @media @tablet-sm, @mobile-xs {
@@ -101,14 +97,13 @@ div {
     }
   }
 
-  &.titleContainer {
+  &.login-title-container {
     max-height: 70px;
 
-    .title {
+    h2.@{ant-prefix}-typography {
       text-align: center;
       color: @white;
       white-space: nowrap;
-      user-select: none;
 
       @media @mobile-xs, @tablet-md {
         font-size: @heading-4-size;
@@ -125,19 +120,21 @@ div {
   }
 }
 
-span.input {
+span.login-input {
   height: 45px;
 }
 
-button.rightAlign {
-  display: block;
-  margin-left: auto;
-  margin-right: 0;
-  padding: 0;
-}
+button {
+  &.login-right-align {
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
+    padding: 0;
+  }
 
-button.leftAlign {
-  display: block;
-  margin: 0;
-  padding: 0;
+  &.login-left-align {
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
 }

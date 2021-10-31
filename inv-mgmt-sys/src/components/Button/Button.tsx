@@ -1,4 +1,4 @@
-import './Button.module.less';
+import './Button.less';
 import { Button, ButtonProps as AntdButtonProps } from 'antd';
 
 interface ButtonProps extends AntdButtonProps {
@@ -10,9 +10,9 @@ const CustomButton = (props: ButtonProps) => {
   return (
     <Button
       {...props}
-      className={
-        props.className === undefined ? '' : props.className + ' ' + props.color
-      }
+      className={`${
+        props.className === undefined ? '' : props.className
+      } + ' ' + ${props.color}`}
       // Cancel focus style
       onMouseDown={(e) => {
         e.preventDefault();

@@ -1,16 +1,20 @@
 import { Layout } from 'antd';
-import Header from '@components/Header/Header';
-import Sider from '@components/Sider/Sider';
-import Footer from '@components/Footer/Footer';
+import Header from './Header';
+import Sider from './Sider';
+import Footer from './Footer';
 
-const CustomLayout = () => {
+interface CustomLayoutProps {
+  children?: React.ReactNode;
+}
+
+const CustomLayout = (props: CustomLayoutProps) => {
   const { Content } = Layout;
   return (
-    <Layout>
+    <Layout hasSider>
       <Sider />
       <Layout>
         <Header />
-        <Content>Content</Content>
+        <Content>{props.children}</Content>
         <Footer />
       </Layout>
     </Layout>
