@@ -2,11 +2,10 @@
 
 // Header
 .header {
-    box-shadow: 2px 0px 4px 0px #0000000d;
-  }
-
-
-
+  position: fixed;
+  width: 100%;
+  box-shadow: 2px 0px 4px 0px #0000000d;
+}
 // Sider
 .sider {
   overflow: auto;
@@ -16,9 +15,10 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
   box-shadow: 2px 0px 4px 0px #0000000D;
-  
+  z-index: 5;
+
   &::-webkit-scrollbar {
-    display: none;
+    display: none; 
   }
 
   &-menu {
