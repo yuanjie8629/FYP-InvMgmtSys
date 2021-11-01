@@ -46,7 +46,7 @@ const menuList = [
         icon: HiClipboardList,
         child: [
           { key: '/order/management', label: 'Manage Orders' },
-          { key: '/order/management?status=pending', label: 'Pending Orders' },
+          { key: '/order/pending', label: 'Pending Orders' },
           { key: '/order/add', label: 'Add Order' },
         ],
       },

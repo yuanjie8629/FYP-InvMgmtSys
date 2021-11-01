@@ -22,6 +22,7 @@ import AdminMgmt from '@pages/Admins/AdminMgmt';
 import AddAdmin from '@pages/Admins/AddAdmin';
 import Help from '@pages/Help/Help';
 import ShpFeeMgmt from '@pages/Shipments/ShpFeeMgmt';
+import PendOrder from '@pages/Orders/PendOrder';
 
 const routeList: { path: string; component: any }[] = [
   {
@@ -59,6 +60,10 @@ const routeList: { path: string; component: any }[] = [
   {
     path: '/order/management',
     component: OrderMgmt,
+  },
+  {
+    path: '/order/pending',
+    component: PendOrder,
   },
   {
     path: '/order/add',

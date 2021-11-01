@@ -16,7 +16,7 @@ export default function Routes() {
           <Redirect to='/dashboard' />
         </Route>
         {routeList.map((route) => (
-          <Route path={route.path} component={route.component} />
+          <Route key={route.path} path={route.path} component={route.component} />
         ))}
       </Switch>
     </Router>

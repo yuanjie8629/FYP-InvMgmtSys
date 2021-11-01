@@ -1,5 +1,3 @@
-import React, { useState, useEffect } from 'react';
-
 import { Layout, Menu, Divider, Image } from 'antd';
 import menuList from './SiderMenuList';
 import './Layout.less';
@@ -11,24 +9,19 @@ const CustomSider = () => {
   const { SubMenu } = Menu;
 
   let history = useHistory();
-  const handleClick = (item: { key: string }) => {
-    history.push(item.key);
-  };
 
-  const [openKeys, setOpenKeys] = useState(['']);
+  const openKey = ['/' + history.location.pathname.split('/')[1]];
 
-  useEffect(() => {
-    setOpenKeys([history.location.pathname]);
-  }, [history.location.pathname]);
-  
   return (
     <Sider width='220px' className='sider'>
       <Menu
         mode='inline'
-        defaultSelectedKeys={['/dashboard']}
-        selectedKeys={[history.location.pathname]}
+        defaultSelectedKeys={[history.location.pathname]}
+        defaultOpenKeys={openKey}
         inlineIndent={15}
-        onClick={handleClick}
+        onClick={(item: { key: string }) => {
+          history.push(item.key);
+        }}
         className='sider-menu'
       >
         <div className='sider-logo-fixed'>
@@ -50,7 +43,11 @@ const CustomSider = () => {
         {menuList.map((menuGroup) => [
           menuGroup.items.map((item) =>
             item.child ? (
-              <SubMenu title={item.label} icon={<item.icon size={20} />}>
+              <SubMenu
+                key={item.key}
+                title={item.label}
+                icon={<item.icon size={20} />}
+              >
                 {item.child.map((child) => (
                   <Menu.Item key={child.key}>{child.label}</Menu.Item>
                 ))}

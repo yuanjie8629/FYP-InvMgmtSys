@@ -51,19 +51,21 @@
 }
 
 .@{ant-prefix} {
-    &-menu-item {
-        &-only-child {
-            .@{ant-prefix}-menu-title-content{
-                padding-left: 15px;
-            }
-            &:hover, &:active{
-                background-color: @grey-100 !important;
-            }
-        }
+  &-menu {
+    &-item {
+      &-only-child {
+          .@{ant-prefix}-menu-title-content{
+              padding-left: 15px;
+          }
+          &:hover, &:active{
+              background-color: @grey-100 !important;
+          }
+      }
+      &-selected {
+        font-weight: bold;
+      }
     }
-    &-selected {
-      font-weight: bold;
-    }
+  }
 }
 
 //Footer
