@@ -13,30 +13,30 @@ const CustomSider = () => {
   const openKey = ['/' + history.location.pathname.split('/')[1]];
 
   return (
-    <Sider width='220px' className='sider'>
+    <Sider width="220px" className="sider">
       <Menu
-        mode='inline'
+        mode="inline"
         defaultSelectedKeys={[history.location.pathname]}
         defaultOpenKeys={openKey}
         inlineIndent={15}
         onClick={(item: { key: string }) => {
           history.push(item.key);
         }}
-        className='sider-menu'
+        className="sider-menu"
       >
-        <div className='sider-logo-fixed'>
+        <div className="sider-logo-fixed">
           <div
-            className='sider-logo-wrapper'
+            className="sider-logo-wrapper"
             onClick={() => {
               history.push('/dashboard');
             }}
           >
             <Image
               src={Logo}
-              alt='Logo'
+              alt="Logo"
               preview={false}
-              height='65px'
-              className='sider-logo'
+              height="65px"
+              className="sider-logo"
             />
           </div>
         </div>
