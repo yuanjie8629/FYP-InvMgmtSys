@@ -24,7 +24,7 @@ import Help from '@pages/Help/Help';
 import ShpFeeMgmt from '@pages/Shipments/ShpFeeMgmt';
 import PendOrder from '@pages/Orders/PendOrder';
 
-const routeList: { path: string; component: any }[] = [
+const routeList = [
   {
     path: '/login',
     component: Login,

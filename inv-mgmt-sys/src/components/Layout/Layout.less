@@ -5,10 +5,14 @@
   position: fixed;
   width: 100%;
   box-shadow: 2px 0px 4px 0px #0000000d;
-}
 
-.header-fixed {
-  height: 80px;
+  &-fixed {
+    height: @layout-header-height;
+  }
+
+  .@{ant-prefix}-breadcrumb {
+    font-weight: 600;
+  }
 }
 
 // Sider
@@ -19,11 +23,11 @@
   left: 0;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  box-shadow: 2px 0px 4px 0px #0000000D;
+  box-shadow: 2px 0px 4px 0px #0000000d;
   z-index: 5;
 
   &::-webkit-scrollbar {
-    display: none; 
+    display: none;
   }
 
   &-menu {
@@ -45,8 +49,8 @@
     z-index: 5;
     cursor: pointer;
 
-    &:hover{
-        opacity: 90%;
+    &:hover {
+      opacity: 90%;
     }
   }
 
@@ -54,6 +58,7 @@
     pointer-events: none;
   }
 }
+
 
 .@{ant-prefix} {
   &-menu {
@@ -81,8 +86,8 @@
 }
 
 //Footer
-footer.footer{
-    color: @grey;
-    font-weight: 500;
-    user-select: none;
+footer.footer {
+  color: @grey;
+  font-weight: 500;
+  user-select: none;
 }
