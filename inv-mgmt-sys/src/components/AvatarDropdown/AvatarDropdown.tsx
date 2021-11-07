@@ -1,46 +1,51 @@
 import { Avatar, Col, Dropdown, Menu, Row } from 'antd';
-import { MdPersonOutline, MdOutlineSettings, MdLogout } from 'react-icons/md';
+import menuList from './AvatarDropdownList';
+import { useHistory } from 'react-router-dom';
+
+import './AvatarDropdown.less';
 import AvatarImg from '@assets/avatar.png';
 const AvatarDropdown = () => {
-  const menuList = [
-    {
-      key: '/my-acc/profile-management',
-      label: 'Manage Profile',
-      icon: MdPersonOutline,
-    },
-    {
-      key: '/my-acc/acc-settings',
-      label: 'Account Settings',
-      icon: MdOutlineSettings,
-    },
-    { key: '/', label: 'Logout', icon: MdLogout },
-  ];
+  let history = useHistory();
 
   const menuAvatarDropdown = (
-    <Menu>
+    <Menu
+      defaultSelectedKeys={[history.location.pathname]}
+      onClick={(item: { key: string }) => {
+        history.push(item.key);
+      }}
+    >
       {menuList.map((menu) => (
-        <Menu.Item key={menu.key} icon={<menu.icon size={20} />}>
+        <Menu.Item key={menu.key} icon={<menu.icon size={20} />} style={{fontWeight: 500}}>
           {menu.label}
         </Menu.Item>
       ))}
     </Menu>
   );
+
   return (
-    <Dropdown overlay={menuAvatarDropdown} trigger={['click']}>
-      <Row align='middle'>
-        <Row style={{ height: '80px' }}>
-          <Col span={24} style={{ height: '40px' }}>
-            <p>Tan Yuan Jie</p>
-          </Col>
-          <Col span={24} style={{ height: '40px' }}>
+    <Dropdown
+      overlay={menuAvatarDropdown}
+      arrow
+      trigger={['hover']}
+      placement='bottomCenter'
+      className='avatar-dropdown'
+    >
+      <Row align='middle' gutter={10}>
+        <Col className='avatar-dropdown-account'>
+          <Row justify='end' className='avatar-dropdown-name'>
+            Tan Yuan Jie
+          </Row>
+          <Row justify='end' className='avatar-dropdown-role'>
             Admin
-          </Col>
-        </Row>
-        <Avatar
-          src={AvatarImg}
-          alt='avatar'
-          className='avatarDropdown-avatar'
-        />
+          </Row>
+        </Col>
+        <Col>
+          <Avatar
+            src={AvatarImg}
+            alt='avatar'
+            className='avatarDropdown-avatar'
+          />
+        </Col>
       </Row>
     </Dropdown>
   );

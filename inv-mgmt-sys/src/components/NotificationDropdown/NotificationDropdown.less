@@ -1,0 +1,74 @@
+.notification {
+  width: 24px;
+  height: 24px;
+  color: @grey-400;
+  border-radius: 20px;
+
+  &-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+
+    &:hover {
+      background-color: @grey-200;
+    }
+  }
+
+  &-badge {
+    height: 24px;
+  }
+
+  &-menu {
+    width: 380px;
+    font-size: @font-size-sm;
+    margin: 0;
+    .@{ant-prefix} {
+      &-btn {
+        font-size: @font-size-sm;
+      }
+      &-dropdown {
+        &-menu {
+          &-item {
+            margin: 0;
+
+            &-group {
+              &-list {
+                margin: 0;
+              }
+              &-title {
+                padding: 0;
+              }
+            }
+            &-divider {
+              margin: 0;
+            }
+          }
+        }
+      }
+    }
+
+    &-item {
+      padding: 20px !important;
+    }
+
+    .successBackground {
+      background-color: @success-color;
+    }
+
+    .warningBackground {
+      background-color: @warning-color;
+    }
+
+    .errorBackground {
+      background-color: @error-color;
+    }
+
+    .infoBackground {
+      background-color: @info-color;
+    }
+  }
+}

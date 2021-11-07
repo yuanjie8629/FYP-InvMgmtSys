@@ -1,7 +1,7 @@
 import Layout from '@components/Layout/Layout';
 
-const AddAdmin = () => {
+const AdminAdd = () => {
   return <Layout>Add Admin</Layout>;
 };
 
-export default AddAdmin;
+export default AdminAdd;

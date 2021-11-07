@@ -6,7 +6,20 @@ body {
 }
 
 .centerFlex {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
+
+.@{ant-prefix}-dropdown-menu-item{
+  &:hover:not(&-disabled) {
+    background-color: @grey-200 !important;
+  }
+  &-selected, &-submenu-title-selected {
+    background-color: transparent !important;
+    &:hover {
+      background-color: @grey-200 !important;
+    }
+  }
+}
+

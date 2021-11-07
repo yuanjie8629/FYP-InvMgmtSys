@@ -10,9 +10,9 @@ const CustomButton = (props: ButtonProps) => {
   return (
     <Button
       {...props}
-      className={`${
-        props.className === undefined ? '' : props.className
-      } + ' ' + ${props.color}`}
+      className={`${props.className === undefined ? '' : props.className} btn-${
+        props.color
+      }`}
       // Cancel focus style
       onMouseDown={(e) => {
         e.preventDefault();

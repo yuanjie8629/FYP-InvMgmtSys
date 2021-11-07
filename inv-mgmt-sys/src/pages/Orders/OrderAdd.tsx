@@ -1,7 +1,7 @@
 import Layout from '@components/Layout/Layout';
 
-const AddOrder = () => {
+const OrderAdd = () => {
   return <Layout>Add Order</Layout>;
 };
 
-export default AddOrder;
+export default OrderAdd;

@@ -19,6 +19,7 @@ export default function Routes() {
         ))}
         {routeList.map((route) => (
           <Route
+            exact= {route.exact}
             key={route.path}
             path={route.path}
             component={route.component}

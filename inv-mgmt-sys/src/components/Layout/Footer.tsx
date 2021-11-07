@@ -1,6 +1,6 @@
 import { Layout } from 'antd';
 import CopyrightCircleOutlined from '@ant-design/icons/CopyrightOutlined';
-import './Layout.less';
+
 const CustomFooter = () => {
   const { Footer } = Layout;
   return (

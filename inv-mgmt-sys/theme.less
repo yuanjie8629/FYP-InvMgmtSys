@@ -11,6 +11,8 @@
 @white: #fff;
 @black: #000;
 @grey: #858b9c;
+@grey-400: #9ca3af;
+@grey-300: #d1d5db;
 @grey-200: #e5e7eb;
 @grey-100: #f3f4f6;
 @grey-50: #f9fafb;
@@ -53,7 +55,8 @@
 
 //Layout
 @layout-sider-background: @white;
-@layout-header-height: 80px;
+// For setting avatar-dropdown to two rows (to display name and role)
+@layout-header-height: 20px; // actual height = 80px
 @layout-header-background: @white;
 @layout-header-padding: 0 25px;
 
@@ -61,13 +64,16 @@
 @menu-item-color: @grey;
 @menu-item-height: 36px;
 @menu-icon-size: 20px;
-@menu-item-boundary-margin: 0px;
-@menu-item-padding-horizontal: 0px;
-@menu-item-vertical-margin: 0px;
+@menu-item-boundary-margin: 0;
+@menu-item-padding-horizontal: 0;
+@menu-item-vertical-margin: 0;
 @menu-bg: @component-background;
 @menu-popup-bg: @component-background;
 @menu-inline-submenu-bg: @component-background;
 @menu-item-active-bg: transparent;
+
+// Dropdown
+@dropdown-edge-child-vertical-padding: 0;
 
 // Breadcrumb
 @breadcrumb-link-color: @grey;
@@ -85,7 +91,7 @@
 // smallest break point is @screen-md
 
 // Extra small screen / phone
-@screen-xs: 0px;
+@screen-xs: 0;
 @screen-xs-min: @screen-xs;
 @screen-xs-max: (@screen-sm-min - 1px);
 
