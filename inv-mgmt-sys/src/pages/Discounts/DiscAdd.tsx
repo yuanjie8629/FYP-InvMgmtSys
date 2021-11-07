@@ -1,7 +1,7 @@
 import Layout from '@components/Layout/Layout';
 
-const AddDisc = () => {
+const DiscAdd = () => {
   return <Layout>Add Discount</Layout>;
 };
 
-export default AddDisc;
+export default DiscAdd;

@@ -1,7 +1,7 @@
 import Layout from '@components/Layout/Layout';
 
-const AddPack = () => {
+const PackAdd = () => {
   return <Layout>Add Package</Layout>;
 };
 
-export default AddPack;
+export default PackAdd;

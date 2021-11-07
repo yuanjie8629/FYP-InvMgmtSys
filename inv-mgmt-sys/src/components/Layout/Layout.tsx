@@ -2,7 +2,7 @@ import { Layout } from 'antd';
 import Header from './Header';
 import Sider from './Sider';
 import Footer from './Footer';
-
+import './Layout.less';
 interface CustomLayoutProps {
   children?: React.ReactNode;
 }

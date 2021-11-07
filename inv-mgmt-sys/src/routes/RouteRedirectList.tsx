@@ -1,4 +1,7 @@
-const routeRedirectList = [
+const routeRedirectList: {
+  path: string;
+  redirect: string;
+}[] = [
   {
     path: '/',
     redirect: '/dashboard',

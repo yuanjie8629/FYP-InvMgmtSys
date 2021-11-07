@@ -1,7 +1,7 @@
 import Layout from '@components/Layout/Layout';
 
-const AddProd = () => {
+const ProdAdd = () => {
   return <Layout>Add Product</Layout>;
 };
 
-export default AddProd;
+export default ProdAdd;

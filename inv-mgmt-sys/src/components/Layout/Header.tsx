@@ -1,19 +1,23 @@
-import { Col, Layout, Row } from 'antd';
+import { Col, Divider, Layout, Row, Space } from 'antd';
 import Breadcrumb from '@components/BreadCrumb/BreadCrumb';
 import AvatarDropdown from '@components/AvatarDropdown/AvatarDropdown';
-import './Layout.less';
+import NotificationDropdown from '@components/NotificationDropdown/NotificationDropdown';
 
 const CustomHeader = () => {
   const { Header } = Layout;
   return (
     <div className='header-fixed'>
       <Header className='header'>
-        <Row align='middle' style={{ height: 'fit-content' }}>
-          <Col span={12}>
+        <Row align='middle' justify='space-between' style={{ height: 80 }}>
+          <Col>
             <Breadcrumb />
           </Col>
-          <Col offset={5}>
-            <AvatarDropdown />
+          <Col>
+            <Space split={<Divider type='vertical' style={{ height: 42 }} />}>
+              <NotificationDropdown />
+
+              <AvatarDropdown />
+            </Space>
           </Col>
         </Row>
       </Header>

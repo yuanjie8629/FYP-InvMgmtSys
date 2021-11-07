@@ -1,7 +1,7 @@
 import Layout from '@components/Layout/Layout';
 
-const PendOrder = () => {
+const OrderPend = () => {
   return <Layout>Pending Order</Layout>;
 };
 
-export default PendOrder;
+export default OrderPend;

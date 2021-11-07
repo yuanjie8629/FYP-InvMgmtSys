@@ -17,81 +17,81 @@ const menuList = [
   {
     level: 1,
     items: [
-      { key: '/dashboard', label: 'Dashboard', icon: MdHome },
+      { key: 'dashboard', label: 'Dashboard', icon: MdHome },
       {
-        key: '/product',
+        key: 'product',
         label: 'Products',
         icon: MdShoppingBag,
         child: [
-          { key: '/product/management', label: 'Manage Products' },
-          { key: '/product/inventory', label: 'Product Inventory' },
-          { key: '/product/add', label: 'Add Product' },
+          { key: 'prodMgmt', label: 'Manage Products' },
+          { key: 'prodInv', label: 'Product Inventory' },
+          { key: 'prodAdd', label: 'Add Product' },
         ],
       },
 
       {
-        key: '/package',
+        key: 'package',
         label: 'Packages',
         icon: MdInventory,
         child: [
-          { key: '/package/management', label: 'Manage Packages' },
-          { key: '/package/inventory', label: 'Package Inventory' },
-          { key: '/package/add', label: 'Add Package' },
+          { key: 'packMgmt', label: 'Manage Packages' },
+          { key: 'packInv', label: 'Package Inventory' },
+          { key: 'packAdd', label: 'Add Package' },
         ],
       },
 
       {
-        key: '/order',
+        key: 'order',
         label: 'Orders',
         icon: MdAssignment,
         child: [
-          { key: '/order/management', label: 'Manage Orders' },
-          { key: '/order/pending', label: 'Pending Orders' },
-          { key: '/order/add', label: 'Add Order' },
+          { key: 'orderMgmt', label: 'Manage Orders' },
+          { key: 'orderPend', label: 'Pending Orders' },
+          { key: 'orderAdd', label: 'Add Order' },
         ],
       },
 
       {
-        key: '/shipment',
+        key: 'shipment',
         label: 'Shipments',
         icon: MdLocalShipping,
         child: [
-          { key: '/shipment/management', label: 'Manage Shipments' },
-          { key: '/shipment/shipping-fee', label: 'Manage Shipping Fees' },
+          { key: 'shptMgmt', label: 'Manage Shipments' },
+          { key: 'shpFeeMgmt', label: 'Manage Shipping Fees' },
         ],
       },
 
       {
-        key: '/customer',
+        key: 'customer',
         label: 'Customers',
         icon: MdGroups,
         child: [
-          { key: '/customer/management', label: 'Manage Customers' },
-          { key: '/customer/registrations', label: 'Manage Registrations' },
-          { key: '/customer/add', label: 'Add Customer' },
+          { key: 'custMgmt', label: 'Manage Customers' },
+          { key: 'custReg', label: 'Manage Registrations' },
+          { key: 'custAdd', label: 'Add Customer' },
         ],
       },
 
       {
-        key: '/business-insights',
+        key: 'business-insights',
         label: 'Business Insights',
         icon: MdInsertChart,
         child: [
-          { key: '/business-insights/statistics', label: 'Statistics' },
+          { key: 'statistics', label: 'Statistics' },
           {
-            key: '/business-insights/inventory-analysis',
+            key: 'invAnalysis',
             label: 'Inventory Analysis',
           },
         ],
       },
 
       {
-        key: '/discount',
+        key: 'discount',
         label: 'Discounts',
         icon: MdConfirmationNumber,
         child: [
-          { key: '/discount/management', label: 'Manage Discounts' },
-          { key: '/discount/add', label: 'Add Discount' },
+          { key: 'discMgmt', label: 'Manage Discounts' },
+          { key: 'discAdd', label: 'Add Discount' },
         ],
       },
     ],
@@ -100,29 +100,29 @@ const menuList = [
     level: 2,
     items: [
       {
-        key: '/my-acc',
+        key: 'my-acc',
         label: 'My Account',
         icon: MdAccountCircle,
         child: [
-          { key: '/my-acc/profile-management', label: 'Manage Profile' },
-          { key: '/my-acc/acc-settings', label: 'Account Settings' },
+          { key: 'profileMgmt', label: 'Manage Profile' },
+          { key: 'accSettings', label: 'Account Settings' },
         ],
       },
       {
-        key: '/admin',
+        key: 'admin',
         label: 'Admins',
         icon: MdAssignmentInd,
         child: [
-          { key: '/admin/management', label: 'Manage Admins' },
-          { key: '/admin/add', label: 'Add Admin' },
+          { key: 'adminMgmt', label: 'Manage Admins' },
+          { key: 'adminAdd', label: 'Add Admin' },
         ],
       },
-      { key: '/help', label: 'Help', icon: MdHelp },
+      { key: 'help', label: 'Help', icon: MdHelp },
     ],
   },
   {
     level: 3,
-    items: [{ key: '/', label: 'Logout', icon: MdLogout }],
+    items: [{ key: 'logout', label: 'Logout', icon: MdLogout }],
   },
 ];
 

@@ -1,7 +1,7 @@
 import Layout from '@components/Layout/Layout';
 
-const AddCust = () => {
+const CustAdd = () => {
   return <Layout>Add Customer</Layout>;
 };
 
-export default AddCust;
+export default CustAdd;

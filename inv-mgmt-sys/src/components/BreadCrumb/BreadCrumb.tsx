@@ -14,7 +14,7 @@ const CustomBreadCrumb = withRouter((props) => {
           <Link to={url}>{breadcrumbNameMap[url]}</Link>
         </Breadcrumb.Item>
       );
-    } else return <></>;
+    } else return <Breadcrumb.Item key='none'></Breadcrumb.Item>;
   });
   const breadcrumbItems = [
     <Breadcrumb.Item key='/dashboard'>
