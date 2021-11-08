@@ -34,7 +34,6 @@
         &-menu {
           &-item {
             margin: 0;
-
             &-group {
               &-list {
                 margin: 0;
@@ -49,10 +48,25 @@
           }
         }
       }
+      &-divider {
+        background-color: @grey-300;
+      }
     }
 
     &-item {
-      padding: 20px !important;
+      padding: 15px !important;
+
+      &-avatar {
+        padding-right: 20px;
+      }
+
+      &-title {
+        font-weight: 600;
+      }
+
+      &-content {
+        color: @grey !important;
+      }
     }
 
     .successBackground {

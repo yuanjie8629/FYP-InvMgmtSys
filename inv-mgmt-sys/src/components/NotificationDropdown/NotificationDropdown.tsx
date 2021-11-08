@@ -1,4 +1,14 @@
-import { Badge, Dropdown, Menu, Typography, Row, Col, Avatar } from 'antd';
+import {
+  Badge,
+  Dropdown,
+  Menu,
+  Typography,
+  Row,
+  Col,
+  Avatar,
+  Space,
+  Divider,
+} from 'antd';
 import Button from '@components/Button/Button';
 import { MdNotifications } from 'react-icons/md';
 import { useHistory } from 'react-router-dom';
@@ -18,14 +28,16 @@ const CustomNotificationDropdown = () => {
     );
     let icons = selected.find((selectedItem) => selectedItem !== undefined);
     let MatchedIcon: IconType = icons!.icon;
-    return <MatchedIcon size={24} />;
+    return <MatchedIcon size={20} />;
   };
 
   const findRoutePath = (label: string) => {
     let route = routeList.find((route) => route.label === label);
-    console.log(label);
-    console.log(route);
     return route?.path === undefined ? '404' : route.path;
+  };
+
+  const capitalize = (word: string) => {
+    return word.charAt(0).toUpperCase() + word.slice(1);
   };
 
   const menuNotificationDropdown = (
@@ -55,16 +67,28 @@ const CustomNotificationDropdown = () => {
             key={`${findRoutePath(menu.cat)}-${index}`}
             className='notification-menu-item'
           >
-            <Row>
-              <Col>
+            <Row align='middle'>
+              <Col className='notification-menu-item-avatar'>
                 <Avatar
                   icon={findIcon(menu.cat)}
                   className={`centerFlex ${menu.status}Background`}
                 />
               </Col>
               <Col>
-                <Row>{menu.title}</Row>
+                <Row className='notification-menu-item-title'>{menu.title}</Row>
                 <Row>{menu.description}</Row>
+                <Row>
+                  <Space
+                    split={<Divider type='vertical' style={{ margin: 0 }} />}
+                  >
+                    <Text className='notification-menu-item-content'>
+                      {capitalize(menu.cat)}
+                    </Text>
+                    <Text className='notification-menu-item-content'>
+                      {menu.timestamp}
+                    </Text>
+                  </Space>
+                </Row>
               </Col>
             </Row>
           </Menu.Item>
