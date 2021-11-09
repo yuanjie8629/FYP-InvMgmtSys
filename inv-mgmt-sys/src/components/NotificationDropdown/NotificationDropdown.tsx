@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   Badge,
   Dropdown,
@@ -22,13 +23,15 @@ const CustomNotificationDropdown = () => {
   let history = useHistory();
   const { Text } = Typography;
 
+  const [markAllRead, setMarkAllRead] = useState(false);
+
   const findIcon = (cat: string) => {
     let selected = siderMenuList.map((siderMenuLevel) =>
       siderMenuLevel.items.find((item) => item.key === cat)
     );
     let icons = selected.find((selectedItem) => selectedItem !== undefined);
     let MatchedIcon: IconType = icons!.icon;
-    return <MatchedIcon size={20} />;
+    return <MatchedIcon size={24} />;
   };
 
   const findRoutePath = (label: string) => {
@@ -40,10 +43,36 @@ const CustomNotificationDropdown = () => {
     return word.charAt(0).toUpperCase() + word.slice(1);
   };
 
+  const generateContent = (description: string) => {
+    if (
+      description.length > 38 &&
+      !description.substring(0, 38).includes('\n')
+    ) {
+      return (
+        <Col className='notification-menu-item-content-container'>
+          <Row>
+            <Text className='notification-menu-item-content'>
+              {description.substring(0, 38)}
+            </Text>
+          </Row>
+          <Row>
+            <Text
+              ellipsis={{ suffix: '...' }}
+              className='notification-menu-item-content'
+            >
+              {description.substring(39, 78 - 3)}
+            </Text>
+          </Row>
+        </Col>
+      );
+    }
+    return (
+      <Text className='notification-menu-item-content'>{description}</Text>
+    );
+  };
   const menuNotificationDropdown = (
     <Menu
       onClick={(item: { key: string }) => {
-        console.log(item.key.substring(0, item.key.length - 2));
         history.push(item.key.substring(0, item.key.length - 2));
       }}
       className='notification-menu'
@@ -54,7 +83,13 @@ const CustomNotificationDropdown = () => {
             <Text strong>Recent Notifications</Text>
           </Col>
           <Col>
-            <Button color='info' type='link'>
+            <Button
+              color='info'
+              type='link'
+              onClick={() => {
+                setMarkAllRead(true);
+              }}
+            >
               Mark all as read
             </Button>
           </Col>
@@ -69,22 +104,29 @@ const CustomNotificationDropdown = () => {
           >
             <Row align='middle'>
               <Col className='notification-menu-item-avatar'>
-                <Avatar
-                  icon={findIcon(menu.cat)}
-                  className={`centerFlex ${menu.status}Background`}
-                />
+                <Badge
+                  dot={menu.read}
+                  offset={[-3, 5]}
+                  status={menu.status}
+                  className='notification-menu-item-badge'
+                >
+                  <Avatar
+                    icon={findIcon(menu.cat)}
+                    className={`centerFlex ${menu.status}Background`}
+                  />
+                </Badge>
               </Col>
               <Col>
                 <Row className='notification-menu-item-title'>{menu.title}</Row>
-                <Row>{menu.description}</Row>
+                {generateContent(menu.description)}
                 <Row>
                   <Space
                     split={<Divider type='vertical' style={{ margin: 0 }} />}
                   >
-                    <Text className='notification-menu-item-content'>
+                    <Text className='notification-menu-item-info'>
                       {capitalize(menu.cat)}
                     </Text>
-                    <Text className='notification-menu-item-content'>
+                    <Text className='notification-menu-item-info'>
                       {menu.timestamp}
                     </Text>
                   </Space>
@@ -102,8 +144,8 @@ const CustomNotificationDropdown = () => {
     <Dropdown overlay={menuNotificationDropdown} arrow trigger={['hover']}>
       <div className='notification-container'>
         <Badge
-          dot
-          offset={[-6, 5]}
+          dot={!markAllRead}
+          offset={[-7, 5]}
           status='success'
           className='notification-badge'
         >

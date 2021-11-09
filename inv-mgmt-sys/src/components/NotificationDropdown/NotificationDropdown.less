@@ -1,6 +1,6 @@
 .notification {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   color: @grey-400;
   border-radius: 20px;
 
@@ -8,8 +8,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     cursor: pointer;
 
@@ -19,11 +19,15 @@
   }
 
   &-badge {
-    height: 24px;
+    height: 28px;
+    .@{ant-prefix}-badge-dot {
+      width: 8px;
+      height: 8px;
+    }
   }
 
   &-menu {
-    width: 380px;
+    width: 350px;
     font-size: @font-size-sm;
     margin: 0;
     .@{ant-prefix} {
@@ -34,6 +38,11 @@
         &-menu {
           &-item {
             margin: 0;
+
+            &:first-child {
+              border-radius: 0;
+            }
+
             &-group {
               &-list {
                 margin: 0;
@@ -62,10 +71,34 @@
 
       &-title {
         font-weight: 600;
+        padding-bottom: 4px;
       }
 
       &-content {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+
+        &-container {
+          padding-bottom: 5px;
+        }
+      }
+
+      &-info {
+        font-size: @font-size-sm;
         color: @grey !important;
+      }
+
+      &-badge {
+        .@{ant-prefix}-badge-dot {
+          width: 10px;
+          height: 10px;
+        }
+      }
+
+      &:hover,
+      &:hover &-content,
+      &:hover &-info {
+        color: @info-color !important;
       }
     }
 
