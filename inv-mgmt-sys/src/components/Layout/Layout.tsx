@@ -14,7 +14,9 @@ const CustomLayout = (props: CustomLayoutProps) => {
       <Sider />
       <Layout>
         <Header />
-        <Content>{props.children}</Content>
+        <Content className='content'>
+          {props.children}
+        </Content>
         <Footer />
       </Layout>
     </Layout>
