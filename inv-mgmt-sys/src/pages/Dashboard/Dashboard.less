@@ -8,7 +8,25 @@
       cursor: pointer;
 
       &:hover {
-        background-color: @green-100 !important;
+        background-color: @green-200 !important;
+      }
+    }
+  }
+
+  .@{ant-prefix} {
+    &-radio {
+      &-button {
+        &-wrapper {
+          border: 0;
+          &:not(:first-child)::before {
+            padding: 0;
+            width: 0;
+          }
+          &:hover {
+            color: @white;
+            background-color: @primary-color-hover;
+          }
+        }
       }
     }
   }
