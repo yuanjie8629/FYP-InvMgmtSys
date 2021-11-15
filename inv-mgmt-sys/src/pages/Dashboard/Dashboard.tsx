@@ -3,6 +3,7 @@ import { CaretRightOutlined, RightOutlined } from '@ant-design/icons';
 import ContainerCard from '@components/ContainerCard/ContainerCard';
 import Layout from '@components/Layout/Layout';
 import SmallCard from '@components/SmallCard/SmallCard';
+import LineChart from '@components/Chart/LineChart';
 import toDoList from './ToDoList';
 import routeList from '@routes/RouteList';
 import './Dashboard.less';
@@ -28,7 +29,7 @@ const Dashboard = () => {
                   key={toDoItem.label}
                   onClick={() => history.push(findRoutePath(toDoItem.link))}
                 >
-                  <SmallCard width={270} className='dashboard-toDoList-item'>
+                  <SmallCard width={255} className='dashboard-toDoList-item'>
                     <Title level={5}>{toDoItem.quantity}</Title>
                     <Text className='dashboard-toDoList-text'>
                       {toDoItem.label}{' '}
@@ -62,6 +63,11 @@ const Dashboard = () => {
             <Col>
               <Text className='dashboard-toDoList-text'>2021</Text>
             </Col>
+          </Row>
+          <Row>
+            <div style={{ width: 1000 }}>
+              <LineChart />
+            </div>
           </Row>
         </ContainerCard>
       </Row>

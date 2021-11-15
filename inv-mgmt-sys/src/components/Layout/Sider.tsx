@@ -17,6 +17,7 @@ const CustomSider = () => {
     return route?.path === undefined ? '404' : route.path;
   };
   return (
+    <div style={{width: 220}}>
     <Sider width='220px' className='sider'>
       <div className='sider-logo-fixed'>
         <div
@@ -72,7 +73,8 @@ const CustomSider = () => {
           ) : null,
         ])}
       </Menu>
-    </Sider>
+      </Sider>
+      </div>
   );
 };
 
