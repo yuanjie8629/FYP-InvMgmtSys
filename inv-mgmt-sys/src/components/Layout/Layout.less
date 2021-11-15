@@ -6,6 +6,7 @@
   width: calc(100% - 220px);
   height: 80px !important; // overwrite header height to 80px
   background-color: @layout-header-background;
+  z-index: 1000;
 
   &-fixed {
     height: 80px;
@@ -23,12 +24,12 @@
 .sider {
   overflow: auto;
   height: 100vh;
-  position: fixed;
+  position: fixed !important;
   left: 0;
   -ms-overflow-style: none;
   scrollbar-width: none;
   box-shadow: 2px 0px 4px 0px #0000000d;
-  z-index: 5;
+  z-index: 1000;
 
   &::-webkit-scrollbar {
     display: none;
@@ -90,7 +91,7 @@
 }
 
 .content {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 //Footer
