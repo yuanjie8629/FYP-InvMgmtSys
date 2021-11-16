@@ -36,13 +36,18 @@ const Dashboard = () => {
       ? dataDay
       : dataYear;
 
-  const getSalesChartTitle = () =>
+  const getChartTitle = () =>
     salesDateRange === 'month' || salesDateRange === 'week'
       ? 'Day'
       : salesDateRange === 'day'
       ? 'Hour'
       : 'Month';
 
+  const getChartTooltipTitlePrefix = () =>
+    salesDateRange === 'month' ? 'Day ' : '';
+
+  const getChartTooltipTitleSuffix = () =>
+    salesDateRange === 'day' ? ':00' : '';
   return (
     <Layout>
       <div className='dashboard'>
@@ -114,14 +119,29 @@ const Dashboard = () => {
                 <Text strong>RM</Text>
                 <LineChart
                   data={getSalesData()}
-                  titleX={getSalesChartTitle()}
+                  titleX={getChartTitle()}
                   tooltipName='Total Sales'
+                  tooltipTitlePrefix={getChartTooltipTitlePrefix()}
+                  tooltipTitleSuffix={getChartTooltipTitleSuffix()}
                   tooltipValPrefix='RM '
                   toFixed={2}
                 />
               </Space>
             </Row>
           </ContainerCard>
+        </Row>
+        <Row
+          justify='center'
+          gutter={[30, 0]}
+          className='container-card'
+          style={{ margin: '0 2.5%' }}
+        >
+          <Col span={8} style={{ padding: 0 }}>
+            <ContainerCard></ContainerCard>
+          </Col>
+          <Col span={16} style={{ padding: 0 }}>
+            <ContainerCard width='100%'></ContainerCard>
+          </Col>
         </Row>
       </div>
     </Layout>
