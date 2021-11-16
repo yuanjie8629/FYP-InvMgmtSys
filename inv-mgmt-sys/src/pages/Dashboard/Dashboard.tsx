@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Col, Radio, Row, Space, Typography } from 'antd';
+import { Col, Radio, Row, Space, Typography, Statistic } from 'antd';
 import { CaretRightOutlined, RightOutlined } from '@ant-design/icons';
 import ContainerCard from '@components/ContainerCard/ContainerCard';
 import Layout from '@components/Layout/Layout';
@@ -11,6 +11,7 @@ import './Dashboard.less';
 import { useHistory } from 'react-router';
 import Button from '@components/Button/Button';
 import { dataYear, dataMonth, dataWeek, dataDay } from './SalesData';
+import statisticsData from './StatisticsData';
 
 const Dashboard = () => {
   const { Text, Title } = Typography;
@@ -29,12 +30,21 @@ const Dashboard = () => {
   };
   const getSalesData = () =>
     salesDateRange === 'month'
-      ? dataMonth
+      ? dataMonth.data
       : salesDateRange === 'week'
-      ? dataWeek
+      ? dataWeek.data
       : salesDateRange === 'day'
-      ? dataDay
-      : dataYear;
+      ? dataDay.data
+      : dataYear.data;
+
+  const getSalesDate = () =>
+    salesDateRange === 'month'
+      ? dataMonth.month
+      : salesDateRange === 'week'
+      ? dataWeek.frmDate + ' - ' + dataWeek.toDate
+      : salesDateRange === 'day'
+      ? dataDay.date
+      : dataYear.year;
 
   const getChartTitle = () =>
     salesDateRange === 'month' || salesDateRange === 'week'
@@ -97,7 +107,9 @@ const Dashboard = () => {
               </Row>
               <Row justify='space-between'>
                 <Col>
-                  <Text className='dashboard-toDoList-text'>2021</Text>
+                  <Text className='dashboard-toDoList-text'>
+                    {getSalesDate()}
+                  </Text>
                 </Col>
                 <Col>
                   <Radio.Group
@@ -137,8 +149,16 @@ const Dashboard = () => {
           <Row justify='center' gutter={[30, 0]} style={{ margin: '0 2.5%' }}>
             <Col span={8} style={{ padding: 0 }}>
               <ContainerCard>
-                <Space direction='vertical'>
+                <Row>
                   <Title level={5}>Statistics</Title>
+                </Row>
+                <Row>
+                  <Text className='dashboard-toDoList-text'>
+                    {statisticsData.date}
+                  </Text>
+                </Row>
+                <Space direction='vertical'>
+                  <Statistic> </Statistic>
                 </Space>
               </ContainerCard>
             </Col>
