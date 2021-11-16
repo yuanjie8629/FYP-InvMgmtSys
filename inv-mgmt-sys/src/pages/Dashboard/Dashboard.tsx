@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Col, Radio, Row, Space, Typography } from 'antd';
 import { CaretRightOutlined, RightOutlined } from '@ant-design/icons';
 import ContainerCard from '@components/ContainerCard/ContainerCard';
@@ -9,14 +10,39 @@ import routeList from '@routes/RouteList';
 import './Dashboard.less';
 import { useHistory } from 'react-router';
 import Button from '@components/Button/Button';
+import { dataYear, dataMonth, dataWeek, dataDay } from './SalesData';
 
 const Dashboard = () => {
   const { Text, Title } = Typography;
   const history = useHistory();
+  const [salesDateRange, setSalesDateRange] = useState('year');
+  const salesRadioBtn: { value: string; label: string }[] = [
+    { value: 'year', label: 'Year' },
+    { value: 'month', label: 'Month' },
+    { value: 'week', label: 'Week' },
+    { value: 'day', label: 'Day' },
+  ];
+
   const findRoutePath = (label: string) => {
     let route = routeList.find((route) => route.label === label);
     return route?.path === undefined ? '404' : route.path;
   };
+  const getSalesData = () =>
+    salesDateRange === 'month'
+      ? dataMonth
+      : salesDateRange === 'week'
+      ? dataWeek
+      : salesDateRange === 'day'
+      ? dataDay
+      : dataYear;
+
+  const getSalesChartTitle = () =>
+    salesDateRange === 'month' || salesDateRange === 'week'
+      ? 'Day'
+      : salesDateRange === 'day'
+      ? 'Hour'
+      : 'Month';
+
   return (
     <Layout>
       <div className='dashboard'>
@@ -71,17 +97,28 @@ const Dashboard = () => {
                   style={{ marginRight: 30 }}
                   defaultValue='year'
                 >
-                  <Radio.Button value='year'>Year</Radio.Button>
-                  <Radio.Button value='month'>Month</Radio.Button>
-                  <Radio.Button value='week'>Week</Radio.Button>
-                  <Radio.Button value='day'>Day</Radio.Button>
+                  {salesRadioBtn.map((radioBtn) => (
+                    <Radio.Button
+                      key={radioBtn.value}
+                      value={radioBtn.value}
+                      onClick={() => setSalesDateRange(radioBtn.value)}
+                    >
+                      {radioBtn.label}
+                    </Radio.Button>
+                  ))}
                 </Radio.Group>
               </Col>
             </Row>
             <Row style={{ paddingTop: 30 }}>
               <Space direction='vertical' style={{ width: '100%' }} size={20}>
                 <Text strong>RM</Text>
-                <LineChart />
+                <LineChart
+                  data={getSalesData()}
+                  titleX={getSalesChartTitle()}
+                  tooltipName='Total Sales'
+                  tooltipValPrefix='RM '
+                  toFixed={2}
+                />
               </Space>
             </Row>
           </ContainerCard>

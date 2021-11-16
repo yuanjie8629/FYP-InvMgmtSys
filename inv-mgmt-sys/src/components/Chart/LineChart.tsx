@@ -1,26 +1,57 @@
 import React from 'react';
 import { Datum, Line } from '@ant-design/charts';
 
-const LineChart = () => {
-  const data = [
-    { Month: 'Jan', Sales: 4000 },
-    { Month: 'Feb', Sales: 4500 },
-    { Month: 'Mar', Sales: 5500 },
-    { Month: 'Apr', Sales: 4300 },
-    { Month: 'May', Sales: 4100 },
-    { Month: 'Jun', Sales: 6000 },
-    { Month: 'July', Sales: 4700 },
-    { Month: 'Aug', Sales: 4200 },
-    { Month: 'Sep', Sales: 6100 },
-    { Month: 'Oct', Sales: 5030 },
-    { Month: 'Nov', Sales: 4954 },
-    { Month: 'Dec', Sales: 5310 },
-  ];
+interface LineChartProps {
+  data: any;
+  titleX?: string;
+  titleY?: string;
+  tooltipName?: string;
+  tooltipTitlePrefix?: string;
+  tooltipTitleSuffix?: string;
+  tooltipValPrefix?: string;
+  tooltipValSuffix?: string;
+  toFixed?: number;
+}
+const LineChart = ({
+  toFixed = 0,
+  titleX = '',
+  titleY = '',
+  tooltipName = titleY !== '' ? titleY : 'value',
+  tooltipTitlePrefix = '',
+  tooltipTitleSuffix = '',
+  tooltipValPrefix = '',
+  tooltipValSuffix = '',
+  ...props
+}: LineChartProps) => {
   const config = {
-    data,
+    data: props.data,
     height: 400,
-    xField: 'Month',
-    yField: 'Sales',
+    xField: Object.keys(props.data[0])[0],
+    yField: Object.keys(props.data[0])[1],
+    xAxis: {
+      title:
+        titleX === ''
+          ? null
+          : {
+              text: titleX,
+              style: {
+                fontSize: 14,
+                fontWeight: 600,
+              },
+            },
+    },
+    yAxis: {
+      title:
+        titleY === ''
+          ? null
+          : {
+              text: titleY,
+              style: {
+                fontSize: 14,
+                fontWeight: 600,
+              },
+            },
+    },
     smooth: true,
     lineStyle: {
       stroke: '#0e9f6e',
@@ -28,12 +59,20 @@ const LineChart = () => {
     },
     color: '#0e9f6e',
     tooltip: {
-      fields: ['Month', 'Sales'],
+      fields: [Object.keys(props.data[0])[0], Object.keys(props.data[0])[1]],
+      title: tooltipTitlePrefix + Object.keys(props.data[0])[0] + tooltipTitleSuffix,
       formatter: (datum: Datum) => {
-        return { name: 'Total Sales', value: 'RM' + datum.Sales.toFixed(2) };
+        return {
+          name: tooltipName,
+          value:
+            tooltipValPrefix +
+            datum[Object.keys(props.data[0])[1]].toFixed(toFixed) +
+            tooltipValSuffix,
+        };
       },
     },
   };
+
   return <Line {...config} />;
 };
 
