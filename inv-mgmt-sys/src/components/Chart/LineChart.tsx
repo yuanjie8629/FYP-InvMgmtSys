@@ -25,7 +25,6 @@ const LineChart = ({
 }: LineChartProps) => {
   const config = {
     data: props.data,
-    height: 400,
     xField: Object.keys(props.data[0])[0],
     yField: Object.keys(props.data[0])[1],
     xAxis: {
@@ -60,9 +59,12 @@ const LineChart = ({
     color: '#0e9f6e',
     tooltip: {
       fields: [Object.keys(props.data[0])[0], Object.keys(props.data[0])[1]],
-      title: tooltipTitlePrefix + Object.keys(props.data[0])[0] + tooltipTitleSuffix,
       formatter: (datum: Datum) => {
         return {
+          title:
+            tooltipTitlePrefix +
+            datum[Object.keys(props.data[0])[0]] +
+            tooltipTitleSuffix,
           name: tooltipName,
           value:
             tooltipValPrefix +
