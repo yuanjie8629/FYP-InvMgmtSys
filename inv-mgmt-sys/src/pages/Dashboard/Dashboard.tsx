@@ -51,98 +51,102 @@ const Dashboard = () => {
   return (
     <Layout>
       <div className='dashboard'>
-        <Row justify='center' className='container-card'>
-          <ContainerCard>
-            <Space direction='vertical'>
-              <Title level={5}>To Do List</Title>
-              <Row justify='start' gutter={[30, 20]}>
-                {toDoList.map((toDoItem) => (
-                  <Col
-                    key={toDoItem.label}
-                    onClick={() => history.push(findRoutePath(toDoItem.link))}
-                  >
-                    <SmallCard width={255} className='dashboard-toDoList-item'>
-                      <Title level={5}>{toDoItem.quantity}</Title>
-                      <Text className='dashboard-toDoList-text'>
-                        {toDoItem.label}{' '}
-                      </Text>
-                      <CaretRightOutlined
-                        className='dashboard-toDoList-text'
-                        style={{ margin: 2 }}
-                      />
-                    </SmallCard>
-                  </Col>
-                ))}
-              </Row>
-            </Space>
-          </ContainerCard>
-        </Row>
-        <Row justify='center' className='container-card'>
-          <ContainerCard>
-            <Row justify='space-between'>
-              <Col>
-                <Row>
-                  <Title level={5}>Sales</Title>
-                </Row>
-              </Col>
-              <Col>
-                <Button type='link' color='info'>
-                  More <RightOutlined style={{ margin: 4 }} />
-                </Button>
-              </Col>
-            </Row>
-            <Row justify='space-between'>
-              <Col>
-                <Text className='dashboard-toDoList-text'>2021</Text>
-              </Col>
-              <Col>
-                <Radio.Group
-                  buttonStyle='solid'
-                  size='large'
-                  style={{ marginRight: 30 }}
-                  defaultValue='year'
-                >
-                  {salesRadioBtn.map((radioBtn) => (
-                    <Radio.Button
-                      key={radioBtn.value}
-                      value={radioBtn.value}
-                      onClick={() => setSalesDateRange(radioBtn.value)}
+        <Space direction='vertical' size={20} className='container-card'>
+          <Row justify='center'>
+            <ContainerCard>
+              <Space direction='vertical'>
+                <Title level={5}>To Do List</Title>
+                <Row justify='start' gutter={[30, 20]}>
+                  {toDoList.map((toDoItem) => (
+                    <Col
+                      key={toDoItem.label}
+                      onClick={() => history.push(findRoutePath(toDoItem.link))}
                     >
-                      {radioBtn.label}
-                    </Radio.Button>
+                      <SmallCard
+                        width={255}
+                        className='dashboard-toDoList-item'
+                      >
+                        <Title level={5}>{toDoItem.quantity}</Title>
+                        <Text className='dashboard-toDoList-text'>
+                          {toDoItem.label}{' '}
+                        </Text>
+                        <CaretRightOutlined
+                          className='dashboard-toDoList-text'
+                          style={{ margin: 2 }}
+                        />
+                      </SmallCard>
+                    </Col>
                   ))}
-                </Radio.Group>
-              </Col>
-            </Row>
-            <Row style={{ paddingTop: 30 }}>
-              <Space direction='vertical' style={{ width: '100%' }} size={20}>
-                <Text strong>RM</Text>
-                <LineChart
-                  data={getSalesData()}
-                  titleX={getChartTitle()}
-                  tooltipName='Total Sales'
-                  tooltipTitlePrefix={getChartTooltipTitlePrefix()}
-                  tooltipTitleSuffix={getChartTooltipTitleSuffix()}
-                  tooltipValPrefix='RM '
-                  toFixed={2}
-                />
+                </Row>
               </Space>
-            </Row>
-          </ContainerCard>
-        </Row>
-        <Row
-          justify='center'
-          gutter={[30, 0]}
-          className='container-card'
-          style={{ margin: '0 2.5%' }}
-        >
-          <Col span={8} style={{ padding: 0 }}>
-            <ContainerCard></ContainerCard>
-          </Col>
-          <Col span={16} style={{ padding: 0 }}>
-            <ContainerCard width='100%'></ContainerCard>
-          </Col>
-        </Row>
+            </ContainerCard>
+          </Row>
+          <Row justify='center'>
+            <ContainerCard>
+              <Row justify='space-between'>
+                <Col>
+                  <Row>
+                    <Title level={5}>Sales</Title>
+                  </Row>
+                </Col>
+                <Col>
+                  <Button type='link' color='info'>
+                    More <RightOutlined style={{ margin: 4 }} />
+                  </Button>
+                </Col>
+              </Row>
+              <Row justify='space-between'>
+                <Col>
+                  <Text className='dashboard-toDoList-text'>2021</Text>
+                </Col>
+                <Col>
+                  <Radio.Group
+                    buttonStyle='solid'
+                    size='large'
+                    style={{ marginRight: 30 }}
+                    defaultValue='year'
+                  >
+                    {salesRadioBtn.map((radioBtn) => (
+                      <Radio.Button
+                        key={radioBtn.value}
+                        value={radioBtn.value}
+                        onClick={() => setSalesDateRange(radioBtn.value)}
+                      >
+                        {radioBtn.label}
+                      </Radio.Button>
+                    ))}
+                  </Radio.Group>
+                </Col>
+              </Row>
+              <Row style={{ paddingTop: 30 }}>
+                <Space direction='vertical' style={{ width: '100%' }} size={20}>
+                  <Text strong>RM</Text>
+                  <LineChart
+                    data={getSalesData()}
+                    titleX={getChartTitle()}
+                    tooltipName='Total Sales'
+                    tooltipTitlePrefix={getChartTooltipTitlePrefix()}
+                    tooltipTitleSuffix={getChartTooltipTitleSuffix()}
+                    tooltipValPrefix='RM '
+                    toFixed={2}
+                  />
+                </Space>
+              </Row>
+            </ContainerCard>
+          </Row>
+          <Row justify='center' gutter={[30, 0]} style={{ margin: '0 2.5%' }}>
+            <Col span={8} style={{ padding: 0 }}>
+              <ContainerCard>
+                <Space direction='vertical'>
+                  <Title level={5}>Statistics</Title>
+                </Space>
+              </ContainerCard>
+            </Col>
+            <Col span={16} style={{ padding: 0 }}>
+              <ContainerCard width='100%'></ContainerCard>
+            </Col>
+          </Row>
+        </Space>
       </div>
     </Layout>
   );
