@@ -14,7 +14,7 @@ const dataYear = [
 ];
 
 const dataMonth = [
-{ Day: '1', Sales: 300 },
+  { Day: '1', Sales: 300 },
   { Day: '2', Sales: 356 },
   { Day: '3', Sales: 481 },
   { Day: '4', Sales: 237 },
