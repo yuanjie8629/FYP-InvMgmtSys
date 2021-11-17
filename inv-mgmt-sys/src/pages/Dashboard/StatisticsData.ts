@@ -1,4 +1,4 @@
-const statistics = {
+const statistics: any = {
   date: '17 August 2021',
   sales: 830,
   profit: 500,
