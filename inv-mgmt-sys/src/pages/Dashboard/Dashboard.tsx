@@ -1,17 +1,29 @@
 import React, { useState } from 'react';
-import { Col, Radio, Row, Space, Typography, Statistic } from 'antd';
-import { CaretRightOutlined, RightOutlined } from '@ant-design/icons';
+import { useHistory } from 'react-router';
+import { Col, Radio, Row, Space, Typography } from 'antd';
+import {
+  MdArrowRight,
+  MdChevronRight,
+  MdOutlineTrendingUp,
+  MdOutlineAttachMoney,
+  MdOutlineVisibility,
+  MdPersonOutline,
+  MdOutlineAssignment,
+} from 'react-icons/md';
+import { IconType } from 'react-icons';
 import ContainerCard from '@components/ContainerCard/ContainerCard';
 import Layout from '@components/Layout/Layout';
 import SmallCard from '@components/SmallCard/SmallCard';
 import LineChart from '@components/Chart/LineChart';
+import Button from '@components/Button/Button';
+import StatisticsDashboard from '@components/Statistics/StatisticsDashboard';
+import Table from '@components/Table/Table';
 import toDoList from './ToDoList';
 import routeList from '@routes/RouteList';
-import './Dashboard.less';
-import { useHistory } from 'react-router';
-import Button from '@components/Button/Button';
 import { dataYear, dataMonth, dataWeek, dataDay } from './SalesData';
 import statisticsData from './StatisticsData';
+import recentOrders from './RecentOrders';
+import './Dashboard.less';
 
 const Dashboard = () => {
   const { Text, Title } = Typography;
@@ -22,6 +34,51 @@ const Dashboard = () => {
     { value: 'month', label: 'Month' },
     { value: 'week', label: 'Week' },
     { value: 'day', label: 'Day' },
+  ];
+
+  const statisticsList: {
+    key: string;
+    title: string;
+    icon: IconType;
+    color: string;
+    prefix?: string;
+    suffix?: string;
+    toFixed?: number;
+  }[] = [
+    {
+      key: 'sales',
+      title: 'Sales',
+      icon: MdOutlineTrendingUp,
+      color: '#7367F0',
+      prefix: 'RM ',
+      toFixed: 2,
+    },
+    {
+      key: 'profit',
+      title: 'Profit',
+      icon: MdOutlineAttachMoney,
+      color: '#28C76F',
+      prefix: 'RM ',
+      toFixed: 2,
+    },
+    {
+      key: 'visitors',
+      title: 'Visitors',
+      icon: MdOutlineVisibility,
+      color: '#FDBA39',
+    },
+    {
+      key: 'newCust',
+      title: 'New Customers',
+      icon: MdPersonOutline,
+      color: '#00CFE8',
+    },
+    {
+      key: 'newOrder',
+      title: 'New Orders',
+      icon: MdOutlineAssignment,
+      color: '#EA5455',
+    },
   ];
 
   const findRoutePath = (label: string) => {
@@ -73,16 +130,17 @@ const Dashboard = () => {
                       onClick={() => history.push(findRoutePath(toDoItem.link))}
                     >
                       <SmallCard
-                        width={255}
+                        width={260}
                         className='dashboard-toDoList-item'
                       >
                         <Title level={5}>{toDoItem.quantity}</Title>
                         <Text className='dashboard-toDoList-text'>
-                          {toDoItem.label}{' '}
+                          {toDoItem.label}
                         </Text>
-                        <CaretRightOutlined
+                        <MdArrowRight
+                          size={19}
                           className='dashboard-toDoList-text'
-                          style={{ margin: 2 }}
+                          style={{ verticalAlign: 'bottom' }}
                         />
                       </SmallCard>
                     </Col>
@@ -100,8 +158,18 @@ const Dashboard = () => {
                   </Row>
                 </Col>
                 <Col>
-                  <Button type='link' color='info'>
-                    More <RightOutlined style={{ margin: 4 }} />
+                  <Button
+                    type='link'
+                    color='info'
+                    onClick={() =>
+                      history.push(findRoutePath('businessInsights'))
+                    }
+                  >
+                    More
+                    <MdChevronRight
+                      size={22}
+                      style={{ verticalAlign: 'bottom' }}
+                    />
                   </Button>
                 </Col>
               </Row>
@@ -147,7 +215,7 @@ const Dashboard = () => {
             </ContainerCard>
           </Row>
           <Row justify='center' gutter={[30, 0]} style={{ margin: '0 2.5%' }}>
-            <Col span={8} style={{ padding: 0 }}>
+            <Col span={7} style={{ padding: 0 }}>
               <ContainerCard>
                 <Row>
                   <Title level={5}>Statistics</Title>
@@ -157,13 +225,56 @@ const Dashboard = () => {
                     {statisticsData.date}
                   </Text>
                 </Row>
-                <Space direction='vertical'>
-                  <Statistic> </Statistic>
+                <Space
+                  direction='vertical'
+                  size={20}
+                  style={{ marginTop: 20, width: '100%' }}
+                >
+                  {statisticsList.map((statistics) => (
+                    <StatisticsDashboard
+                      key={statistics.key}
+                      title={statistics.title}
+                      icon={statistics.icon}
+                      color={statistics.color}
+                      value={statisticsData[statistics.key]}
+                      prefix={statistics.prefix}
+                      suffix={statistics.suffix}
+                      toFixed={statistics.toFixed}
+                    />
+                  ))}
                 </Space>
               </ContainerCard>
             </Col>
-            <Col span={16} style={{ padding: 0 }}>
-              <ContainerCard width='100%'></ContainerCard>
+            <Col span={17} style={{ padding: 0 }}>
+              <ContainerCard width='100%'>
+                <Row justify='space-between'>
+                  <Col>
+                    <Row>
+                      <Title level={5}>Recent Orders</Title>
+                    </Row>
+                  </Col>
+                  <Col>
+                    <Button
+                      type='link'
+                      color='info'
+                      onClick={() => history.push(findRoutePath('order'))}
+                    >
+                      More{' '}
+                      <MdChevronRight
+                        size={22}
+                        style={{ verticalAlign: 'bottom' }}
+                      />
+                    </Button>
+                  </Col>
+                </Row>
+                <Row>
+                  <Table
+                    dataSource={recentOrders.data}
+                    columns={recentOrders.columns}
+                    pagination={false}
+                  ></Table>
+                </Row>
+              </ContainerCard>
             </Col>
           </Row>
         </Space>
