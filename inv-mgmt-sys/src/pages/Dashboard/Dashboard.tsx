@@ -130,7 +130,7 @@ const Dashboard = () => {
                       onClick={() => history.push(findRoutePath(toDoItem.link))}
                     >
                       <SmallCard
-                        width={260}
+                        width={255}
                         className='dashboard-toDoList-item'
                       >
                         <Title level={5}>{toDoItem.quantity}</Title>
