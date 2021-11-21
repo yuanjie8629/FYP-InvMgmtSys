@@ -1,9 +1,9 @@
 import { Col, Divider, Layout, Row, Space } from 'antd';
-import Breadcrumb from '@components/BreadCrumb/BreadCrumb';
+import Breadcrumb from '@components/BreadCrumb/BreadCrump';
 import AvatarDropdown from '@components/AvatarDropdown/AvatarDropdown';
 import NotificationDropdown from '@components/NotificationDropdown/NotificationDropdown';
 
-const CustomHeader = () => {
+const Header = () => {
   const { Header } = Layout;
   return (
     <div className='header-fixed'>
@@ -24,4 +24,4 @@ const CustomHeader = () => {
   );
 };
 
-export default CustomHeader;
+export default Header;

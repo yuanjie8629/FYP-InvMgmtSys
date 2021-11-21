@@ -1,120 +1,123 @@
 @import (reference) '../../App.less';
 
+.login-right-align {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
+}
+
 div {
-  &.login-container {
-    max-width: 100%;
-    width: 100vw;
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-
-    @media @tablet-sm, @mobile-xs {
-      height: 100%;
-    }
-  }
-
-  &.login-form-container {
-    width: 100%;
-    height: 100%;
-    .centerFlex();
-  }
-
-  &.login-hashtag {
-    position: absolute;
-    @media @mobile-xs, @tablet-sm {
-      visibility: hidden;
-    }
-  }
-
-  &.login-right-panel {
-    width: 100vw;
-    background-color: #279570;
-    display: flex;
-    pointer-events: none;
-    user-select: none;
-    @media @tablet-sm, @mobile-xs {
-      margin-bottom: 30px;
-      height: fit-content;
-    }
-  }
-
-  &.login-form {
-    text-align: center;
-    display: block;
-    margin: auto;
-    width: 40%;
-
-    @media @mobile-xs, @tablet-sm {
-      width: 70%;
-    }
-
-    [role='alert'] {
-      margin-bottom: 15px;
-      text-align: left;
-    }
-  }
-
-  &.login-right-align {
-    display: flex;
-    justify-content: flex-end;
-    padding: 20px;
-  }
-
-  &.login-logo-wrapper {
-    .login-right-align();
-
-    @media @tablet-sm, @mobile-xs {
-      height: fit-content;
-      position: relative;
-      padding: 0px 20px 0;
-      bottom: 15px;
-      z-index: 1;
-    }
-  }
-
-  &.login-responsive-img-wrapper {
-    .centerFlex();
-    @media @tablet-sm, @mobile-xs {
-      height: 60%;
+  &.login {
+    &-container {
+      max-width: 100%;
+      width: 100vw;
+      height: 100vh;
       margin: 0;
-    }
+      padding: 0;
+      background-color: @white;
 
-    .login-responsive-img {
-      display: block;
-      margin: 0 auto;
-      width: 90%;
-      @media @tablet-sm {
-        width: 65%;
+      @media @tablet-sm, @mobile-xs {
+        height: 100%;
       }
     }
-  }
 
-  &.login-display-panel {
-    padding: 0;
-    margin: 0;
-    @media @tablet-sm, @mobile-xs {
-      height: fit-content;
+    &-form-container {
+      width: 100%;
+      height: 100%;
+      .centerFlex();
     }
-  }
 
-  &.login-title-container {
-    max-height: 70px;
+    &-hashtag {
+      position: absolute;
+      @media @mobile-xs, @tablet-sm {
+        visibility: hidden;
+      }
+    }
 
-    h2.@{ant-prefix}-typography {
+    &-right-panel {
+      width: 100vw;
+      background-color: #279570;
+      display: flex;
+      pointer-events: none;
+      user-select: none;
+      @media @tablet-sm, @mobile-xs {
+        margin-bottom: 30px;
+        height: fit-content;
+      }
+    }
+
+    &-form {
       text-align: center;
-      color: @white;
-      white-space: nowrap;
+      display: block;
+      margin: auto;
+      width: 40%;
 
-      @media @mobile-xs, @tablet-md {
-        font-size: @heading-4-size;
+      @media @mobile-xs, @tablet-sm {
+        width: 70%;
       }
 
-      @media @desktop-lg, @tablet-sm {
-        font-size: @heading-3-size;
+      [role='alert'] {
+        margin-bottom: 15px;
+        text-align: left;
+      }
+    }
+
+    &-logo-wrapper {
+      .login-right-align();
+
+      @media @tablet-sm, @mobile-xs {
+        height: fit-content;
+        position: relative;
+        padding: 0px 20px 0;
+        bottom: 15px;
+        z-index: 1;
+      }
+    }
+
+    &-responsive-img-wrapper {
+      .centerFlex();
+      @media @tablet-sm, @mobile-xs {
+        height: 60%;
+        margin: 0;
       }
 
-      @media @desktop-xl {
-        font-size: @heading-2-size;
+      .login-responsive-img {
+        display: block;
+        margin: 0 auto;
+        width: 90%;
+        @media @tablet-sm {
+          width: 65%;
+        }
+      }
+    }
+
+    &-display-panel {
+      padding: 0;
+      margin: 0;
+      @media @tablet-sm, @mobile-xs {
+        height: fit-content;
+      }
+    }
+
+    &-title-container {
+      max-height: 70px;
+
+      h2.@{ant-prefix}-typography {
+        text-align: center;
+        color: @white;
+        white-space: nowrap;
+
+        @media @mobile-xs, @tablet-md {
+          font-size: @heading-5-size;
+        }
+
+        @media @desktop-lg, @tablet-sm {
+          font-size: @heading-4-size;
+        }
+
+        @media @desktop-xl {
+          font-size: @heading-3-size;
+        }
       }
     }
   }

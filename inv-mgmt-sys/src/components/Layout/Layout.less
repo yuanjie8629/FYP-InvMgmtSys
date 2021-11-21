@@ -1,13 +1,14 @@
 @import (reference) '../../App.less';
+@sider-width: 220px;
 
 // Header
 .header {
   position: fixed;
-  width: calc(100% - 220px);
   height: 80px !important; // overwrite header height to 80px
+  .header-width(220px);
   background-color: @layout-header-background;
   box-shadow: 4px 0px 4px 2px #0000000d;
-  z-index: 1000;
+  z-index: 999;
 
   &-fixed {
     height: 80px;
@@ -23,7 +24,7 @@
 // Sider
 .sider {
   overflow: auto;
-  height: 100vh;
+  height: 100%;
   position: fixed !important;
   left: 0;
   -ms-overflow-style: none;
@@ -35,33 +36,38 @@
     display: none;
   }
 
+  &-fixed {
+    .sider-fixed(220px);
+  }
+
+  &-collapsed-fixed {
+    .sider-fixed(80px);
+  }
+
   &-menu {
     font-weight: 500;
   }
 
-  &-logo-fixed {
-    background-color: @layout-sider-background;
-    position: relative;
-    height: 80px;
-  }
-
-  &-logo-wrapper {
-    .centerFlex();
-    position: fixed;
-    height: 80px;
-    width: 220px;
-    background-color: @layout-sider-background;
-    z-index: 5;
-    cursor: pointer;
-    user-select: none;
-
-    &:hover {
-      opacity: 90%;
-    }
-  }
-
   &-logo {
     pointer-events: none;
+
+    &-fixed {
+      background-color: @layout-sider-background;
+      position: relative;
+      height: 80px;
+    }
+
+    &-wrapper {
+      .centerFlex();
+      .sider-wrapper-props();
+      .sider-fixed(220px);
+    }
+
+    &-collapsed-wrapper {
+      .centerFlex();
+      .sider-wrapper-props();
+      .sider-fixed(80px);
+    }
   }
 
   .@{ant-prefix} {
@@ -87,11 +93,46 @@
         }
       }
     }
+
+    &-layout-sider-trigger {
+      color: @grey !important;
+
+      &:hover {
+        color: @primary-color !important;
+      }
+    }
+  }
+}
+
+.header-width(@sider-width) {
+  width: calc(100% - @sider-width);
+}
+
+.sider-fixed(@sider-width) {
+  width: @sider-width;
+}
+
+.sider-logo-fixed(@sider-logo-width) {
+  width: @sider-logo-width;
+}
+
+.sider-wrapper-props {
+  .centerFlex();
+  position: fixed;
+  height: 80px;
+  background-color: @layout-sider-background;
+  z-index: 5;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    opacity: 90%;
   }
 }
 
 .content {
   margin-top: 10px;
+  width: 100%;
 }
 
 //Footer

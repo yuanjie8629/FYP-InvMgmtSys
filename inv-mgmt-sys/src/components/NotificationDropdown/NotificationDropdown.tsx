@@ -12,32 +12,16 @@ import {
 } from 'antd';
 import Button from '@components/Button/Button';
 import { MdNotifications } from 'react-icons/md';
-import { useHistory } from 'react-router-dom';
-import menuList from './NotificationDropdownList';
-import siderMenuList from '@components/Layout/SiderMenuList';
-import routeList from '@routes/RouteList';
+import { useNavigate } from 'react-router-dom';
+import menuList from './notificationDropdownList';
+import { findRoutePath, findIcon } from '@utils/RoutingUtils';
 import './NotificationDropdown.less';
-import { IconType } from 'react-icons';
 
-const CustomNotificationDropdown = () => {
-  let history = useHistory();
+const NotificationDropdown = () => {
+  let navigate = useNavigate();
   const { Text } = Typography;
 
   const [markAllRead, setMarkAllRead] = useState(false);
-
-  const findIcon = (cat: string) => {
-    let selected = siderMenuList.map((siderMenuLevel) =>
-      siderMenuLevel.items.find((item) => item.key === cat)
-    );
-    let icons = selected.find((selectedItem) => selectedItem !== undefined);
-    let MatchedIcon: IconType = icons!.icon;
-    return <MatchedIcon size={24} />;
-  };
-
-  const findRoutePath = (label: string) => {
-    let route = routeList.find((route) => route.label === label);
-    return route?.path === undefined ? '404' : route.path;
-  };
 
   const capitalize = (word: string) => {
     return word.charAt(0).toUpperCase() + word.slice(1);
@@ -73,11 +57,15 @@ const CustomNotificationDropdown = () => {
   const menuNotificationDropdown = (
     <Menu
       onClick={(item: { key: string }) => {
-        history.push(item.key.substring(0, item.key.length - 2));
+        navigate(item.key.substring(0, item.key.length - 2), { replace: true });
       }}
       className='notification-menu'
     >
-      <Menu.Item key='noti-header' disabled style={{ cursor: 'default' }}>
+      <Menu.Item
+        key='noti-header'
+        disabled
+        style={{ cursor: 'default', padding: 15 }}
+      >
         <Row align='middle' justify='space-between'>
           <Col>
             <Text strong>Recent Notifications</Text>
@@ -106,12 +94,13 @@ const CustomNotificationDropdown = () => {
               <Col className='notification-menu-item-avatar'>
                 <Badge
                   dot={menu.read}
-                  offset={[-3, 5]}
+                  offset={[-5, 5]}
                   status={menu.status}
                   className='notification-menu-item-badge'
                 >
                   <Avatar
                     icon={findIcon(menu.cat)}
+                    size={42}
                     className={`centerFlex ${menu.status}Background`}
                   />
                 </Badge>
@@ -141,7 +130,7 @@ const CustomNotificationDropdown = () => {
   );
 
   return (
-    <Dropdown overlay={menuNotificationDropdown} arrow trigger={['hover']}>
+    <Dropdown overlay={menuNotificationDropdown} arrow>
       <div className='notification-container'>
         <Badge
           dot={!markAllRead}
@@ -156,4 +145,4 @@ const CustomNotificationDropdown = () => {
   );
 };
 
-export default CustomNotificationDropdown;
+export default NotificationDropdown;

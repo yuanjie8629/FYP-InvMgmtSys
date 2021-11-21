@@ -1,7 +1,7 @@
 import { Layout } from 'antd';
 import CopyrightCircleOutlined from '@ant-design/icons/CopyrightOutlined';
 
-const CustomFooter = () => {
+const Footer = () => {
   const { Footer } = Layout;
   return (
     <Footer className='footer'>
@@ -11,4 +11,4 @@ const CustomFooter = () => {
   );
 };
 
-export default CustomFooter;
+export default Footer;
