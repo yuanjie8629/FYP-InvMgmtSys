@@ -1,21 +1,25 @@
 import { Avatar, Col, Dropdown, Menu, Row } from 'antd';
-import menuList from './AvatarDropdownList';
-import { useHistory } from 'react-router-dom';
-
+import menuList from './avatarDropdownList';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './AvatarDropdown.less';
 import AvatarImg from '@assets/avatar.png';
-const AvatarDropdown = () => {
-  let history = useHistory();
 
+const AvatarDropdown = () => {
+  let navigate = useNavigate();
+  let location = useLocation();
   const menuAvatarDropdown = (
     <Menu
-      defaultSelectedKeys={[history.location.pathname]}
+      defaultSelectedKeys={[location.pathname]}
       onClick={(item: { key: string }) => {
-        history.push(item.key);
+        navigate(item.key, { replace: true });
       }}
     >
       {menuList.map((menu) => (
-        <Menu.Item key={menu.key} icon={<menu.icon size={20} />} style={{fontWeight: 500}}>
+        <Menu.Item
+          key={menu.key}
+          icon={<menu.icon size={20} />}
+          style={{ fontWeight: 500 }}
+        >
           {menu.label}
         </Menu.Item>
       ))}
@@ -26,7 +30,6 @@ const AvatarDropdown = () => {
     <Dropdown
       overlay={menuAvatarDropdown}
       arrow
-      trigger={['hover']}
       placement='bottomCenter'
       className='avatar-dropdown'
     >
@@ -43,6 +46,7 @@ const AvatarDropdown = () => {
           <Avatar
             src={AvatarImg}
             alt='avatar'
+            size={42}
             className='avatarDropdown-avatar'
           />
         </Col>

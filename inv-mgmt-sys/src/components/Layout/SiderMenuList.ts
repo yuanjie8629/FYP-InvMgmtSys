@@ -1,3 +1,4 @@
+import { IconType } from 'react-icons';
 import {
   MdHome,
   MdShoppingBag,
@@ -13,7 +14,18 @@ import {
   MdLogout,
 } from 'react-icons/md';
 
-const menuList = [
+const menuList: {
+  level: number;
+  items: {
+    key: string;
+    label: string;
+    icon: IconType;
+    child?: {
+      key: string;
+      label: string;
+    }[];
+  }[];
+}[] = [
   {
     level: 1,
     items: [

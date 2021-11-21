@@ -1,0 +1,33 @@
+.not-found {
+  margin-top: 100px;
+  &-logo {
+    cursor: pointer;
+    &-wrapper {
+      position: absolute !important;
+      left: 0 !important;
+      padding-left: 15px;
+
+      &:hover {
+        opacity: 90%;
+      }
+    }
+  }
+
+  &-img {
+    pointer-events: none;
+    user-select: none;
+    padding-right: 50px;
+  }
+
+  &-text {
+    color: @grey !important;
+    &-container {
+      width: 100%;
+      text-align: center;
+    }
+  }
+
+  &-btn {
+    width: 25%;
+  }
+}

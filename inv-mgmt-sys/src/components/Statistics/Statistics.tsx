@@ -18,6 +18,7 @@ const StatisticsDashboard = (props: StatisticsDashboardProps) => {
       <Col>
         <Avatar
           icon={<props.icon size={28} color={props.color} />}
+          size={48}
           className='centerFlex'
           style={{ backgroundColor: `${props.color}33` }} //background opacity = 20%
         />

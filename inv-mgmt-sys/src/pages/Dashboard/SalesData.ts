@@ -1,4 +1,10 @@
-const dataYear = {
+const dataYear: {
+  year: string;
+  data: {
+    Month: string;
+    Sales: number;
+  }[];
+} = {
   year: '2021',
   data: [
     { Month: 'Jan', Sales: 4000 },
@@ -16,8 +22,14 @@ const dataYear = {
   ],
 };
 
-const dataMonth = {
-  month: 'August',
+const dataMonth: {
+  month: string;
+  data: {
+    Day: string;
+    Sales: number;
+  }[];
+} = {
+  month: '2021 August',
   data: [
     { Day: '1', Sales: 300 },
     { Day: '2', Sales: 356 },
@@ -52,7 +64,14 @@ const dataMonth = {
   ],
 };
 
-const dataWeek = {
+const dataWeek: {
+  frmDate: string;
+  toDate: string;
+  data: {
+    Day: string;
+    Sales: number;
+  }[];
+} = {
   frmDate: '10 August 2021',
   toDate: '17 August 2021',
   data: [
@@ -66,7 +85,13 @@ const dataWeek = {
   ],
 };
 
-const dataDay = {
+const dataDay: {
+  date: string;
+  data: {
+    Hour: string;
+    Sales: number;
+  }[];
+} = {
   date: '17 August 2021',
   data: [
     { Hour: '00', Sales: 10 },

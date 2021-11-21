@@ -1,4 +1,4 @@
-import { Table, TableProps } from 'antd';
+import { Table as AntdTable, TableProps } from 'antd';
 
 interface RecordType {
   key: string;
@@ -6,8 +6,8 @@ interface RecordType {
 
 interface CustomTableProps extends TableProps<RecordType> {}
 
-const CustomTable = (props: CustomTableProps) => {
-  return <Table {...props} style={{ width: '100%' }}></Table>;
+const Table = (props: CustomTableProps) => {
+  return <AntdTable {...props} style={{ width: '100%' }}></AntdTable>;
 };
 
-export default CustomTable;
+export default Table;

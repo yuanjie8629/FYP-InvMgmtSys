@@ -1,4 +1,4 @@
-import { Layout } from 'antd';
+import { Layout as AntdLayout } from 'antd';
 import Header from './Header';
 import Sider from './Sider';
 import Footer from './Footer';
@@ -7,20 +7,20 @@ interface CustomLayoutProps {
   children?: React.ReactNode;
 }
 
-const CustomLayout = (props: CustomLayoutProps) => {
-  const { Content } = Layout;
+const Layout = (props: CustomLayoutProps) => {
+  const { Content } = AntdLayout;
   return (
-    <Layout hasSider>
+    <AntdLayout>
       <Sider />
-      <Layout>
+      <AntdLayout>
         <Header />
         <Content className='content'>
           {props.children}
         </Content>
         <Footer />
-      </Layout>
-    </Layout>
+      </AntdLayout>
+    </AntdLayout>
   );
 };
 
-export default CustomLayout;
+export default Layout;

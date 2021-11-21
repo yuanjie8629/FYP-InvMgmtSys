@@ -1,18 +1,18 @@
 import * as React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Col, Form, Input, Image, Row, Space, Typography } from 'antd';
 import { CaretLeftOutlined } from '@ant-design/icons';
 import Button from '@components/Button/Button';
 import './Login.less';
-import Hashtag from '@assets/Hashtag.svg';
-import Inventory from '@assets/LoginBackground.webp';
+import Hashtag from '@assets/Login/Hashtag.svg';
+import Inventory from '@assets/Login/LoginBackground.webp';
 import Logo from '@assets/logo.webp';
 
 const Login = () => {
-  let history = useHistory();
+  let navigate = useNavigate();
   const { Title } = Typography;
   return (
-    <>
+    <div className='login'>
       {/*Left half screen*/}
       <Row className='login-container'>
         <Col
@@ -38,7 +38,9 @@ const Login = () => {
             <Col span={24}>
               <Space direction='vertical' size={10} className='login-form'>
                 {/*Title*/}
-                <Title level={3}> Login</Title>
+                <Title level={3} style={{ padding: 20 }}>
+                  Login
+                </Title>
                 <Form name='login'>
                   <Form.Item
                     name='username'
@@ -81,7 +83,7 @@ const Login = () => {
                       htmlType='submit'
                       block
                       onClick={() => {
-                        history.push('/dashboard');
+                        navigate('/dashboard', { replace: true });
                       }}
                     >
                       Login
@@ -171,7 +173,7 @@ const Login = () => {
           </Row>
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 

@@ -1,6 +1,7 @@
 @ant-prefix: shrf;
-@body-background: #eef0f4;
+
 // Colours
+@body-background: @white;
 @primary-color: #0e9f6e;
 
 // Green
@@ -113,7 +114,7 @@
 @layout-header-height: 20px; // actual height = 80px
 @layout-header-background: @white;
 @layout-header-padding: 0 25px;
-@layout-body-background: @body-background;
+@layout-body-background: #eef0f4;
 
 //Menu
 @menu-item-color: @grey;
@@ -127,6 +128,9 @@
 @menu-inline-submenu-bg: @component-background;
 @menu-item-active-bg: transparent;
 
+// Divider
+@divider-color: @grey-200;
+
 // Dropdown
 @dropdown-edge-child-vertical-padding: 0;
 
@@ -135,11 +139,6 @@
 @breadcrumb-separator-color: @grey;
 @breadcrumb-font-size: @heading-4-size;
 @breadcrumb-icon-font-size: 16px;
-
-// Avatar
-@avatar-size-base: 48px;
-@avatar-size-lg: 170px;
-@avatar-size-sm: 24px;
 
 // Radio
 @radio-button-bg: @unselected-color;
@@ -150,38 +149,43 @@
 @table-header-bg: @grey-50;
 @table-header-color: #999999;
 @table-row-hover-bg: @grey-100;
+@table-bg: #fdfdfd;
+
+// List
+@list-item-meta-title-margin-bottom: 0px;
+@list-item-meta-margin-bottom: 0px;
 
 // Media queries breakpoints
 // @screen-xs and @screen-xs-min is not used in Grid
 // smallest break point is @screen-md
 
 // Extra small screen / phone
-@screen-xs: 0;
+@screen-xs: 480px;
 @screen-xs-min: @screen-xs;
 @screen-xs-max: (@screen-sm-min - 1px);
 
 // Small screen / tablet
-@screen-sm: 600px;
+@screen-sm: 576px;
 @screen-sm-min: @screen-sm;
 @screen-sm-max: (@screen-md-min - 1px);
 
 // Medium screen / tablet landscape
-@screen-md: 960px;
+@screen-md: 768px;
 @screen-md-min: @screen-md;
 @screen-md-max: (@screen-lg-min - 1px);
 
 // Large screen / desktop
-@screen-lg: 1280px;
+@screen-lg: 992px;
 @screen-lg-min: @screen-lg;
 @screen-lg-max: (@screen-xl-min - 1px);
 
 // Extra large screen / full hd
-@screen-xl: 1600px;
+@screen-xl: 1200px;
 @screen-xl-min: @screen-xl;
 @screen-xl-max: (@screen-xxl-min - 1px);
 
 // Extra extra large screen / large desktop
-@screen-xxl: 1920px;
+@screen-xxl: 1600px;
 @screen-xxl-min: @screen-xxl;
 
 @desktop-xxl: ~'only screen and (min-width: @{screen-xxl-min})';

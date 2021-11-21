@@ -1,31 +1,31 @@
 import * as React from 'react';
 import {
   BrowserRouter as Router,
+  Routes,
   Route,
-  Redirect,
-  Switch,
+  Navigate,
 } from 'react-router-dom';
 import routeList from './RouteList';
 import routeRedirectList from './RouteRedirectList';
-
-export default function Routes() {
+export default function AppRoute() {
   return (
     <Router>
-      <Switch>
+      <Routes>
         {routeRedirectList.map((route) => (
-          <Route exact key={route.path} path={route.path}>
-            <Redirect to={route.redirect} />
-          </Route>
+          <Route
+            key={route.path}
+            path={route.path}
+            element={<Navigate to={route.redirect} />}
+          ></Route>
         ))}
         {routeList.map((route) => (
           <Route
-            exact= {route.exact}
             key={route.path}
             path={route.path}
-            component={route.component}
+            element={route.component}
           />
         ))}
-      </Switch>
+      </Routes>
     </Router>
   );
 }
