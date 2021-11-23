@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '@hooks/reduxHooks';
+import { collapse, expand } from '@state/siderSlice';
 import { Layout, Menu, Image } from 'antd';
 import menuList from './siderMenuList';
 import Logo from '@assets/logo.webp';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { findRoutePath } from '@utils/RoutingUtils';
+import classNames from 'classnames';
 
 const Sider = () => {
   const { Sider } = Layout;
@@ -11,35 +13,33 @@ const Sider = () => {
   let navigate = useNavigate();
   let location = useLocation();
 
-  let [collapsed, setCollapsed] = useState(false);
-
+  const isSiderCollapsed = useAppSelector((state) => state.sider.value);
+  const dispatch = useAppDispatch();
   const openKey = [location.pathname.split('/')[1]];
-
-  const onCollapse = (collapsed: boolean) => {
-    setCollapsed(collapsed);
-  };
 
   return (
     <div
-      className={`${
-        collapsed === true ? 'sider-collapsed-fixed' : 'sider-fixed'
-      }`}
+      className={classNames(
+        { 'sider-collapsed-fixed': isSiderCollapsed },
+        { 'sider-fixed': !isSiderCollapsed }
+      )}
     >
       <Sider
         theme='light'
         collapsible
-        collapsed={collapsed}
-        onCollapse={onCollapse}
+        collapsed={isSiderCollapsed}
+        onCollapse={() =>
+          isSiderCollapsed ? dispatch(expand()) : dispatch(collapse())
+        }
         width='220px'
         className='sider'
       >
         <div className={'sider-logo-fixed'}>
           <div
-            className={`${
-              collapsed === true
-                ? 'sider-logo-collapsed-wrapper'
-                : 'sider-logo-wrapper'
-            }`}
+            className={classNames(
+              { 'sider-logo-collapsed-wrapper': isSiderCollapsed },
+              { 'sider-logo-wrapper': !isSiderCollapsed }
+            )}
             onClick={() => {
               navigate(findRoutePath('dashboard'), { replace: true });
             }}
@@ -48,7 +48,7 @@ const Sider = () => {
               src={Logo}
               alt='Logo'
               preview={false}
-              height={collapsed === true ? 25 : 65}
+              height={isSiderCollapsed ? 25 : 65}
               className='sider-logo'
             />
           </div>
@@ -56,7 +56,7 @@ const Sider = () => {
         <Menu
           mode='inline'
           defaultSelectedKeys={[location.pathname]}
-          defaultOpenKeys={openKey}
+          defaultOpenKeys={!isSiderCollapsed ? openKey : undefined}
           inlineIndent={15}
           onClick={(item: { key: string }) => {
             navigate(item.key, { replace: true });

@@ -5,10 +5,17 @@
 .header {
   position: fixed;
   height: 80px !important; // overwrite header height to 80px
-  .header-width(220px);
   background-color: @layout-header-background;
   box-shadow: 4px 0px 4px 2px #0000000d;
   z-index: 999;
+
+  &-expanded {
+    .header-width(220px);
+  }
+
+  &-collapsed {
+    .header-width(80px);
+  }
 
   &-fixed {
     height: 80px;
@@ -50,7 +57,7 @@
 
   &-logo {
     pointer-events: none;
-
+    transition: all 0.2s;
     &-fixed {
       background-color: @layout-sider-background;
       position: relative;
@@ -80,9 +87,6 @@
           &:hover, &:active{
             background-color: @grey-100 !important;
           }
-        }
-        &-selected {
-          font-weight: bold;
         }
   
         &-only-child, &-selected::after{
