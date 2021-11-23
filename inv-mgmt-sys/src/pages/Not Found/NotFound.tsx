@@ -11,7 +11,7 @@ const NotFound = () => {
   const { Title, Text } = Typography;
   const navigate = useNavigate();
   return (
-    <Layout>
+    <Layout className='not-found-layout'>
       <div className='header-fixed' />
       <Header className='header' style={{ width: '100%' }}>
         <Row justify='center' align='middle' className='height-100'>
