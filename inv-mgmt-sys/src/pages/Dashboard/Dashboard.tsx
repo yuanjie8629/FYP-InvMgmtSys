@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Col, List, Radio, Row, Skeleton, Space, Typography } from 'antd';
+import { Col, Grid, List, Radio, Row, Skeleton, Space, Typography } from 'antd';
 import {
   MdArrowRight,
   MdChevronRight,
@@ -32,7 +32,8 @@ const Dashboard = () => {
   const { Text, Title } = Typography;
 
   const navigate = useNavigate();
-
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
   const [salesDateRange, setSalesDateRange] = useState('year');
 
   const getSalesData = () =>
@@ -145,7 +146,7 @@ const Dashboard = () => {
           children: React.ReactNode;
         };
         const OrderStatusTag = ({ color, children }: OrderStatusTagProps) => (
-          <Tag minWidth= '70%' maxWidth='100%' color={color}>
+          <Tag minWidth='70%' maxWidth='100%' color={color}>
             {children}
           </Tag>
         );
@@ -347,59 +348,80 @@ const Dashboard = () => {
             </ContainerCard>
           </Row>
           <Row justify='center' gutter={[30, 0]} style={{ margin: '0 2.5%' }}>
-            <Col xs={8} sm={8} md={9} lg={7} xl={5} style={{ padding: 0 }}>
-              <ContainerCard>
-                <Row>
-                  <Title level={5}>Statistics</Title>
-                </Row>
-                <Row>
-                  <Text className='dashboard-grey-text'>
-                    {statisticsData.date}
-                  </Text>
-                </Row>
-                <Space
-                  direction='vertical'
-                  size={20}
-                  style={{ marginTop: 25, width: '100%' }}
-                >
-                  {statisticsList.map((statistics) => (
-                    <StatisticsDashboard
-                      key={statistics.key}
-                      title={statistics.title}
-                      icon={statistics.icon}
-                      color={statistics.color}
-                      value={statisticsData[statistics.key]}
-                      prefix={statistics.prefix}
-                      suffix={statistics.suffix}
-                      toFixed={statistics.toFixed}
-                    />
-                  ))}
-                </Space>
-              </ContainerCard>
-            </Col>
-            <Col xs={16} sm={16} md={14} lg={17} xl={19} style={{ padding: 0 }}>
-              <ContainerCard width='100%'>
-                <Space direction='vertical' size={15} className='width-100'>
-                  <Row justify='space-between'>
-                    <Col>
-                      <Row>
-                        <Title level={5}>Recent Orders</Title>
-                      </Row>
-                    </Col>
-                    <Col>
-                      <More route='orderMgmt' />
-                    </Col>
+            <Space
+              direction={screens.xl ? 'horizontal' : 'vertical'}
+              className='width-100'
+            >
+              <Col
+                xs={24}
+                sm={24}
+                md={24}
+                lg={24}
+                xl={50}
+                style={{ padding: 0 }}
+              >
+                <ContainerCard width='100%'>
+                  <Row>
+                    <Title level={5}>Statistics</Title>
                   </Row>
                   <Row>
-                    <Table
-                      dataSource={recentOrders}
-                      columns={recentOrderColumns}
-                      pagination={false}
-                    ></Table>
+                    <Text className='dashboard-grey-text'>
+                      {statisticsData.date}
+                    </Text>
                   </Row>
-                </Space>
-              </ContainerCard>
-            </Col>
+                  <Row>
+                    <Space
+                      direction={screens.xl ? 'vertical' : 'horizontal'}
+                      size={20}
+                      style={{ marginTop: 25, width: '100%' }}
+                    >
+                      {statisticsList.map((statistics) => (
+                        <StatisticsDashboard
+                          key={statistics.key}
+                          title={statistics.title}
+                          icon={statistics.icon}
+                          color={statistics.color}
+                          value={statisticsData[statistics.key]}
+                          prefix={statistics.prefix}
+                          suffix={statistics.suffix}
+                          toFixed={statistics.toFixed}
+                        />
+                      ))}
+                    </Space>
+                  </Row>
+                </ContainerCard>
+              </Col>
+              <Col
+                xs={24}
+                sm={24}
+                md={24}
+                lg={24}
+                xl={19}
+                style={{ padding: 0 }}
+              >
+                <ContainerCard width='100%'>
+                  <Space direction='vertical' size={15} className='width-100'>
+                    <Row justify='space-between'>
+                      <Col>
+                        <Row>
+                          <Title level={5}>Recent Orders</Title>
+                        </Row>
+                      </Col>
+                      <Col>
+                        <More route='orderMgmt' />
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Table
+                        dataSource={recentOrders}
+                        columns={recentOrderColumns}
+                        pagination={false}
+                      ></Table>
+                    </Row>
+                  </Space>
+                </ContainerCard>
+              </Col>
+            </Space>
           </Row>
           <Row justify='center' gutter={[30, 0]} style={{ margin: '0 2.5%' }}>
             <Col xs={8} sm={8} md={9} lg={7} xl={9} style={{ padding: 0 }}>
@@ -423,9 +445,10 @@ const Dashboard = () => {
                   <List
                     dataSource={topProduct.products}
                     renderItem={(item) => (
-                      <List.Item>
+                      <List.Item key={item.prodNm}>
                         <Skeleton title={false} active loading={false}>
                           <List.Item.Meta
+                            key={item.prodNm}
                             title={
                               <Text className='dashboard-top-product-title'>
                                 {item.prodNm}
