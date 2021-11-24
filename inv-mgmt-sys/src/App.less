@@ -43,9 +43,11 @@ body {
       &-selected {
         font-weight: bold;
       }
-      &:hover,
-      &:active {
-        background-color: @grey-100;
+      &-only-child {
+        &:hover,
+        &:active {
+          background-color: @grey-100;
+        }
       }
     }
   }

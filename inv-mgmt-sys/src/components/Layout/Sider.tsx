@@ -91,7 +91,10 @@ const Sider = () => {
               <Menu.Divider style={{ margin: '24px 0' }} />
             ) : null,
           ])}
-          <Menu.Item style={{ height: 48 }}></Menu.Item>
+          <Menu.Item
+            key='siderCollapsedTrigger'
+            style={{ height: 48 }}
+          ></Menu.Item>
         </Menu>
       </Sider>
     </div>
