@@ -95,6 +95,7 @@ const Dashboard = () => {
     key: string;
     align?: 'left' | 'center' | 'right';
     render?: (status: string) => any;
+    hidden: boolean;
   }[] = [
     {
       title: 'Order ID',
@@ -111,21 +112,25 @@ const Dashboard = () => {
           {text}
         </Button>
       ),
+      hidden: false,
     },
     {
       title: 'Customer Name',
       dataIndex: 'custName',
       key: 'custName',
+      hidden: false,
     },
     {
       title: 'Customer Type',
       dataIndex: 'custType',
       key: 'custType',
+      hidden: screens.xl ? true : false,
     },
     {
       title: 'Order Time',
       dataIndex: 'orderTime',
       key: 'orderTime',
+      hidden: screens.xl ? true : false,
     },
     {
       title: 'Amount',
@@ -134,6 +139,7 @@ const Dashboard = () => {
       render: (amount: string) => (
         <Text strong>RM {parseFloat(amount).toFixed(2)}</Text>
       ),
+      hidden: false,
     },
     {
       title: 'Status',
@@ -160,8 +166,9 @@ const Dashboard = () => {
           <OrderStatusTag color='error'>Refund</OrderStatusTag>
         ) : null;
       },
+      hidden: false,
     },
-  ];
+  ].filter((item) => !item.hidden);
 
   const invAnalysisColumns: {
     title: string;
@@ -347,83 +354,60 @@ const Dashboard = () => {
               </Space>
             </ContainerCard>
           </Row>
-          <Row justify='center' gutter={[30, 0]} style={{ margin: '0 2.5%' }}>
-            <Space
-              direction={screens.xl ? 'horizontal' : 'vertical'}
-              className='width-100'
-            >
-              <Col
-                xs={24}
-                sm={24}
-                md={24}
-                lg={24}
-                xl={50}
-                style={{ padding: 0 }}
-              >
-                <ContainerCard width='100%'>
-                  <Row>
-                    <Title level={5}>Statistics</Title>
+          <Row justify='center' gutter={[30, 20]} style={{ margin: '0 2.5%' }}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={7} style={{ padding: 0 }}>
+              <ContainerCard width={!screens.xl ? '100%' : '95%'}>
+                <Title level={5}>Statistics</Title>
+
+                <Text className='dashboard-grey-text'>
+                  {statisticsData.date}
+                </Text>
+
+                <Space
+                  direction={screens.xl ? 'vertical' : 'horizontal'}
+                  size={20}
+                  style={{ width: '100%', paddingTop: 25 }}
+                >
+                  {statisticsList.map((statistics) => (
+                    <StatisticsDashboard
+                      key={statistics.key}
+                      title={statistics.title}
+                      icon={statistics.icon}
+                      color={statistics.color}
+                      value={statisticsData[statistics.key]}
+                      prefix={statistics.prefix}
+                      suffix={statistics.suffix}
+                      toFixed={statistics.toFixed}
+                    />
+                  ))}
+                </Space>
+              </ContainerCard>
+            </Col>
+            <Col xs={24} sm={24} md={24} lg={24} xl={17} style={{ padding: 0 }}>
+              <ContainerCard width='100%'>
+                <Space direction='vertical' size={15} className='width-100'>
+                  <Row justify='space-between'>
+                    <Col>
+                      <Row>
+                        <Title level={5}>Recent Orders</Title>
+                      </Row>
+                    </Col>
+                    <Col>
+                      <More route='orderMgmt' />
+                    </Col>
                   </Row>
                   <Row>
-                    <Text className='dashboard-grey-text'>
-                      {statisticsData.date}
-                    </Text>
+                    <Table
+                      dataSource={recentOrders}
+                      columns={recentOrderColumns}
+                      pagination={false}
+                    ></Table>
                   </Row>
-                  <Row>
-                    <Space
-                      direction={screens.xl ? 'vertical' : 'horizontal'}
-                      size={20}
-                      style={{ marginTop: 25, width: '100%' }}
-                    >
-                      {statisticsList.map((statistics) => (
-                        <StatisticsDashboard
-                          key={statistics.key}
-                          title={statistics.title}
-                          icon={statistics.icon}
-                          color={statistics.color}
-                          value={statisticsData[statistics.key]}
-                          prefix={statistics.prefix}
-                          suffix={statistics.suffix}
-                          toFixed={statistics.toFixed}
-                        />
-                      ))}
-                    </Space>
-                  </Row>
-                </ContainerCard>
-              </Col>
-              <Col
-                xs={24}
-                sm={24}
-                md={24}
-                lg={24}
-                xl={19}
-                style={{ padding: 0 }}
-              >
-                <ContainerCard width='100%'>
-                  <Space direction='vertical' size={15} className='width-100'>
-                    <Row justify='space-between'>
-                      <Col>
-                        <Row>
-                          <Title level={5}>Recent Orders</Title>
-                        </Row>
-                      </Col>
-                      <Col>
-                        <More route='orderMgmt' />
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Table
-                        dataSource={recentOrders}
-                        columns={recentOrderColumns}
-                        pagination={false}
-                      ></Table>
-                    </Row>
-                  </Space>
-                </ContainerCard>
-              </Col>
-            </Space>
+                </Space>
+              </ContainerCard>
+            </Col>
           </Row>
-          <Row justify='center' gutter={[30, 0]} style={{ margin: '0 2.5%' }}>
+          <Row justify='center' gutter={[30, 20]} style={{ margin: '0 2.5%' }}>
             <Col xs={8} sm={8} md={9} lg={7} xl={9} style={{ padding: 0 }}>
               <ContainerCard>
                 <Space direction='vertical' size={5} className='width-100'>
