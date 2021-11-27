@@ -8,16 +8,16 @@
 
 div {
   &.login {
+    background-color: @white;
+    height: 100vh;
     &-container {
-      max-width: 100%;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       margin: 0;
       padding: 0;
-      background-color: @white;
 
-      @media @tablet-sm, @mobile-xs {
-        height: 100%;
+      @media @tablet-sm, @mobile-xs, @tablet-md {
+        align-content: flex-start;
       }
     }
 
@@ -29,7 +29,7 @@ div {
 
     &-hashtag {
       position: absolute;
-      @media @mobile-xs, @tablet-sm {
+      @media @mobile-xs, @tablet-sm, @tablet-md {
         visibility: hidden;
       }
     }
@@ -40,7 +40,7 @@ div {
       display: flex;
       pointer-events: none;
       user-select: none;
-      @media @tablet-sm, @mobile-xs {
+      @media @tablet-sm, @mobile-xs, @tablet-md {
         margin-bottom: 30px;
         height: fit-content;
       }
@@ -52,7 +52,7 @@ div {
       margin: auto;
       width: 40%;
 
-      @media @mobile-xs, @tablet-sm {
+      @media @mobile-xs, @tablet-sm, @tablet-md {
         width: 70%;
       }
 
@@ -65,7 +65,7 @@ div {
     &-logo-wrapper {
       .login-right-align();
 
-      @media @tablet-sm, @mobile-xs {
+      @media @mobile-xs, @tablet-sm, @tablet-md {
         height: fit-content;
         position: relative;
         padding: 0px 20px 0;
@@ -76,25 +76,22 @@ div {
 
     &-responsive-img-wrapper {
       .centerFlex();
-      @media @tablet-sm, @mobile-xs {
+      @media @mobile-xs, @tablet-sm, @tablet-md {
         height: 60%;
-        margin: 0;
+        margin: 30px;
       }
 
       .login-responsive-img {
         display: block;
         margin: 0 auto;
         width: 90%;
-        @media @tablet-sm {
-          width: 65%;
-        }
       }
     }
 
     &-display-panel {
       padding: 0;
       margin: 0;
-      @media @tablet-sm, @mobile-xs {
+      @media @tablet-sm, @mobile-xs, @tablet-md {
         height: fit-content;
       }
     }
@@ -107,15 +104,12 @@ div {
         color: @white;
         white-space: nowrap;
 
-        @media @mobile-xs, @tablet-md {
-          font-size: @heading-5-size;
+        @media @tablet-md {
+          padding: 30px;
         }
 
-        @media @desktop-lg, @tablet-sm {
-          font-size: @heading-4-size;
-        }
-
-        @media @desktop-xl {
+        @media @mobile-xs, @tablet-sm {
+          padding: 30px;
           font-size: @heading-3-size;
         }
       }

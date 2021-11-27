@@ -1,6 +1,7 @@
+import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@hooks/reduxHooks';
 import { collapse, expand } from '@state/siderSlice';
-import { Layout, Menu, Image } from 'antd';
+import { Layout, Menu, Image, Grid } from 'antd';
 import menuList from './siderMenuList';
 import Logo from '@assets/logo.webp';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -10,12 +11,18 @@ import classNames from 'classnames';
 const Sider = () => {
   const { Sider } = Layout;
   const { SubMenu } = Menu;
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
   let navigate = useNavigate();
   let location = useLocation();
 
   const isSiderCollapsed = useAppSelector((state) => state.sider.value);
   const dispatch = useAppDispatch();
   const openKey = [location.pathname.split('/')[1]];
+
+  useEffect(() => {
+    if (!(screens.xl || screens.xl === undefined)) dispatch(collapse());
+  },[screens.xl,dispatch]);
 
   return (
     <div

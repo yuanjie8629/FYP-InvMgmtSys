@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Col, Grid, List, Radio, Row, Skeleton, Space, Typography } from 'antd';
+import Col from 'antd/es/col';
+import Grid from 'antd/es/grid';
+import List from 'antd/es/list';
+import Radio from 'antd/es/radio';
+import Row from 'antd/es/row';
+import Skeleton from 'antd/es/skeleton';
+import Space from 'antd/es/space';
+import Typography from 'antd/es/typography';
 import {
   MdArrowRight,
   MdChevronRight,
@@ -124,13 +131,13 @@ const Dashboard = () => {
       title: 'Customer Type',
       dataIndex: 'custType',
       key: 'custType',
-      hidden: screens.xl ? true : false,
+      hidden: !screens.xxl ? true : false,
     },
     {
       title: 'Order Time',
       dataIndex: 'orderTime',
       key: 'orderTime',
-      hidden: screens.xl ? true : false,
+      hidden: !screens.xxl ? true : false,
     },
     {
       title: 'Amount',
@@ -176,44 +183,51 @@ const Dashboard = () => {
     key: string;
     align?: 'left' | 'center' | 'right';
     render?: (status: string) => any;
+    hidden: boolean;
   }[] = [
     {
       title: 'Product',
       dataIndex: 'prodNm',
       key: 'prodNm',
       render: (text: string) => <Text strong>{text}</Text>,
+      hidden: false,
     },
     {
       title: 'Stock',
       dataIndex: 'stock',
       key: 'stock',
       align: 'center' as const,
+      hidden: false,
     },
     {
       title: 'ABC Grade',
       dataIndex: 'ABC',
       key: 'ABC',
       align: 'center' as const,
+      hidden: false,
     },
     {
       title: 'HML Grade',
       dataIndex: 'HML',
       key: 'HML',
       align: 'center' as const,
+      hidden: false,
     },
     {
       title: 'Reorder Point',
       dataIndex: 'reorderPt',
       key: 'reorderPt',
       align: 'center' as const,
+      hidden: !screens.md ? true : false,
     },
     {
       title: 'Optimal Order Quantity',
       dataIndex: 'optimalOrderQty',
       key: 'optimalOrderQty',
       align: 'center' as const,
+      hidden: !screens.lg ? true : false,
     },
-  ];
+  ].filter((item) => !item.hidden);
 
   const statisticsList: {
     key: string;
@@ -329,7 +343,10 @@ const Dashboard = () => {
                         <Radio.Button
                           key={radioBtn.value}
                           value={radioBtn.value}
-                          onClick={() => setSalesDateRange(radioBtn.value)}
+                          onClick={(e) => {
+                            setSalesDateRange(radioBtn.value);
+                            e.currentTarget.blur();
+                          }}
                         >
                           {radioBtn.label}
                         </Radio.Button>
@@ -354,8 +371,12 @@ const Dashboard = () => {
               </Space>
             </ContainerCard>
           </Row>
-          <Row justify='center' gutter={[30, 20]} style={{ margin: '0 2.5%' }}>
-            <Col xs={24} sm={24} md={24} lg={24} xl={7} style={{ padding: 0 }}>
+          <Row
+            justify='center'
+            gutter={[30, 20]}
+            className='dashboard-multiple-container-card'
+          >
+            <Col xs={24} sm={24} md={24} lg={24} xl={7} className='padding-0'>
               <ContainerCard width={!screens.xl ? '100%' : '95%'}>
                 <Title level={5}>Statistics</Title>
 
@@ -383,7 +404,7 @@ const Dashboard = () => {
                 </Space>
               </ContainerCard>
             </Col>
-            <Col xs={24} sm={24} md={24} lg={24} xl={17} style={{ padding: 0 }}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={17} className='padding-0'>
               <ContainerCard width='100%'>
                 <Space direction='vertical' size={15} className='width-100'>
                   <Row justify='space-between'>
@@ -407,9 +428,13 @@ const Dashboard = () => {
               </ContainerCard>
             </Col>
           </Row>
-          <Row justify='center' gutter={[30, 20]} style={{ margin: '0 2.5%' }}>
-            <Col xs={8} sm={8} md={9} lg={7} xl={9} style={{ padding: 0 }}>
-              <ContainerCard>
+          <Row
+            justify='center'
+            gutter={[30, 20]}
+            className='dashboard-multiple-container-card'
+          >
+            <Col xs={24} sm={24} md={24} lg={24} xl={9} className='padding-0'>
+              <ContainerCard width={!screens.xl ? '100%' : '95%'}>
                 <Space direction='vertical' size={5} className='width-100'>
                   <div>
                     <Row justify='space-between'>
@@ -444,7 +469,7 @@ const Dashboard = () => {
                               </Text>
                             }
                           ></List.Item.Meta>
-                          <Row align='middle' gutter={[5, 0]}>
+                          <Row align='middle' gutter={[5, 5]}>
                             <Col>
                               <Title level={5}>{item.sales}</Title>
                             </Col>
@@ -461,7 +486,7 @@ const Dashboard = () => {
                 </Space>
               </ContainerCard>
             </Col>
-            <Col xs={16} sm={16} md={15} lg={17} xl={15} style={{ padding: 0 }}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={15} className='padding-0'>
               <ContainerCard width='100%'>
                 <Space direction='vertical' size={30} className='width-100'>
                   <Row justify='space-between'>

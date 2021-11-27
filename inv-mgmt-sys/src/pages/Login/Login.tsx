@@ -7,18 +7,22 @@ import './Login.less';
 import Hashtag from '@assets/Login/Hashtag.svg';
 import Inventory from '@assets/Login/LoginBackground.webp';
 import Logo from '@assets/logo.webp';
+import { Helmet } from 'react-helmet';
 
 const Login = () => {
   let navigate = useNavigate();
   const { Title } = Typography;
   return (
     <div className='login'>
+      <Helmet>
+        <meta name='viewport' content='width=576'></meta>
+      </Helmet>
       {/*Left half screen*/}
       <Row className='login-container'>
         <Col
           xs={{ span: 24, order: 2 }}
           sm={{ span: 24, order: 2 }}
-          md={{ span: 14, order: 1 }}
+          md={{ span: 24, order: 2 }}
           lg={{ span: 14, order: 1 }}
           xl={{ span: 14, order: 1 }}
         >
@@ -120,7 +124,7 @@ const Login = () => {
         <Col
           xs={{ span: 24, order: 1 }}
           sm={{ span: 24, order: 1 }}
-          md={{ span: 10, order: 2 }}
+          md={{ span: 24, order: 1 }}
           lg={{ span: 10, order: 2 }}
           xl={{ span: 10, order: 2 }}
           className='login-right-panel'
@@ -129,7 +133,7 @@ const Login = () => {
             <Col
               xs={{ span: 24, order: 3 }}
               sm={{ span: 24, order: 3 }}
-              md={{ span: 24, order: 1 }}
+              md={{ span: 24, order: 3 }}
               lg={{ span: 24, order: 1 }}
               xl={{ span: 24, order: 1 }}
               className='login-logo-wrapper'
@@ -162,7 +166,7 @@ const Login = () => {
             <Col
               xs={{ span: 24, order: 1 }}
               sm={{ span: 24, order: 1 }}
-              md={{ span: 24, order: 3 }}
+              md={{ span: 24, order: 1 }}
               lg={{ span: 24, order: 3 }}
               xl={{ span: 24, order: 3 }}
             >
