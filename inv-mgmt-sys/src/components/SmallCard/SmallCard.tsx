@@ -9,13 +9,13 @@ interface CardProps extends AntdCardProps {
     | 'error'
     | 'info'
     | 'unselected';
-  width?: number;
+  width?: number | string;
   children?: React.ReactNode;
 }
 
 const SmallCard = ({
   children,
-  width,
+  width = '100%',
   backgroundColor = 'default',
   className,
 }: CardProps) => {

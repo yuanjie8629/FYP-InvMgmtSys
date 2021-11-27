@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { lazy, useState, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
+import classNames from 'classnames';
+import { useAppSelector } from '@hooks/reduxHooks';
 import Col from 'antd/es/col';
 import Grid from 'antd/es/grid';
 import List from 'antd/es/list';
@@ -21,7 +23,6 @@ import { IconType } from 'react-icons';
 import ContainerCard from '@components/ContainerCard/ContainerCard';
 import Layout from '@components/Layout/Layout';
 import SmallCard from '@components/SmallCard/SmallCard';
-import LineChart from '@components/Chart/LineChart';
 import Button from '@components/Button/Button';
 import StatisticsDashboard from '@components/Statistics/Statistics';
 import Table from '@components/Table/Table';
@@ -35,15 +36,17 @@ import topProduct from './topProducts';
 import invAnalysis from './invAnalysis';
 import './Dashboard.less';
 
+const LineChart = lazy(() => import('@components/Chart/LineChart'));
+
 const Dashboard = () => {
   const { Text, Title } = Typography;
-
   const navigate = useNavigate();
   const { useBreakpoint } = Grid;
+  const isSiderCollapsed = useAppSelector((state) => state.sider.value);
   const screens = useBreakpoint();
   const [salesDateRange, setSalesDateRange] = useState('year');
 
-  const getSalesData = () =>
+  const getSalesData =
     salesDateRange === 'month'
       ? dataMonth.data
       : salesDateRange === 'week'
@@ -52,7 +55,7 @@ const Dashboard = () => {
       ? dataDay.data
       : dataYear.data;
 
-  const getSalesDate = () =>
+  const getSalesDate =
     salesDateRange === 'month'
       ? dataMonth.month
       : salesDateRange === 'week'
@@ -61,18 +64,16 @@ const Dashboard = () => {
       ? dataDay.date
       : dataYear.year;
 
-  const getChartTitle = () =>
+  const getChartTitle =
     salesDateRange === 'month' || salesDateRange === 'week'
       ? 'Day'
       : salesDateRange === 'day'
       ? 'Hour'
       : 'Month';
 
-  const getChartTooltipTitlePrefix = () =>
-    salesDateRange === 'month' ? 'Day ' : '';
+  const getChartTooltipTitlePrefix = salesDateRange === 'month' ? 'Day ' : '';
 
-  const getChartTooltipTitleSuffix = () =>
-    salesDateRange === 'day' ? ':00' : '';
+  const getChartTooltipTitleSuffix = salesDateRange === 'day' ? ':00' : '';
 
   const More = ({ route }: { route: string }) => (
     <Button
@@ -100,14 +101,15 @@ const Dashboard = () => {
     title: string;
     dataIndex: string;
     key: string;
+    width: number;
     align?: 'left' | 'center' | 'right';
     render?: (status: string) => any;
-    hidden: boolean;
   }[] = [
     {
       title: 'Order ID',
       dataIndex: 'orderID',
       key: 'orderID',
+      width: 120,
       render: (text: string) => (
         <Button
           type='link'
@@ -119,39 +121,39 @@ const Dashboard = () => {
           {text}
         </Button>
       ),
-      hidden: false,
     },
     {
       title: 'Customer Name',
       dataIndex: 'custName',
       key: 'custName',
-      hidden: false,
+      width: 300,
     },
     {
       title: 'Customer Type',
       dataIndex: 'custType',
       key: 'custType',
-      hidden: !screens.xxl ? true : false,
+      width: 140,
     },
     {
       title: 'Order Time',
       dataIndex: 'orderTime',
       key: 'orderTime',
-      hidden: !screens.xxl ? true : false,
+      width: 160,
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
+      width: 140,
       render: (amount: string) => (
         <Text strong>RM {parseFloat(amount).toFixed(2)}</Text>
       ),
-      hidden: false,
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      width: 170,
       align: 'center' as const,
       render: (status: string) => {
         type OrderStatusTagProps = {
@@ -159,7 +161,7 @@ const Dashboard = () => {
           children: React.ReactNode;
         };
         const OrderStatusTag = ({ color, children }: OrderStatusTagProps) => (
-          <Tag minWidth='70%' maxWidth='100%' color={color}>
+          <Tag minWidth='80%' maxWidth='100%' color={color}>
             {children}
           </Tag>
         );
@@ -173,9 +175,8 @@ const Dashboard = () => {
           <OrderStatusTag color='error'>Refund</OrderStatusTag>
         ) : null;
       },
-      hidden: false,
     },
-  ].filter((item) => !item.hidden);
+  ];
 
   const invAnalysisColumns: {
     title: string;
@@ -183,51 +184,44 @@ const Dashboard = () => {
     key: string;
     align?: 'left' | 'center' | 'right';
     render?: (status: string) => any;
-    hidden: boolean;
   }[] = [
     {
       title: 'Product',
       dataIndex: 'prodNm',
       key: 'prodNm',
       render: (text: string) => <Text strong>{text}</Text>,
-      hidden: false,
     },
     {
       title: 'Stock',
       dataIndex: 'stock',
       key: 'stock',
       align: 'center' as const,
-      hidden: false,
     },
     {
       title: 'ABC Grade',
       dataIndex: 'ABC',
       key: 'ABC',
       align: 'center' as const,
-      hidden: false,
     },
     {
       title: 'HML Grade',
       dataIndex: 'HML',
       key: 'HML',
       align: 'center' as const,
-      hidden: false,
     },
     {
       title: 'Reorder Point',
       dataIndex: 'reorderPt',
       key: 'reorderPt',
       align: 'center' as const,
-      hidden: !screens.md ? true : false,
     },
     {
       title: 'Optimal Order Quantity',
       dataIndex: 'optimalOrderQty',
       key: 'optimalOrderQty',
       align: 'center' as const,
-      hidden: !screens.lg ? true : false,
     },
-  ].filter((item) => !item.hidden);
+  ];
 
   const statisticsList: {
     key: string;
@@ -274,6 +268,23 @@ const Dashboard = () => {
     },
   ];
 
+  const toDoItemPlaceHolder = () => {
+    const cols = [];
+    const numItemPerRow = screens.xl ? 5 : isSiderCollapsed ? 4 : 3;
+    for (
+      let i = 0;
+      i < numItemPerRow - (toDoList.length % numItemPerRow);
+      i++
+    ) {
+      cols.push(
+        <Col className='dashboard-toDoList-col'>
+          <div style={{ width: screens.xl ? 255 : 230 }}></div>
+        </Col>
+      );
+    }
+    return cols;
+  };
+
   return (
     <Layout>
       <div className='dashboard'>
@@ -282,7 +293,7 @@ const Dashboard = () => {
             <ContainerCard>
               <Space direction='vertical' size={15}>
                 <Title level={5}>To Do List</Title>
-                <Row justify='start' gutter={[30, 20]}>
+                <Row gutter={[30, 30]}>
                   {toDoList.map((toDoItem) => (
                     <Col
                       key={toDoItem.label}
@@ -291,9 +302,10 @@ const Dashboard = () => {
                           replace: true,
                         })
                       }
+                      className='dashboard-toDoList-col'
                     >
                       <SmallCard
-                        width={255}
+                        width={screens.xl ? 255 : 230}
                         className='dashboard-toDoList-item'
                       >
                         <Space direction='vertical' size={15}>
@@ -311,64 +323,69 @@ const Dashboard = () => {
                       </SmallCard>
                     </Col>
                   ))}
+                  {toDoItemPlaceHolder()}
                 </Row>
               </Space>
             </ContainerCard>
           </Row>
           <Row justify='center'>
             <ContainerCard>
-              <Space direction='vertical' size={5} className='width-100'>
-                <Row justify='space-between'>
-                  <Col>
-                    <Title level={5}>Sales</Title>
-                  </Col>
-                  <Col>
-                    <More route='statistics' />
-                  </Col>
-                </Row>
-                <Row justify='space-between'>
-                  <Col>
-                    <Text className='dashboard-grey-text'>
-                      {getSalesDate()}
-                    </Text>
-                  </Col>
-                  <Col>
-                    <Radio.Group
-                      buttonStyle='solid'
-                      size='large'
-                      style={{ marginRight: 30 }}
-                      defaultValue='year'
-                    >
-                      {salesRadioBtn.map((radioBtn) => (
-                        <Radio.Button
-                          key={radioBtn.value}
-                          value={radioBtn.value}
-                          onClick={(e) => {
-                            setSalesDateRange(radioBtn.value);
-                            e.currentTarget.blur();
-                          }}
-                        >
-                          {radioBtn.label}
-                        </Radio.Button>
-                      ))}
-                    </Radio.Group>
-                  </Col>
-                </Row>
-                <Row style={{ paddingTop: 15 }}>
-                  <Space direction='vertical' className='width-100' size={20}>
-                    <Text strong>RM</Text>
-                    <LineChart
-                      data={getSalesData()}
-                      titleX={getChartTitle()}
-                      tooltipName='Total Sales'
-                      tooltipTitlePrefix={getChartTooltipTitlePrefix()}
-                      tooltipTitleSuffix={getChartTooltipTitleSuffix()}
-                      tooltipValPrefix='RM '
-                      toFixed={2}
-                    />
-                  </Space>
-                </Row>
-              </Space>
+              <Suspense fallback={<Skeleton.Image />}>
+                <Space direction='vertical' size={5} className='width-100'>
+                  <Row justify='space-between'>
+                    <Col>
+                      <Title level={5}>Sales</Title>
+                    </Col>
+                    <Col>
+                      <More route='statistics' />
+                    </Col>
+                  </Row>
+
+                  <Row justify='space-between'>
+                    <Col>
+                      <Text className='dashboard-grey-text'>
+                        {getSalesDate}
+                      </Text>
+                    </Col>
+                    <Col>
+                      <Radio.Group
+                        buttonStyle='solid'
+                        size='large'
+                        style={{ marginRight: 30 }}
+                        defaultValue='year'
+                      >
+                        {salesRadioBtn.map((radioBtn) => (
+                          <Radio.Button
+                            key={radioBtn.value}
+                            value={radioBtn.value}
+                            onClick={(e) => {
+                              setSalesDateRange(radioBtn.value);
+                              e.currentTarget.blur();
+                            }}
+                          >
+                            {radioBtn.label}
+                          </Radio.Button>
+                        ))}
+                      </Radio.Group>
+                    </Col>
+                  </Row>
+
+                  <Row style={{ paddingTop: 15 }}>
+                    <Space direction='vertical' className='width-100' size={20}>
+                      <Text strong>RM</Text>
+                      <LineChart
+                        data={getSalesData}
+                        titleX={getChartTitle}
+                        tooltipName='Total Sales'
+                        tooltipTitlePrefix={getChartTooltipTitlePrefix}
+                        tooltipTitleSuffix={getChartTooltipTitleSuffix}
+                        tooltipValPrefix='RM '
+                        toFixed={2}
+                      />
+                    </Space>
+                  </Row>
+                </Space>
+              </Suspense>
             </ContainerCard>
           </Row>
           <Row
@@ -376,7 +393,7 @@ const Dashboard = () => {
             gutter={[30, 20]}
             className='dashboard-multiple-container-card'
           >
-            <Col xs={24} sm={24} md={24} lg={24} xl={7} className='padding-0'>
+            <Col xs={24} sm={24} md={24} lg={24} xl={5} className='padding-0'>
               <ContainerCard width={!screens.xl ? '100%' : '95%'}>
                 <Title level={5}>Statistics</Title>
 
@@ -386,7 +403,7 @@ const Dashboard = () => {
 
                 <Space
                   direction={screens.xl ? 'vertical' : 'horizontal'}
-                  size={20}
+                  size={screens.xl ? 20 : isSiderCollapsed ? 65 : 25}
                   style={{ width: '100%', paddingTop: 25 }}
                 >
                   {statisticsList.map((statistics) => (
@@ -404,7 +421,7 @@ const Dashboard = () => {
                 </Space>
               </ContainerCard>
             </Col>
-            <Col xs={24} sm={24} md={24} lg={24} xl={17} className='padding-0'>
+            <Col xs={24} sm={24} md={24} lg={24} xl={19} className='padding-0'>
               <ContainerCard width='100%'>
                 <Space direction='vertical' size={15} className='width-100'>
                   <Row justify='space-between'>
@@ -445,7 +462,12 @@ const Dashboard = () => {
                         <More route='statistics' />
                       </Col>
                     </Row>
-                    <Row style={{ float: 'right' }}>
+                    <Row
+                      className={classNames(
+                        { 'float-left': !screens.xl },
+                        { 'float-right': screens.xl }
+                      )}
+                    >
                       <Text className='dashboard-grey-text'>
                         {topProduct.date}
                       </Text>
