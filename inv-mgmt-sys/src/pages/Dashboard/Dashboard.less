@@ -1,4 +1,9 @@
 .dashboard {
+
+  &-multiple-container-card {
+    margin: 0 2.5% !important;
+  }
+
   &-toDoList {
     &-item {
       cursor: pointer;
@@ -46,14 +51,14 @@
     &-radio {
       &-button {
         &-wrapper {
-          border: 0;
+          border: none;
           &:not(:first-child)::before {
             padding: 0;
             width: 0;
           }
           &:hover {
             color: @white;
-            background-color: @green-400;
+            background-color: @success-color;
           }
         }
       }
