@@ -1,9 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 import siderReducer from './siderSlice';
-
+import renderReducer from './renderSlice';
 const store = configureStore({
   reducer: {
     sider: siderReducer,
+    renderCount: renderReducer,
   },
 });
 

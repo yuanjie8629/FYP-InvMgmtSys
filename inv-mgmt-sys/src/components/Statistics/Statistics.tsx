@@ -1,4 +1,4 @@
-import { Avatar, Col, Row, Typography } from 'antd';
+import { Avatar, Col, Row, Typography, Grid } from 'antd';
 import { IconType } from 'react-icons';
 
 interface StatisticsDashboardProps {
@@ -13,8 +13,10 @@ interface StatisticsDashboardProps {
 
 const StatisticsDashboard = (props: StatisticsDashboardProps) => {
   const { Text, Title } = Typography;
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
   return (
-    <Row gutter={40} justify='start' align='middle'>
+    <Row gutter={screens.xl ? 40 : 20} justify='start' align='middle'>
       <Col>
         <Avatar
           icon={<props.icon size={28} color={props.color} />}

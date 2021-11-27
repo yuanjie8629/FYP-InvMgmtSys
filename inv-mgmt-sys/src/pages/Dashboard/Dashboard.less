@@ -1,5 +1,4 @@
 .dashboard {
-
   &-multiple-container-card {
     margin: 0 2.5% !important;
   }
@@ -11,6 +10,10 @@
       &:hover {
         background-color: @green-200 !important;
       }
+    }
+
+    &-col {
+      flex-grow: 1 !important;
     }
   }
 
@@ -44,7 +47,12 @@
   }
 
   &-grey-text {
+    font-size: @font-size-sm;
     color: @grey !important;
+
+    @media @desktop-xl, @desktop-xxl {
+      font-size: @font-size-base;
+    }
   }
 
   .@{ant-prefix} {
