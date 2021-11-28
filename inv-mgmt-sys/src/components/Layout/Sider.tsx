@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@hooks/reduxHooks';
-import { collapse, expand } from '@state/siderSlice';
-import { increment } from '@state/renderSlice';
+import { collapse, expand, increment } from '@state/siderSlice';
 import { Layout, Menu, Image, Grid } from 'antd';
 import menuList from './siderMenuList';
 import Logo from '@assets/logo.webp';
@@ -17,8 +16,8 @@ const Sider = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isSiderCollapsed = useAppSelector((state) => state.sider.value);
-  const renderCount = useAppSelector((state) => state.renderCount.value);
+  const isSiderCollapsed = useAppSelector((state) => state.sider.collapsed);
+  const renderCount = useAppSelector((state) => state.sider.renderCount);
   const dispatch = useAppDispatch();
 
   const openKey = [location.pathname.split('/')[1]];

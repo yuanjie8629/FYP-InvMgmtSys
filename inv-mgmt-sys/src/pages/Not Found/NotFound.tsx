@@ -14,7 +14,7 @@ const NotFound = () => {
     <Layout className='not-found-layout'>
       <div className='header-fixed' />
       <Header className='header' style={{ width: '100%' }}>
-        <Row justify='center' align='middle' className='height-100'>
+        <Row justify='center' align='middle' className='height-full'>
           <Col className='not-found-logo-wrapper'>
             <Image
               src={Logo}
@@ -32,7 +32,7 @@ const NotFound = () => {
       </Header>
       <Row justify='center' align='middle' className='not-found'>
         <Space direction='vertical' size={30}>
-          <Row>
+          <Row className='not-found-img-container'>
             <Image
               src={Img404}
               alt='img404'
@@ -46,7 +46,7 @@ const NotFound = () => {
               size={15}
               className='not-found-text-container'
             >
-              <Title>Oops!</Title>
+              <Title className='not-found-title'>Oops!</Title>
               <Text className='not-found-text'>
                 Looks like you followed a bad link. If you think this is a
                 problem with us, please tell us.

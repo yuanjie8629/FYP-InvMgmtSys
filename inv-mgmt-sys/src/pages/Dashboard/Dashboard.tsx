@@ -9,7 +9,10 @@ import Radio from 'antd/es/radio';
 import Row from 'antd/es/row';
 import Skeleton from 'antd/es/skeleton';
 import Space from 'antd/es/space';
+import Spin from 'antd/es/spin';
 import Typography from 'antd/es/typography';
+
+import LoadingOutlined from '@ant-design/icons/LoadingOutlined';
 import {
   MdArrowRight,
   MdChevronRight,
@@ -20,7 +23,6 @@ import {
   MdOutlineAssignment,
 } from 'react-icons/md';
 import { IconType } from 'react-icons';
-import ContainerCard from '@components/ContainerCard/ContainerCard';
 import Layout from '@components/Layout/Layout';
 import SmallCard from '@components/SmallCard/SmallCard';
 import Button from '@components/Button/Button';
@@ -37,12 +39,14 @@ import invAnalysis from './invAnalysis';
 import './Dashboard.less';
 
 const LineChart = lazy(() => import('@components/Chart/LineChart'));
-
+const ContainerCard = lazy(
+  () => import('@components/ContainerCard/ContainerCard')
+);
 const Dashboard = () => {
   const { Text, Title } = Typography;
   const navigate = useNavigate();
   const { useBreakpoint } = Grid;
-  const isSiderCollapsed = useAppSelector((state) => state.sider.value);
+  const isSiderCollapsed = useAppSelector((state) => state.sider.collapsed);
   const screens = useBreakpoint();
   const [salesDateRange, setSalesDateRange] = useState('year');
 
@@ -288,7 +292,11 @@ const Dashboard = () => {
   return (
     <Layout>
       <div className='dashboard'>
-        <Space direction='vertical' size={20} className='container-card'>
+        <Space
+          direction='vertical'
+          size={20}
+          className='container-card-wrapper'
+        >
           <Row justify='center'>
             <ContainerCard>
               <Space direction='vertical' size={15}>
@@ -309,7 +317,14 @@ const Dashboard = () => {
                         className='dashboard-toDoList-item'
                       >
                         <Space direction='vertical' size={15}>
-                          <Title level={5}>{toDoItem.quantity}</Title>
+                          <Title
+                            level={5}
+                            className={classNames({
+                              'color-grey': toDoItem.quantity === 0,
+                            })}
+                          >
+                            {toDoItem.quantity}
+                          </Title>
                           <div>
                             <Text className='dashboard-grey-text'>
                               {toDoItem.label}
@@ -330,48 +345,60 @@ const Dashboard = () => {
           </Row>
           <Row justify='center'>
             <ContainerCard>
-              <Suspense fallback={<Skeleton.Image />}>
-                <Space direction='vertical' size={5} className='width-100'>
-                  <Row justify='space-between'>
-                    <Col>
-                      <Title level={5}>Sales</Title>
-                    </Col>
-                    <Col>
-                      <More route='statistics' />
-                    </Col>
-                  </Row>
+              <Space direction='vertical' size={5} className='width-full'>
+                <Row justify='space-between'>
+                  <Col>
+                    <Title level={5}>Sales</Title>
+                  </Col>
+                  <Col>
+                    <More route='statistics' />
+                  </Col>
+                </Row>
 
-                  <Row justify='space-between'>
-                    <Col>
-                      <Text className='dashboard-grey-text'>
-                        {getSalesDate}
-                      </Text>
-                    </Col>
-                    <Col>
-                      <Radio.Group
-                        buttonStyle='solid'
-                        size='large'
-                        style={{ marginRight: 30 }}
-                        defaultValue='year'
-                      >
-                        {salesRadioBtn.map((radioBtn) => (
-                          <Radio.Button
-                            key={radioBtn.value}
-                            value={radioBtn.value}
-                            onClick={(e) => {
-                              setSalesDateRange(radioBtn.value);
-                              e.currentTarget.blur();
-                            }}
-                          >
-                            {radioBtn.label}
-                          </Radio.Button>
-                        ))}
-                      </Radio.Group>
-                    </Col>
-                  </Row>
+                <Row justify='space-between'>
+                  <Col>
+                    <Text className='dashboard-grey-text'>{getSalesDate}</Text>
+                  </Col>
+                  <Col>
+                    <Radio.Group
+                      buttonStyle='solid'
+                      size='large'
+                      style={{ marginRight: 30 }}
+                      defaultValue='year'
+                    >
+                      {salesRadioBtn.map((radioBtn) => (
+                        <Radio.Button
+                          key={radioBtn.value}
+                          value={radioBtn.value}
+                          onClick={(e) => {
+                            setSalesDateRange(radioBtn.value);
+                            e.currentTarget.blur();
+                          }}
+                        >
+                          {radioBtn.label}
+                        </Radio.Button>
+                      ))}
+                    </Radio.Group>
+                  </Col>
+                </Row>
 
-                  <Row style={{ paddingTop: 15 }}>
-                    <Space direction='vertical' className='width-100' size={20}>
+                <Row style={{ paddingTop: 15 }}>
+                  <Suspense
+                    fallback={
+                      <div className='centerFlex height-full width-full'>
+                        <Spin
+                          indicator={
+                            <LoadingOutlined style={{ fontSize: 30 }} spin />
+                          }
+                        />
+                      </div>
+                    }
+                  >
+                    <Space
+                      direction='vertical'
+                      className='width-full'
+                      size={20}
+                    >
                       <Text strong>RM</Text>
                       <LineChart
                         data={getSalesData}
@@ -383,9 +410,9 @@ const Dashboard = () => {
                         toFixed={2}
                       />
                     </Space>
-                  </Row>
-                </Space>
-              </Suspense>
+                  </Suspense>
+                </Row>
+              </Space>
             </ContainerCard>
           </Row>
           <Row
@@ -393,7 +420,7 @@ const Dashboard = () => {
             gutter={[30, 20]}
             className='dashboard-multiple-container-card'
           >
-            <Col xs={24} sm={24} md={24} lg={24} xl={5} className='padding-0'>
+            <Col xs={24} sm={24} md={24} lg={24} xl={6} className='padding-0'>
               <ContainerCard width={!screens.xl ? '100%' : '95%'}>
                 <Title level={5}>Statistics</Title>
 
@@ -421,9 +448,9 @@ const Dashboard = () => {
                 </Space>
               </ContainerCard>
             </Col>
-            <Col xs={24} sm={24} md={24} lg={24} xl={19} className='padding-0'>
+            <Col xs={24} sm={24} md={24} lg={24} xl={18} className='padding-0'>
               <ContainerCard width='100%'>
-                <Space direction='vertical' size={15} className='width-100'>
+                <Space direction='vertical' size={15} className='width-full'>
                   <Row justify='space-between'>
                     <Col>
                       <Row>
@@ -452,7 +479,7 @@ const Dashboard = () => {
           >
             <Col xs={24} sm={24} md={24} lg={24} xl={9} className='padding-0'>
               <ContainerCard width={!screens.xl ? '100%' : '95%'}>
-                <Space direction='vertical' size={5} className='width-100'>
+                <Space direction='vertical' size={5} className='width-full'>
                   <div>
                     <Row justify='space-between'>
                       <Col>
@@ -510,7 +537,7 @@ const Dashboard = () => {
             </Col>
             <Col xs={24} sm={24} md={24} lg={24} xl={15} className='padding-0'>
               <ContainerCard width='100%'>
-                <Space direction='vertical' size={30} className='width-100'>
+                <Space direction='vertical' size={30} className='width-full'>
                   <Row justify='space-between'>
                     <Col>
                       <Row>

@@ -1,0 +1,13 @@
+diff --git a/node_modules/antd/es/_util/responsiveObserve.js b/node_modules/antd/es/_util/responsiveObserve.js
+index 4ded29b..88638f3 100644
+--- a/node_modules/antd/es/_util/responsiveObserve.js
++++ b/node_modules/antd/es/_util/responsiveObserve.js
+@@ -6,7 +6,7 @@ export var responsiveMap = {
+   sm: '(min-width: 576px)',
+   md: '(min-width: 768px)',
+   lg: '(min-width: 992px)',
+-  xl: '(min-width: 1200px)',
++  xl: '(min-width: 1280px)',
+   xxl: '(min-width: 1600px)'
+ };
+ var subscribers = new Map();

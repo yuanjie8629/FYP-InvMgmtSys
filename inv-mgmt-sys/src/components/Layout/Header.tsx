@@ -6,7 +6,7 @@ import NotificationDropdown from '@components/NotificationDropdown/NotificationD
 import classNames from 'classnames';
 const Header = () => {
   const { Header } = Layout;
-  const isSiderCollapsed = useAppSelector((state) => state.sider.value);
+  const isSiderCollapsed = useAppSelector((state) => state.sider.collapsed);
   return (
     <div className='header-fixed'>
       <Header
@@ -21,7 +21,7 @@ const Header = () => {
             <Breadcrumb />
           </Col>
           <Col>
-            <Space split={<Divider type='vertical' style={{ height: 42 }} />}>
+            <Space size='large' split={<Divider type='vertical' style={{ height: 42 }} />}>
               <NotificationDropdown />
               <AvatarDropdown />
             </Space>

@@ -1,5 +1,7 @@
 .not-found {
-  margin-top: 100px;
+  @media @desktop-xl, @desktop-xxl {
+    margin-top: 100px;
+  }
   &-layout {
     height: 100vh;
   }
@@ -20,6 +22,19 @@
     pointer-events: none;
     user-select: none;
     padding-right: 50px;
+    height: 338px !important;
+
+    @media @desktop-xl, @desktop-xxl {
+      height: 100% !important;
+    }
+  }
+
+  &-title {
+    font-size: @heading-2-size !important;
+
+    @media @desktop-xl, @desktop-xxl {
+      font-size: @heading-1-size !important;
+    }
   }
 
   &-text {
