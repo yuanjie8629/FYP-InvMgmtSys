@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 interface SiderState {
-  value: boolean;
+  collapsed: boolean;
+  renderCount: number;
 }
 const initialState: SiderState = {
-  value: false,
+  collapsed: false,
+  renderCount: 0
 };
 
 export const siderSlice = createSlice({
@@ -12,14 +14,17 @@ export const siderSlice = createSlice({
   initialState,
   reducers: {
     collapse: (state) => {
-      state.value = true;
+      state.collapsed = true;
     },
     expand: (state) => {
-      state.value = false;
+      state.collapsed = false;
     },
+    increment: (state) => {
+      state.renderCount++;
+    }
   },
 });
 
-export const { collapse, expand } = siderSlice.actions;
+export const { collapse, expand, increment } = siderSlice.actions;
 
 export default siderSlice.reducer;

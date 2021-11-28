@@ -6,12 +6,20 @@ body {
   height: 100%;
 }
 
-.width-100 {
+.width-full {
   width: 100%;
 }
 
-.height-100 {
+.height-full {
   height: 100%;
+}
+
+.wight-fill-vp {
+  width: 100vw;
+}
+
+.height-fill-vp {
+  height: 100vh;
 }
 
 .float-left {
@@ -28,7 +36,8 @@ body {
   align-items: center !important;
 }
 
-.container-card {
+.container-card-wrapper {
+  width: 100%;
   padding-top: 10px;
 }
 
@@ -67,7 +76,21 @@ body {
       }
     }
   }
+
+  &-tabs {
+    &-ink-bar {
+      height: 3px !important;
+    }
+
+    &-tab {
+      padding: 16px 15px !important;
+      &-active {
+        font-weight: bold !important;
+      }
+    }
+  }
 }
+
 .color-primary {
   color: @primary-color !important;
 }

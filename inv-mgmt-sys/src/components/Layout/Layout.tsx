@@ -1,4 +1,5 @@
-import { Layout as AntdLayout } from 'antd';
+import React, { Suspense } from 'react';
+import { Layout as AntdLayout, Spin } from 'antd';
 import { Helmet } from 'react-helmet';
 import Header from './Header';
 import Sider from './Sider';
@@ -18,8 +19,16 @@ const Layout = (props: CustomLayoutProps) => {
       <Sider />
       <AntdLayout>
         <Header />
-        <Content className='content'>{props.children}</Content>
-        <Footer />
+        <Suspense
+          fallback={
+            <div className='centerFlex height-fill-vp'>
+              <Spin size='large' />
+            </div>
+          }
+        >
+          <Content className='content'>{props.children}</Content>
+          <Footer />
+        </Suspense>
       </AntdLayout>
     </AntdLayout>
   );
