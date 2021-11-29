@@ -1,35 +1,44 @@
-const topProduct = {
+const topProduct: {
+  date: string;
+  type: 'sales' | 'units';
+  items: {
+    itemNm: string;
+    itemCat?: string;
+    value: number;
+  }[];
+} = {
   date: '2021 August',
-  products: [
+  type: 'sales',
+  items: [
     {
-      prodNm: 'Kari Ayam',
-      prodCat: 'Ready-To-Eat',
-      sales: 80,
+      itemNm: 'Kari Ayam',
+      itemCat: 'Ready-To-Eat',
+      value: 80,
     },
     {
-      prodNm: 'Sambal Ikan Bilis',
-      prodCat: 'Ready-To-Eat',
-      sales: 54,
+      itemNm: 'Sambal Ikan Bilis',
+      itemCat: 'Ready-To-Eat',
+      value: 54,
     },
     {
-      prodNm: 'Nasi Briyani Bukhari',
-      prodCat: 'Ready-To-Cook',
-      sales: 47,
+      itemNm: 'Nasi Briyani Bukhari',
+      itemCat: 'Ready-To-Cook',
+      value: 47,
     },
     {
-      prodNm: 'Rendang Dendeng Daging',
-      prodCat: 'Ready-To-Eat',
-      sales: 53,
+      itemNm: 'Rendang Dendeng Daging',
+      itemCat: 'Ready-To-Eat',
+      value: 53,
     },
     {
-      prodNm: 'Pes Sambal Tumis',
-      prodCat: 'Paste',
-      sales: 38,
+      itemNm: 'Pes Sambal Tumis',
+      itemCat: 'Paste',
+      value: 38,
     },
     {
-      prodNm: 'Pes Masakan Kerutuk',
-      prodCat: 'Paste',
-      sales: 22,
+      itemNm: 'Pes Masakan Kerutuk',
+      itemCat: 'Paste',
+      value: 22,
     },
   ],
 };

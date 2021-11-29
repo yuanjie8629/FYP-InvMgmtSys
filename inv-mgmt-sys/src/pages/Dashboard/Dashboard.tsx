@@ -4,10 +4,7 @@ import classNames from 'classnames';
 import { useAppSelector } from '@hooks/reduxHooks';
 import Col from 'antd/es/col';
 import Grid from 'antd/es/grid';
-import List from 'antd/es/list';
-import Radio from 'antd/es/radio';
 import Row from 'antd/es/row';
-import Skeleton from 'antd/es/skeleton';
 import Space from 'antd/es/space';
 import Spin from 'antd/es/spin';
 import Typography from 'antd/es/typography';
@@ -37,6 +34,8 @@ import recentOrders from './recentOrders';
 import topProduct from './topProducts';
 import invAnalysis from './invAnalysis';
 import './Dashboard.less';
+import RadioGroup from '@components/RadioButton/RadioGroup';
+import RankingList from '@components/List/RankingList';
 
 const LineChart = lazy(() => import('@components/Chart/LineChart'));
 const ContainerCard = lazy(
@@ -360,25 +359,10 @@ const Dashboard = () => {
                     <Text className='dashboard-grey-text'>{getSalesDate}</Text>
                   </Col>
                   <Col>
-                    <Radio.Group
-                      buttonStyle='solid'
-                      size='large'
-                      style={{ marginRight: 30 }}
-                      defaultValue='year'
-                    >
-                      {salesRadioBtn.map((radioBtn) => (
-                        <Radio.Button
-                          key={radioBtn.value}
-                          value={radioBtn.value}
-                          onClick={(e) => {
-                            setSalesDateRange(radioBtn.value);
-                            e.currentTarget.blur();
-                          }}
-                        >
-                          {radioBtn.label}
-                        </Radio.Button>
-                      ))}
-                    </Radio.Group>
+                    <RadioGroup
+                      radioButtons={salesRadioBtn}
+                      onClickEvent={setSalesDateRange}
+                    />
                   </Col>
                 </Row>
 
@@ -500,38 +484,7 @@ const Dashboard = () => {
                       </Text>
                     </Row>
                   </div>
-                  <List
-                    dataSource={topProduct.products}
-                    renderItem={(item) => (
-                      <List.Item key={item.prodNm}>
-                        <Skeleton title={false} active loading={false}>
-                          <List.Item.Meta
-                            key={item.prodNm}
-                            title={
-                              <Text className='dashboard-top-product-title'>
-                                {item.prodNm}
-                              </Text>
-                            }
-                            description={
-                              <Text className='dashboard-top-product-cat'>
-                                {item.prodCat}
-                              </Text>
-                            }
-                          ></List.Item.Meta>
-                          <Row align='middle' gutter={[5, 5]}>
-                            <Col>
-                              <Title level={5}>{item.sales}</Title>
-                            </Col>
-                            <Col>
-                              <Text className='dashboard-top-product-sales'>
-                                sales
-                              </Text>
-                            </Col>
-                          </Row>
-                        </Skeleton>
-                      </List.Item>
-                    )}
-                  ></List>
+                  <RankingList itemList={topProduct} />
                 </Space>
               </ContainerCard>
             </Col>

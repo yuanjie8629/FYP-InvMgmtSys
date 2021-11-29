@@ -3,9 +3,11 @@ import InputRange from '@components/Input/InputRange';
 import InputSelect from '@components/Input/InputSelect';
 import Button from '@components/Button/Button';
 import Layout from '@components/Layout/Layout';
-import { Row, Space, Select, Col } from 'antd';
+import { Row, Space, Select, Col, Typography } from 'antd';
+import InformativeTable from '@components/Table/InformativeTable';
 
 const ProdMgmt = () => {
+  const { Title } = Typography;
   const { Option } = Select;
   const tabList = [
     { key: 'all', tab: 'All' },
@@ -47,51 +49,64 @@ const ProdMgmt = () => {
         >
           <Row justify='center'>
             <ContainerCard tabList={tabList}>
-              <Space direction='vertical' size={20}>
-                <Row gutter={[20, 20]}>
-                  <Col lg={10} xl={8}>
-                    <InputSelect
-                      selectBefore={prodInputSelect}
-                      placeholder='Input'
-                    ></InputSelect>
-                  </Col>
-                  <Col lg={4} xl={3}>
-                    <Select
-                      placeholder={prodCatSelect.placeholder}
-                      style={{ width: '100%' }}
-                    >
-                      {prodCatSelect.options.map((option) => (
-                        <Option key={option.val} value={option.val}>
-                          {option.label}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Col>
-                  <Col lg={7} xl={5}>
-                    <InputRange
-                      label='Stock'
-                      placeholder={['Start', 'End']}
-                      min={0}
-                    />
-                  </Col>
-                  <Col lg={12} xl={7}>
-                    <InputRange
-                      label='Price'
-                      placeholder={['Start', 'End']}
-                      addonBefore='RM'
-                      min={0}
-                      precision={2}
-                    />
-                  </Col>
-                </Row>
-                <Row gutter={20}>
-                  <Col>
-                    <Button type='primary'>Search</Button>
-                  </Col>
-                  <Col>
-                    <Button>Reset</Button>
-                  </Col>
-                </Row>
+              <Space direction='vertical' size={40} className='width-full'>
+                <Space direction='vertical' size={20} className='width-full'>
+                  <Row gutter={[30, 30]}>
+                    <Col lg={10} xl={8}>
+                      <InputSelect
+                        selectBefore={prodInputSelect}
+                        placeholder='Input'
+                      ></InputSelect>
+                    </Col>
+                    <Col lg={4} xl={3}>
+                      <Select
+                        placeholder={prodCatSelect.placeholder}
+                        style={{ width: '100%' }}
+                      >
+                        {prodCatSelect.options.map((option) => (
+                          <Option key={option.val} value={option.val}>
+                            {option.label}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Col>
+                    <Col lg={7} xl={5}>
+                      <InputRange
+                        label='Stock'
+                        placeholder={['Start', 'End']}
+                        min={0}
+                      />
+                    </Col>
+                    <Col lg={12} xl={7}>
+                      <InputRange
+                        label='Price'
+                        placeholder={['Start', 'End']}
+                        addonBefore='RM'
+                        min={0}
+                        precision={2}
+                      />
+                    </Col>
+                  </Row>
+                  <Row gutter={20}>
+                    <Col>
+                      <Button type='primary'>Search</Button>
+                    </Col>
+                    <Col>
+                      <Button>Reset</Button>
+                    </Col>
+                  </Row>
+                </Space>
+                <Space direction='vertical' size={15} className='width-full'>
+                  <Row justify='space-between'>
+                    <Col>
+                      <Title level={4}>Product List</Title>
+                    </Col>
+                    <Col>
+                      <Button type='primary'>Add Product</Button>
+                    </Col>
+                  </Row>
+                  <InformativeTable />
+                </Space>
               </Space>
             </ContainerCard>
           </Row>

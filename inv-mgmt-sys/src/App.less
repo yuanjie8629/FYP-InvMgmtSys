@@ -89,24 +89,44 @@ body {
       }
     }
   }
+
+  &-select {
+    &-selection {
+      &-item {
+        color: @grey !important;
+      }
+    }
+  }
 }
 
-.color-primary {
-  color: @primary-color !important;
+.color {
+  &-primary {
+    color: @primary-color !important;
+  }
+
+  &-error {
+    color: @error-color !important;
+  }
+
+  &-warning {
+    color: @warning-color !important;
+  }
+
+  &-info {
+    color: @info-color !important;
+  }
+
+  &-grey {
+    color: @grey !important;
+  }
 }
 
-.color-error {
-  color: @error-color !important;
-}
+.text {
+  &-lg {
+    font-size: @font-size-lg;
+  }
 
-.color-warning {
-  color: @warning-color !important;
-}
-
-.color-info {
-  color: @info-color !important;
-}
-
-.color-grey {
-  color: @grey !important;
+  &-sm {
+    font-size: @font-size-sm;
+  }
 }
