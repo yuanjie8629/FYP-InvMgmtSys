@@ -3,11 +3,23 @@ import InputRange from '@components/Input/InputRange';
 import InputSelect from '@components/Input/InputSelect';
 import Button from '@components/Button/Button';
 import Layout from '@components/Layout/Layout';
-import { Row, Space, Select, Col, Typography } from 'antd';
+import {
+  Row,
+  Space,
+  Select,
+  Col,
+  Typography,
+  Image,
+  Dropdown,
+  Tag,
+  Menu,
+} from 'antd';
 import InformativeTable from '@components/Table/InformativeTable';
+import prodList from './prodList';
+import { HiPencilAlt, HiTrash } from 'react-icons/hi';
 
 const ProdMgmt = () => {
-  const { Title } = Typography;
+  const { Text, Title } = Typography;
   const { Option } = Select;
   const tabList = [
     { key: 'all', tab: 'All' },
@@ -38,6 +50,107 @@ const ProdMgmt = () => {
       { val: 'paste', label: 'Paste' },
     ],
   };
+
+  const prodListColumns: {
+    title: string;
+    dataIndex?: string | string[];
+    key: string;
+    sorter?: boolean;
+    align?: 'left' | 'center' | 'right';
+    render?: any;
+  }[] = [
+    {
+      title: 'Product',
+      dataIndex: ['prodNm', 'prodCat', 'prodImg'],
+      key: 'prod',
+      sorter: true,
+      render: (_: any, data: { [x: string]: string | undefined }) => (
+        <Row>
+          <Col>
+            <Image src={data['prodImg']} height={120} />
+          </Col>
+          <Col>
+            <Space direction='vertical' size={5}>
+              <Button type='link' color='info'>
+                {data['prodNm']}
+              </Button>
+              <Text className='color-grey text-sm'>{data['prodCat']}</Text>
+            </Space>
+          </Col>
+        </Row>
+      ),
+    },
+    {
+      title: 'SKU',
+      dataIndex: 'prodSKU',
+      key: 'prodSKU',
+      sorter: true,
+    },
+    {
+      title: 'Price',
+      dataIndex: 'prodPrice',
+      key: 'prodPrice',
+      sorter: true,
+      render: (amount: string) => (
+        <Text className='color-grey'>RM {parseFloat(amount).toFixed(2)}</Text>
+      ),
+    },
+    {
+      title: 'Stock',
+      dataIndex: 'prodStock',
+      key: 'prodStock',
+      sorter: true,
+    },
+    {
+      title: 'Status',
+      dataIndex: 'prodStatus',
+      key: 'prodStatus',
+      render: (status: string) => {
+        const menu = (
+          <Menu>
+            <Menu.Item>{status}</Menu.Item>
+          </Menu>
+        );
+        return (
+          <Dropdown overlay={menu}>
+            <Tag color='success'>{status}</Tag>
+          </Dropdown>
+        );
+      },
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: () => (
+        <Space direction='vertical' size={5}>
+          <Button
+            type='link'
+            color='info'
+            icon={
+              <HiPencilAlt
+                size={16}
+                style={{ marginRight: 5, position: 'relative', top: 3 }}
+              />
+            }
+          >
+            Edit
+          </Button>
+          <Button
+            type='link'
+            color='info'
+            icon={
+              <HiTrash
+                size={16}
+                style={{ marginRight: 5, position: 'relative', top: 2 }}
+              />
+            }
+          >
+            Delete
+          </Button>
+        </Space>
+      ),
+    },
+  ];
 
   return (
     <Layout>
@@ -105,7 +218,10 @@ const ProdMgmt = () => {
                       <Button type='primary'>Add Product</Button>
                     </Col>
                   </Row>
-                  <InformativeTable />
+                  <InformativeTable
+                    dataSource={prodList}
+                    columns={prodListColumns}
+                  />
                 </Space>
               </Space>
             </ContainerCard>

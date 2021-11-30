@@ -8,7 +8,6 @@ import Row from 'antd/es/row';
 import Space from 'antd/es/space';
 import Spin from 'antd/es/spin';
 import Typography from 'antd/es/typography';
-
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined';
 import {
   MdArrowRight,
@@ -102,7 +101,7 @@ const Dashboard = () => {
 
   const recentOrderColumns: {
     title: string;
-    dataIndex: string;
+    dataIndex: string | string[];
     key: string;
     width: number;
     align?: 'left' | 'center' | 'right';
@@ -113,16 +112,8 @@ const Dashboard = () => {
       dataIndex: 'orderID',
       key: 'orderID',
       width: 120,
-      render: (text: string) => (
-        <Button
-          type='link'
-          color='info'
-          onClick={() =>
-            navigate(findRoutePath('orderMgmt'), { replace: true })
-          }
-        >
-          {text}
-        </Button>
+      render: (id: string) => (
+        <Text strong>{id}</Text>
       ),
     },
     {
@@ -183,7 +174,7 @@ const Dashboard = () => {
 
   const invAnalysisColumns: {
     title: string;
-    dataIndex: string;
+    dataIndex: string | string[];
     key: string;
     align?: 'left' | 'center' | 'right';
     render?: (status: string) => any;
