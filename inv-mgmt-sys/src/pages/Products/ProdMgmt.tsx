@@ -145,7 +145,7 @@ const ProdMgmt = () => {
         const menu = (
           <Menu>
             {statusList.map((statusItem) =>
-              status !== statusItem.status ? (
+              !(status === statusItem.status || statusItem.status === 'oos') ? (
                 <Menu.Item key={statusItem.status}>
                   {statusItem.label}
                 </Menu.Item>
