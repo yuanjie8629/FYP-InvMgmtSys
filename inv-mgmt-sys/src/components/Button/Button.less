@@ -37,6 +37,8 @@
     }
     &.@{btn-prefix-cls}-primary {
       color: white;
+      background-color: @color;
+      border-color: @color;
       &:not(.@{btn-prefix-cls}-background-ghost):not(:disabled) {
         &:hover {
           background-color: @color-hover;
@@ -64,6 +66,16 @@
       & {
         color: @color;
       }
+      &:hover {
+        color: @color-hover;
+      }
+      &:active {
+        color: @color-active;
+      }
+    }
+
+    &.@{btn-prefix-cls}-text {
+      border: none;
       &:hover {
         color: @color-hover;
       }
@@ -101,6 +113,10 @@
 
 .btn-info {
   .btn-color-selection(@info-color);
+}
+
+.btn-error {
+  .btn-color-selection(@error-color);
 }
 
 .btn-grey {
