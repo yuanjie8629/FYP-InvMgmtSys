@@ -2,7 +2,7 @@ import './Button.less';
 import { Button as AntdButton, ButtonProps as AntdButtonProps } from 'antd';
 
 interface ButtonProps extends AntdButtonProps {
-  color?: 'success' | 'warning' | 'info' | 'grey';
+  color?: 'success' | 'warning' | 'error' | 'info' | 'grey';
   children?: React.ReactNode;
 }
 

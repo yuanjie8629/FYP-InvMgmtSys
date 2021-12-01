@@ -3,6 +3,7 @@ import InputRange from '@components/Input/InputRange';
 import InputSelect from '@components/Input/InputSelect';
 import Button from '@components/Button/Button';
 import Layout from '@components/Layout/Layout';
+import Tag, { TagProps } from '@components/Tag/Tag';
 import {
   Row,
   Space,
@@ -11,16 +12,46 @@ import {
   Typography,
   Image,
   Dropdown,
-  Tag,
   Menu,
 } from 'antd';
 import InformativeTable from '@components/Table/InformativeTable';
 import prodList from './prodList';
-import { HiPencilAlt, HiTrash } from 'react-icons/hi';
+import { HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
+import { MdArrowDropDown } from 'react-icons/md';
 
 const ProdMgmt = () => {
   const { Text, Title } = Typography;
   const { Option } = Select;
+
+  const onSelectBtn = (
+    <Space size={15}>
+      <Button
+        type='primary'
+        color='grey'
+        icon={
+          <HiEyeOff
+            size={16}
+            style={{ marginRight: 5, position: 'relative', top: 3 }}
+          />
+        }
+      >
+        Hide
+      </Button>
+      <Button
+        type='primary'
+        color='error'
+        icon={
+          <HiTrash
+            size={16}
+            style={{ marginRight: 5, position: 'relative', top: 3 }}
+          />
+        }
+      >
+        Delete
+      </Button>
+    </Space>
+  );
+
   const tabList = [
     { key: 'all', tab: 'All' },
     { key: 'active', tab: 'Active' },
@@ -106,15 +137,62 @@ const ProdMgmt = () => {
       dataIndex: 'prodStatus',
       key: 'prodStatus',
       render: (status: string) => {
+        const statusList = [
+          { status: 'active', label: 'Active', color: 'success' },
+          { status: 'oos', label: 'Out of Stock', color: 'error' },
+          { status: 'hidden', label: 'Hidden', color: 'default' },
+        ];
         const menu = (
           <Menu>
-            <Menu.Item>{status}</Menu.Item>
+            {statusList.map((statusItem) =>
+              status !== statusItem.status ? (
+                <Menu.Item key={statusItem.status}>
+                  {statusItem.label}
+                </Menu.Item>
+              ) : null
+            )}
           </Menu>
         );
-        return (
-          <Dropdown overlay={menu}>
-            <Tag color='success'>{status}</Tag>
-          </Dropdown>
+
+        interface ProdStatusTagProps extends TagProps {
+          color: string;
+          children: React.ReactNode;
+        }
+        const ProdStatusTag = ({
+          color,
+          children,
+          ...props
+        }: ProdStatusTagProps) => (
+          <Tag minWidth='50%' maxWidth='100%' color={color} {...props}>
+            {children}
+          </Tag>
+        );
+
+        const matchedStatus = statusList.find(
+          (statusItem) => status === statusItem.status
+        );
+
+        return matchedStatus?.status !== 'oos' ? (
+          <Row align='middle'>
+            <ProdStatusTag color={matchedStatus!.color}>
+              {matchedStatus!.label}
+            </ProdStatusTag>
+            <Dropdown overlay={menu} placement='bottomRight'>
+              <MdArrowDropDown size={25} style={{ cursor: 'pointer' }} />
+            </Dropdown>
+          </Row>
+        ) : (
+          <ProdStatusTag
+            color={
+              statusList.find((statusItem) => statusItem.status === 'oos')!
+                .color
+            }
+          >
+            {
+              statusList.find((statusItem) => statusItem.status === 'oos')!
+                .label
+            }
+          </ProdStatusTag>
         );
       },
     },
@@ -221,6 +299,7 @@ const ProdMgmt = () => {
                   <InformativeTable
                     dataSource={prodList}
                     columns={prodListColumns}
+                    buttons={onSelectBtn}
                   />
                 </Space>
               </Space>

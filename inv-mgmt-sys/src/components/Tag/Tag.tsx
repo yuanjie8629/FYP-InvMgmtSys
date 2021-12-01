@@ -22,11 +22,13 @@ const Tag = ({
   return (
     <AntdTag
       style={{
+        width: width,
         minWidth: minWidth,
         maxWidth: maxWidth,
         height: height,
         borderRadius: border,
         textAlign: justify,
+        margin: 0,
       }}
       {...props}
     >

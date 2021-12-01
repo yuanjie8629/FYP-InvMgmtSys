@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Table, { TableProps } from '@components/Table/Table';
-import { Row, Typography, Space } from 'antd';
+import { Col, Row, Typography, Space } from 'antd';
 import './Table.less';
 
 interface InformativeTableProps extends TableProps {
@@ -31,8 +31,11 @@ const InformativeTable = (props: InformativeTableProps) => {
       size={20}
       className='informative-table width-full'
     >
-      <Row>
-        <Text>Selected: {selectedRowCount}</Text>
+      <Row align='middle' gutter={20} style={{ height: 36 }}>
+        <Col>
+          <Text>Selected: {selectedRowCount}</Text>
+        </Col>
+        <Col>{selectedRowCount > 0 ? props.buttons : null}</Col>
       </Row>
       <Row>
         <Table

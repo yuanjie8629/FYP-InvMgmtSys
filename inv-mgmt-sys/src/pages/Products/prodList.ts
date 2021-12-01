@@ -10,6 +10,15 @@ const prodList = [
         prodPrice: 17.60,
         prodStock: 120,
         prodStatus: 'active'
+    },{
+        key: '2',
+        prodNm: 'Nasi B234124 Bukhari',
+        prodCat: 'Ready-To-Cook',
+        prodSKU: 'SHRF-RTC-NBB',
+        prodImg: NasiBriyaniBukhari,
+        prodPrice: 17.60,
+        prodStock: 120,
+        prodStatus: 'oos'
     }
 ]
 
