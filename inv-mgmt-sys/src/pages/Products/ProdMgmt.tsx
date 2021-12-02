@@ -1,19 +1,9 @@
 import ContainerCard from '@components/ContainerCard/ContainerCard';
-import InputRange from '@components/Input/InputRange';
-import InputSelect from '@components/Input/InputSelect';
 import Button from '@components/Button/Button';
 import Layout from '@components/Layout/Layout';
 import Tag, { TagProps } from '@components/Tag/Tag';
-import {
-  Row,
-  Space,
-  Select,
-  Col,
-  Typography,
-  Image,
-  Dropdown,
-  Menu,
-} from 'antd';
+import FilterInputs from './FilterInputs';
+import { Row, Space, Col, Typography, Image, Dropdown, Menu } from 'antd';
 import InformativeTable from '@components/Table/InformativeTable';
 import prodList from './prodList';
 import { HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
@@ -21,7 +11,6 @@ import { MdArrowDropDown } from 'react-icons/md';
 
 const ProdMgmt = () => {
   const { Text, Title } = Typography;
-  const { Option } = Select;
 
   const onSelectBtn = (
     <Space size={15}>
@@ -58,29 +47,6 @@ const ProdMgmt = () => {
     { key: 'oos', tab: 'Out of Stock' },
     { key: 'hidden', tab: 'Hidden' },
   ];
-
-  const prodInputSelect: {
-    defaultVal: string;
-    options: {
-      val: string;
-      label: string;
-    }[];
-  } = {
-    defaultVal: 'prodName',
-    options: [
-      { val: 'prodName', label: 'Product Name' },
-      { val: 'prodSKU', label: 'Product SKU' },
-    ],
-  };
-
-  const prodCatSelect = {
-    placeholder: 'Category',
-    options: [
-      { val: 'rte', label: 'Ready-To-Eat' },
-      { val: 'rtc', label: 'Ready-To-Cook' },
-      { val: 'paste', label: 'Paste' },
-    ],
-  };
 
   const prodListColumns: {
     title: string;
@@ -241,52 +207,7 @@ const ProdMgmt = () => {
           <Row justify='center'>
             <ContainerCard tabList={tabList}>
               <Space direction='vertical' size={40} className='width-full'>
-                <Space direction='vertical' size={20} className='width-full'>
-                  <Row gutter={[30, 30]}>
-                    <Col lg={10} xl={8}>
-                      <InputSelect
-                        selectBefore={prodInputSelect}
-                        placeholder='Input'
-                      ></InputSelect>
-                    </Col>
-                    <Col lg={4} xl={3}>
-                      <Select
-                        placeholder={prodCatSelect.placeholder}
-                        style={{ width: '100%' }}
-                      >
-                        {prodCatSelect.options.map((option) => (
-                          <Option key={option.val} value={option.val}>
-                            {option.label}
-                          </Option>
-                        ))}
-                      </Select>
-                    </Col>
-                    <Col lg={7} xl={5}>
-                      <InputRange
-                        label='Stock'
-                        placeholder={['Start', 'End']}
-                        min={0}
-                      />
-                    </Col>
-                    <Col lg={12} xl={7}>
-                      <InputRange
-                        label='Price'
-                        placeholder={['Start', 'End']}
-                        addonBefore='RM'
-                        min={0}
-                        precision={2}
-                      />
-                    </Col>
-                  </Row>
-                  <Row gutter={20}>
-                    <Col>
-                      <Button type='primary'>Search</Button>
-                    </Col>
-                    <Col>
-                      <Button>Reset</Button>
-                    </Col>
-                  </Row>
-                </Space>
+                <FilterInputs />
                 <Space direction='vertical' size={15} className='width-full'>
                   <Row justify='space-between'>
                     <Col>

@@ -353,6 +353,7 @@ const Dashboard = () => {
                     <RadioGroup
                       radioButtons={salesRadioBtn}
                       onClickEvent={setSalesDateRange}
+                      defaultValue='year'
                     />
                   </Col>
                 </Row>
