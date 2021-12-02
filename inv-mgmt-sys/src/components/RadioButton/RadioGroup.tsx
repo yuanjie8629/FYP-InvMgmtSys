@@ -11,8 +11,8 @@ const RadioGroup = (props: RadioGroupProps) => {
       buttonStyle='solid'
       size='large'
       style={{ marginRight: 30 }}
-      defaultValue='year'
       onChange={(e) => props.onClickEvent(e.target.value)}
+      {...props}
     >
       {props.radioButtons.map((radioBtn) => (
         <Radio.Button
