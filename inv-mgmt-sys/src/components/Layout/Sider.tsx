@@ -99,7 +99,7 @@ const Sider = () => {
               )
             ),
             menuLevel.level !== menuList.length ? (
-              <Menu.Divider style={{ margin: '24px 0' }} />
+              <Menu.Divider key={menuLevel.level}style={{ margin: '24px 0' }} />
             ) : null,
           ])}
           <Menu.Item

@@ -1,7 +1,4 @@
-import Icon from '@ant-design/icons';
-
-const BulkEditSvg = () => (
-  <svg
+<svg
     width='16'
     height='16'
     viewBox='0 0 16 16'
@@ -13,10 +10,3 @@ const BulkEditSvg = () => (
       fill='white'
     />
   </svg>
-);
-
-const BulkEditIcon = (props: any) => (
-  <Icon component={BulkEditSvg} {...props} />
-);
-
-export default BulkEditIcon;

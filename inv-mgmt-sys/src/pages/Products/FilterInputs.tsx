@@ -32,12 +32,14 @@ const FilterInputs = () => {
         <Col lg={10} xl={8}>
           <InputSelect
             selectBefore={prodInputSelect}
-            placeholder='Input'></InputSelect>
+            placeholder='Input'
+          ></InputSelect>
         </Col>
         <Col lg={4} xl={3}>
           <Select
             placeholder={prodCatSelect.placeholder}
-            style={{ width: '100%' }}>
+            style={{ width: '100%' }}
+          >
             {prodCatSelect.options.map((option) => (
               <Option key={option.val} value={option.val}>
                 {option.label}

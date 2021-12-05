@@ -2,17 +2,32 @@ import ContainerCard from '@components/ContainerCard/ContainerCard';
 import Layout from '@components/Layout/Layout';
 import InformativeTable from '@components/Table/InformativeTable';
 import Button from '@components/Button/Button';
-import { Col, Image, Row, Space, Typography } from 'antd';
-import { HiPencilAlt, HiTrash } from 'react-icons/hi';
+import {
+  Col,
+  Image,
+  Row,
+  Space,
+  Typography,
+  InputNumber,
+  Grid,
+  Radio,
+} from 'antd';
 import FilterInputs from './FilterInputs';
 import prodList from './prodList';
-import BulkEditIcon from '@components/Icons/BulkEditIcon';
-import Icon from '@ant-design/icons';
+import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
+import { MdAdd, MdRemove } from 'react-icons/md';
+
 const ProdInv = () => {
   const { Text, Title } = Typography;
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
 
   const onSelectBtn = (
-    <Button type='primary' icon={<BulkEditIcon />}>
+    <Button
+      type='primary'
+      icon={<BulkEditIcon style={{ marginRight: 5 }} />}
+      style={{ display: 'flex', alignItems: 'center' }}
+    >
       Bulk Updates
     </Button>
   );
@@ -24,10 +39,20 @@ const ProdInv = () => {
     { key: 'hidden', tab: 'Hidden' },
   ];
 
-  const prodListColumns: {
+  const getSalesData = (data: string) =>
+    data === 'month'
+      ? console.log('month')
+      : data === 'week'
+      ? console.log('week')
+      : data === 'day'
+      ? console.log('day')
+      : console.log('year');
+
+  const prodInvColumns: {
     title: string;
     dataIndex?: string | string[];
     key: string;
+    width?: number | string;
     sorter?: boolean;
     align?: 'left' | 'center' | 'right';
     render?: any;
@@ -36,11 +61,16 @@ const ProdInv = () => {
       title: 'Product',
       dataIndex: ['prodNm', 'prodCat', 'prodImg'],
       key: 'prod',
+      width: screens.xl ? '40%' : '35%',
       sorter: true,
       render: (_: any, data: { [x: string]: string | undefined }) => (
-        <Row>
+        <Row gutter={5}>
           <Col>
-            <Image src={data['prodImg']} height={120} />
+            <Image
+              src={data['prodImg']}
+              height={screens.xl ? 120 : 80}
+              width={screens.xl ? 120 : 80}
+            />
           </Col>
           <Col>
             <Space direction='vertical' size={5}>
@@ -57,12 +87,14 @@ const ProdInv = () => {
       title: 'SKU',
       dataIndex: 'prodSKU',
       key: 'prodSKU',
+      width: '15%',
       sorter: true,
     },
     {
       title: 'Price',
       dataIndex: 'prodPrice',
       key: 'prodPrice',
+      width: '12%',
       sorter: true,
       render: (amount: string) => (
         <Text className='color-grey'>RM {parseFloat(amount).toFixed(2)}</Text>
@@ -72,39 +104,75 @@ const ProdInv = () => {
       title: 'Stock',
       dataIndex: 'prodStock',
       key: 'prodStock',
+      width: '10%',
       sorter: true,
     },
     {
       title: 'Action',
       key: 'action',
-      render: () => (
-        <Space direction='vertical' size={5}>
-          <Button
-            type='link'
-            color='info'
-            icon={
-              <HiPencilAlt
-                size={16}
-                style={{ marginRight: 5, position: 'relative', top: 3 }}
+      width: screens.xl ? '20%' : '33%',
+      render: () => {
+        const prodInvRadioBtn: {
+          defaultValue: string;
+          data: {
+            value: string;
+            label: React.ReactNode;
+          }[];
+        } = {
+          defaultValue: '+',
+          data: [
+            {
+              value: '+',
+              label: (
+                <MdAdd size={20} style={{ position: 'relative', top: 5 }} />
+              ),
+            },
+            {
+              value: '-',
+              label: (
+                <MdRemove size={20} style={{ position: 'relative', top: 5 }} />
+              ),
+            },
+            {
+              value: 'Set',
+              label: (
+                <Text strong style={{ color: 'white', padding: '0 12px' }}>
+                  Set
+                </Text>
+              ),
+            },
+          ],
+        };
+        return (
+          <Space size={10} direction='vertical'>
+            <Row>
+              <Radio.Group
+                buttonStyle='solid'
+                size={screens.xl ? 'middle' : 'small'}
+                onChange={(e) => getSalesData(e.target.value)}
+                defaultValue={prodInvRadioBtn.defaultValue}
+                options={prodInvRadioBtn.data}
+                optionType='button'
               />
-            }
-          >
-            Edit
-          </Button>
-          <Button
-            type='link'
-            color='info'
-            icon={
-              <HiTrash
-                size={16}
-                style={{ marginRight: 5, position: 'relative', top: 2 }}
-              />
-            }
-          >
-            Delete
-          </Button>
-        </Space>
-      ),
+            </Row>
+            <Row gutter={10}>
+              <Col>
+                <InputNumber
+                  defaultValue={0}
+                  min={0}
+                  size={screens.xl ? 'middle' : 'small'}
+                  style={{ width: 150 }}
+                ></InputNumber>
+              </Col>
+              <Col>
+                <Button type='primary' size={screens.xl ? 'middle' : 'small'}>
+                  Save
+                </Button>
+              </Col>
+            </Row>
+          </Space>
+        );
+      },
     },
   ];
   return (
@@ -131,7 +199,7 @@ const ProdInv = () => {
 
                   <InformativeTable
                     dataSource={prodList}
-                    columns={prodListColumns}
+                    columns={prodInvColumns}
                     buttons={onSelectBtn}
                   />
                 </Space>
