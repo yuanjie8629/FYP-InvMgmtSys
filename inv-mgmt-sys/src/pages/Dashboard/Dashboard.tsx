@@ -8,6 +8,7 @@ import Row from 'antd/es/row';
 import Space from 'antd/es/space';
 import Spin from 'antd/es/spin';
 import Typography from 'antd/es/typography';
+import Radio from 'antd/es/radio';
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined';
 import {
   MdArrowRight,
@@ -33,7 +34,6 @@ import recentOrders from './recentOrders';
 import topProduct from './topProducts';
 import invAnalysis from './invAnalysis';
 import './Dashboard.less';
-import RadioGroup from '@components/RadioButton/RadioGroup';
 import RankingList from '@components/List/RankingList';
 
 const LineChart = lazy(() => import('@components/Chart/LineChart'));
@@ -92,12 +92,22 @@ const Dashboard = () => {
       <MdChevronRight size={22} className='dashboard-right-arrow' />
     </Button>
   );
-  const salesRadioBtn: { value: string; label: string }[] = [
-    { value: 'year', label: 'Year' },
-    { value: 'month', label: 'Month' },
-    { value: 'week', label: 'Week' },
-    { value: 'day', label: 'Day' },
-  ];
+
+  const salesRadioBtn: {
+    defaultValue: string;
+    data: {
+      value: string;
+      label: React.ReactNode;
+    }[];
+  } = {
+    defaultValue: 'year',
+    data: [
+      { value: 'year', label: 'Year' },
+      { value: 'month', label: 'Month' },
+      { value: 'week', label: 'Week' },
+      { value: 'day', label: 'Day' },
+    ],
+  };
 
   const recentOrderColumns: {
     title: string;
@@ -112,9 +122,7 @@ const Dashboard = () => {
       dataIndex: 'orderID',
       key: 'orderID',
       width: 120,
-      render: (id: string) => (
-        <Text strong>{id}</Text>
-      ),
+      render: (id: string) => <Text strong>{id}</Text>,
     },
     {
       title: 'Customer Name',
@@ -271,7 +279,10 @@ const Dashboard = () => {
       i++
     ) {
       cols.push(
-        <Col className='dashboard-toDoList-col'>
+        <Col
+          key={'toDoList-col-placeholder-' + i}
+          className='dashboard-toDoList-col'
+        >
           <div style={{ width: screens.xl ? 255 : 230 }}></div>
         </Col>
       );
@@ -350,11 +361,15 @@ const Dashboard = () => {
                     <Text className='dashboard-grey-text'>{getSalesDate}</Text>
                   </Col>
                   <Col>
-                    <RadioGroup
-                      radioButtons={salesRadioBtn}
-                      onClickEvent={setSalesDateRange}
-                      defaultValue='year'
-                    />
+                    <Radio.Group
+                      buttonStyle='solid'
+                      size='large'
+                      style={{ marginRight: 30 }}
+                      onChange={(e) => setSalesDateRange(e.target.value)}
+                      defaultValue={salesRadioBtn.defaultValue}
+                      options={salesRadioBtn.data}
+                      optionType='button'
+                    ></Radio.Group>
                   </Col>
                 </Row>
 

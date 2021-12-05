@@ -45,7 +45,7 @@ const Login = () => {
                 <Title level={3} style={{ padding: 20 }}>
                   Login
                 </Title>
-                <Form name='login'>
+                <Form name='loginForm'>
                   <Form.Item
                     name='username'
                     rules={[

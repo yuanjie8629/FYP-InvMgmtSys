@@ -3,7 +3,7 @@ import Button from '@components/Button/Button';
 import Layout from '@components/Layout/Layout';
 import Tag, { TagProps } from '@components/Tag/Tag';
 import FilterInputs from './FilterInputs';
-import { Row, Space, Col, Typography, Image, Dropdown, Menu } from 'antd';
+import { Row, Space, Col, Grid, Typography, Image, Dropdown, Menu } from 'antd';
 import InformativeTable from '@components/Table/InformativeTable';
 import prodList from './prodList';
 import { HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
@@ -11,6 +11,8 @@ import { MdArrowDropDown } from 'react-icons/md';
 
 const ProdMgmt = () => {
   const { Text, Title } = Typography;
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
 
   const onSelectBtn = (
     <Space size={15}>
@@ -48,12 +50,13 @@ const ProdMgmt = () => {
     { key: 'hidden', tab: 'Hidden' },
   ];
 
-  const prodListColumns: {
+  const prodMgmtColumns: {
     title: string;
     dataIndex?: string | string[];
     key: string;
     sorter?: boolean;
     align?: 'left' | 'center' | 'right';
+    width?: number | string;
     render?: any;
   }[] = [
     {
@@ -62,9 +65,13 @@ const ProdMgmt = () => {
       key: 'prod',
       sorter: true,
       render: (_: any, data: { [x: string]: string | undefined }) => (
-        <Row>
+        <Row gutter={5}>
           <Col>
-            <Image src={data['prodImg']} height={120} />
+            <Image
+              src={data['prodImg']}
+              height={screens.xl ? 120 : 100}
+              width={screens.xl ? 120 : 100}
+            />
           </Col>
           <Col>
             <Space direction='vertical' size={5}>
@@ -219,7 +226,7 @@ const ProdMgmt = () => {
                   </Row>
                   <InformativeTable
                     dataSource={prodList}
-                    columns={prodListColumns}
+                    columns={prodMgmtColumns}
                     buttons={onSelectBtn}
                   />
                 </Space>
