@@ -5,8 +5,8 @@ import {
   Route,
   Navigate,
 } from 'react-router-dom';
-import routeList from './-routeList';
-import routeRedirectList from './-routeRedirectList';
+import routeList from './routeList';
+import routeRedirectList from './routeRedirectList';
 export default function AppRoute() {
   return (
     <Router>
