@@ -1,5 +1,5 @@
 import { Avatar, Col, Dropdown, Menu, Row } from 'antd';
-import menuList from './avatarDropdownList';
+import menuList from './-avatarDropdownList';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './AvatarDropdown.less';
 import AvatarImg from '@assets/avatar.png';
