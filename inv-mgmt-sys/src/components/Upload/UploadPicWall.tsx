@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { MdAdd } from 'react-icons/md';
 import {
-  message,
   Upload as AntdUpload,
   UploadProps as AntdUploadProps,
-  Typography,
   Modal,
 } from 'antd';
 
 const UploadPicWall = (props: AntdUploadProps) => {
-  const { Text } = Typography;
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');

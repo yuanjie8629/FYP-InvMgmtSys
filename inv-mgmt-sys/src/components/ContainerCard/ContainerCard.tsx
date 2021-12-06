@@ -20,7 +20,6 @@ const ContainerCard = ({
           '0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)',
         borderRadius: 12,
       }}
-      className='container-card'
       {...props}
     >
       <div style={{ padding: '10px 25px' }}>{props.children}</div>

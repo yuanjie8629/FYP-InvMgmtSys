@@ -271,10 +271,15 @@ const Dashboard = () => {
   ];
 
   const toDoItemPlaceHolder = () => {
-    const cols = []
+    const cols = [];
+    const numItemPerRow = screens.xl
+      ? 5
+      : isSiderCollapsed && !screens.lg
+      ? 4
+      : 3;
     for (
       let i = 0;
-      i < 5;
+      i < numItemPerRow - (toDoList.length % numItemPerRow);
       i++
     ) {
       cols.push(

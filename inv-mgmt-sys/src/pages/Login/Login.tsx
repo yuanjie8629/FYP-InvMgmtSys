@@ -14,9 +14,7 @@ const Login = () => {
   const { Title } = Typography;
   return (
     <div className='login'>
-      <Helmet>
-        <meta name='viewport' content='width=576'></meta>
-      </Helmet>
+      <Helmet><meta name='viewport' content='width=576'></meta></Helmet>
       {/*Left half screen*/}
       <Row className='login-container'>
         <Col
@@ -40,84 +38,86 @@ const Login = () => {
           {/*Login Form*/}
           <Row className='login-form-container'>
             <Col span={24}>
-              <Space direction='vertical' size={10} className='login-form'>
+              <div className='login-form'>
                 {/*Title*/}
                 <Title level={3} style={{ padding: 20 }}>
                   Login
                 </Title>
-                <Form name='loginForm'>
-                  <Form.Item
-                    name='username'
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please enter your Username!',
-                        whitespace: true,
-                      },
-                    ]}
-                  >
-                    <Input
-                      size='large'
-                      placeholder='Username'
-                      allowClear
-                      className='login-input'
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    name='password'
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please enter your Password!',
-                      },
-                    ]}
-                  >
-                    <Input.Password
-                      size='large'
-                      placeholder='Password'
-                      className='login-input'
-                      allowClear
-                    />
-                  </Form.Item>
+                <Form name='loginForm' layout='vertical'>
+                  <Space direction='vertical' className='width-full'>
+                    <Form.Item
+                      name='username'
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Please enter your Username!',
+                          whitespace: true,
+                        },
+                      ]}
+                    >
+                      <Input
+                        size='large'
+                        placeholder='Username'
+                        allowClear
+                        className='login-input'
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name='password'
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Please enter your Password!',
+                        },
+                      ]}
+                    >
+                      <Input.Password
+                        size='large'
+                        placeholder='Password'
+                        className='login-input'
+                        allowClear
+                      />
+                    </Form.Item>
 
-                  <Form.Item>
-                    <Button
-                      type='primary'
-                      size='large'
-                      htmlType='submit'
-                      block
-                      onClick={() => {
-                        navigate('/dashboard', { replace: true });
-                      }}
-                    >
-                      Login
-                    </Button>
-                  </Form.Item>
-                  <Form.Item style={{ marginTop: -20 }}>
-                    <Button
-                      type='link'
-                      color='info'
-                      className='login-right-align'
-                    >
-                      Forgot Password
-                    </Button>
-                  </Form.Item>
-                  <Form.Item style={{ marginTop: -20, marginBottom: 0 }}>
-                    <Button
-                      type='link'
-                      color='info'
-                      icon={
-                        <CaretLeftOutlined
-                          style={{ position: 'relative', left: 5 }}
-                        />
-                      }
-                      className='login-left-align'
-                    >
-                      Go to Sharifah Food E-commerce
-                    </Button>
-                  </Form.Item>
+                    <Form.Item>
+                      <Button
+                        type='primary'
+                        size='large'
+                        htmlType='submit'
+                        block
+                        onClick={() => {
+                          navigate('/dashboard', { replace: true });
+                        }}
+                      >
+                        Login
+                      </Button>
+                    </Form.Item>
+                    <Form.Item style={{ marginTop: -20 }}>
+                      <Button
+                        type='link'
+                        color='info'
+                        className='login-right-align'
+                      >
+                        Forgot Password
+                      </Button>
+                    </Form.Item>
+                    <Form.Item style={{ marginTop: -20, marginBottom: 0 }}>
+                      <Button
+                        type='link'
+                        color='info'
+                        icon={
+                          <CaretLeftOutlined
+                            style={{ position: 'relative', left: 5 }}
+                          />
+                        }
+                        className='login-left-align'
+                      >
+                        Go to Sharifah Food E-commerce
+                      </Button>
+                    </Form.Item>
+                  </Space>
                 </Form>
-              </Space>
+              </div>
             </Col>
           </Row>
         </Col>

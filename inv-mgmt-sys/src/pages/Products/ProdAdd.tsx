@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import ContainerCard from '@components/ContainerCard/ContainerCard';
 import Layout from '@components/Layout/Layout';
 import UploadPicWall from '@components/Upload/UploadPicWall';
+import AffixAdd from '@components/Affix/AffixAdd';
 import {
   Anchor,
+  BackTop,
   Checkbox,
   Col,
   Divider,
@@ -60,7 +62,7 @@ const ProdAdd = () => {
                 size={20}
                 className='container-card-wrapper'
               >
-                <Row justify='center' className='width-full'>
+                <Row justify='center'>
                   <ContainerCard>
                     <Space
                       direction='vertical'
@@ -116,7 +118,7 @@ const ProdAdd = () => {
                     </Space>
                   </ContainerCard>
                 </Row>
-                <Row justify='center' className='width-full'>
+                <Row justify='center'>
                   <ContainerCard>
                     <Space
                       direction='vertical'
@@ -231,7 +233,7 @@ const ProdAdd = () => {
                     </Space>
                   </ContainerCard>
                 </Row>
-                <Row justify='center' className='width-full'>
+                <Row justify='center'>
                   <ContainerCard>
                     <Space
                       direction='vertical'
@@ -351,6 +353,7 @@ const ProdAdd = () => {
                   </ContainerCard>
                 </Row>
               </Space>
+              <AffixAdd offsetBottom={0} label='Product' />
             </Col>
             <Col span={3}>
               <Anchor offsetTop={150} targetOffset={targetOffset}>
@@ -365,6 +368,7 @@ const ProdAdd = () => {
             </Col>
           </Row>
         </Form>
+        <BackTop />
       </div>
     </Layout>
   );

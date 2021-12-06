@@ -14,7 +14,7 @@ const Layout = (props: CustomLayoutProps) => {
   return (
     <AntdLayout>
       <Helmet>
-        <meta name='viewport' content='width=1600'></meta>
+        
       </Helmet>
       <Sider />
       <AntdLayout>
