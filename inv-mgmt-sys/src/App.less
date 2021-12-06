@@ -106,6 +106,7 @@ body {
 
     &-tab {
       padding: 16px 15px !important;
+      
       &-active {
         font-weight: bold !important;
       }
@@ -175,12 +176,26 @@ body {
       &-ball {
         width: 3px !important;
         height: 30px !important;
+        background-color: @primary-color !important;
         transform: translate(-50%, -35%) !important;
       }
 
       &::before {
         width: 4px !important;
-        height: 99% !important;
+        height: 96% !important;
+        border-radius: 12px;
+        position: relative !important; 
+        top: 3px !important;
+      }
+    }
+    &-link {
+      &-title {
+        font-weight: 500;
+        padding: 1px 0;
+
+        &-active {
+          font-weight: bold;
+        }
       }
     }
   }
