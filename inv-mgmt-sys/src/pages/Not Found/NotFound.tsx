@@ -1,7 +1,7 @@
 import { Col, Row, Image, Layout, Typography, Space } from 'antd';
 import Button from '@components/Button/Button';
 import { useNavigate } from 'react-router-dom';
-import { findRoutePath } from '@utils/RoutingUtils';
+import { findRoutePath } from '@utils/-routingUtils';
 import Img404 from '@assets/404.svg';
 import Logo from '@assets/logo.webp';
 import './NotFound.less';

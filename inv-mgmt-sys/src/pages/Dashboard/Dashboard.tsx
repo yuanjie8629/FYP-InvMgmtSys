@@ -26,7 +26,7 @@ import Button from '@components/Button/Button';
 import StatisticsDashboard from '@components/Statistics/Statistics';
 import Table from '@components/Table/Table';
 import Tag from '@components/Tag/Tag';
-import { findRoutePath } from '@utils/RoutingUtils';
+import { findRoutePath } from '@utils/-routingUtils';
 import toDoList from './toDoList';
 import { dataYear, dataMonth, dataWeek, dataDay } from './salesData';
 import statisticsData from './statisticsData';
