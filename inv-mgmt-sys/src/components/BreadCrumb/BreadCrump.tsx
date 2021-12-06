@@ -1,7 +1,7 @@
 import { Breadcrumb as AntdBreadcrumb } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
 import { Link, useLocation } from 'react-router-dom';
-import breadcrumbNameMap from './breadCrumpList';
+import breadcrumbNameMap from './-breadCrumpList';
 
 const BreadCrumb = () => {
   const location = useLocation();
