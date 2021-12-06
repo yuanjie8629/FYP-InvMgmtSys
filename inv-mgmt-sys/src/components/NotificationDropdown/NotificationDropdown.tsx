@@ -14,7 +14,7 @@ import Button from '@components/Button/Button';
 import { MdNotifications } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import menuList from './notificationDropdownList';
-import { findRoutePath, findIcon } from '@utils/-routingUtils';
+import { findRoutePath, findIcon } from '@utils/routingUtils';
 import './NotificationDropdown.less';
 
 const NotificationDropdown = () => {

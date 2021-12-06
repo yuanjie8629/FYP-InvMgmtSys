@@ -26,7 +26,7 @@ import Button from '@components/Button/Button';
 import StatisticsDashboard from '@components/Statistics/Statistics';
 import Table from '@components/Table/Table';
 import Tag from '@components/Tag/Tag';
-import { findRoutePath } from '@utils/-routingUtils';
+import { findRoutePath } from '@utils/routingUtils';
 import toDoList from './toDoList';
 import { dataYear, dataMonth, dataWeek, dataDay } from './salesData';
 import statisticsData from './statisticsData';
@@ -271,11 +271,10 @@ const Dashboard = () => {
   ];
 
   const toDoItemPlaceHolder = () => {
-    const cols = [];
-    const numItemPerRow = screens.xl ? 5 : isSiderCollapsed ? 4 : 3;
+    const cols = []
     for (
       let i = 0;
-      i < numItemPerRow - (toDoList.length % numItemPerRow);
+      i < 5;
       i++
     ) {
       cols.push(

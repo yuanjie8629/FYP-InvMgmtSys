@@ -5,7 +5,7 @@ import { Layout, Menu, Image, Grid } from 'antd';
 import menuList from './siderMenuList';
 import Logo from '@assets/logo.webp';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { findRoutePath } from '@utils/-routingUtils';
+import { findRoutePath } from '@utils/routingUtils';
 import classNames from 'classnames';
 
 const Sider = () => {
