@@ -1,5 +1,5 @@
-import routeList from '@routes/RouteList';
-import siderMenuList from '@components/Layout/siderMenuList';
+import routeList from '@routes/-routeList';
+import siderMenuList from '@components/Layout/-siderMenuList';
 import { IconType } from 'react-icons';
 
 const findRoutePath = (label: string) => {
