@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@hooks/reduxHooks';
 import { collapse, expand, increment } from '@state/siderSlice';
 import { Layout, Menu, Image, Grid } from 'antd';
-import menuList from './siderMenuList';
+import menuList from './-siderMenuList';
 import Logo from '@assets/logo.webp';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { findRoutePath } from '@utils/RoutingUtils';
