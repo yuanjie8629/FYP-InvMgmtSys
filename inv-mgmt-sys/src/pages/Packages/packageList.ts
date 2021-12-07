@@ -4,7 +4,10 @@ const packageList = [
   {
     key: '1',
     packNm: 'Promo Raya Qurban',
-    prodIncl: [{ prodName: 'Rendang Dengeng Daging', quantity: 5 }],
+    packProds: [
+      { prodNm: 'Rendang Dengeng Daging', quantity: 5 },
+      { prodNm: 'test', quantity: 6 },
+    ],
     packSKU: 'SHRF-RTC-NBB',
     packImg: PromoRayaQurban,
     packPrice: 50,

@@ -63,11 +63,11 @@ const PackMgmt = () => {
   }[] = [
     {
       title: 'Package',
-      dataIndex: ['packNm', 'packImg'],
+      dataIndex: ['packNm', 'packSKU', 'packImg'],
       key: 'prod',
       sorter: true,
       render: (_: any, data: { [x: string]: string | undefined }) => (
-        <Row gutter={5}>
+        <Row gutter={15}>
           <Col>
             <Image
               src={data['packImg']}
@@ -80,17 +80,29 @@ const PackMgmt = () => {
               <Button type='link' color='info'>
                 {data['packNm']}
               </Button>
-              <Text className='color-grey text-sm'>{data['prodCat']}</Text>
+              <Text className='color-grey text-sm'>{data['packSKU']}</Text>
             </Space>
           </Col>
         </Row>
       ),
     },
     {
-      title: 'SKU',
-      dataIndex: 'packSKU',
-      key: 'packSKU',
-      sorter: true,
+      title: 'Products Included',
+      dataIndex: ['packProds', 'quantity'],
+      key: 'packProds',
+      render: (
+        _: any,
+        data: {
+          [x: string]: React.ReactNode;
+        }
+      ) => (
+        <Row gutter={15}>
+          <Col>{data['packProds.quantity']}</Col>
+          <Col>
+            <Space direction='vertical' size={5}></Space>
+          </Col>
+        </Row>
+      ),
     },
     {
       title: 'Price',
@@ -122,7 +134,9 @@ const PackMgmt = () => {
         const menu = (
           <Menu>
             {statusList.map((statusItem) =>
-              !(status === statusItem.status || statusItem.status !== 'hidden') ? (
+              !(
+                status === statusItem.status || statusItem.status !== 'hidden'
+              ) ? (
                 <Menu.Item key='{statusItem.status}'>
                   {statusItem.label}
                 </Menu.Item>
