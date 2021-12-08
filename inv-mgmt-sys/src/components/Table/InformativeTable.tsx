@@ -45,6 +45,8 @@ const InformativeTable = (props: InformativeTableProps) => {
             showTotal: showTotal,
             showSizeChanger: true,
             showQuickJumper: true,
+            defaultPageSize: 5,
+            pageSizeOptions: ['5', '10', '15', '20'],
           }}
           {...props}
         ></Table>

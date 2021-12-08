@@ -118,7 +118,11 @@ const ProdMgmt = () => {
         const menu = (
           <Menu>
             {statusList.map((statusItem) =>
-              !(status === statusItem.status || statusItem.status === 'oos') ? (
+              !(
+                status === statusItem.status ||
+                (statusItem.status !== 'hidden' &&
+                  statusItem.status !== 'active')
+              ) ? (
                 <Menu.Item key={statusItem.status}>
                   {statusItem.label}
                 </Menu.Item>
@@ -157,13 +161,15 @@ const ProdMgmt = () => {
         ) : (
           <ProdStatusTag
             color={
-              statusList.find((statusItem) => statusItem.status === 'oos')!
-                .color
+              statusList.find(
+                (statusItem) => statusItem.status === matchedStatus.status
+              )!.color
             }
           >
             {
-              statusList.find((statusItem) => statusItem.status === 'oos')!
-                .label
+              statusList.find(
+                (statusItem) => statusItem.status === matchedStatus.status
+              )!.label
             }
           </ProdStatusTag>
         );

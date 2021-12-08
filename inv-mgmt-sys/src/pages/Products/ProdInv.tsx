@@ -155,7 +155,7 @@ const ProdInv = () => {
                 optionType='button'
               />
             </Row>
-            <Row gutter={10}>
+            <Row gutter={[10, 10]}>
               <Col>
                 <InputNumber
                   defaultValue={0}
@@ -193,7 +193,7 @@ const ProdInv = () => {
                       <Title level={4}>Product List</Title>
                     </Col>
                     <Col>
-                      <Button type='primary'>Add Product</Button>
+                      <Button type='primary'>View Product</Button>
                     </Col>
                   </Row>
 

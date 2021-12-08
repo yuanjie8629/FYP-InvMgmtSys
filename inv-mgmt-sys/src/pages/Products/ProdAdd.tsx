@@ -5,7 +5,6 @@ import UploadPicWall from '@components/Upload/UploadPicWall';
 import AffixAdd from '@components/Affix/AffixAdd';
 import {
   Anchor,
-  BackTop,
   Checkbox,
   Col,
   Divider,
@@ -113,7 +112,7 @@ const ProdAdd = () => {
                         <Input.TextArea style={{ height: 200 }} />
                       </Form.Item>
                       <Form.Item label='Product Status' name='prodStat'>
-                        <Checkbox>Hidden</Checkbox>
+                        <Checkbox value='hidden'>Hidden</Checkbox>
                       </Form.Item>
                     </Space>
                   </ContainerCard>
@@ -368,7 +367,6 @@ const ProdAdd = () => {
             </Col>
           </Row>
         </Form>
-        <BackTop />
       </div>
     </Layout>
   );
