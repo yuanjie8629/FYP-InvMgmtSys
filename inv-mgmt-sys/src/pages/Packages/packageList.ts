@@ -12,16 +12,20 @@ const packageList = [
     packImg: PromoRayaQurban,
     packPrice: 50,
     packStock: 50,
-    packStatus: 'active',
+    packStatus: 'expired',
   },
   {
     key: '2',
-    packNm: 'Nasi B234124 Bukhari',
+    packNm: 'Hashtag',
+    packProds: [
+      { prodNm: 'Paste', quantity: 7 },
+      { prodNm: 'testing', quantity: 10 },
+    ],
     packSKU: 'SHRF-RTC-NBB',
     packImg: hashtag,
-    packPrice: 17.6,
-    packStock: 120,
-    packStatus: 'oos',
+    packPrice: 100.2,
+    packStock: 210,
+    packStatus: 'scheduled',
   },
 ];
 

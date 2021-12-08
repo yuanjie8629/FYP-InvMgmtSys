@@ -88,21 +88,15 @@ const PackMgmt = () => {
     },
     {
       title: 'Products Included',
-      dataIndex: ['packProds', 'quantity'],
-      key: 'packProds',
-      render: (
-        _: any,
-        data: {
-          [x: string]: React.ReactNode;
-        }
-      ) => (
-        <Row gutter={15}>
-          <Col>{data['packProds.quantity']}</Col>
-          <Col>
-            <Space direction='vertical' size={5}></Space>
-          </Col>
-        </Row>
-      ),
+      dataIndex: 'packProds',
+      key: 'packProds.quantity',
+      render: (products: []) =>
+        products.map((product: any) => (
+          <Row justify='space-between'>
+            <Text className='color-grey'>{product.prodNm}</Text>
+            <Text className='color-grey'>x{product.quantity}</Text>
+          </Row>
+        )),
     },
     {
       title: 'Price',
@@ -127,7 +121,7 @@ const PackMgmt = () => {
         const statusList = [
           { status: 'active', label: 'Active', color: 'success' },
           { status: 'oos', label: 'Out of Stock', color: 'error' },
-          { status: 'scheduled', label: 'Scheduled', color: 'info' },
+          { status: 'scheduled', label: 'Scheduled', color: 'processing' },
           { status: 'expired', label: 'Expired', color: 'warning' },
           { status: 'hidden', label: 'Hidden', color: 'default' },
         ];
@@ -135,7 +129,9 @@ const PackMgmt = () => {
           <Menu>
             {statusList.map((statusItem) =>
               !(
-                status === statusItem.status || statusItem.status !== 'hidden'
+                status === statusItem.status ||
+                (statusItem.status !== 'hidden' &&
+                  statusItem.status !== 'active')
               ) ? (
                 <Menu.Item key='{statusItem.status}'>
                   {statusItem.label}
@@ -163,7 +159,9 @@ const PackMgmt = () => {
           (statusItem) => status === statusItem.status
         );
 
-        return matchedStatus?.status !== 'oos' ? (
+        return !(
+          ['expired', 'oos', 'scheduled'].indexOf(matchedStatus!.status) >= 0
+        ) ? (
           <Row align='middle'>
             <ProdStatusTag color={matchedStatus!.color}>
               {matchedStatus!.label}
@@ -175,13 +173,15 @@ const PackMgmt = () => {
         ) : (
           <ProdStatusTag
             color={
-              statusList.find((statusItem) => statusItem.status === 'oos')!
-                .color
+              statusList.find(
+                (statusItem) => statusItem.status === matchedStatus?.status
+              )!.color
             }
           >
             {
-              statusList.find((statusItem) => statusItem.status === 'oos')!
-                .label
+              statusList.find(
+                (statusItem) => statusItem.status === matchedStatus?.status
+              )!.label
             }
           </ProdStatusTag>
         );
