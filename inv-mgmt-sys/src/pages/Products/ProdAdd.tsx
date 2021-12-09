@@ -112,7 +112,7 @@ const ProdAdd = () => {
                         <Input.TextArea style={{ height: 200 }} />
                       </Form.Item>
                       <Form.Item label='Product Status' name='prodStat'>
-                        <Checkbox value='hidden'>Hidden</Checkbox>
+                        <Checkbox>Hidden</Checkbox>
                       </Form.Item>
                     </Space>
                   </ContainerCard>
@@ -254,7 +254,7 @@ const ProdAdd = () => {
 
                         <Form.Item
                           label='Stock Quantity'
-                          name='prodSPrice'
+                          name='prodQuantity'
                           rules={[{ required: true }]}
                         >
                           <InputNumber min={0} defaultValue={0}></InputNumber>

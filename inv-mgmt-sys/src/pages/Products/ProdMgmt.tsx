@@ -8,6 +8,7 @@ import InformativeTable from '@components/Table/InformativeTable';
 import prodList from './prodList';
 import { HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
 import { MdArrowDropDown } from 'react-icons/md';
+import prodTabList from './prodTabList';
 
 const ProdMgmt = () => {
   const { Text, Title } = Typography;
@@ -42,13 +43,6 @@ const ProdMgmt = () => {
       </Button>
     </Space>
   );
-
-  const tabList = [
-    { key: 'all', tab: 'All' },
-    { key: 'active', tab: 'Active' },
-    { key: 'oos', tab: 'Out of Stock' },
-    { key: 'hidden', tab: 'Hidden' },
-  ];
 
   const prodMgmtColumns: {
     title: string;
@@ -218,7 +212,7 @@ const ProdMgmt = () => {
           className='container-card-wrapper'
         >
           <Row justify='center'>
-            <ContainerCard tabList={tabList}>
+            <ContainerCard tabList={prodTabList}>
               <Space direction='vertical' size={40} className='width-full'>
                 <FilterInputs />
                 <Space direction='vertical' size={15} className='width-full'>
