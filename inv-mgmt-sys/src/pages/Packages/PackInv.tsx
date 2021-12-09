@@ -16,6 +16,7 @@ import FilterInputs from './FilterInputs';
 import packageList from './packageList';
 import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
 import { MdAdd, MdRemove } from 'react-icons/md';
+import packTabList from './packTabList';
 
 const ProdInv = () => {
   const { Text, Title } = Typography;
@@ -31,13 +32,6 @@ const ProdInv = () => {
       Bulk Updates
     </Button>
   );
-
-  const tabList = [
-    { key: 'all', tab: 'All' },
-    { key: 'active', tab: 'Active' },
-    { key: 'oos', tab: 'Out of Stock' },
-    { key: 'hidden', tab: 'Hidden' },
-  ];
 
   const getSalesData = (data: string) =>
     data === 'month'
@@ -59,33 +53,40 @@ const ProdInv = () => {
   }[] = [
     {
       title: 'Package',
-      dataIndex: ['packNm', 'packImg'],
-      key: 'package',
-      width: screens.xl ? '40%' : '35%',
+      dataIndex: ['packNm', 'packSKU', 'packImg'],
+      key: 'prod',
       sorter: true,
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={15}>
           <Col>
             <Image
               src={data['packImg']}
-              height={screens.xl ? 120 : 80}
-              width={screens.xl ? 120 : 80}
+              height={screens.xl ? 120 : 100}
+              width={screens.xl ? 120 : 100}
             />
           </Col>
           <Col>
-            <Button type='link' color='info'>
-              {data['packNm']}
-            </Button>
+            <Space direction='vertical' size={5}>
+              <Button type='link' color='info'>
+                {data['packNm']}
+              </Button>
+              <Text className='color-grey text-sm'>{data['packSKU']}</Text>
+            </Space>
           </Col>
         </Row>
       ),
     },
     {
-      title: 'SKU',
-      dataIndex: 'packSKU',
-      key: 'packSKU',
-      width: '15%',
-      sorter: true,
+      title: 'Products Included',
+      dataIndex: 'packProds',
+      key: 'packProds.quantity',
+      render: (products: []) =>
+        products.map((product: any) => (
+          <Row justify='space-between'>
+            <Text className='color-grey'>{product.prodNm}</Text>
+            <Text className='color-grey'>x{product.quantity}</Text>
+          </Row>
+        )),
     },
     {
       title: 'Price',
@@ -181,7 +182,7 @@ const ProdInv = () => {
           className='container-card-wrapper'
         >
           <Row justify='center'>
-            <ContainerCard tabList={tabList}>
+            <ContainerCard tabList={packTabList}>
               <Space direction='vertical' size={40} className='width-full'>
                 <FilterInputs />
                 <Space direction='vertical' size={15} className='width-full'>

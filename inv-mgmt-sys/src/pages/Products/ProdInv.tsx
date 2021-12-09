@@ -16,6 +16,7 @@ import FilterInputs from './FilterInputs';
 import prodList from './prodList';
 import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
 import { MdAdd, MdRemove } from 'react-icons/md';
+import prodTabList from './prodTabList';
 
 const ProdInv = () => {
   const { Text, Title } = Typography;
@@ -31,13 +32,6 @@ const ProdInv = () => {
       Bulk Updates
     </Button>
   );
-
-  const tabList = [
-    { key: 'all', tab: 'All' },
-    { key: 'active', tab: 'Active' },
-    { key: 'oos', tab: 'Out of Stock' },
-    { key: 'hidden', tab: 'Hidden' },
-  ];
 
   const getSalesData = (data: string) =>
     data === 'month'
@@ -184,7 +178,7 @@ const ProdInv = () => {
           className='container-card-wrapper'
         >
           <Row justify='center'>
-            <ContainerCard tabList={tabList}>
+            <ContainerCard tabList={prodTabList}>
               <Space direction='vertical' size={40} className='width-full'>
                 <FilterInputs />
                 <Space direction='vertical' size={15} className='width-full'>
