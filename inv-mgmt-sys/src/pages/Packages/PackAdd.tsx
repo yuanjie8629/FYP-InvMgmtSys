@@ -6,16 +6,19 @@ import Table from '@components/Table/Table';
 import AffixAdd from '@components/Affix/AffixAdd';
 import {
   Anchor,
+  AutoComplete,
   Checkbox,
   Col,
   DatePicker,
   Form,
+  Image,
   Input,
   InputNumber,
   Row,
   Space,
   Typography,
 } from 'antd';
+import Button from '@components/Button/Button';
 
 const PackAdd = () => {
   const { Text, Title, Paragraph } = Typography;
@@ -43,13 +46,82 @@ const PackAdd = () => {
     { link: 'availPeriod', title: 'Available Period' },
   ];
 
+  const prodColumns: {
+    title: string;
+    dataIndex?: string | string[];
+    key: string;
+    sorter?: boolean;
+    align?: 'left' | 'center' | 'right';
+    width?: number | string;
+    render?: any;
+  }[] = [
+    {
+      title: 'Product',
+      dataIndex: ['prodNm', 'prodCat', 'prodImg'],
+      key: 'prod',
+
+      render: (_: any, data: { [x: string]: string | undefined }) => (
+        <Row gutter={5}>
+          <Col>
+            <Image src={data['prodImg']} height={120} width={120} />
+          </Col>
+          <Col>
+            <Space direction='vertical' size={5}>
+              <Button type='link' color='info'>
+                {data['prodNm']}
+              </Button>
+              <Text type='secondary' className='text-sm'>
+                {data['prodCat']}
+              </Text>
+            </Space>
+          </Col>
+        </Row>
+      ),
+    },
+    {
+      title: 'SKU',
+      dataIndex: 'prodSKU',
+      key: 'prodSKU',
+    },
+    {
+      title: 'Stock',
+      dataIndex: 'prodStock',
+      key: 'prodStock',
+    },
+  ];
+
+  const options: any = [
+    {
+      label: 'Ready-To-Eat',
+      options: [
+        { label: 'Kari Ayam', value: 'Kari Ayam' },
+        { label: 'Sambal Ikan Bilis', value: 'Sambal Ikan Bilis' },
+        { label: 'Rendang Dendeng Daging', value: 'Rendang Dendeng Daging' },
+      ],
+    },
+    {
+      label: 'Ready-To-Cook',
+      options: [
+        { label: 'Nasi Briyani Bukhari', value: 'Nasi Briyani Bukhari' },
+      ],
+    },
+    {
+      label: 'Paste',
+      options: [
+        { label: 'Pes Sambal Tumis', value: 'Pes Sambal Tumis' },
+        { label: 'Pes Masakan Keruntuk', value: 'Pes Masakan Keruntuk' },
+        { label: 'Pes Mi Goreng', value: 'Pes Mi Goreng' },
+      ],
+    },
+  ];
+
   useEffect(() => {
-    setTargetOffset(window.innerHeight / 1.4);
+    setTargetOffset(window.innerHeight / 1.5);
   }, []);
 
   return (
     <Layout>
-      <div className='pack-mgmt'>
+      <div className='pack-add'>
         <Form name='packForm' layout='vertical' size='small'>
           <Row justify='center'>
             <Col span={21}>
@@ -74,7 +146,7 @@ const PackAdd = () => {
                       </Title>
                       <Form.Item
                         label='Package Name'
-                        name='packName'
+                        name='packNm'
                         rules={[{ required: true }]}
                       >
                         <Input
@@ -123,16 +195,27 @@ const PackAdd = () => {
                         Products
                       </Title>
 
-                      <Form.Item label='Products To Be Included' name='prodName'>
-                        <Input
-                          placeholder='Product Name'
-                          style={{ width: '40%' }}
-                        />
-                        <Paragraph className='color-grey'>
+                      <Form.Item label='Products To Be Included' name='prodNm'>
+                        <Input.Group compact>
+                          <AutoComplete
+                            placeholder='Product Name'
+                            options={options}
+                            filterOption
+                            notFoundContent='Not Found'
+                            style={{ width: '40%' }}
+                          >
+                            <Input />
+                          </AutoComplete>
+                          <Button type='primary' style={{ padding: '0 15px' }}>
+                            Add
+                          </Button>
+                        </Input.Group>
+
+                        <Paragraph type='secondary'>
                           Note: Selected products will be displayed below.
                         </Paragraph>
                       </Form.Item>
-                      <Table />
+                      <Table columns={prodColumns} />
                     </Space>
                   </ContainerCard>
                 </Row>
@@ -248,13 +331,13 @@ const PackAdd = () => {
                             placeholder='Length'
                             addonAfter='cm'
                           ></InputNumber>
-                          <Text className='color-grey'>x</Text>
+                          <Text type='secondary'>x</Text>
                           <InputNumber
                             min={0}
                             placeholder='Width'
                             addonAfter='cm'
                           ></InputNumber>
-                          <Text className='color-grey'>x</Text>
+                          <Text type='secondary'>x</Text>
                           <InputNumber
                             min={0}
                             placeholder='Height'

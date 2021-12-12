@@ -39,7 +39,7 @@ const AvatarDropdown = () => {
             Tan Yuan Jie
           </Row>
           <Row justify='end' className='avatar-dropdown-role'>
-            Admin
+            Super Admin
           </Row>
         </Col>
         <Col>

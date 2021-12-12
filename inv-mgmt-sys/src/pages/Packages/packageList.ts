@@ -12,7 +12,7 @@ const packageList = [
     packImg: PromoRayaQurban,
     packPrice: 50,
     packStock: 50,
-    packStatus: 'expired',
+    packStat: 'expired',
   },
   {
     key: '2',
@@ -25,7 +25,7 @@ const packageList = [
     packImg: hashtag,
     packPrice: 100.2,
     packStock: 210,
-    packStatus: 'scheduled',
+    packStat: 'scheduled',
   },
 ];
 

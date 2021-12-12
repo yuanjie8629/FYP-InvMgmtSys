@@ -47,12 +47,12 @@ const ProdAdd = () => {
   ];
 
   useEffect(() => {
-    setTargetOffset(window.innerHeight / 1.4);
+    setTargetOffset(window.innerHeight / 1.7);
   }, []);
 
   return (
     <Layout>
-      <div className='prod-mgmt'>
+      <div className='prod-add'>
         <Form name='prodForm' layout='vertical' size='small'>
           <Row justify='center'>
             <Col span={21}>
@@ -77,7 +77,7 @@ const ProdAdd = () => {
                       </Title>
                       <Form.Item
                         label='Product Name'
-                        name='prodName'
+                        name='prodNm'
                         rules={[{ required: true }]}
                       >
                         <Input
@@ -334,13 +334,13 @@ const ProdAdd = () => {
                             placeholder='Length'
                             addonAfter='cm'
                           ></InputNumber>
-                          <Text className='color-grey'>x</Text>
+                          <Text type='secondary'>x</Text>
                           <InputNumber
                             min={0}
                             placeholder='Width'
                             addonAfter='cm'
                           ></InputNumber>
-                          <Text className='color-grey'>x</Text>
+                          <Text type='secondary'>x</Text>
                           <InputNumber
                             min={0}
                             placeholder='Height'

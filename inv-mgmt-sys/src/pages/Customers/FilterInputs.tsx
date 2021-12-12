@@ -1,4 +1,5 @@
 import FilterInputCol from '@components/Grid/FilterInputCol';
+import DatePickerWithLabel from '@components/Input/DatePickerWithLabel';
 import InputRange from '@components/Input/InputRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
@@ -8,60 +9,75 @@ const FilterInputs = () => {
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
 
-  const prodInputSelect: {
+  const orderInputSelect: {
     defaultVal: string;
     options: {
       val: string;
       label: string;
     }[];
   } = {
-    defaultVal: 'prodName',
+    defaultVal: 'custID',
     options: [
-      { val: 'prodName', label: 'Product Name' },
-      { val: 'prodSKU', label: 'Product SKU' },
+      { val: 'custID', label: 'Customer ID' },
+      { val: 'custNm', label: 'Customer Name' },
     ],
   };
 
-  const prodCatSelect = {
-    placeholder: 'Select Category',
+  const custStatus = {
+    placeholder: 'Select Customer Status',
     options: [
-      { val: 'rte', label: 'Ready-To-Eat' },
-      { val: 'rtc', label: 'Ready-To-Cook' },
-      { val: 'paste', label: 'Paste' },
+      { val: 'active', label: 'Active' },
+      { val: 'suspended', label: 'Suspended' },
     ],
   };
+
   return (
     <Space direction='vertical' size={20} className='width-full'>
       <Row gutter={[30, 30]}>
         <FilterInputCol>
           <InputSelect
-            selectBefore={prodInputSelect}
+            selectBefore={orderInputSelect}
             placeholder='Input'
+            selectWidth={150}
           ></InputSelect>
         </FilterInputCol>
         <FilterInputCol>
           <SelectWithLabel
-            label='Category'
-            select={prodCatSelect}
-            textSpan={screens.xl ? 4 : 5}
+            label='Customer Status'
+            select={custStatus}
+            textSpan={screens.xl ? 6 : 6}
           />
         </FilterInputCol>
+
         <FilterInputCol>
-          <InputRange
-            label='Stock'
-            placeholder={['Start', 'End']}
-            min={0}
+          <DatePickerWithLabel
+            label='Birthdate'
             justify={screens.xl ? 'end' : 'start'}
+            textSpan={screens.xl ? 6 : 7}
+          />
+        </FilterInputCol>
+        <FilterInputCol>
+          <DatePickerWithLabel
+            label='Registration Date'
+            justify={screens.xl ? 'start' : 'end'}
+            textSpan={screens.xl ? 6 : 7}
           />
         </FilterInputCol>
         <FilterInputCol>
           <InputRange
-            label='Price'
+            label='Sales per Month'
             placeholder={['Start', 'End']}
             addonBefore='RM'
             min={0}
             precision={2}
-            textSpan={screens.xl ? 2 : 6}
+            justify={screens.xl ? 'end' : 'start'}
+            textSpan={screens.xl ? 6 : 7}
+          />
+        </FilterInputCol>
+        <FilterInputCol>
+          <DatePickerWithLabel
+            label='Last Order Date'
+            textSpan={screens.xl ? 6 : 7}
           />
         </FilterInputCol>
       </Row>

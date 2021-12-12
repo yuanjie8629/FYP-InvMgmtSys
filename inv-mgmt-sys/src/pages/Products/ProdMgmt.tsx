@@ -58,7 +58,7 @@ const ProdMgmt = () => {
       dataIndex: ['prodNm', 'prodCat', 'prodImg'],
       key: 'prod',
       sorter: true,
-      render: (_: any, data: { [x: string]: string | undefined }) => (
+      render: (_: any, data: { [x: string]: string }) => (
         <Row gutter={5}>
           <Col>
             <Image
@@ -72,7 +72,7 @@ const ProdMgmt = () => {
               <Button type='link' color='info'>
                 {data['prodNm']}
               </Button>
-              <Text className='color-grey text-sm'>{data['prodCat']}</Text>
+              <Text type='secondary' className='text-sm'>{data['prodCat']}</Text>
             </Space>
           </Col>
         </Row>
@@ -90,7 +90,7 @@ const ProdMgmt = () => {
       key: 'prodPrice',
       sorter: true,
       render: (amount: string) => (
-        <Text className='color-grey'>RM {parseFloat(amount).toFixed(2)}</Text>
+        <Text type='secondary'>RM {parseFloat(amount).toFixed(2)}</Text>
       ),
     },
     {
@@ -101,8 +101,8 @@ const ProdMgmt = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'prodStatus',
-      key: 'prodStatus',
+      dataIndex: 'prodStat',
+      key: 'prodStat',
       render: (status: string) => {
         const statusList = [
           { status: 'active', label: 'Active', color: 'success' },
@@ -228,6 +228,7 @@ const ProdMgmt = () => {
                     dataSource={prodList}
                     columns={prodMgmtColumns}
                     buttons={onSelectBtn}
+                    defPg={5}
                   />
                 </Space>
               </Space>

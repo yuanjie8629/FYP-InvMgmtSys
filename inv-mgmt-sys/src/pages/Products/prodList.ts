@@ -9,7 +9,7 @@ const prodList = [
     prodImg: NasiBriyaniBukhari,
     prodPrice: 17.6,
     prodStock: 120,
-    prodStatus: 'active',
+    prodStat: 'active',
   },
   {
     key: '2',
@@ -19,7 +19,7 @@ const prodList = [
     prodImg: hashtag,
     prodPrice: 17.6,
     prodStock: 120,
-    prodStatus: 'oos',
+    prodStat: 'oos',
   },
 ];
 

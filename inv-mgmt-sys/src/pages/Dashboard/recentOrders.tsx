@@ -14,7 +14,7 @@ const recentOrders: {
     custType: 'Agent',
     orderTime: '23-08-2021 14:30',
     amount: 60.0,
-    status: 'packed',
+    status: 'toShip',
   },
   {
     key: '2',
@@ -23,7 +23,7 @@ const recentOrders: {
     custType: 'Direct Customer',
     orderTime: '23-08-2021 12:41',
     amount: 120.0,
-    status: 'packed',
+    status: 'toShip',
   },
   {
     key: '3',
@@ -32,7 +32,7 @@ const recentOrders: {
     custType: 'Direct Customer',
     orderTime: '23-08-2021 09:21',
     amount: 32.0,
-    status: 'shipped',
+    status: 'shipping',
   },
   {
     key: '4',
@@ -41,7 +41,7 @@ const recentOrders: {
     custType: 'Dropshipper',
     orderTime: '22-08-2021 21:06',
     amount: 88.2,
-    status: 'shipped',
+    status: 'shipping',
   },
   {
     key: '5',
@@ -59,7 +59,7 @@ const recentOrders: {
     custType: 'Direct Customer',
     orderTime: '21-08-2021 17:32',
     amount: 164.5,
-    status: 'return',
+    status: 'cancel',
   },
 ];
 
