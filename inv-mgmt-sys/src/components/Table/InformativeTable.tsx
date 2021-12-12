@@ -5,9 +5,10 @@ import './Table.less';
 
 interface InformativeTableProps extends TableProps {
   buttons?: JSX.Element;
+  defPg?: number;
 }
 
-const InformativeTable = (props: InformativeTableProps) => {
+const InformativeTable = ({ defPg = 10, ...props }: InformativeTableProps) => {
   const { Text } = Typography;
   let [selectedRowKeys, setSelectedRowKeys] = useState();
   let [selectedRowCount, setSelectedRowCount] = useState(0);
@@ -45,7 +46,7 @@ const InformativeTable = (props: InformativeTableProps) => {
             showTotal: showTotal,
             showSizeChanger: true,
             showQuickJumper: true,
-            defaultPageSize: 5,
+            defaultPageSize: defPg,
             pageSizeOptions: ['5', '10', '15', '20'],
           }}
           {...props}

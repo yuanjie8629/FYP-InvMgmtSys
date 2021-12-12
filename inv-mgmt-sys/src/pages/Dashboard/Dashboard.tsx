@@ -169,12 +169,12 @@ const Dashboard = () => {
         );
         return status === 'completed' ? (
           <OrderStatusTag color='success'>Completed</OrderStatusTag>
-        ) : status === 'shipped' ? (
-          <OrderStatusTag color='processing'>Shipped</OrderStatusTag>
-        ) : status === 'packed' ? (
-          <OrderStatusTag color='warning'>Packed</OrderStatusTag>
-        ) : status === 'return' ? (
-          <OrderStatusTag color='error'>Refund</OrderStatusTag>
+        ) : status === 'shipping' ? (
+          <OrderStatusTag color='processing'>Shipping</OrderStatusTag>
+        ) : status === 'toShip' ? (
+          <OrderStatusTag color='warning'>To Ship</OrderStatusTag>
+        ) : status === 'cancel' ? (
+          <OrderStatusTag color='error'>Cancelled</OrderStatusTag>
         ) : null;
       },
     },
@@ -324,9 +324,9 @@ const Dashboard = () => {
                         <Space direction='vertical' size={15}>
                           <Title
                             level={5}
-                            className={classNames({
-                              'color-grey': toDoItem.quantity === 0,
-                            })}
+                            type={
+                              toDoItem.quantity === 0 ? 'secondary' : undefined
+                            }
                           >
                             {toDoItem.quantity}
                           </Title>

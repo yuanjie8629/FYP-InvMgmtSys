@@ -72,7 +72,7 @@ const PackMgmt = () => {
               <Button type='link' color='info'>
                 {data['packNm']}
               </Button>
-              <Text className='color-grey text-sm'>{data['packSKU']}</Text>
+              <Text type='secondary' className='text-sm'>{data['packSKU']}</Text>
             </Space>
           </Col>
         </Row>
@@ -85,8 +85,8 @@ const PackMgmt = () => {
       render: (products: []) =>
         products.map((product: any) => (
           <Row justify='space-between'>
-            <Text className='color-grey'>{product.prodNm}</Text>
-            <Text className='color-grey'>x{product.quantity}</Text>
+            <Text type='secondary'>{product.prodNm}</Text>
+            <Text type='secondary'>x{product.quantity}</Text>
           </Row>
         )),
     },
@@ -96,7 +96,7 @@ const PackMgmt = () => {
       key: 'packPrice',
       sorter: true,
       render: (amount: string) => (
-        <Text className='color-grey'>RM {parseFloat(amount).toFixed(2)}</Text>
+        <Text type='secondary'>RM {parseFloat(amount).toFixed(2)}</Text>
       ),
     },
     {
@@ -107,8 +107,8 @@ const PackMgmt = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'packStatus',
-      key: 'packStatus',
+      dataIndex: 'packStat',
+      key: 'packStat',
       render: (status: string) => {
         const statusList = [
           { status: 'active', label: 'Active', color: 'success' },
@@ -238,6 +238,7 @@ const PackMgmt = () => {
                     dataSource={packageList}
                     columns={packMgmtColumns}
                     buttons={onSelectBtn}
+                    defPg={5}
                   />
                 </Space>
               </Space>

@@ -71,7 +71,7 @@ const ProdInv = () => {
               <Button type='link' color='info'>
                 {data['prodNm']}
               </Button>
-              <Text className='color-grey text-sm'>{data['prodCat']}</Text>
+              <Text type='secondary' className='text-sm'>{data['prodCat']}</Text>
             </Space>
           </Col>
         </Row>
@@ -91,7 +91,7 @@ const ProdInv = () => {
       width: '12%',
       sorter: true,
       render: (amount: string) => (
-        <Text className='color-grey'>RM {parseFloat(amount).toFixed(2)}</Text>
+        <Text type='secondary'>RM {parseFloat(amount).toFixed(2)}</Text>
       ),
     },
     {
@@ -171,7 +171,7 @@ const ProdInv = () => {
   ];
   return (
     <Layout>
-      <div className='prod-mgmt'>
+      <div className='prod-inv'>
         <Space
           direction='vertical'
           size={20}
@@ -195,6 +195,7 @@ const ProdInv = () => {
                     dataSource={prodList}
                     columns={prodInvColumns}
                     buttons={onSelectBtn}
+                    defPg={5}
                   />
                 </Space>
               </Space>

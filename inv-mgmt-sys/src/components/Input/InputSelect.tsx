@@ -1,5 +1,5 @@
 import { Input, InputProps as AntdInputProps, Select } from 'antd';
-
+import './Input.less';
 interface InputProps extends AntdInputProps {
   width?: number | string;
   selectBefore?: {
@@ -16,19 +16,22 @@ interface InputProps extends AntdInputProps {
       label: string;
     }[];
   };
+  selectWidth?: number | string;
 }
 
 const InputSelect = ({
   width = '100%',
-  selectBefore = undefined,
-  selectAfter = undefined,
+  selectWidth = 'fit-content',
   ...props
 }: InputProps) => {
   const { Option } = Select;
   const inputSelectBefore =
-    selectBefore !== undefined ? (
-      <Select defaultValue={selectBefore?.defaultVal}>
-        {selectBefore?.options.map((option) => (
+    props.selectBefore !== undefined ? (
+      <Select
+        defaultValue={props.selectBefore?.defaultVal}
+        style={{ width: selectWidth }}
+      >
+        {props.selectBefore?.options.map((option) => (
           <Option key={option.val} value={option.val}>
             {option.label}
           </Option>
@@ -37,9 +40,9 @@ const InputSelect = ({
     ) : null;
 
   const inputSelectAfter =
-    selectAfter !== undefined ? (
-      <Select defaultValue={selectAfter?.defaultVal}>
-        {selectAfter?.options.map((option) => (
+    props.selectAfter !== undefined ? (
+      <Select defaultValue={props.selectAfter?.defaultVal}>
+        {props.selectAfter?.options.map((option) => (
           <Option key={option.val} value={option.val}>
             {option.label}
           </Option>
@@ -53,7 +56,7 @@ const InputSelect = ({
       addonAfter={inputSelectAfter}
       style={{ width: width }}
       {...props}
-    />
+    ></Input>
   );
 };
 

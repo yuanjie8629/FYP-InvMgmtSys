@@ -34,7 +34,7 @@ const StatisticsDashboard = (props: StatisticsDashboardProps) => {
           </Title>
         </Row>
         <Row>
-          <Text className='color-grey'>{props.title}</Text>
+          <Text type='secondary'>{props.title}</Text>
         </Row>
       </Col>
     </Row>

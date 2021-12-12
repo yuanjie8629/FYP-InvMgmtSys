@@ -16,6 +16,7 @@ const RankingList = (props: RankingListProps) => {
   const { Text, Title } = Typography;
   return (
     <List
+      className='list'
       dataSource={props.itemList.items}
       renderItem={(item) => (
         <List.Item key={item.itemNm}>

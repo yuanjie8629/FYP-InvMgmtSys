@@ -1,10 +1,13 @@
+import FilterInputCol from '@components/Grid/FilterInputCol';
+import DatePickerWithLabel from '@components/Input/DatePickerWithLabel';
 import InputRange from '@components/Input/InputRange';
 import InputSelect from '@components/Input/InputSelect';
-import { Button, Col, Row, Space, DatePicker, Typography } from 'antd';
+import { Button, Col, Row, Space, Grid } from 'antd';
 
 const FilterInputs = () => {
-  const { RangePicker } = DatePicker;
-  const { Text } = Typography;
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
+
   const packInputSelect: {
     defaultVal: string;
     options: {
@@ -12,9 +15,9 @@ const FilterInputs = () => {
       label: string;
     }[];
   } = {
-    defaultVal: 'packName',
+    defaultVal: 'packNm',
     options: [
-      { val: 'packName', label: 'Package Name' },
+      { val: 'packNm', label: 'Package Name' },
       { val: 'packSKU', label: 'Package SKU' },
     ],
   };
@@ -22,29 +25,37 @@ const FilterInputs = () => {
   return (
     <Space direction='vertical' size={20} className='width-full'>
       <Row gutter={[30, 30]}>
-        <Col lg={10} xl={8}>
+        <FilterInputCol>
           <InputSelect
             selectBefore={packInputSelect}
             placeholder='Input'
           ></InputSelect>
-        </Col>
-        <Col lg={7} xl={5}>
-          <InputRange label='Stock' placeholder={['Start', 'End']} min={0} />
-        </Col>
-        <Col lg={12} xl={7}>
+        </FilterInputCol>
+        <FilterInputCol>
+          <InputRange
+            label='Stock'
+            placeholder={['Start', 'End']}
+            min={0}
+            textSpan={screens.xl ? 3 : 6}
+          />
+        </FilterInputCol>
+        <FilterInputCol>
           <InputRange
             label='Price'
             placeholder={['Start', 'End']}
             addonBefore='RM'
             min={0}
             precision={2}
+            justify={screens.xl ? 'end' : 'start'}
           />
-        </Col>
-        <Col>
-          <Space size={10}>
-          <Text className='color-grey'>Available Period</Text>
-          <RangePicker /></Space>
-        </Col>
+        </FilterInputCol>
+        <FilterInputCol>
+          <DatePickerWithLabel
+            label='Available Period'
+            justify={screens.xl ? 'start' : 'end'}
+            textSpan={6}
+          />
+        </FilterInputCol>
       </Row>
       <Row gutter={20}>
         <Col>

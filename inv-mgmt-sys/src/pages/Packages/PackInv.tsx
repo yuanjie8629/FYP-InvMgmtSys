@@ -27,7 +27,7 @@ const ProdInv = () => {
     <Button
       type='primary'
       icon={<BulkEditIcon style={{ marginRight: 5 }} />}
-      style={{ display: 'flex', alignItems: 'center' }}
+      className='centerFlex'
     >
       Bulk Updates
     </Button>
@@ -50,19 +50,21 @@ const ProdInv = () => {
     sorter?: boolean;
     align?: 'left' | 'center' | 'right';
     render?: any;
+    hidden?: boolean;
   }[] = [
     {
       title: 'Package',
       dataIndex: ['packNm', 'packSKU', 'packImg'],
       key: 'prod',
+      width: screens.xl ? '33%' : '38%',
       sorter: true,
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={15}>
           <Col>
             <Image
               src={data['packImg']}
-              height={screens.xl ? 120 : 100}
-              width={screens.xl ? 120 : 100}
+              height={screens.xl ? 120 : 80}
+              width={screens.xl ? 120 : 80}
             />
           </Col>
           <Col>
@@ -70,7 +72,9 @@ const ProdInv = () => {
               <Button type='link' color='info'>
                 {data['packNm']}
               </Button>
-              <Text className='color-grey text-sm'>{data['packSKU']}</Text>
+              <Text type='secondary' className='text-sm'>
+                {data['packSKU']}
+              </Text>
             </Space>
           </Col>
         </Row>
@@ -80,11 +84,13 @@ const ProdInv = () => {
       title: 'Products Included',
       dataIndex: 'packProds',
       key: 'packProds.quantity',
+      width: '25%',
+      hidden: screens.xl ? false : true,
       render: (products: []) =>
         products.map((product: any) => (
           <Row justify='space-between'>
-            <Text className='color-grey'>{product.prodNm}</Text>
-            <Text className='color-grey'>x{product.quantity}</Text>
+            <Text type='secondary'>{product.prodNm}</Text>
+            <Text type='secondary'>x{product.quantity}</Text>
           </Row>
         )),
     },
@@ -92,23 +98,23 @@ const ProdInv = () => {
       title: 'Price',
       dataIndex: 'packPrice',
       key: 'packPrice',
-      width: '12%',
+      width: screens.xl ? '12%' : '20%',
       sorter: true,
       render: (amount: string) => (
-        <Text className='color-grey'>RM {parseFloat(amount).toFixed(2)}</Text>
+        <Text type='secondary'>RM {parseFloat(amount).toFixed(2)}</Text>
       ),
     },
     {
       title: 'Stock',
       dataIndex: 'packStock',
       key: 'packStock',
-      width: '10%',
+      width: screens.xl ? '10%' : '12%',
       sorter: true,
     },
     {
       title: 'Action',
       key: 'action',
-      width: screens.xl ? '20%' : '33%',
+      width: '33%',
       render: () => {
         const prodInvRadioBtn: {
           defaultValue: string;
@@ -172,10 +178,10 @@ const ProdInv = () => {
         );
       },
     },
-  ];
+  ].filter((col) => !col.hidden);
   return (
     <Layout>
-      <div className='prod-mgmt'>
+      <div className='prod-inv'>
         <Space
           direction='vertical'
           size={20}
@@ -199,6 +205,7 @@ const ProdInv = () => {
                     dataSource={packageList}
                     columns={prodInvColumns}
                     buttons={onSelectBtn}
+                    defPg={5}
                   />
                 </Space>
               </Space>
