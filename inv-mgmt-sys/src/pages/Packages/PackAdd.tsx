@@ -241,7 +241,7 @@ const PackAdd = () => {
                               precision={2}
                               min={0}
                               placeholder='Input'
-                            ></InputNumber>
+                            />
                           </Form.Item>
                         </Col>
                         <Col>
@@ -257,7 +257,7 @@ const PackAdd = () => {
                               precision={2}
                               min={0}
                               placeholder='Input'
-                            ></InputNumber>
+                            />
                           </Form.Item>
                         </Col>
                       </Row>
@@ -289,7 +289,7 @@ const PackAdd = () => {
                         name='packQuantity'
                         rules={[{ required: true }]}
                       >
-                        <InputNumber min={0} defaultValue={0}></InputNumber>
+                        <InputNumber min={0} defaultValue={0} />
                       </Form.Item>
                     </Space>
                   </ContainerCard>
@@ -317,7 +317,7 @@ const PackAdd = () => {
                           min={0}
                           defaultValue={0}
                           style={{ width: '10%' }}
-                        ></InputNumber>
+                        />
                       </Form.Item>
 
                       <Form.Item
@@ -330,19 +330,19 @@ const PackAdd = () => {
                             min={0}
                             placeholder='Length'
                             addonAfter='cm'
-                          ></InputNumber>
+                          />
                           <Text type='secondary'>x</Text>
                           <InputNumber
                             min={0}
                             placeholder='Width'
                             addonAfter='cm'
-                          ></InputNumber>
+                          />
                           <Text type='secondary'>x</Text>
                           <InputNumber
                             min={0}
                             placeholder='Height'
                             addonAfter='cm'
-                          ></InputNumber>
+                          />
                         </Space>
                       </Form.Item>
                     </Space>

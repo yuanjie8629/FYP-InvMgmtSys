@@ -1,5 +1,5 @@
 import FilterInputCol from '@components/Grid/FilterInputCol';
-import InputRange from '@components/Input/InputRange';
+import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
 import { Button, Col, Row, Space, Grid } from 'antd';
@@ -47,7 +47,7 @@ const FilterInputs = () => {
           />
         </FilterInputCol>
         <FilterInputCol>
-          <InputRange
+          <InputNumberRange
             label='Stock'
             placeholder={['Start', 'End']}
             min={0}
@@ -55,10 +55,10 @@ const FilterInputs = () => {
           />
         </FilterInputCol>
         <FilterInputCol>
-          <InputRange
+          <InputNumberRange
             label='Price'
             placeholder={['Start', 'End']}
-            addonBefore='RM'
+            prefix='RM'
             min={0}
             precision={2}
             textSpan={screens.xl ? 2 : 6}
