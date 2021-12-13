@@ -140,7 +140,7 @@ const ProdAdd = () => {
                                 precision={2}
                                 min={0}
                                 placeholder='Input'
-                              ></InputNumber>
+                              />
                             </Form.Item>
                           </Col>
                           <Col>
@@ -156,7 +156,7 @@ const ProdAdd = () => {
                                 precision={2}
                                 min={0}
                                 placeholder='Input'
-                              ></InputNumber>
+                              />
                             </Form.Item>
                           </Col>
                         </Row>
@@ -176,7 +176,7 @@ const ProdAdd = () => {
                                 precision={2}
                                 min={0}
                                 placeholder='Input'
-                              ></InputNumber>
+                              />
                             </Form.Item>
                           </Col>
                           <Col>
@@ -208,7 +208,7 @@ const ProdAdd = () => {
                                 precision={2}
                                 min={0}
                                 placeholder='Input'
-                              ></InputNumber>
+                              />
                             </Form.Item>
                           </Col>
                           <Col>
@@ -224,7 +224,7 @@ const ProdAdd = () => {
                                 precision={2}
                                 min={0}
                                 placeholder='Input'
-                              ></InputNumber>
+                              />
                             </Form.Item>
                           </Col>
                         </Row>
@@ -257,7 +257,7 @@ const ProdAdd = () => {
                           name='prodQuantity'
                           rules={[{ required: true }]}
                         >
-                          <InputNumber min={0} defaultValue={0}></InputNumber>
+                          <InputNumber min={0} defaultValue={0} />
                         </Form.Item>
 
                         <Divider />
@@ -274,7 +274,7 @@ const ProdAdd = () => {
                                 min={0}
                                 placeholder='Input'
                                 addonAfter='Days'
-                              ></InputNumber>
+                              />
                             </Form.Item>
                           </Col>
                           <Col>
@@ -289,7 +289,7 @@ const ProdAdd = () => {
                                 min={0}
                                 placeholder='Input'
                                 addonAfter='Days'
-                              ></InputNumber>
+                              />
                             </Form.Item>
                           </Col>
                         </Row>
@@ -320,7 +320,7 @@ const ProdAdd = () => {
                           min={0}
                           defaultValue={0}
                           style={{ width: '10%' }}
-                        ></InputNumber>
+                        />
                       </Form.Item>
 
                       <Form.Item
@@ -333,19 +333,19 @@ const ProdAdd = () => {
                             min={0}
                             placeholder='Length'
                             addonAfter='cm'
-                          ></InputNumber>
+                          />
                           <Text type='secondary'>x</Text>
                           <InputNumber
                             min={0}
                             placeholder='Width'
                             addonAfter='cm'
-                          ></InputNumber>
+                          />
                           <Text type='secondary'>x</Text>
                           <InputNumber
                             min={0}
                             placeholder='Height'
                             addonAfter='cm'
-                          ></InputNumber>
+                          />
                         </Space>
                       </Form.Item>
                     </Space>

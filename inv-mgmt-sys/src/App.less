@@ -82,6 +82,39 @@ body {
   }
 }
 
+.color {
+  &-primary {
+    color: @primary-color !important;
+  }
+
+  &-error {
+    color: @error-color !important;
+  }
+
+  &-warning {
+    color: @warning-color !important;
+  }
+
+  &-info {
+    color: @info-color !important;
+  }
+
+  &-grey {
+    color: @grey !important;
+  }
+}
+
+.text {
+  &-lg {
+    font-size: @font-size-lg;
+  }
+
+  &-sm {
+    font-size: @font-size-sm;
+  }
+}
+
+// Ant Design
 .@{ant-prefix} {
   &-dropdown-menu-item {
     &:hover:not(&-disabled) {
@@ -171,7 +204,6 @@ body {
   }
 
   &-anchor {
-    
     &-ink {
       &-ball {
         width: 4px !important;
@@ -202,37 +234,5 @@ body {
     @media @desktop-xl, @desktop-xxl {
     font-size: @heading-4-size !important;
     }
-  }
-}
-
-.color {
-  &-primary {
-    color: @primary-color !important;
-  }
-
-  &-error {
-    color: @error-color !important;
-  }
-
-  &-warning {
-    color: @warning-color !important;
-  }
-
-  &-info {
-    color: @info-color !important;
-  }
-
-  &-grey {
-    color: @grey !important;
-  }
-}
-
-.text {
-  &-lg {
-    font-size: @font-size-lg;
-  }
-
-  &-sm {
-    font-size: @font-size-sm;
   }
 }

@@ -1,6 +1,6 @@
 import FilterInputCol from '@components/Grid/FilterInputCol';
 import DatePickerWithLabel from '@components/Input/DatePickerWithLabel';
-import InputRange from '@components/Input/InputRange';
+import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
 import { Button, Col, Row, Space, Grid } from 'antd';
@@ -64,10 +64,10 @@ const FilterInputs = () => {
           />
         </FilterInputCol>
         <FilterInputCol>
-          <InputRange
+          <InputNumberRange
             label='Sales per Month'
             placeholder={['Start', 'End']}
-            addonBefore='RM'
+            prefix='RM'
             min={0}
             precision={2}
             justify={screens.xl ? 'end' : 'start'}
