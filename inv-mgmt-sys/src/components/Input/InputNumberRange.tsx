@@ -35,8 +35,8 @@ const InputNumberRange = ({
   const suffixRef = useRef<Input>(null);
   const firstRender = useRef(true);
 
-  const [prefixWidth, setPrefixWidth] = useState(20);
-  const [suffixWidth, setSuffixWidth] = useState(20);
+  const [prefixWidth, setPrefixWidth] = useState(12);
+  const [suffixWidth, setSuffixWidth] = useState(12);
 
   const inputNumWidth = `calc((100% - (28px + ${prefixWidth}px + ${suffixWidth}px)) / 2)`;
 

@@ -12,22 +12,22 @@ const FilterInputs = () => {
   const orderInputSelect: {
     defaultVal: string;
     options: {
-      val: string;
+      value: string;
       label: string;
     }[];
   } = {
     defaultVal: 'custID',
     options: [
-      { val: 'custID', label: 'Customer ID' },
-      { val: 'custNm', label: 'Customer Name' },
+      { value: 'custID', label: 'Customer ID' },
+      { value: 'custNm', label: 'Customer Name' },
     ],
   };
 
   const custStatus = {
     placeholder: 'Select Customer Status',
     options: [
-      { val: 'active', label: 'Active' },
-      { val: 'suspended', label: 'Suspended' },
+      { value: 'active', label: 'Active' },
+      { value: 'suspended', label: 'Suspended' },
     ],
   };
 

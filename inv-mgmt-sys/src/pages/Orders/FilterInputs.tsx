@@ -12,34 +12,34 @@ const FilterInputs = () => {
   const orderInputSelect: {
     defaultVal: string;
     options: {
-      val: string;
+      value: string;
       label: string;
     }[];
   } = {
     defaultVal: 'orderID',
     options: [
-      { val: 'orderID', label: 'Order ID' },
-      { val: 'custNm', label: 'Customer' },
-      { val: 'custType', label: 'Customer Type' },
-      { val: 'trackingNum', label: 'Tracking Number' },
+      { value: 'orderID', label: 'Order ID' },
+      { value: 'custNm', label: 'Customer' },
+      { value: 'custType', label: 'Customer Type' },
+      { value: 'trackingNum', label: 'Tracking Number' },
     ],
   };
 
   const custCatSelect = {
     placeholder: 'Select Customer Type',
     options: [
-      { val: 'agent', label: 'Agent' },
-      { val: 'drpshpr', label: 'Dropshipper' },
-      { val: 'cust', label: 'Direct Customer' },
+      { value: 'agent', label: 'Agent' },
+      { value: 'drpshpr', label: 'Dropshipper' },
+      { value: 'cust', label: 'Direct Customer' },
     ],
   };
 
   const payMthdSelect = {
     placeholder: 'Select Payment Method',
     options: [
-      { val: 'intBnk', label: 'Internet Banking' },
-      { val: 'card', label: 'Card' },
-      { val: 'paypal', label: 'Paypal' },
+      { value: 'intBnk', label: 'Internet Banking' },
+      { value: 'card', label: 'Card' },
+      { value: 'paypal', label: 'Paypal' },
     ],
   };
 
