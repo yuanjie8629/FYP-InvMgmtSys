@@ -5,14 +5,14 @@ interface InputProps extends AntdInputProps {
   selectBefore?: {
     defaultVal: string;
     options: {
-      val: string;
+      value: string;
       label: string;
     }[];
   };
   selectAfter?: {
     defaultVal: string;
     options: {
-      val: string;
+      value: string;
       label: string;
     }[];
   };
@@ -24,30 +24,21 @@ const InputSelect = ({
   selectWidth = 'fit-content',
   ...props
 }: InputProps) => {
-  const { Option } = Select;
   const inputSelectBefore =
     props.selectBefore !== undefined ? (
       <Select
         defaultValue={props.selectBefore?.defaultVal}
+        options={props.selectBefore.options}
         style={{ width: selectWidth }}
-      >
-        {props.selectBefore?.options.map((option) => (
-          <Option key={option.val} value={option.val}>
-            {option.label}
-          </Option>
-        ))}
-      </Select>
+      />
     ) : null;
 
   const inputSelectAfter =
     props.selectAfter !== undefined ? (
-      <Select defaultValue={props.selectAfter?.defaultVal}>
-        {props.selectAfter?.options.map((option) => (
-          <Option key={option.val} value={option.val}>
-            {option.label}
-          </Option>
-        ))}
-      </Select>
+      <Select
+        defaultValue={props.selectAfter?.defaultVal}
+        options={props.selectAfter.options}
+      />
     ) : null;
 
   return (

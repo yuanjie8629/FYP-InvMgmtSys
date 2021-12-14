@@ -5,7 +5,7 @@ interface SelectLabelProps extends SelectProps<any> {
   select: {
     placeholder: string;
     options: {
-      val: string;
+      value: string;
       label: string;
     }[];
   };
@@ -19,7 +19,6 @@ const SelectWithLabel = ({
   ...props
 }: SelectLabelProps) => {
   const { Text } = Typography;
-  const { Option } = Select;
 
   return (
     <Row align='middle' gutter={10} className='input-select-label'>
@@ -31,13 +30,11 @@ const SelectWithLabel = ({
         <Text type='secondary'>{props.label}</Text>
       </Col>
       <Col xs={23 - textSpan} xl={24 - textSpan}>
-        <Select placeholder={props.select.placeholder} className='width-full'>
-          {props.select.options.map((option) => (
-            <Option key={option.val} value={option.val}>
-              {option.label}
-            </Option>
-          ))}
-        </Select>
+        <Select
+          placeholder={props.select.placeholder}
+          className='width-full'
+          options={props.select.options}
+        />
       </Col>
     </Row>
   );

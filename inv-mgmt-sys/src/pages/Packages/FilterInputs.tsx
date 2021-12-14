@@ -11,14 +11,14 @@ const FilterInputs = () => {
   const packInputSelect: {
     defaultVal: string;
     options: {
-      val: string;
+      value: string;
       label: string;
     }[];
   } = {
     defaultVal: 'packNm',
     options: [
-      { val: 'packNm', label: 'Package Name' },
-      { val: 'packSKU', label: 'Package SKU' },
+      { value: 'packNm', label: 'Package Name' },
+      { value: 'packSKU', label: 'Package SKU' },
     ],
   };
 

@@ -13,6 +13,7 @@ import {
   InputNumber,
   Radio,
   Row,
+  Select,
   Space,
   Typography,
 } from 'antd';
@@ -52,6 +53,25 @@ const CustAdd = () => {
     { link: 'pricing', title: 'Pricing' },
     { link: 'inv', title: 'Inventory' },
     { link: 'shipping', title: 'Shipping' },
+  ];
+
+  const stateSelection = [
+    { value: 'johor', label: 'Johor' },
+    { value: 'kedah', label: 'Kedah' },
+    { value: 'kelantan', label: 'Kelantan' },
+    { value: 'kl', label: 'Kuala Lumpur' },
+    { value: 'labuan', label: 'Labuan' },
+    { value: 'malacca', label: 'Malacca' },
+    { value: 'negeriSembilan', label: 'Negeri Sembilan' },
+    { value: 'pahang', label: 'Pahang' },
+    { value: 'penang', label: 'Penang' },
+    { value: 'perak', label: 'Perak' },
+    { value: 'perlis', label: 'Perlis' },
+    { value: 'putrajaya', label: 'Putrajaya' },
+    { value: 'sabah', label: 'Sabah' },
+    { value: 'sarawak', label: 'Sarawak' },
+    { value: 'selangor', label: 'Selangor' },
+    { value: 'terrengganu', label: 'Terengganu' },
   ];
 
   useEffect(() => {
@@ -232,16 +252,19 @@ const CustAdd = () => {
                       className='width-full'
                     >
                       <Title level={4} id='inv' style={{ fontWeight: 500 }}>
-                        Inventory
+                        Address
                       </Title>
                       <div>
                         <Form.Item
-                          label='Stock Keeping Unit (SKU)'
-                          name='prodSKU'
+                          label='State'
+                          name='state'
                           rules={[{ required: true }]}
-                          style={{ width: '40%' }}
+                          style={{ width: '20%' }}
                         >
-                          <Input placeholder='e.g. SHRF-RTC-NBB' />
+                          <Select
+                            options={stateSelection}
+                            placeholder='Please select the state'
+                          />
                         </Form.Item>
 
                         <Form.Item

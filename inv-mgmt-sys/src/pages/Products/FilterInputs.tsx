@@ -11,23 +11,23 @@ const FilterInputs = () => {
   const prodInputSelect: {
     defaultVal: string;
     options: {
-      val: string;
+      value: string;
       label: string;
     }[];
   } = {
     defaultVal: 'prodName',
     options: [
-      { val: 'prodName', label: 'Product Name' },
-      { val: 'prodSKU', label: 'Product SKU' },
+      { value: 'prodName', label: 'Product Name' },
+      { value: 'prodSKU', label: 'Product SKU' },
     ],
   };
 
   const prodCatSelect = {
     placeholder: 'Select Category',
     options: [
-      { val: 'rte', label: 'Ready-To-Eat' },
-      { val: 'rtc', label: 'Ready-To-Cook' },
-      { val: 'paste', label: 'Paste' },
+      { value: 'rte', label: 'Ready-To-Eat' },
+      { value: 'rtc', label: 'Ready-To-Cook' },
+      { value: 'paste', label: 'Paste' },
     ],
   };
   return (
