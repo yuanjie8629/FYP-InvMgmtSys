@@ -1,4 +1,3 @@
-import React, { useEffect, useRef, useState } from 'react';
 import {
   Input,
   InputNumber,
@@ -13,49 +12,44 @@ interface InputNumberRangeProps
   extends Omit<InputNumberProps, 'placeholder' | 'addonBefore' | 'addonAfter'> {
   label?: string;
   placeholder?: string[];
-  prefix?: string;
-  suffix?: string;
   textSpan?: number;
-
   justify?: 'start' | 'end';
-  prefixPadding?: number;
-  suffixPadding?: number;
 }
+
+type AdvInputNumberRangeProps = InputNumberRangeProps &
+  (
+    | {
+        prefix?: never;
+        prefixWidth?: never;
+      }
+    | {
+        prefix: string;
+        prefixWidth?: number | string;
+      }
+  ) &
+  (
+    | {
+        suffix?: never;
+        suffixWidth?: never;
+      }
+    | {
+        suffix: string;
+        suffixWidth?: number | string;
+      }
+  );
 
 const InputNumberRange = ({
   justify = 'end',
   placeholder = ['', ''],
   textSpan = 3,
-  prefixPadding = 22,
-  suffixPadding = 22,
+  prefix,
+  suffix,
+  prefixWidth = prefix !== undefined ? 80 : 0,
+  suffixWidth = suffix !== undefined ? 80 : 0,
   ...props
-}: InputNumberRangeProps) => {
+}: AdvInputNumberRangeProps) => {
   const { Text } = Typography;
-  const prefixRef = useRef<Input>(null);
-  const suffixRef = useRef<Input>(null);
-  const firstRender = useRef(true);
-
-  const [prefixWidth, setPrefixWidth] = useState(12);
-  const [suffixWidth, setSuffixWidth] = useState(12);
-
   const inputNumWidth = `calc((100% - (28px + ${prefixWidth}px + ${suffixWidth}px)) / 2)`;
-
-  useEffect(() => {
-    if (firstRender.current) {
-      // Dynamically set the width of prefix and suffix (input.width + padding width)
-      setPrefixWidth(
-        prefixRef.current !== null
-          ? prefixRef.current.input.offsetWidth + prefixPadding
-          : 0
-      );
-      setSuffixWidth(
-        suffixRef.current !== null
-          ? suffixRef.current.input.offsetWidth + suffixPadding
-          : 0
-      );
-      firstRender.current = false;
-    }
-  }, [prefixPadding, firstRender, suffixPadding]);
 
   return (
     <Row align='middle' gutter={10} className='input-range'>
@@ -69,10 +63,9 @@ const InputNumberRange = ({
       ) : null}
       <Col span={24 - textSpan}>
         <Input.Group compact>
-          {props.prefix !== undefined ? (
+          {prefix !== undefined ? (
             <Input
-              ref={prefixRef}
-              value={props.prefix}
+              value={prefix}
               disabled
               style={{ width: prefixWidth }}
               className='input-range-prefix color-grey'
@@ -100,10 +93,9 @@ const InputNumberRange = ({
             className='input-range-right'
             {...props}
           />
-          {props.suffix !== undefined ? (
+          {suffix !== undefined ? (
             <Input
-              ref={suffixRef}
-              value={props.suffix}
+              value={suffix}
               disabled
               style={{ width: suffixWidth }}
               className='input-range-suffix color-grey'

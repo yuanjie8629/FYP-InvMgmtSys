@@ -1,6 +1,18 @@
 import PromoRayaQurban from '@assets/Product/PromoRayaQurban.png';
 import hashtag from '@assets/Login/Hashtag.svg';
-const packageList = [
+const packageList: {
+  key: string;
+  packNm: string;
+  packProds: {
+    prodNm: string;
+    quantity: number;
+  }[];
+  packSKU: string;
+  packImg: string;
+  packPrice: number;
+  packStock: number;
+  packStat: 'active' | 'oos' | 'scheduled' | 'expired' | 'hidden';
+}[] = [
   {
     key: '1',
     packNm: 'Promo Raya Qurban',
@@ -12,7 +24,7 @@ const packageList = [
     packImg: PromoRayaQurban,
     packPrice: 50,
     packStock: 50,
-    packStat: 'expired',
+    packStat: 'hidden',
   },
   {
     key: '2',

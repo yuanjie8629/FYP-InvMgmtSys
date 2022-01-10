@@ -23,15 +23,31 @@ const ProdInv = () => {
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
 
-  const onSelectBtn = (
+  const bulkUpdBtn = (props: any) => (
     <Button
       type='primary'
       icon={<BulkEditIcon style={{ marginRight: 5 }} />}
       style={{ display: 'flex', alignItems: 'center' }}
+      {...props}
     >
       Bulk Updates
     </Button>
   );
+
+  const onSelectBtn: {
+    element: typeof Button;
+    key: string;
+    fltr?: [
+      string,
+      string | number | undefined,
+      'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' //Relational Operator
+    ][];
+  }[] = [
+    {
+      element: bulkUpdBtn,
+      key: 'bulkUpd',
+    },
+  ];
 
   const getSalesData = (data: string) =>
     data === 'month'
@@ -71,7 +87,9 @@ const ProdInv = () => {
               <Button type='link' color='info'>
                 {data['prodNm']}
               </Button>
-              <Text type='secondary' className='text-sm'>{data['prodCat']}</Text>
+              <Text type='secondary' className='text-sm'>
+                {data['prodCat']}
+              </Text>
             </Space>
           </Col>
         </Row>
