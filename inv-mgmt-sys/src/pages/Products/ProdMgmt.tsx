@@ -15,34 +15,56 @@ const ProdMgmt = () => {
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
 
-  const onSelectBtn = (
-    <Space size={15}>
-      <Button
-        type='primary'
-        color='grey'
-        icon={
-          <HiEyeOff
-            size={16}
-            style={{ marginRight: 5, position: 'relative', top: 3 }}
-          />
-        }
-      >
-        Hide
-      </Button>
-      <Button
-        type='primary'
-        color='error'
-        icon={
-          <HiTrash
-            size={16}
-            style={{ marginRight: 5, position: 'relative', top: 3 }}
-          />
-        }
-      >
-        Delete
-      </Button>
-    </Space>
+  const hideBtn = (props: any) => (
+    <Button
+      type='primary'
+      color='grey'
+      icon={
+        <HiEyeOff
+          size={16}
+          style={{ marginRight: 5, position: 'relative', top: 3 }}
+        />
+      }
+      {...props}
+    >
+      Hide
+    </Button>
   );
+
+  const deleteBtn = (props: any) => (
+    <Button
+      type='primary'
+      color='error'
+      icon={
+        <HiTrash
+          size={16}
+          style={{ marginRight: 5, position: 'relative', top: 3 }}
+        />
+      }
+    >
+      Delete
+    </Button>
+  );
+
+  const onSelectBtn: {
+    element: typeof Button;
+    key: string;
+    fltr?: [
+      string,
+      string | number | undefined,
+      'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' //Relational Operator
+    ][];
+  }[] = [
+    {
+      element: hideBtn,
+      key: 'hide',
+      fltr: [['prodStat', 'active', 'eq']],
+    },
+    {
+      element: deleteBtn,
+      key: 'delete',
+    },
+  ];
 
   const prodMgmtColumns: {
     title: string;
@@ -72,7 +94,9 @@ const ProdMgmt = () => {
               <Button type='link' color='info'>
                 {data['prodNm']}
               </Button>
-              <Text type='secondary' className='text-sm'>{data['prodCat']}</Text>
+              <Text type='secondary' className='text-sm'>
+                {data['prodCat']}
+              </Text>
             </Space>
           </Col>
         </Row>

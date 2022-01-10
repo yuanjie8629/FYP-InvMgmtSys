@@ -3,12 +3,9 @@ import DatePickerWithLabel from '@components/Input/DatePickerWithLabel';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
-import { Button, Col, Row, Space, Grid } from 'antd';
+import { Button, Col, Row, Space } from 'antd';
 
 const FilterInputs = () => {
-  const { useBreakpoint } = Grid;
-  const screens = useBreakpoint();
-
   const orderInputSelect: {
     defaultVal: string;
     options: {
@@ -45,22 +42,18 @@ const FilterInputs = () => {
           <SelectWithLabel
             label='Customer Status'
             select={custStatus}
-            textSpan={screens.xl ? 6 : 6}
+            textSpan={8}
           />
         </FilterInputCol>
 
         <FilterInputCol>
-          <DatePickerWithLabel
-            label='Birthdate'
-            justify={screens.xl ? 'end' : 'start'}
-            textSpan={screens.xl ? 6 : 7}
-          />
+          <DatePickerWithLabel label='Birthdate' justify={'end'} textSpan={7} />
         </FilterInputCol>
         <FilterInputCol>
           <DatePickerWithLabel
             label='Registration Date'
-            justify={screens.xl ? 'start' : 'end'}
-            textSpan={screens.xl ? 6 : 7}
+            justify={'start'}
+            textSpan={8}
           />
         </FilterInputCol>
         <FilterInputCol>
@@ -68,17 +61,15 @@ const FilterInputs = () => {
             label='Sales per Month'
             placeholder={['Start', 'End']}
             prefix='RM'
+            prefixWidth={45}
             min={0}
             precision={2}
-            justify={screens.xl ? 'end' : 'start'}
-            textSpan={screens.xl ? 6 : 7}
+            justify={'end'}
+            textSpan={8}
           />
         </FilterInputCol>
         <FilterInputCol>
-          <DatePickerWithLabel
-            label='Last Order Date'
-            textSpan={screens.xl ? 6 : 7}
-          />
+          <DatePickerWithLabel label='Last Order Date' textSpan={7} />
         </FilterInputCol>
       </Row>
       <Row gutter={20}>

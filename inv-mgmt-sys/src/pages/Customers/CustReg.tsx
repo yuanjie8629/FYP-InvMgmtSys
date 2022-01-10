@@ -17,32 +17,51 @@ const CustReg = () => {
     { key: 'drpshpr', tab: 'Dropshipper' },
   ];
 
-  const onSelectBtn = (
-    <Space size={15}>
-      <Button
-        type='primary'
-        icon={
-          <HiThumbUp
-            size={16}
-            style={{ marginRight: 5, position: 'relative', top: 3 }}
-          />
-        }
-      >
-        Accept
-      </Button>
-      <Button
-        type='primary'
-        color='error'
-        icon={
-          <HiThumbDown
-            style={{ marginRight: 5, position: 'relative', top: 3 }}
-          />
-        }
-      >
-        Reject
-      </Button>
-    </Space>
+  const acceptBtn = (props: any) => (
+    <Button
+      type='primary'
+      icon={
+        <HiThumbUp
+          size={16}
+          style={{ marginRight: 5, position: 'relative', top: 3 }}
+        />
+      }
+      {...props}
+    >
+      acceptBtn
+    </Button>
   );
+
+  const rejectBtn = (props: any) => (
+    <Button
+      type='primary'
+      color='error'
+      icon={
+        <HiThumbDown style={{ marginRight: 5, position: 'relative', top: 3 }} />
+      }
+    >
+      rejectBtn
+    </Button>
+  );
+
+  const onSelectBtn: {
+    element: typeof Button;
+    key: string;
+    fltr?: [
+      string,
+      string | number | undefined,
+      'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' //Relational Operator
+    ][];
+  }[] = [
+    {
+      element: acceptBtn,
+      key: 'accept',
+    },
+    {
+      element: rejectBtn,
+      key: 'reject',
+    },
+  ];
 
   const custRegColumns: {
     title: string;
@@ -121,7 +140,7 @@ const CustReg = () => {
               />
             }
           >
-            Accept
+            acceptBtn
           </Button>
           <Button
             type='link'
@@ -133,7 +152,7 @@ const CustReg = () => {
               />
             }
           >
-            Reject
+            rejectBtn
           </Button>
         </Space>
       ),

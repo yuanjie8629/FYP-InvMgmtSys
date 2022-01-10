@@ -2,12 +2,9 @@ import FilterInputCol from '@components/Grid/FilterInputCol';
 import DatePickerWithLabel from '@components/Input/DatePickerWithLabel';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
-import { Button, Col, Row, Space, Grid } from 'antd';
+import { Button, Col, Row, Space } from 'antd';
 
 const FilterInputs = () => {
-  const { useBreakpoint } = Grid;
-  const screens = useBreakpoint();
-
   const packInputSelect: {
     defaultVal: string;
     options: {
@@ -36,7 +33,7 @@ const FilterInputs = () => {
             label='Stock'
             placeholder={['Start', 'End']}
             min={0}
-            textSpan={screens.xl ? 3 : 6}
+            textSpan={3 }
           />
         </FilterInputCol>
         <FilterInputCol>
@@ -44,16 +41,17 @@ const FilterInputs = () => {
             label='Price'
             placeholder={['Start', 'End']}
             prefix='RM'
+            prefixWidth={45}
             min={0}
             precision={2}
-            justify={screens.xl ? 'end' : 'start'}
+            justify={'end'}
           />
         </FilterInputCol>
         <FilterInputCol>
           <DatePickerWithLabel
             label='Available Period'
-            justify={screens.xl ? 'start' : 'end'}
-            textSpan={6}
+            justify={'start'}
+            textSpan={8}
           />
         </FilterInputCol>
       </Row>

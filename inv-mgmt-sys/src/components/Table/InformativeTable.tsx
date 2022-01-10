@@ -2,17 +2,68 @@ import React, { useState } from 'react';
 import Table, { TableProps } from '@components/Table/Table';
 import { Col, Row, Typography, Space } from 'antd';
 import './Table.less';
+import { ButtonType } from '@components/Button/Button';
 
 interface InformativeTableProps extends TableProps {
-  buttons?: JSX.Element;
   defPg?: number;
+  buttons: {
+    element: ButtonType;
+    key: string;
+    fltr?: [
+      string,
+      string | number | undefined,
+      'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' //Relational Operator
+    ][];
+  }[];
 }
 
 const InformativeTable = ({ defPg = 10, ...props }: InformativeTableProps) => {
   const { Text } = Typography;
   let [selectedRowKeys, setSelectedRowKeys] = useState();
   let [selectedRowCount, setSelectedRowCount] = useState(0);
-  const onSelectChange = (selectedRowKeys: any) => {
+  let [btnShow, setBtnShow] = useState<Array<{ key: string; show: boolean }>>(
+    []
+  );
+
+  const onSelectChange = (selectedRowKeys: any, selectedRows: any) => {
+    if (props.buttons !== undefined) {
+      let buttonShow: { key: string; show: boolean }[] = [];
+
+      props.buttons.forEach((btn: any) =>
+        selectedRows.forEach((selected: any) => {
+          const btnShowCondition = !buttonShow.find(
+            (btnToShow) => btnToShow.key === btn.key && !btnToShow.show
+          );
+          if (
+            btn.fltr !== undefined &&
+            btn.fltr
+              .map(
+                (filter: any) =>
+                  (filter[2] === 'eq' && selected[filter[0]] === filter[1]) ||
+                  (filter[2] === 'neq' && selected[filter[0]] !== filter[1]) ||
+                  (filter[2] === 'gt' && selected[filter[0]] > filter[1]) ||
+                  (filter[2] === 'gte' && selected[filter[0]] >= filter[1]) ||
+                  (filter[2] === 'lt' && selected[filter[0]] < filter[1]) ||
+                  (filter[2] === 'lte' && selected[filter[0]] <= filter[1])
+              )
+              .includes(false)
+          ) {
+            if (btnShowCondition)
+              buttonShow = [
+                ...buttonShow.filter((btnToShow) => btnToShow.key !== btn.key),
+                { key: btn.key, show: false },
+              ];
+          } else {
+            if (btnShowCondition)
+              buttonShow = [
+                ...buttonShow.filter((btnToShow) => btnToShow.key !== btn.key),
+                { key: btn.key, show: true },
+              ];
+          }
+        })
+      );
+      setBtnShow([...buttonShow]);
+    }
     setSelectedRowKeys(selectedRowKeys);
     setSelectedRowCount(selectedRowKeys.length);
   };
@@ -33,10 +84,21 @@ const InformativeTable = ({ defPg = 10, ...props }: InformativeTableProps) => {
       className='informative-table width-full'
     >
       <Row align='middle' gutter={20} style={{ height: 36 }}>
-        <Col>
+        <Col flex='100px'>
           <Text>Selected: {selectedRowCount}</Text>
         </Col>
-        <Col>{selectedRowCount > 0 ? props.buttons : null}</Col>
+        <Col>
+          <Space size={15}>
+            {props.buttons?.map((btn, index) => {
+              const Button = btn.element;
+              return btnShow.map(
+                (btnToShow) => btnToShow.key === btn.key && btnToShow.show
+              )[index] ? (
+                <Button />
+              ) : null;
+            })}
+          </Space>
+        </Col>
       </Row>
       <Row>
         <Table

@@ -24,3 +24,4 @@ const Button = (props: ButtonProps) => {
 };
 
 export default Button;
+export declare type ButtonType = (props: ButtonProps) => JSX.Element;

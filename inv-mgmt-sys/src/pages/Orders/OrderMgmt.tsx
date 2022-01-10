@@ -27,28 +27,54 @@ const OrderMgmt = () => {
     { key: 'cancel', tab: 'Cancellation' },
   ];
 
-  const onSelectBtn = (
-    <Space size={15}>
-      <Button
-        type='primary'
-        icon={
-          <HiPrinter
-            size={16}
-            style={{ marginRight: 5, position: 'relative', top: 3 }}
-          />
-        }
-      >
-        Generate Invoice(s)
-      </Button>
-      <Button
-        type='primary'
-        icon={<BulkEditIcon style={{ marginRight: 5 }} />}
-        className='centerFlex'
-      >
-        Bulk Updates
-      </Button>
-    </Space>
+  const genInvoiceBtn = (props: any) => (
+    <Button
+      type='primary'
+      icon={
+        <HiPrinter
+          size={16}
+          style={{ marginRight: 5, position: 'relative', top: 3 }}
+        />
+      }
+      {...props}
+    >
+      Generate Invoice(s)
+    </Button>
   );
+
+  const bulkUpdBtn = (props: any) => (
+    <Button
+      type='primary'
+      icon={<BulkEditIcon style={{ marginRight: 5 }} />}
+      className='centerFlex'
+      {...props}
+    >
+      Bulk Updates
+    </Button>
+  );
+
+  const onSelectBtn: {
+    element: typeof Button;
+    key: string;
+    fltr?: [
+      string,
+      string | number | undefined,
+      'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' //Relational Operator
+    ][];
+  }[] = [
+    {
+      element: genInvoiceBtn,
+      key: 'genInvoice',
+    },
+    {
+      element: bulkUpdBtn,
+      key: 'bulkUpd',
+      fltr: [
+        ['trackNum', undefined, 'eq'],
+        ['orderStat', 'cancel', 'neq'],
+      ],
+    },
+  ];
 
   const orderMgmtColumns: {
     title: string;

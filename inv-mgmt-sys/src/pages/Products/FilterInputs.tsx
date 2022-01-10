@@ -2,12 +2,9 @@ import FilterInputCol from '@components/Grid/FilterInputCol';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
-import { Button, Col, Row, Space, Grid } from 'antd';
+import { Button, Col, Row, Space } from 'antd';
 
 const FilterInputs = () => {
-  const { useBreakpoint } = Grid;
-  const screens = useBreakpoint();
-
   const prodInputSelect: {
     defaultVal: string;
     options: {
@@ -43,7 +40,7 @@ const FilterInputs = () => {
           <SelectWithLabel
             label='Category'
             select={prodCatSelect}
-            textSpan={screens.xl ? 4 : 5}
+            textSpan={4}
           />
         </FilterInputCol>
         <FilterInputCol>
@@ -51,7 +48,7 @@ const FilterInputs = () => {
             label='Stock'
             placeholder={['Start', 'End']}
             min={0}
-            justify={screens.xl ? 'end' : 'start'}
+            justify={'end'}
           />
         </FilterInputCol>
         <FilterInputCol>
@@ -59,9 +56,10 @@ const FilterInputs = () => {
             label='Price'
             placeholder={['Start', 'End']}
             prefix='RM'
+            prefixWidth={45}
             min={0}
             precision={2}
-            textSpan={screens.xl ? 2 : 6}
+            textSpan={2}
           />
         </FilterInputCol>
       </Row>

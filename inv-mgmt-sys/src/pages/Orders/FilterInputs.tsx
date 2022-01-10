@@ -3,12 +3,9 @@ import DatePickerWithLabel from '@components/Input/DatePickerWithLabel';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
-import { Button, Col, Row, Space, Grid } from 'antd';
+import { Button, Col, Row, Space } from 'antd';
 
 const FilterInputs = () => {
-  const { useBreakpoint } = Grid;
-  const screens = useBreakpoint();
-
   const orderInputSelect: {
     defaultVal: string;
     options: {
@@ -57,7 +54,7 @@ const FilterInputs = () => {
           <SelectWithLabel
             label='Customer Type'
             select={custCatSelect}
-            textSpan={screens.xl ? 6 : 5}
+            textSpan={8}
           />
         </FilterInputCol>
 
@@ -65,8 +62,8 @@ const FilterInputs = () => {
           <SelectWithLabel
             label='Payment Method'
             select={payMthdSelect}
-            justify={screens.xl ? 'end' : 'start'}
-            textSpan={6}
+            justify={'end'}
+            textSpan={8}
           />
         </FilterInputCol>
         <FilterInputCol>
@@ -74,17 +71,18 @@ const FilterInputs = () => {
             label='Amount'
             placeholder={['Start', 'End']}
             prefix='RM'
+            prefixWidth={45}
             min={0}
             precision={2}
-            justify={screens.xl ? 'start' : 'end'}
-            textSpan={screens.xl ? 4 : 6}
+            justify='start'
+            textSpan={4}
           />
         </FilterInputCol>
         <FilterInputCol>
           <DatePickerWithLabel
             label='Order Date'
-            justify={screens.xl ? 'end' : 'start'}
-            textSpan={screens.xl ? 6 : 7}
+            justify={'end'}
+            textSpan={8}
           />
         </FilterInputCol>
       </Row>

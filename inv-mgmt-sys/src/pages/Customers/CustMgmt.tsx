@@ -19,30 +19,54 @@ const CustMgmt = () => {
     { key: 'drpshpr', tab: 'Dropshipper' },
   ];
 
-  const onSelectBtn = (
-    <Space size={15}>
-      <Button
-        type='primary'
-        icon={
-          <HiCheckCircle
-            size={16}
-            style={{ marginRight: 5, position: 'relative', top: 3 }}
-          />
-        }
-      >
-        Activate
-      </Button>
-      <Button
-        type='primary'
-        color='error'
-        icon={
-          <HiPause style={{ marginRight: 5, position: 'relative', top: 2 }} />
-        }
-      >
-        Suspend
-      </Button>
-    </Space>
+  const activateBtn = (props: any) => (
+    <Button
+      type='primary'
+      icon={
+        <HiCheckCircle
+          size={16}
+          style={{ marginRight: 5, position: 'relative', top: 3 }}
+        />
+      }
+      {...props}
+    >
+      activateBtn
+    </Button>
   );
+
+  const suspendBtn = (props: any) => (
+    <Button
+      type='primary'
+      color='error'
+      icon={
+        <HiPause style={{ marginRight: 5, position: 'relative', top: 2 }} />
+      }
+      {...props}
+    >
+      Suspend
+    </Button>
+  );
+
+  const onSelectBtn: {
+    element: typeof Button;
+    key: string;
+    fltr?: [
+      string,
+      string | number | undefined,
+      'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' //Relational Operator
+    ][];
+  }[] = [
+    {
+      element: activateBtn,
+      key: 'activateBtn',
+      fltr: [['status', 'suspended', 'eq']],
+    },
+    {
+      element: suspendBtn,
+      key: 'suspend',
+      fltr: [['status', 'active', 'eq']],
+    },
+  ];
 
   const custMgmtColumns: {
     title: string;
@@ -166,7 +190,7 @@ const CustMgmt = () => {
               />
             }
           >
-            Activate
+            activateBtn
           </Button>
         ) : (
           <Button

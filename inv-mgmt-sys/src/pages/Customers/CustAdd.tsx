@@ -75,7 +75,7 @@ const CustAdd = () => {
   ];
 
   useEffect(() => {
-    setTargetOffset(window.innerHeight / 1.7);
+    setTargetOffset(window.innerHeight / 1.65);
   }, []);
 
   return (
