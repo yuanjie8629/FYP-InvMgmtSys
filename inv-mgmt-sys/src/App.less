@@ -195,6 +195,27 @@ body {
     }
   }
 
+  
+    &-picker {
+      &-time {
+        &-panel {
+          &-cell {
+            &-selected {
+              .@{ant-prefix}-picker-time-panel-cell-inner {
+                color: @white !important;
+              }
+
+              :hover {
+                background-color: @primary-color !important;
+              }
+            }
+          }
+        }
+      }
+  
+    }
+  
+
   &-form {
     &-item {
       &-required, &-label>label {

@@ -4,16 +4,22 @@ import Layout from '@components/Layout/Layout';
 import Tag, { TagProps } from '@components/Tag/Tag';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Grid, Typography, Image, Dropdown, Menu } from 'antd';
-import InformativeTable from '@components/Table/InformativeTable';
+import InformativeTable, { InformativeTableButtonProps } from '@components/Table/InformativeTable';
 import prodList from './prodList';
 import { HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
 import { MdArrowDropDown } from 'react-icons/md';
 import prodTabList from './prodTabList';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { findRoutePath } from '@utils/routingUtils';
 
 const ProdMgmt = () => {
   const { Text, Title } = Typography;
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
+  let navigate = useNavigate();
+
+  const [prodListFltr, setProdListFltr] = useState(prodList);
 
   const hideBtn = (props: any) => (
     <Button
@@ -46,19 +52,11 @@ const ProdMgmt = () => {
     </Button>
   );
 
-  const onSelectBtn: {
-    element: typeof Button;
-    key: string;
-    fltr?: [
-      string,
-      string | number | undefined,
-      'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' //Relational Operator
-    ][];
-  }[] = [
+  const onSelectBtn: InformativeTableButtonProps = [
     {
       element: hideBtn,
       key: 'hide',
-      fltr: [['prodStat', 'active', 'eq']],
+      fltr: [{ fld: 'prodStat', val: 'active', rel: 'eq' }],
     },
     {
       element: deleteBtn,
@@ -236,7 +234,16 @@ const ProdMgmt = () => {
           className='container-card-wrapper'
         >
           <Row justify='center'>
-            <ContainerCard tabList={prodTabList}>
+            <ContainerCard
+              tabList={prodTabList}
+              onTabChange={(key) =>
+                setProdListFltr(
+                  prodList.filter((prod) =>
+                    key !== 'all' ? prod.prodStat === key : true
+                  )
+                )
+              }
+            >
               <Space direction='vertical' size={40} className='width-full'>
                 <FilterInputs />
                 <Space direction='vertical' size={15} className='width-full'>
@@ -245,11 +252,16 @@ const ProdMgmt = () => {
                       <Title level={4}>Product List</Title>
                     </Col>
                     <Col>
-                      <Button type='primary'>Add Product</Button>
+                      <Button
+                        type='primary'
+                        onClick={() => navigate(findRoutePath('prodAdd'))}
+                      >
+                        Add Product
+                      </Button>
                     </Col>
                   </Row>
                   <InformativeTable
-                    dataSource={prodList}
+                    dataSource={prodListFltr}
                     columns={prodMgmtColumns}
                     buttons={onSelectBtn}
                     defPg={5}

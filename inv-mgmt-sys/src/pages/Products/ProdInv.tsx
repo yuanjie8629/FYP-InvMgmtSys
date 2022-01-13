@@ -1,6 +1,6 @@
 import ContainerCard from '@components/ContainerCard/ContainerCard';
 import Layout from '@components/Layout/Layout';
-import InformativeTable from '@components/Table/InformativeTable';
+import InformativeTable, { InformativeTableButtonProps } from '@components/Table/InformativeTable';
 import Button from '@components/Button/Button';
 import {
   Col,
@@ -17,11 +17,17 @@ import prodList from './prodList';
 import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
 import { MdAdd, MdRemove } from 'react-icons/md';
 import prodTabList from './prodTabList';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { findRoutePath } from '@utils/routingUtils';
 
 const ProdInv = () => {
   const { Text, Title } = Typography;
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
+  let navigate = useNavigate();
+
+  const [prodListFltr, setProdListFltr] = useState(prodList);
 
   const bulkUpdBtn = (props: any) => (
     <Button
@@ -34,15 +40,7 @@ const ProdInv = () => {
     </Button>
   );
 
-  const onSelectBtn: {
-    element: typeof Button;
-    key: string;
-    fltr?: [
-      string,
-      string | number | undefined,
-      'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' //Relational Operator
-    ][];
-  }[] = [
+  const onSelectBtn: InformativeTableButtonProps = [
     {
       element: bulkUpdBtn,
       key: 'bulkUpd',
@@ -196,7 +194,16 @@ const ProdInv = () => {
           className='container-card-wrapper'
         >
           <Row justify='center'>
-            <ContainerCard tabList={prodTabList}>
+            <ContainerCard
+              tabList={prodTabList}
+              onTabChange={(key) =>
+                setProdListFltr(
+                  prodList.filter((prod) =>
+                    key !== 'all' ? prod.prodStat === key : true
+                  )
+                )
+              }
+            >
               <Space direction='vertical' size={40} className='width-full'>
                 <FilterInputs />
                 <Space direction='vertical' size={15} className='width-full'>
@@ -205,12 +212,17 @@ const ProdInv = () => {
                       <Title level={4}>Product List</Title>
                     </Col>
                     <Col>
-                      <Button type='primary'>View Product</Button>
+                      <Button
+                        type='primary'
+                        onClick={() => navigate(findRoutePath('prodMgmt'))}
+                      >
+                        View Products
+                      </Button>
                     </Col>
                   </Row>
 
                   <InformativeTable
-                    dataSource={prodList}
+                    dataSource={prodListFltr}
                     columns={prodInvColumns}
                     buttons={onSelectBtn}
                     defPg={5}

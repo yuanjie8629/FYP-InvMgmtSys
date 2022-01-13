@@ -23,7 +23,6 @@
   },
   "include": [
     "src",
-    "./src/react-app-env.d.ts",
-    "theme.js"
+    "src/**/*"
   ]
 }

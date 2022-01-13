@@ -34,6 +34,7 @@ const FilterInputs = () => {
           <InputSelect
             selectBefore={prodInputSelect}
             placeholder='Input'
+            selectWidth={150}
           ></InputSelect>
         </FilterInputCol>
         <FilterInputCol>
@@ -48,7 +49,6 @@ const FilterInputs = () => {
             label='Stock'
             placeholder={['Start', 'End']}
             min={0}
-            justify={'end'}
           />
         </FilterInputCol>
         <FilterInputCol>

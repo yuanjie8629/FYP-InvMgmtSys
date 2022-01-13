@@ -4,12 +4,16 @@ import Button from '@components/Button/Button';
 import Layout from '@components/Layout/Layout';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography } from 'antd';
-import InformativeTable from '@components/Table/InformativeTable';
+import InformativeTable, { InformativeTableButtonProps } from '@components/Table/InformativeTable';
 import custRegList from './custRegList';
 import { HiThumbDown, HiThumbUp } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
+import { findRoutePath } from '@utils/routingUtils';
 
 const CustReg = () => {
   const { Text, Title } = Typography;
+  let navigate = useNavigate();
+
   const [custListFltr, setCustListFltr] = useState(custRegList);
   const custTabList = [
     { key: 'all', tab: 'All' },
@@ -28,7 +32,7 @@ const CustReg = () => {
       }
       {...props}
     >
-      acceptBtn
+      Accept
     </Button>
   );
 
@@ -40,19 +44,11 @@ const CustReg = () => {
         <HiThumbDown style={{ marginRight: 5, position: 'relative', top: 3 }} />
       }
     >
-      rejectBtn
+      Reject
     </Button>
   );
 
-  const onSelectBtn: {
-    element: typeof Button;
-    key: string;
-    fltr?: [
-      string,
-      string | number | undefined,
-      'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' //Relational Operator
-    ][];
-  }[] = [
+  const onSelectBtn: InformativeTableButtonProps = [
     {
       element: acceptBtn,
       key: 'accept',
@@ -140,7 +136,7 @@ const CustReg = () => {
               />
             }
           >
-            acceptBtn
+            Accept
           </Button>
           <Button
             type='link'
@@ -152,7 +148,7 @@ const CustReg = () => {
               />
             }
           >
-            rejectBtn
+            Reject
           </Button>
         </Space>
       ),
@@ -186,7 +182,12 @@ const CustReg = () => {
                       <Title level={4}>Customer List</Title>
                     </Col>
                     <Col>
-                      <Button type='primary'>Add Customer</Button>
+                      <Button
+                        type='primary'
+                        onClick={() => navigate(findRoutePath('custAdd'))}
+                      >
+                        Add Customer
+                      </Button>
                     </Col>
                   </Row>
                   <InformativeTable
