@@ -47,7 +47,7 @@ const FilterInputs = () => {
         </FilterInputCol>
 
         <FilterInputCol>
-          <DatePickerWithLabel label='Birthdate' justify={'end'} textSpan={7} />
+          <DatePickerWithLabel label='Birthdate' textSpan={7} />
         </FilterInputCol>
         <FilterInputCol>
           <DatePickerWithLabel
@@ -64,7 +64,6 @@ const FilterInputs = () => {
             prefixWidth={45}
             min={0}
             precision={2}
-            justify={'end'}
             textSpan={8}
           />
         </FilterInputCol>

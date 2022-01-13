@@ -13,13 +13,8 @@ const FilterInputs = () => {
       label: string;
     }[];
   } = {
-    defaultVal: 'orderID',
-    options: [
-      { value: 'orderID', label: 'Order ID' },
-      { value: 'custNm', label: 'Customer Name' },
-      { value: 'custType', label: 'Customer Type' },
-      { value: 'trackingNum', label: 'Tracking Number' },
-    ],
+    defaultVal: 'discCde',
+    options: [{ value: 'discCde', label: 'Discount Code' }],
   };
 
   const custCatSelect = {
@@ -28,15 +23,6 @@ const FilterInputs = () => {
       { value: 'agent', label: 'Agent' },
       { value: 'drpshpr', label: 'Dropshipper' },
       { value: 'cust', label: 'Direct Customer' },
-    ],
-  };
-
-  const payMthdSelect = {
-    placeholder: 'Select Payment Method',
-    options: [
-      { value: 'intBnk', label: 'Internet Banking' },
-      { value: 'card', label: 'Card' },
-      { value: 'paypal', label: 'Paypal' },
     ],
   };
 
@@ -54,31 +40,22 @@ const FilterInputs = () => {
           <SelectWithLabel
             label='Customer Type'
             select={custCatSelect}
-            textSpan={8}
+            textSpan={6}
+            mode='multiple'
           />
         </FilterInputCol>
 
         <FilterInputCol>
-          <SelectWithLabel
-            label='Payment Method'
-            select={payMthdSelect}
-            textSpan={8}
-          />
+          <DatePickerWithLabel label='Available Date' textSpan={7} />
         </FilterInputCol>
         <FilterInputCol>
           <InputNumberRange
-            label='Amount'
+            label='Availability'
             placeholder={['Start', 'End']}
-            prefix='RM'
-            prefixWidth={45}
             min={0}
-            precision={2}
-            justify='start'
-            textSpan={4}
+            justify={'start'}
+            textSpan={5}
           />
-        </FilterInputCol>
-        <FilterInputCol>
-          <DatePickerWithLabel label='Order Date' textSpan={8} />
         </FilterInputCol>
       </Row>
       <Row gutter={20}>

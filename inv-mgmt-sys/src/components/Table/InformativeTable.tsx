@@ -4,17 +4,19 @@ import { Col, Row, Typography, Space } from 'antd';
 import './Table.less';
 import { ButtonType } from '@components/Button/Button';
 
+type InformativeTableButtonProps = {
+  element: ButtonType;
+  key: string;
+  fltr?: {
+    fld: string;
+    val: string | number | undefined;
+    rel: 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte'; //Relational Operator
+  }[];
+}[];
+
 interface InformativeTableProps extends TableProps {
   defPg?: number;
-  buttons: {
-    element: ButtonType;
-    key: string;
-    fltr?: [
-      string,
-      string | number | undefined,
-      'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' //Relational Operator
-    ][];
-  }[];
+  buttons: InformativeTableButtonProps;
 }
 
 const InformativeTable = ({ defPg = 10, ...props }: InformativeTableProps) => {
@@ -39,12 +41,15 @@ const InformativeTable = ({ defPg = 10, ...props }: InformativeTableProps) => {
             btn.fltr
               .map(
                 (filter: any) =>
-                  (filter[2] === 'eq' && selected[filter[0]] === filter[1]) ||
-                  (filter[2] === 'neq' && selected[filter[0]] !== filter[1]) ||
-                  (filter[2] === 'gt' && selected[filter[0]] > filter[1]) ||
-                  (filter[2] === 'gte' && selected[filter[0]] >= filter[1]) ||
-                  (filter[2] === 'lt' && selected[filter[0]] < filter[1]) ||
-                  (filter[2] === 'lte' && selected[filter[0]] <= filter[1])
+                  (filter.rel === 'eq' &&
+                    selected[filter.fld] === filter.val) ||
+                  (filter.rel === 'neq' &&
+                    selected[filter.fld] !== filter.val) ||
+                  (filter.rel === 'gt' && selected[filter.fld] > filter.val) ||
+                  (filter.rel === 'gte' &&
+                    selected[filter.fld] >= filter.val) ||
+                  (filter.rel === 'lt' && selected[filter.fld] < filter.val) ||
+                  (filter.rel === 'lte' && selected[filter.fld] <= filter.val)
               )
               .includes(false)
           ) {
@@ -119,3 +124,4 @@ const InformativeTable = ({ defPg = 10, ...props }: InformativeTableProps) => {
 };
 
 export default InformativeTable;
+export type { InformativeTableButtonProps };

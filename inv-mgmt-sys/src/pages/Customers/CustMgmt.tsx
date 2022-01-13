@@ -5,12 +5,16 @@ import Layout from '@components/Layout/Layout';
 import Tag, { TagProps } from '@components/Tag/Tag';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography } from 'antd';
-import InformativeTable from '@components/Table/InformativeTable';
+import InformativeTable, { InformativeTableButtonProps } from '@components/Table/InformativeTable';
 import custList from './custList';
 import { HiCheckCircle, HiPause } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
+import { findRoutePath } from '@utils/routingUtils';
 
 const CustMgmt = () => {
   const { Text, Title } = Typography;
+  let navigate = useNavigate();
+
   const [custListFltr, setCustListFltr] = useState(custList);
   const custTabList = [
     { key: 'all', tab: 'All' },
@@ -30,7 +34,7 @@ const CustMgmt = () => {
       }
       {...props}
     >
-      activateBtn
+      Activate
     </Button>
   );
 
@@ -47,24 +51,16 @@ const CustMgmt = () => {
     </Button>
   );
 
-  const onSelectBtn: {
-    element: typeof Button;
-    key: string;
-    fltr?: [
-      string,
-      string | number | undefined,
-      'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' //Relational Operator
-    ][];
-  }[] = [
+  const onSelectBtn: InformativeTableButtonProps = [
     {
       element: activateBtn,
-      key: 'activateBtn',
-      fltr: [['status', 'suspended', 'eq']],
+      key: 'activate',
+      fltr: [{ fld: 'status', val: 'suspended', rel: 'eq' }],
     },
     {
       element: suspendBtn,
       key: 'suspend',
-      fltr: [['status', 'active', 'eq']],
+      fltr: [{ fld: 'status', val: 'active', rel: 'eq' }],
     },
   ];
 
@@ -190,7 +186,7 @@ const CustMgmt = () => {
               />
             }
           >
-            activateBtn
+            Activate
           </Button>
         ) : (
           <Button
@@ -236,7 +232,12 @@ const CustMgmt = () => {
                       <Title level={4}>Customer List</Title>
                     </Col>
                     <Col>
-                      <Button type='primary'>Add Customer</Button>
+                      <Button
+                        type='primary'
+                        onClick={() => navigate(findRoutePath('custAdd'))}
+                      >
+                        Add Customer
+                      </Button>
                     </Col>
                   </Row>
                   <InformativeTable

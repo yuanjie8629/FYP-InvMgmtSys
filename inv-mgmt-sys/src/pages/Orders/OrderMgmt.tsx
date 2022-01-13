@@ -5,7 +5,7 @@ import Layout from '@components/Layout/Layout';
 import Tag, { TagProps } from '@components/Tag/Tag';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography } from 'antd';
-import InformativeTable from '@components/Table/InformativeTable';
+import InformativeTable, { InformativeTableButtonProps } from '@components/Table/InformativeTable';
 import orderList from './orderList';
 import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
 import {
@@ -14,9 +14,13 @@ import {
   HiPencilAlt,
   HiPrinter,
 } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
+import { findRoutePath } from '@utils/routingUtils';
 
 const OrderMgmt = () => {
   const { Text, Title } = Typography;
+  let navigate = useNavigate();
+
   const [orderListFltr, setOrderListFltr] = useState(orderList);
   const orderTabList = [
     { key: 'all', tab: 'All' },
@@ -53,15 +57,7 @@ const OrderMgmt = () => {
     </Button>
   );
 
-  const onSelectBtn: {
-    element: typeof Button;
-    key: string;
-    fltr?: [
-      string,
-      string | number | undefined,
-      'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' //Relational Operator
-    ][];
-  }[] = [
+  const onSelectBtn: InformativeTableButtonProps = [
     {
       element: genInvoiceBtn,
       key: 'genInvoice',
@@ -70,8 +66,8 @@ const OrderMgmt = () => {
       element: bulkUpdBtn,
       key: 'bulkUpd',
       fltr: [
-        ['trackNum', undefined, 'eq'],
-        ['orderStat', 'cancel', 'neq'],
+        { fld: 'trackNum', val: undefined, rel: 'eq' },
+        { fld: 'orderStat', val: 'cancel', rel: 'neq' },
       ],
     },
   ];
@@ -273,7 +269,12 @@ const OrderMgmt = () => {
                       <Title level={4}>Order List</Title>
                     </Col>
                     <Col>
-                      <Button type='primary'>Add Order</Button>
+                      <Button
+                        type='primary'
+                        onClick={() => navigate(findRoutePath('orderAdd'))}
+                      >
+                        Add Order
+                      </Button>
                     </Col>
                   </Row>
                   <InformativeTable

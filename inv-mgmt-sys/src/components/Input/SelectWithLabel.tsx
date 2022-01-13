@@ -34,6 +34,7 @@ const SelectWithLabel = ({
           placeholder={props.select.placeholder}
           className='width-full'
           options={props.select.options}
+          {...props}
         />
       </Col>
     </Row>
