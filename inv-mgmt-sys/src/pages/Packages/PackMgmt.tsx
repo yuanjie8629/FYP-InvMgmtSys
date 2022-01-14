@@ -3,8 +3,10 @@ import Button from '@components/Button/Button';
 import Layout from '@components/Layout/Layout';
 import Tag, { TagProps } from '@components/Tag/Tag';
 import FilterInputs from './FilterInputs';
-import { Row, Space, Col, Grid, Typography, Image, Dropdown, Menu } from 'antd';
-import InformativeTable, { InformativeTableButtonProps } from '@components/Table/InformativeTable';
+import { Row, Space, Col, Typography, Image, Dropdown, Menu } from 'antd';
+import InformativeTable, {
+  InformativeTableButtonProps,
+} from '@components/Table/InformativeTable';
 import packageList from './packageList';
 import { HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
 import { MdArrowDropDown } from 'react-icons/md';
@@ -15,8 +17,7 @@ import { findRoutePath } from '@utils/routingUtils';
 
 const PackMgmt = () => {
   const { Text, Title } = Typography;
-  const { useBreakpoint } = Grid;
-  const screens = useBreakpoint();
+
   let navigate = useNavigate();
 
   const [packageListFltr, setPackageListFltr] = useState(packageList);
@@ -80,19 +81,15 @@ const PackMgmt = () => {
       sorter: true,
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={15}>
-          <Col>
-            <Image
-              src={data['packImg']}
-              height={screens.xl ? 120 : 100}
-              width={screens.xl ? 120 : 100}
-            />
+          <Col span={9}>
+            <Image src={data['packImg']} height={120} width={120} />
           </Col>
-          <Col>
+          <Col span={15}>
             <Space direction='vertical' size={5}>
-              <Button type='link' color='info'>
+              <Button type='link' color='info' className='text-break'>
                 {data['packNm']}
               </Button>
-              <Text type='secondary' className='text-sm'>
+              <Text type='secondary' className='text-sm text-break'>
                 {data['packSKU']}
               </Text>
             </Space>

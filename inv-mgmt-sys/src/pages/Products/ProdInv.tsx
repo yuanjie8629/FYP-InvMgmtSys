@@ -1,6 +1,8 @@
 import ContainerCard from '@components/ContainerCard/ContainerCard';
 import Layout from '@components/Layout/Layout';
-import InformativeTable, { InformativeTableButtonProps } from '@components/Table/InformativeTable';
+import InformativeTable, {
+  InformativeTableButtonProps,
+} from '@components/Table/InformativeTable';
 import Button from '@components/Button/Button';
 import {
   Col,
@@ -69,7 +71,7 @@ const ProdInv = () => {
       title: 'Product',
       dataIndex: ['prodNm', 'prodCat', 'prodImg'],
       key: 'prod',
-      width: screens.xl ? '40%' : '35%',
+      width: '40%',
       sorter: true,
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={5}>
@@ -120,7 +122,7 @@ const ProdInv = () => {
     {
       title: 'Action',
       key: 'action',
-      width: screens.xl ? '20%' : '33%',
+      width: '33%',
       render: () => {
         const prodInvRadioBtn: {
           defaultValue: string;
@@ -158,7 +160,7 @@ const ProdInv = () => {
             <Row>
               <Radio.Group
                 buttonStyle='solid'
-                size={screens.xl ? 'middle' : 'small'}
+                size={'small'}
                 onChange={(e) => getSalesData(e.target.value)}
                 defaultValue={prodInvRadioBtn.defaultValue}
                 options={prodInvRadioBtn.data}
@@ -170,12 +172,12 @@ const ProdInv = () => {
                 <InputNumber
                   defaultValue={0}
                   min={0}
-                  size={screens.xl ? 'middle' : 'small'}
+                  size={'small'}
                   style={{ width: 150 }}
                 ></InputNumber>
               </Col>
               <Col>
-                <Button type='primary' size={screens.xl ? 'middle' : 'small'}>
+                <Button type='primary' size={'small'}>
                   Save
                 </Button>
               </Col>

@@ -40,21 +40,24 @@ const FilterInputs = () => {
           <SelectWithLabel
             label='Customer Type'
             select={custCatSelect}
-            textSpan={6}
+            textSpan={7}
             mode='multiple'
           />
         </FilterInputCol>
 
         <FilterInputCol>
-          <DatePickerWithLabel label='Available Date' textSpan={7} />
+          <DatePickerWithLabel
+            label='Available Date'
+            justify='start'
+            textSpan={6}
+          />
         </FilterInputCol>
         <FilterInputCol>
           <InputNumberRange
             label='Availability'
             placeholder={['Start', 'End']}
             min={0}
-            justify={'start'}
-            textSpan={5}
+            textSpan={7}
           />
         </FilterInputCol>
       </Row>

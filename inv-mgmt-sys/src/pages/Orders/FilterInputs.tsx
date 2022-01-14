@@ -54,7 +54,7 @@ const FilterInputs = () => {
           <SelectWithLabel
             label='Customer Type'
             select={custCatSelect}
-            textSpan={8}
+            textSpan={7}
           />
         </FilterInputCol>
 
@@ -62,7 +62,8 @@ const FilterInputs = () => {
           <SelectWithLabel
             label='Payment Method'
             select={payMthdSelect}
-            textSpan={8}
+            justify='start'
+            textSpan={7}
           />
         </FilterInputCol>
         <FilterInputCol>
@@ -73,12 +74,11 @@ const FilterInputs = () => {
             prefixWidth={45}
             min={0}
             precision={2}
-            justify='start'
-            textSpan={4}
+            textSpan={7}
           />
         </FilterInputCol>
         <FilterInputCol>
-          <DatePickerWithLabel label='Order Date' textSpan={8} />
+          <DatePickerWithLabel label='Order Date' justify='start' textSpan={7} />
         </FilterInputCol>
       </Row>
       <Row gutter={20}>

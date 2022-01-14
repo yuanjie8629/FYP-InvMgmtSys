@@ -41,7 +41,7 @@ type AdvInputNumberRangeProps = InputNumberRangeProps &
 const InputNumberRange = ({
   justify = 'end',
   placeholder = ['', ''],
-  textSpan = 3,
+  textSpan = 5,
   prefix,
   suffix,
   prefixWidth = prefix !== undefined ? 80 : 0,
@@ -52,7 +52,7 @@ const InputNumberRange = ({
   const inputNumWidth = `calc((100% - (28px + ${prefixWidth}px + ${suffixWidth}px)) / 2)`;
 
   return (
-    <Row align='middle' gutter={10} className='input-range'>
+    <Row align='middle' gutter={30} className='input-range'>
       {props.label !== undefined ? (
         <Col
           span={textSpan}

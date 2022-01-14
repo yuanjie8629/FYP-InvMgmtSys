@@ -100,7 +100,7 @@ const Sider = () => {
             ),
             menuLevel.level !== menuList.length ? (
               <Menu.Divider key={menuLevel.level}style={{ margin: '24px 0' }} />
-            ) : null,
+            ) : <div  style={{ height: 48 }}/>,
           ])}
           <Menu.Item
             key='siderCollapsedTrigger'

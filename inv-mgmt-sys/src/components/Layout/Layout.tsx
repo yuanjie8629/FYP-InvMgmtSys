@@ -14,7 +14,7 @@ const Layout = (props: CustomLayoutProps) => {
   return (
     <AntdLayout>
       <Helmet>
-        <meta name='viewport' content='width=1600, user-scalable=no ' />
+        <meta name='viewport' content='width=1600' />
       </Helmet>
       <Sider />
       <AntdLayout>
@@ -26,7 +26,12 @@ const Layout = (props: CustomLayoutProps) => {
             </div>
           }
         >
-          <Content className='content'>{props.children}</Content>
+          <Content
+            className='content'
+            style={{ minWidth: 1060 }} //1280px - sider width
+          >
+            {props.children}
+          </Content>
           <Footer />
         </Suspense>
       </AntdLayout>

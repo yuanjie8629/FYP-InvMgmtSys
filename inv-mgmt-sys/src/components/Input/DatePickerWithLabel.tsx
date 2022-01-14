@@ -9,14 +9,14 @@ type DatePickerWithLabelProps = Partial<DatePickerProps> & {
 
 const DatePickerWithLabel = ({
   justify = 'end',
-  textSpan = 3,
+  textSpan = 5,
   ...props
 }: DatePickerWithLabelProps) => {
   const { Text } = Typography;
   const { RangePicker } = DatePicker;
 
   return (
-    <Row align='middle' gutter={10} className='input-date'>
+    <Row align='middle' gutter={30} className='input-date'>
       <Col span={textSpan} className={justify === 'start' ? '' : 'justify-end'}>
         <Text type='secondary'>{props.label}</Text>
       </Col>

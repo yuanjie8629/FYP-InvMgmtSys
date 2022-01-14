@@ -34,7 +34,7 @@ const FilterInputs = () => {
             label='Stock'
             placeholder={['Start', 'End']}
             min={0}
-            textSpan={3}
+            textSpan={7}
           />
         </FilterInputCol>
         <FilterInputCol>
@@ -45,14 +45,12 @@ const FilterInputs = () => {
             prefixWidth={45}
             min={0}
             precision={2}
+            justify='start'
+            textSpan={3}
           />
         </FilterInputCol>
         <FilterInputCol>
-          <DatePickerWithLabel
-            label='Available Period'
-            justify={'start'}
-            textSpan={8}
-          />
+          <DatePickerWithLabel label='Available Period' textSpan={7} />
         </FilterInputCol>
       </Row>
       <Row gutter={20}>

@@ -41,7 +41,6 @@ const FilterInputs = () => {
           <SelectWithLabel
             label='Category'
             select={prodCatSelect}
-            textSpan={4}
           />
         </FilterInputCol>
         <FilterInputCol>
@@ -49,6 +48,8 @@ const FilterInputs = () => {
             label='Stock'
             placeholder={['Start', 'End']}
             min={0}
+            justify='start'
+            textSpan={3}
           />
         </FilterInputCol>
         <FilterInputCol>
@@ -59,7 +60,7 @@ const FilterInputs = () => {
             prefixWidth={45}
             min={0}
             precision={2}
-            textSpan={2}
+
           />
         </FilterInputCol>
       </Row>

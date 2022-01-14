@@ -79,18 +79,18 @@ const DiscMgmt = () => {
     render?: any;
   }[] = [
     {
-      title: 'Customer ID',
-      dataIndex: 'custID',
-      key: 'custID',
+      title: 'Discount Code',
+      dataIndex: 'discCde',
+      key: 'discCode',
       sorter: true,
       render: (data: number) => (
         <Button type='link' color='info'>
-          #{data}
+          {data}
         </Button>
       ),
     },
     {
-      title: 'Customer',
+      title: 'Discount Details',
       dataIndex: 'custNm',
       key: 'custNm',
       sorter: true,
@@ -224,7 +224,7 @@ const DiscMgmt = () => {
               onTabChange={(key) =>
                 setDiscListFltr(
                   discList.filter((disc) =>
-                    key !== 'all' ? disc.custType === key : true
+                    key !== 'all' ? disc.discType === key : true
                   )
                 )
               }

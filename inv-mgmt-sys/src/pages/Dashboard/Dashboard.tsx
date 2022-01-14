@@ -1,9 +1,6 @@
 import React, { lazy, useState, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
-import classNames from 'classnames';
-import { useAppSelector } from '@hooks/reduxHooks';
 import Col from 'antd/es/col';
-import Grid from 'antd/es/grid';
 import Row from 'antd/es/row';
 import Space from 'antd/es/space';
 import Spin from 'antd/es/spin';
@@ -42,10 +39,8 @@ const ContainerCard = lazy(
 );
 const Dashboard = () => {
   const { Text, Title } = Typography;
+
   const navigate = useNavigate();
-  const { useBreakpoint } = Grid;
-  const isSiderCollapsed = useAppSelector((state) => state.sider.collapsed);
-  const screens = useBreakpoint();
   const [salesDateRange, setSalesDateRange] = useState('year');
 
   const getSalesData =
@@ -272,11 +267,8 @@ const Dashboard = () => {
 
   const toDoItemPlaceHolder = () => {
     const cols = [];
-    const numItemPerRow = screens.xl
-      ? 5
-      : isSiderCollapsed && !screens.lg
-      ? 4
-      : 3;
+    const numItemPerRow = 6;
+
     for (
       let i = 0;
       i < numItemPerRow - (toDoList.length % numItemPerRow);
@@ -287,7 +279,7 @@ const Dashboard = () => {
           key={'toDoList-col-placeholder-' + i}
           className='dashboard-toDoList-col'
         >
-          <div style={{ width: screens.xl ? 255 : 230 }}></div>
+          <div style={{ width: 255 }}></div>
         </Col>
       );
     }
@@ -318,7 +310,7 @@ const Dashboard = () => {
                       className='dashboard-toDoList-col'
                     >
                       <SmallCard
-                        width={screens.xl ? 255 : 230}
+                        width={255}
                         className='dashboard-toDoList-item'
                       >
                         <Space direction='vertical' size={15}>
@@ -415,8 +407,8 @@ const Dashboard = () => {
             gutter={[30, 20]}
             className='dashboard-multiple-container-card'
           >
-            <Col xs={24} sm={24} md={24} lg={24} xl={6} className='padding-0'>
-              <ContainerCard width={!screens.xl ? '100%' : '95%'}>
+            <Col span={7} className='padding-0'>
+              <ContainerCard width={'95%'}>
                 <Title level={5}>Statistics</Title>
 
                 <Text className='dashboard-grey-text'>
@@ -424,8 +416,8 @@ const Dashboard = () => {
                 </Text>
 
                 <Space
-                  direction={screens.xl ? 'vertical' : 'horizontal'}
-                  size={screens.xl ? 20 : isSiderCollapsed ? 65 : 25}
+                  direction={'vertical'}
+                  size={20}
                   style={{ width: '100%', paddingTop: 25 }}
                 >
                   {statisticsList.map((statistics) => (
@@ -443,7 +435,7 @@ const Dashboard = () => {
                 </Space>
               </ContainerCard>
             </Col>
-            <Col xs={24} sm={24} md={24} lg={24} xl={18} className='padding-0'>
+            <Col span={17} className='padding-0'>
               <ContainerCard width='100%'>
                 <Space direction='vertical' size={15} className='width-full'>
                   <Row justify='space-between'>
@@ -461,6 +453,7 @@ const Dashboard = () => {
                       dataSource={recentOrders}
                       columns={recentOrderColumns}
                       pagination={false}
+                      scroll={{ x: 1000 }}
                     ></Table>
                   </Row>
                 </Space>
@@ -472,8 +465,8 @@ const Dashboard = () => {
             gutter={[30, 20]}
             className='dashboard-multiple-container-card'
           >
-            <Col xs={24} sm={24} md={24} lg={24} xl={9} className='padding-0'>
-              <ContainerCard width={!screens.xl ? '100%' : '95%'}>
+            <Col span={9} className='padding-0'>
+              <ContainerCard width={'95%'}>
                 <Space direction='vertical' size={5} className='width-full'>
                   <div>
                     <Row justify='space-between'>
@@ -484,12 +477,7 @@ const Dashboard = () => {
                         <More route='statistics' />
                       </Col>
                     </Row>
-                    <Row
-                      className={classNames(
-                        { 'float-left': !screens.xl },
-                        { 'float-right': screens.xl }
-                      )}
-                    >
+                    <Row>
                       <Text className='dashboard-grey-text'>
                         {topProduct.date}
                       </Text>
@@ -499,7 +487,7 @@ const Dashboard = () => {
                 </Space>
               </ContainerCard>
             </Col>
-            <Col xs={24} sm={24} md={24} lg={24} xl={15} className='padding-0'>
+            <Col span={15} className='padding-0'>
               <ContainerCard width='100%'>
                 <Space direction='vertical' size={30} className='width-full'>
                   <Row justify='space-between'>
@@ -517,6 +505,7 @@ const Dashboard = () => {
                       dataSource={invAnalysis}
                       columns={invAnalysisColumns}
                       pagination={false}
+                      scroll={{ x: 800 }}
                     ></Table>
                   </Row>
                 </Space>

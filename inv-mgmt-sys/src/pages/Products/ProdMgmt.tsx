@@ -3,8 +3,10 @@ import Button from '@components/Button/Button';
 import Layout from '@components/Layout/Layout';
 import Tag, { TagProps } from '@components/Tag/Tag';
 import FilterInputs from './FilterInputs';
-import { Row, Space, Col, Grid, Typography, Image, Dropdown, Menu } from 'antd';
-import InformativeTable, { InformativeTableButtonProps } from '@components/Table/InformativeTable';
+import { Row, Space, Col, Typography, Image, Dropdown, Menu } from 'antd';
+import InformativeTable, {
+  InformativeTableButtonProps,
+} from '@components/Table/InformativeTable';
 import prodList from './prodList';
 import { HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
 import { MdArrowDropDown } from 'react-icons/md';
@@ -15,8 +17,6 @@ import { findRoutePath } from '@utils/routingUtils';
 
 const ProdMgmt = () => {
   const { Text, Title } = Typography;
-  const { useBreakpoint } = Grid;
-  const screens = useBreakpoint();
   let navigate = useNavigate();
 
   const [prodListFltr, setProdListFltr] = useState(prodList);
@@ -71,6 +71,7 @@ const ProdMgmt = () => {
     sorter?: boolean;
     align?: 'left' | 'center' | 'right';
     width?: number | string;
+    fixed?: 'left' | 'right';
     render?: any;
   }[] = [
     {
@@ -81,11 +82,7 @@ const ProdMgmt = () => {
       render: (_: any, data: { [x: string]: string }) => (
         <Row gutter={5}>
           <Col>
-            <Image
-              src={data['prodImg']}
-              height={screens.xl ? 120 : 100}
-              width={screens.xl ? 120 : 100}
-            />
+            <Image src={data['prodImg']} height={120} width={120} />
           </Col>
           <Col>
             <Space direction='vertical' size={5}>

@@ -124,7 +124,7 @@ const PackAdd = () => {
       <div className='pack-add'>
         <Form name='packForm' layout='vertical' size='small'>
           <Row justify='center'>
-            <Col span={21}>
+          <Col xs={16} xl={19}>
               <Space
                 direction='vertical'
                 size={20}
@@ -147,7 +147,12 @@ const PackAdd = () => {
                       <Form.Item
                         label='Package Name'
                         name='packNm'
-                        rules={[{ required: true }]}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Please enter the package name.',
+                          },
+                        ]}
                       >
                         <Input
                           placeholder='e.g. Promo Raya Qurban'
@@ -158,7 +163,13 @@ const PackAdd = () => {
                       <Form.Item
                         label='Package Image'
                         name='packImg'
-                        rules={[{ required: true }]}
+                        rules={[
+                          {
+                            required: true,
+                            message:
+                              'Please upload at least ONE package image.',
+                          },
+                        ]}
                       >
                         <UploadPicWall
                           fileList={fileList}
@@ -170,7 +181,13 @@ const PackAdd = () => {
                       <Form.Item
                         label='Package Description'
                         name='packDesc'
-                        rules={[{ required: true }]}
+                        rules={[
+                          {
+                            required: true,
+                            message:
+                              'Please add some description on the package.',
+                          },
+                        ]}
                       >
                         <Input.TextArea style={{ height: 200 }} />
                       </Form.Item>
@@ -234,7 +251,12 @@ const PackAdd = () => {
                           <Form.Item
                             label='Price'
                             name='packPrice'
-                            rules={[{ required: true }]}
+                            rules={[
+                              {
+                                required: true,
+                                message: 'Please enter the product price.',
+                              },
+                            ]}
                           >
                             <InputNumber
                               addonBefore='RM'
@@ -278,7 +300,12 @@ const PackAdd = () => {
                       <Form.Item
                         label='Stock Keeping Unit (SKU)'
                         name='packSKU'
-                        rules={[{ required: true }]}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Please enter the SKU for the product.',
+                          },
+                        ]}
                         style={{ width: '40%' }}
                       >
                         <Input placeholder='e.g. SHRF-PP-PRQ' />
@@ -287,7 +314,12 @@ const PackAdd = () => {
                       <Form.Item
                         label='Stock Quantity'
                         name='packQuantity'
-                        rules={[{ required: true }]}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Please enter the product stock quantity.',
+                          },
+                        ]}
                       >
                         <InputNumber min={0} defaultValue={0} />
                       </Form.Item>
@@ -311,7 +343,12 @@ const PackAdd = () => {
                       <Form.Item
                         label='Weight (kg)'
                         name='packWeight'
-                        rules={[{ required: true }]}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Please enter the product weight.',
+                          },
+                        ]}
                       >
                         <InputNumber
                           min={0}
@@ -323,7 +360,13 @@ const PackAdd = () => {
                       <Form.Item
                         label='Dimension (cm)'
                         name='packDimension'
-                        rules={[{ required: true }]}
+                        rules={[
+                          {
+                            required: true,
+                            message:
+                              'Please enter the product dimension in cm.',
+                          },
+                        ]}
                       >
                         <Space size={10}>
                           <InputNumber
@@ -365,7 +408,13 @@ const PackAdd = () => {
                       <Form.Item
                         label='Start Time'
                         name='packStartTime'
-                        rules={[{ required: true }]}
+                        rules={[
+                          {
+                            required: true,
+                            message:
+                              'Please select the start time to launch the package.',
+                          },
+                        ]}
                       >
                         <DatePicker
                           showTime
@@ -398,7 +447,7 @@ const PackAdd = () => {
               </Space>
               <AffixAdd offsetBottom={0} label='Package' />
             </Col>
-            <Col span={3}>
+            <Col xs={8} xl={5}>
               <Anchor offsetTop={150} targetOffset={targetOffset}>
                 {anchorList.map((anchor) => (
                   <Link
