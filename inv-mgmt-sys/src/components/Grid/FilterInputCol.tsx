@@ -5,7 +5,7 @@ interface FilterInputColProps extends ColProps {
 }
 
 const FilterInputCol = (props: FilterInputColProps) => (
-  <Col span={8} {...props}>
+  <Col span={12} {...props}>
     {props.children}
   </Col>
 );

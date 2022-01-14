@@ -55,7 +55,7 @@ const ProdAdd = () => {
       <div className='prod-add'>
         <Form name='prodForm' layout='vertical' size='small'>
           <Row justify='center'>
-            <Col span={21}>
+            <Col xs={16} xl={19}>
               <Space
                 direction='vertical'
                 size={20}
@@ -78,7 +78,12 @@ const ProdAdd = () => {
                       <Form.Item
                         label='Product Name'
                         name='prodNm'
-                        rules={[{ required: true }]}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Please enter the product name.',
+                          },
+                        ]}
                       >
                         <Input
                           placeholder='e.g. Nasi Briyani Bkhari'
@@ -88,14 +93,25 @@ const ProdAdd = () => {
                       <Form.Item
                         label='Product Category'
                         name='prodCat'
-                        rules={[{ required: true }]}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Please enter the product category.',
+                          },
+                        ]}
                       >
                         <Radio.Group options={prodCat} />
                       </Form.Item>
                       <Form.Item
                         label='Product Image'
                         name='prodImg'
-                        rules={[{ required: true }]}
+                        rules={[
+                          {
+                            required: true,
+                            message:
+                              'Please upload at least ONE product image.',
+                          },
+                        ]}
                       >
                         <UploadPicWall
                           fileList={fileList}
@@ -107,7 +123,13 @@ const ProdAdd = () => {
                       <Form.Item
                         label='Product Description'
                         name='prodDesc'
-                        rules={[{ required: true }]}
+                        rules={[
+                          {
+                            required: true,
+                            message:
+                              'Please add some description on the product.',
+                          },
+                        ]}
                       >
                         <Input.TextArea style={{ height: 200 }} />
                       </Form.Item>
@@ -133,7 +155,12 @@ const ProdAdd = () => {
                             <Form.Item
                               label='Price'
                               name='prodPrice'
-                              rules={[{ required: true }]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: 'Please enter the product price.',
+                                },
+                              ]}
                             >
                               <InputNumber
                                 addonBefore='RM'
@@ -169,7 +196,13 @@ const ProdAdd = () => {
                               tooltip={{
                                 title: 'Unit Price',
                               }}
-                              rules={[{ required: true }]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message:
+                                    'please enter the unit price of the product.',
+                                },
+                              ]}
                             >
                               <InputNumber
                                 addonBefore='RM'
@@ -246,7 +279,12 @@ const ProdAdd = () => {
                         <Form.Item
                           label='Stock Keeping Unit (SKU)'
                           name='prodSKU'
-                          rules={[{ required: true }]}
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Please enter the SKU for the product.',
+                            },
+                          ]}
                           style={{ width: '40%' }}
                         >
                           <Input placeholder='e.g. SHRF-RTC-NBB' />
@@ -255,7 +293,13 @@ const ProdAdd = () => {
                         <Form.Item
                           label='Stock Quantity'
                           name='prodQuantity'
-                          rules={[{ required: true }]}
+                          rules={[
+                            {
+                              required: true,
+                              message:
+                                'Please enter the product stock quantity.',
+                            },
+                          ]}
                         >
                           <InputNumber min={0} defaultValue={0} />
                         </Form.Item>
@@ -314,7 +358,12 @@ const ProdAdd = () => {
                       <Form.Item
                         label='Weight (kg)'
                         name='prodWeight'
-                        rules={[{ required: true }]}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Please enter the product weight.',
+                          },
+                        ]}
                       >
                         <InputNumber
                           min={0}
@@ -326,7 +375,13 @@ const ProdAdd = () => {
                       <Form.Item
                         label='Dimension (cm)'
                         name='prodDimension'
-                        rules={[{ required: true }]}
+                        rules={[
+                          {
+                            required: true,
+                            message:
+                              'Please enter the product dimension in cm.',
+                          },
+                        ]}
                       >
                         <Space size={10}>
                           <InputNumber
@@ -354,7 +409,7 @@ const ProdAdd = () => {
               </Space>
               <AffixAdd offsetBottom={0} label='Product' />
             </Col>
-            <Col span={3}>
+            <Col xs={8} xl={5}>
               <Anchor offsetTop={150} targetOffset={targetOffset}>
                 {anchorList.map((anchor) => (
                   <Link

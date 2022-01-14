@@ -15,7 +15,7 @@ export default function AppRoute() {
           <Route
             key={route.path}
             path={route.path}
-            element={<Navigate to={route.redirect} />}
+            element={<Navigate to={route.redirect}/>}
           ></Route>
         ))}
         {routeList.map((route) => (

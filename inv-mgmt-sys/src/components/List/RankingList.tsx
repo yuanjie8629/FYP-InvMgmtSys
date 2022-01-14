@@ -1,4 +1,5 @@
 import { List, ListProps, Skeleton, Typography, Row, Col } from 'antd';
+import './RankingList.less';
 
 interface RankingListProps extends ListProps<any> {
   itemList: {
@@ -23,23 +24,17 @@ const RankingList = (props: RankingListProps) => {
           <Skeleton title={false} active loading={false}>
             <List.Item.Meta
               key={item.itemNm}
-              title={
-                <Text className='dashboard-top-product-title'>
-                  {item.itemNm}
-                </Text>
-              }
+              title={<Text className='ranking-list-title'>{item.itemNm}</Text>}
               description={
-                <Text className='dashboard-top-product-cat'>
-                  {item.itemCat}
-                </Text>
+                <Text className='ranking-list-cat'>{item.itemCat}</Text>
               }
             ></List.Item.Meta>
             <Row align='middle' gutter={[5, 5]}>
               <Col>
-                <Title level={5}>{item.value}</Title>
+                <Title level={5} className='ranking-list-value'>{item.value}</Title>
               </Col>
               <Col>
-                <Text className='dashboard-top-product-sales'>
+                <Text className='ranking-list-sales'>
                   {props.itemList.type === 'sales' ? 'sales' : 'units'}
                 </Text>
               </Col>

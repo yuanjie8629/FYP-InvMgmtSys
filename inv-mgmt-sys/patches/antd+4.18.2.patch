@@ -7,7 +7,7 @@ index 4ded29b..88638f3 100644
    md: '(min-width: 768px)',
    lg: '(min-width: 992px)',
 -  xl: '(min-width: 1200px)',
-+  xl: '(min-width: 1280px)',
++  xl: '(min-width: 1281px)',
    xxl: '(min-width: 1600px)'
  };
  var subscribers = new Map();
@@ -20,7 +20,7 @@ index badf961..6bade80 100644
    md: '(min-width: 768px)',
    lg: '(min-width: 992px)',
 -  xl: '(min-width: 1200px)',
-+  xl: '(min-width: 1280px)',
++  xl: '(min-width: 1281px)',
    xxl: '(min-width: 1600px)'
  };
  exports.responsiveMap = responsiveMap;

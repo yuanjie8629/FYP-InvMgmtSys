@@ -14,14 +14,14 @@ interface SelectLabelProps extends SelectProps<any> {
 }
 
 const SelectWithLabel = ({
-  textSpan = 3,
+  textSpan = 5,
   justify = 'end',
   ...props
 }: SelectLabelProps) => {
   const { Text } = Typography;
 
   return (
-    <Row align='middle' gutter={10} className='input-select-label'>
+    <Row align='middle' gutter={30} className='input-select-label'>
       <Col
         xs={textSpan + 1}
         xl={textSpan}
@@ -29,7 +29,7 @@ const SelectWithLabel = ({
       >
         <Text type='secondary'>{props.label}</Text>
       </Col>
-      <Col xs={23 - textSpan} xl={24 - textSpan}>
+      <Col span={24 - textSpan}>
         <Select
           placeholder={props.select.placeholder}
           className='width-full'

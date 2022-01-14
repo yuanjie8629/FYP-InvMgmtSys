@@ -34,7 +34,7 @@ const AffixAdd = (props: Omit<AffixAddProps, 'children'>) => {
               <Button size='middle'>Cancel</Button>
             </Col>
             <Col>
-              <Button size='middle' type='primary'>
+              <Button size='middle' type='primary' htmlType='submit'>
                 Add {props.label}
               </Button>
             </Col>

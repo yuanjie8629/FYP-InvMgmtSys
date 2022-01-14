@@ -42,19 +42,15 @@ const FilterInputs = () => {
           <SelectWithLabel
             label='Customer Status'
             select={custStatus}
-            textSpan={8}
+            textSpan={7}
           />
         </FilterInputCol>
 
         <FilterInputCol>
-          <DatePickerWithLabel label='Birthdate' textSpan={7} />
+          <DatePickerWithLabel label='Birthdate' justify='start' textSpan={7} />
         </FilterInputCol>
         <FilterInputCol>
-          <DatePickerWithLabel
-            label='Registration Date'
-            justify={'start'}
-            textSpan={8}
-          />
+          <DatePickerWithLabel label='Registration Date' textSpan={7} />
         </FilterInputCol>
         <FilterInputCol>
           <InputNumberRange
@@ -64,7 +60,8 @@ const FilterInputs = () => {
             prefixWidth={45}
             min={0}
             precision={2}
-            textSpan={8}
+            justify='start'
+            textSpan={7}
           />
         </FilterInputCol>
         <FilterInputCol>

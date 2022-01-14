@@ -1,6 +1,8 @@
 import ContainerCard from '@components/ContainerCard/ContainerCard';
 import Layout from '@components/Layout/Layout';
-import InformativeTable, { InformativeTableButtonProps } from '@components/Table/InformativeTable';
+import InformativeTable, {
+  InformativeTableButtonProps,
+} from '@components/Table/InformativeTable';
 import Button from '@components/Button/Button';
 import {
   Col,
@@ -70,23 +72,23 @@ const ProdInv = () => {
       title: 'Package',
       dataIndex: ['packNm', 'packSKU', 'packImg'],
       key: 'prod',
-      width: screens.xl ? '33%' : '38%',
+      width: '33%',
       sorter: true,
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={15}>
-          <Col>
-            <Image
-              src={data['packImg']}
-              height={screens.xl ? 120 : 80}
-              width={screens.xl ? 120 : 80}
-            />
+          <Col span={7}>
+            <Image src={data['packImg']} height={80} width={80} />
           </Col>
-          <Col>
+          <Col span={17}>
             <Space direction='vertical' size={5}>
-              <Button type='link' color='info'>
+              <Button
+                type='link'
+                color='info'
+                className='text-break'
+              >
                 {data['packNm']}
               </Button>
-              <Text type='secondary' className='text-sm'>
+              <Text type='secondary' className='text-sm text-break'>
                 {data['packSKU']}
               </Text>
             </Space>
@@ -112,7 +114,7 @@ const ProdInv = () => {
       title: 'Price',
       dataIndex: 'packPrice',
       key: 'packPrice',
-      width: screens.xl ? '12%' : '20%',
+      width: '10%',
       sorter: true,
       render: (amount: string) => (
         <Text type='secondary'>RM {parseFloat(amount).toFixed(2)}</Text>
@@ -122,7 +124,7 @@ const ProdInv = () => {
       title: 'Stock',
       dataIndex: 'packStock',
       key: 'packStock',
-      width: screens.xl ? '10%' : '12%',
+      width: '10%',
       sorter: true,
     },
     {
