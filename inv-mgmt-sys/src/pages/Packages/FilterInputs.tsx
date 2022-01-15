@@ -42,7 +42,7 @@ const FilterInputs = () => {
             label='Price'
             placeholder={['Start', 'End']}
             prefix='RM'
-            prefixWidth={45}
+            prefixWidth={60}
             min={0}
             precision={2}
             justify='start'

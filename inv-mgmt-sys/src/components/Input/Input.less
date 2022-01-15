@@ -15,6 +15,11 @@
             &-suffix {
               pointer-events: none;
             }
+
+            &-prefix,
+            &-suffix {
+              text-align: center;
+            }
           }
         }
         &-number {
@@ -46,11 +51,23 @@
   &-date {
     .@{ant-prefix} {
       &-picker {
-     
         &-input > input {
           text-align: center;
         }
       }
     }
+  }
+}
+
+.bf {
+  &-container {
+    border: 1px solid @border-color-base;
+    border-radius: @border-radius-base;
+  }
+
+  &-font-sizes,
+  &-line-heights,
+  &-letter-spacings {
+    width: 220px !important;
   }
 }

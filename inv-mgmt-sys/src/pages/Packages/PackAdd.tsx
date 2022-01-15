@@ -19,6 +19,7 @@ import {
   Typography,
 } from 'antd';
 import Button from '@components/Button/Button';
+import TextEditor from '@components/Input/TextEditor';
 
 const PackAdd = () => {
   const { Text, Title, Paragraph } = Typography;
@@ -51,15 +52,15 @@ const PackAdd = () => {
     dataIndex?: string | string[];
     key: string;
     sorter?: boolean;
-    align?: 'left' | 'center' | 'right';
     width?: number | string;
+    align?: 'left' | 'center' | 'right';
+    fixed?: 'left' | 'right';
     render?: any;
   }[] = [
     {
       title: 'Product',
       dataIndex: ['prodNm', 'prodCat', 'prodImg'],
       key: 'prod',
-
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={5}>
           <Col>
@@ -124,7 +125,7 @@ const PackAdd = () => {
       <div className='pack-add'>
         <Form name='packForm' layout='vertical' size='small'>
           <Row justify='center'>
-          <Col xs={16} xl={19}>
+            <Col xs={16} xl={19}>
               <Space
                 direction='vertical'
                 size={20}
@@ -184,12 +185,20 @@ const PackAdd = () => {
                         rules={[
                           {
                             required: true,
-                            message:
-                              'Please add some description on the package.',
+                            validator: (_, value) => {
+                              if (value === undefined || value.isEmpty()) {
+                                return Promise.reject(
+                                  'Please add some description on the package.'
+                                );
+                              } else {
+                                return Promise.resolve();
+                              }
+                            },
                           },
                         ]}
                       >
-                        <Input.TextArea style={{ height: 200 }} />
+                        {/* <Input.TextArea style={{ height: 200 }} /> */}
+                        <TextEditor placeholder='Please add the package description here.' />
                       </Form.Item>
                       <Form.Item label='Package Status' name='packStat'>
                         <Checkbox>Hidden</Checkbox>

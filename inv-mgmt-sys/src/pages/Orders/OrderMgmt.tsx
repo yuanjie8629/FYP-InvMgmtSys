@@ -5,7 +5,9 @@ import Layout from '@components/Layout/Layout';
 import Tag, { TagProps } from '@components/Tag/Tag';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography } from 'antd';
-import InformativeTable, { InformativeTableButtonProps } from '@components/Table/InformativeTable';
+import InformativeTable, {
+  InformativeTableButtonProps,
+} from '@components/Table/InformativeTable';
 import orderList from './orderList';
 import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
 import {
@@ -86,6 +88,7 @@ const OrderMgmt = () => {
       dataIndex: 'orderID',
       key: 'orderID',
       sorter: true,
+      width: '10%',
       render: (data: number) => (
         <Button type='link' color='info'>
           #{data}
@@ -97,12 +100,17 @@ const OrderMgmt = () => {
       dataIndex: 'custNm',
       key: 'custNm',
       sorter: true,
+      width: '25%',
+      render: (name: string) => (
+        <Text className='color-grey text-break'>{name}</Text>
+      ),
     },
     {
       title: 'Customer Type',
       dataIndex: 'custType',
       key: 'custType',
       sorter: true,
+      width: '12%',
       render: (type: string) => (
         <Text type='secondary'>
           {type === 'agent'
@@ -120,12 +128,13 @@ const OrderMgmt = () => {
       dataIndex: 'orderTm',
       key: 'orderTm',
       sorter: true,
+      width: '12%',
     },
     {
       title: 'Tracking Number',
       dataIndex: ['trackNum', 'orderStat'],
       key: 'trackNum',
-      width: '12%',
+      width: '15%',
       render: (_: any, data: { [x: string]: string }) =>
         data['trackNum'] !== undefined ? (
           <Button type='link' color='info'>
@@ -145,6 +154,7 @@ const OrderMgmt = () => {
       dataIndex: 'orderAmt',
       key: 'orderAmt',
       sorter: true,
+      width: '15%',
       render: (amount: string) => (
         <Text strong>RM {parseFloat(amount).toFixed(2)}</Text>
       ),
@@ -153,6 +163,7 @@ const OrderMgmt = () => {
       title: 'Status',
       dataIndex: 'orderStat',
       key: 'orderStat',
+      width: '10%',
       render: (status: string) => {
         const statusList = [
           { status: 'completed', label: 'Completed', color: 'success' },
@@ -193,6 +204,7 @@ const OrderMgmt = () => {
       title: 'Action',
       dataIndex: ['trackNum', 'orderStat'],
       key: 'action',
+      width: '6%',
       render: (_: any, data: { [x: string]: string }) =>
         data['orderStat'] !== 'cancel' ? (
           <Space direction='vertical' size={5}>
