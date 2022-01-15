@@ -4,16 +4,7 @@ import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
 import Button from '@components/Button/Button';
-import {
-  Col,
-  Image,
-  Row,
-  Space,
-  Typography,
-  InputNumber,
-  Grid,
-  Radio,
-} from 'antd';
+import { Col, Image, Row, Space, Typography, InputNumber, Radio } from 'antd';
 import FilterInputs from './FilterInputs';
 import packageList from './packageList';
 import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
@@ -25,8 +16,6 @@ import { findRoutePath } from '@utils/routingUtils';
 
 const ProdInv = () => {
   const { Text, Title } = Typography;
-  const { useBreakpoint } = Grid;
-  const screens = useBreakpoint();
   let navigate = useNavigate();
 
   const [packageListFltr, setPackageListFltr] = useState(packageList);
@@ -65,27 +54,23 @@ const ProdInv = () => {
     width?: number | string;
     sorter?: boolean;
     align?: 'left' | 'center' | 'right';
+    fixed?: 'left' | 'right';
     render?: any;
-    hidden?: boolean;
   }[] = [
     {
       title: 'Package',
       dataIndex: ['packNm', 'packSKU', 'packImg'],
       key: 'prod',
-      width: '33%',
+      width: '28%',
       sorter: true,
       render: (_: any, data: { [x: string]: string | undefined }) => (
-        <Row gutter={15}>
+        <Row gutter={20}>
           <Col span={7}>
             <Image src={data['packImg']} height={80} width={80} />
           </Col>
           <Col span={17}>
             <Space direction='vertical' size={5}>
-              <Button
-                type='link'
-                color='info'
-                className='text-break'
-              >
+              <Button type='link' color='info' className='text-break'>
                 {data['packNm']}
               </Button>
               <Text type='secondary' className='text-sm text-break'>
@@ -99,16 +84,24 @@ const ProdInv = () => {
     {
       title: 'Products Included',
       dataIndex: 'packProds',
-      key: 'packProds.quantity',
-      width: '25%',
-      hidden: screens.xl ? false : true,
-      render: (products: []) =>
-        products.map((product: any) => (
-          <Row justify='space-between'>
-            <Text type='secondary'>{product.prodNm}</Text>
-            <Text type='secondary'>x{product.quantity}</Text>
-          </Row>
-        )),
+      key: 'packProds.prodNm',
+      width: '28%',
+      render: (products: []) => (
+        <Space direction='vertical' size={10} className='width-full'>
+          {products.map((product: any) => (
+            <Row justify='space-between' gutter={20}>
+              <Col span={20}>
+                <Text type='secondary' className='text-break'>
+                  {product.prodNm}
+                </Text>
+              </Col>
+              <Col span={4} className='justify-end'>
+                <Text type='secondary'>x{product.quantity}</Text>
+              </Col>
+            </Row>
+          ))}
+        </Space>
+      ),
     },
     {
       title: 'Price',
@@ -130,7 +123,8 @@ const ProdInv = () => {
     {
       title: 'Action',
       key: 'action',
-      width: '33%',
+      width: '24%',
+
       render: () => {
         const prodInvRadioBtn: {
           defaultValue: string;
@@ -168,7 +162,7 @@ const ProdInv = () => {
             <Row>
               <Radio.Group
                 buttonStyle='solid'
-                size={screens.xl ? 'middle' : 'small'}
+                size={'small'}
                 onChange={(e) => getSalesData(e.target.value)}
                 defaultValue={prodInvRadioBtn.defaultValue}
                 options={prodInvRadioBtn.data}
@@ -180,12 +174,12 @@ const ProdInv = () => {
                 <InputNumber
                   defaultValue={0}
                   min={0}
-                  size={screens.xl ? 'middle' : 'small'}
+                  size={'small'}
                   style={{ width: 150 }}
                 ></InputNumber>
               </Col>
               <Col>
-                <Button type='primary' size={screens.xl ? 'middle' : 'small'}>
+                <Button type='primary' size={'small'}>
                   Save
                 </Button>
               </Col>
@@ -194,7 +188,7 @@ const ProdInv = () => {
         );
       },
     },
-  ].filter((col) => !col.hidden);
+  ];
   return (
     <Layout>
       <div className='prod-inv'>

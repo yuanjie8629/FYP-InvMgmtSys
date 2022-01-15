@@ -16,9 +16,11 @@ import {
   Space,
   Typography,
 } from 'antd';
+import TextEditor from '@components/Input/TextEditor';
 
 const ProdAdd = () => {
   const { Text, Title } = Typography;
+  const [prodForm] = Form.useForm();
   const { Link } = Anchor;
   const [fileList, setFileList]: any = useState([
     {
@@ -53,7 +55,7 @@ const ProdAdd = () => {
   return (
     <Layout>
       <div className='prod-add'>
-        <Form name='prodForm' layout='vertical' size='small'>
+        <Form name='prodForm' form={prodForm} layout='vertical' size='small'>
           <Row justify='center'>
             <Col xs={16} xl={19}>
               <Space
@@ -126,12 +128,20 @@ const ProdAdd = () => {
                         rules={[
                           {
                             required: true,
-                            message:
-                              'Please add some description on the product.',
+                            validator: (_, value) => {
+                              if (value === undefined || value.isEmpty()) {
+                                return Promise.reject(
+                                  'Please add some description on the product.'
+                                );
+                              } else {
+                                return Promise.resolve();
+                              }
+                            },
                           },
                         ]}
                       >
-                        <Input.TextArea style={{ height: 200 }} />
+                        {/* <Input.TextArea style={{ height: 200 }} /> */}
+                        <TextEditor placeholder='Please add the product description here.' />
                       </Form.Item>
                       <Form.Item label='Product Status' name='prodStat'>
                         <Checkbox>Hidden</Checkbox>

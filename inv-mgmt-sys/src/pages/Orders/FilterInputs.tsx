@@ -17,7 +17,6 @@ const FilterInputs = () => {
     options: [
       { value: 'orderID', label: 'Order ID' },
       { value: 'custNm', label: 'Customer Name' },
-      { value: 'custType', label: 'Customer Type' },
       { value: 'trackingNum', label: 'Tracking Number' },
     ],
   };
@@ -71,7 +70,7 @@ const FilterInputs = () => {
             label='Amount'
             placeholder={['Start', 'End']}
             prefix='RM'
-            prefixWidth={45}
+            prefixWidth={60}
             min={0}
             precision={2}
             textSpan={7}
