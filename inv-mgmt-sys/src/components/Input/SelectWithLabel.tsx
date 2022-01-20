@@ -22,11 +22,7 @@ const SelectWithLabel = ({
 
   return (
     <Row align='middle' gutter={30} className='input-select-label'>
-      <Col
-        xs={textSpan + 1}
-        xl={textSpan}
-        className={justify === 'start' ? '' : 'justify-end'}
-      >
+      <Col span={textSpan} className={justify === 'start' ? '' : 'justify-end'}>
         <Text type='secondary'>{props.label}</Text>
       </Col>
       <Col span={24 - textSpan}>
@@ -34,6 +30,7 @@ const SelectWithLabel = ({
           placeholder={props.select.placeholder}
           className='width-full'
           options={props.select.options}
+          allowClear
           {...props}
         />
       </Col>

@@ -61,14 +61,14 @@ const ProdInv = () => {
       title: 'Package',
       dataIndex: ['packNm', 'packSKU', 'packImg'],
       key: 'prod',
-      width: '28%',
+      width: 260,
       sorter: true,
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={20}>
-          <Col span={7}>
+          <Col xs={9} xl={7}>
             <Image src={data['packImg']} height={80} width={80} />
           </Col>
-          <Col span={17}>
+          <Col xs={15} xl={17}>
             <Space direction='vertical' size={5}>
               <Button type='link' color='info' className='text-break'>
                 {data['packNm']}
@@ -85,7 +85,7 @@ const ProdInv = () => {
       title: 'Products Included',
       dataIndex: 'packProds',
       key: 'packProds.prodNm',
-      width: '28%',
+      width: 260,
       render: (products: []) => (
         <Space direction='vertical' size={10} className='width-full'>
           {products.map((product: any) => (
@@ -107,7 +107,7 @@ const ProdInv = () => {
       title: 'Price',
       dataIndex: 'packPrice',
       key: 'packPrice',
-      width: '10%',
+      width: 100,
       sorter: true,
       render: (amount: string) => (
         <Text type='secondary'>RM {parseFloat(amount).toFixed(2)}</Text>
@@ -117,13 +117,13 @@ const ProdInv = () => {
       title: 'Stock',
       dataIndex: 'packStock',
       key: 'packStock',
-      width: '10%',
+      width: 100,
       sorter: true,
     },
     {
       title: 'Action',
       key: 'action',
-      width: '24%',
+      width: 250,
 
       render: () => {
         const prodInvRadioBtn: {

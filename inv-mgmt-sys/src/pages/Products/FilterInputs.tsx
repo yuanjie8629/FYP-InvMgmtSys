@@ -49,7 +49,7 @@ const FilterInputs = () => {
             placeholder={['Start', 'End']}
             min={0}
             justify='start'
-            textSpan={3}
+            textSpan={4}
           />
         </FilterInputCol>
         <FilterInputCol>

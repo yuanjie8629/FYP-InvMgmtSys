@@ -23,7 +23,7 @@ const orderList: {
     custNm: 'Nur Nuraliah binti Haiqal',
     custType: 'cust',
     orderTm: '23-08-2021 12:41',
-    orderAmt: 120,
+    orderAmt: 12500.50,
     orderStat: 'toShip',
   },
   {

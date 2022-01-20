@@ -79,13 +79,13 @@ const PackMgmt = () => {
       dataIndex: ['packNm', 'packSKU', 'packImg'],
       key: 'prod',
       sorter: true,
-      width:'28%',
+      width: 280,
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={20}>
-          <Col span={7}>
+          <Col xs={9} xl={7}>
             <Image src={data['packImg']} height={80} width={80} />
           </Col>
-          <Col span={17}>
+          <Col xs={15} xl={17}>
             <Space direction='vertical' size={5}>
               <Button type='link' color='info' className='text-break'>
                 {data['packNm']}
@@ -102,7 +102,7 @@ const PackMgmt = () => {
       title: 'Products Included',
       dataIndex: 'packProds',
       key: 'packProds.prodNm',
-      width: '28%',
+      width: 280,
       render: (products: []) => (
         <Space direction='vertical' size={10} className='width-full'>
           {products.map((product: any) => (
@@ -125,7 +125,7 @@ const PackMgmt = () => {
       dataIndex: 'packPrice',
       key: 'packPrice',
       sorter: true,
-      width: '10%',
+      width: 100,
       render: (amount: string) => (
         <Text type='secondary'>RM {parseFloat(amount).toFixed(2)}</Text>
       ),
@@ -135,13 +135,13 @@ const PackMgmt = () => {
       dataIndex: 'packStock',
       key: 'paclStock',
       sorter: true,
-      width: '10%',
+      width:100,
     },
     {
       title: 'Status',
       dataIndex: 'packStat',
       key: 'packStat',
-      width: '12%',
+      width: 100,
       render: (status: string) => {
         const statusList = [
           { status: 'active', label: 'Active', color: 'success' },
@@ -215,7 +215,7 @@ const PackMgmt = () => {
     {
       title: 'Action',
       key: 'action',
-      width: '12%',
+      width: 100,
       render: () => (
         <Space direction='vertical' size={5}>
           <Button

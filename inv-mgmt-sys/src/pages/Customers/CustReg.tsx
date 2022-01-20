@@ -4,7 +4,9 @@ import Button from '@components/Button/Button';
 import Layout from '@components/Layout/Layout';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography } from 'antd';
-import InformativeTable, { InformativeTableButtonProps } from '@components/Table/InformativeTable';
+import InformativeTable, {
+  InformativeTableButtonProps,
+} from '@components/Table/InformativeTable';
 import custRegList from './custRegList';
 import { HiThumbDown, HiThumbUp } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
@@ -73,6 +75,7 @@ const CustReg = () => {
       dataIndex: 'regID',
       key: 'regID',
       sorter: true,
+      width: 150,
       render: (data: number) => (
         <Button type='link' color='info'>
           #{data}
@@ -84,12 +87,14 @@ const CustReg = () => {
       dataIndex: 'applicant',
       key: 'applicant',
       sorter: true,
+      width: 300,
     },
     {
       title: 'Register For',
       dataIndex: 'custType',
       key: 'custType',
       sorter: true,
+      width: 130,
       render: (type: string) => (
         <Text type='secondary'>
           {type === 'agent'
@@ -105,6 +110,7 @@ const CustReg = () => {
       dataIndex: 'gender',
       key: 'gender',
       sorter: true,
+      width: 100,
       render: (gender: string) => (
         <Text type='secondary'>{gender === 'm' ? 'Male' : 'Female'}</Text>
       ),
@@ -114,17 +120,20 @@ const CustReg = () => {
       dataIndex: 'regDt',
       key: 'regDt',
       sorter: true,
+      width: 160,
     },
     {
       title: 'Contact Number',
       dataIndex: 'contactNum',
       key: 'contactNum',
       sorter: true,
+      width: 160,
     },
 
     {
       title: 'Action',
       key: 'action',
+      width: 120,
       render: () => (
         <Space direction='vertical' size={5}>
           <Button

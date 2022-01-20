@@ -19,6 +19,7 @@ BraftEditor.use(Table({ columnResizable: true }));
 
 const TextEditor = (props: BraftEditorProps) => {
   const excludeCtrl: BuiltInControlType[] = ['fullscreen'];
+
   return <BraftEditor language='en' excludeControls={excludeCtrl} {...props} />;
 };
 

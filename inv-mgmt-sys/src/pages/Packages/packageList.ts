@@ -37,7 +37,7 @@ const packageList: {
     packImg: hashtag,
     packPrice: 100.2,
     packStock: 210,
-    packStat: 'scheduled',
+    packStat: 'oos',
   },
 ];
 

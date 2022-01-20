@@ -15,15 +15,11 @@ export default function AppRoute() {
           <Route
             key={route.path}
             path={route.path}
-            element={<Navigate to={route.redirect}/>}
+            element={<Navigate to={route.redirect} />}
           ></Route>
         ))}
         {routeList.map((route) => (
-          <Route
-            key={route.path}
-            path={route.path}
-            element={route.component}
-          />
+          <Route key={route.path} path={route.path} element={route.component} />
         ))}
       </Routes>
     </Router>
