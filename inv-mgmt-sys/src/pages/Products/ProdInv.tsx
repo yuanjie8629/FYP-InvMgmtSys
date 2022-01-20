@@ -4,16 +4,7 @@ import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
 import Button from '@components/Button/Button';
-import {
-  Col,
-  Image,
-  Row,
-  Space,
-  Typography,
-  InputNumber,
-  Grid,
-  Radio,
-} from 'antd';
+import { Col, Image, Row, Space, Typography, InputNumber, Radio } from 'antd';
 import FilterInputs from './FilterInputs';
 import prodList from './prodList';
 import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
@@ -22,11 +13,11 @@ import prodTabList from './prodTabList';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
+import { moneyFormatter } from '@utils/numUtils';
 
 const ProdInv = () => {
   const { Text, Title } = Typography;
-  const { useBreakpoint } = Grid;
-  const screens = useBreakpoint();
+
   let navigate = useNavigate();
 
   const [prodListFltr, setProdListFltr] = useState(prodList);
@@ -71,16 +62,12 @@ const ProdInv = () => {
       title: 'Product',
       dataIndex: ['prodNm', 'prodCat', 'prodImg'],
       key: 'prod',
-      width: '40%',
+      width: 400,
       sorter: true,
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={5}>
           <Col>
-            <Image
-              src={data['prodImg']}
-              height={screens.xl ? 120 : 80}
-              width={screens.xl ? 120 : 80}
-            />
+            <Image src={data['prodImg']} height={120} width={120} />
           </Col>
           <Col>
             <Space direction='vertical' size={5}>
@@ -99,30 +86,30 @@ const ProdInv = () => {
       title: 'SKU',
       dataIndex: 'prodSKU',
       key: 'prodSKU',
-      width: '15%',
+      width: 160,
       sorter: true,
     },
     {
       title: 'Price',
       dataIndex: 'prodPrice',
       key: 'prodPrice',
-      width: '12%',
+      width: 120,
       sorter: true,
-      render: (amount: string) => (
-        <Text type='secondary'>RM {parseFloat(amount).toFixed(2)}</Text>
+      render: (amount: number) => (
+        <Text type='secondary'>{moneyFormatter(amount)}</Text>
       ),
     },
     {
       title: 'Stock',
       dataIndex: 'prodStock',
       key: 'prodStock',
-      width: '10%',
+      width: 100,
       sorter: true,
     },
     {
       title: 'Action',
       key: 'action',
-      width: '33%',
+      width: 280,
       render: () => {
         const prodInvRadioBtn: {
           defaultValue: string;

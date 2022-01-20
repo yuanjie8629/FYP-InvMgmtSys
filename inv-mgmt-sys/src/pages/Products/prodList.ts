@@ -13,7 +13,7 @@ const prodList = [
   },
   {
     key: '2',
-    prodNm: 'Nasi B234124 Bukhari',
+    prodNm: 'Nasi Bukhari',
     prodCat: 'Ready-To-Cook',
     prodSKU: 'SHRF-RTC-NBB',
     prodImg: hashtag,

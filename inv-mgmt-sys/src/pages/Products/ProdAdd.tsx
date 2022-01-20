@@ -419,7 +419,7 @@ const ProdAdd = () => {
               </Space>
               <AffixAdd offsetBottom={0} label='Product' />
             </Col>
-            <Col xs={8} xl={5}>
+            <Col xs={8} xl={5} push={1}>
               <Anchor offsetTop={150} targetOffset={targetOffset}>
                 {anchorList.map((anchor) => (
                   <Link

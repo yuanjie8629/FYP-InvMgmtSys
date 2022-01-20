@@ -11,13 +11,13 @@ import InformativeTable, {
 import orderList from './orderList';
 import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
 import {
-  HiDocumentSearch,
   HiExclamation,
   HiPencilAlt,
   HiPrinter,
 } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
+import { moneyFormatter } from '@utils/numUtils';
 
 const OrderMgmt = () => {
   const { Text, Title } = Typography;
@@ -80,6 +80,7 @@ const OrderMgmt = () => {
     key: string;
     sorter?: boolean;
     align?: 'left' | 'center' | 'right';
+    fixed?: 'left' | 'right';
     width?: number | string;
     render?: any;
   }[] = [
@@ -88,7 +89,8 @@ const OrderMgmt = () => {
       dataIndex: 'orderID',
       key: 'orderID',
       sorter: true,
-      width: '10%',
+      fixed: 'left',
+      width: 110,
       render: (data: number) => (
         <Button type='link' color='info'>
           #{data}
@@ -100,7 +102,7 @@ const OrderMgmt = () => {
       dataIndex: 'custNm',
       key: 'custNm',
       sorter: true,
-      width: '25%',
+      width: 200,
       render: (name: string) => (
         <Text className='color-grey text-break'>{name}</Text>
       ),
@@ -110,7 +112,7 @@ const OrderMgmt = () => {
       dataIndex: 'custType',
       key: 'custType',
       sorter: true,
-      width: '12%',
+      width: 150,
       render: (type: string) => (
         <Text type='secondary'>
           {type === 'agent'
@@ -128,13 +130,13 @@ const OrderMgmt = () => {
       dataIndex: 'orderTm',
       key: 'orderTm',
       sorter: true,
-      width: '12%',
+      width: 150,
     },
     {
       title: 'Tracking Number',
       dataIndex: ['trackNum', 'orderStat'],
       key: 'trackNum',
-      width: '15%',
+      width: 150,
       render: (_: any, data: { [x: string]: string }) =>
         data['trackNum'] !== undefined ? (
           <Button type='link' color='info'>
@@ -154,16 +156,15 @@ const OrderMgmt = () => {
       dataIndex: 'orderAmt',
       key: 'orderAmt',
       sorter: true,
-      width: '15%',
-      render: (amount: string) => (
-        <Text strong>RM {parseFloat(amount).toFixed(2)}</Text>
-      ),
+      width: 100,
+      render: (amount: number) => <Text strong>{moneyFormatter(amount)}</Text>,
     },
     {
       title: 'Status',
       dataIndex: 'orderStat',
       key: 'orderStat',
-      width: '10%',
+      align: 'center' as const,
+      width: 130,
       render: (status: string) => {
         const statusList = [
           { status: 'completed', label: 'Completed', color: 'success' },
@@ -204,7 +205,8 @@ const OrderMgmt = () => {
       title: 'Action',
       dataIndex: ['trackNum', 'orderStat'],
       key: 'action',
-      width: '6%',
+      width: 100,
+      fixed: 'right',
       render: (_: any, data: { [x: string]: string }) =>
         data['orderStat'] !== 'cancel' ? (
           <Space direction='vertical' size={5}>
@@ -220,33 +222,18 @@ const OrderMgmt = () => {
             >
               Invoice
             </Button>
-            {data['trackNum'] === undefined ? (
-              <Button
-                type='link'
-                color='info'
-                icon={
-                  <HiPencilAlt
-                    size={16}
-                    style={{ marginRight: 5, position: 'relative', top: 3 }}
-                  />
-                }
-              >
-                Update
-              </Button>
-            ) : (
-              <Button
-                type='link'
-                color='info'
-                icon={
-                  <HiDocumentSearch
-                    size={16}
-                    style={{ marginRight: 5, position: 'relative', top: 3 }}
-                  />
-                }
-              >
-                Track
-              </Button>
-            )}
+            <Button
+              type='link'
+              color='info'
+              icon={
+                <HiPencilAlt
+                  size={16}
+                  style={{ marginRight: 5, position: 'relative', top: 3 }}
+                />
+              }
+            >
+              {data['trackNum'] === undefined ? 'Update' : 'Edit'}
+            </Button>
           </Space>
         ) : (
           '-'
@@ -293,6 +280,7 @@ const OrderMgmt = () => {
                     dataSource={orderListFltr}
                     columns={orderMgmtColumns}
                     buttons={onSelectBtn}
+                    scroll={{ x: 1100 }}
                   />
                 </Space>
               </Space>

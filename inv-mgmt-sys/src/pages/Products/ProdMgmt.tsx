@@ -11,15 +11,28 @@ import prodList from './prodList';
 import { HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
 import { MdArrowDropDown } from 'react-icons/md';
 import prodTabList from './prodTabList';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
+import { moneyFormatter } from '@utils/numUtils';
 
 const ProdMgmt = () => {
   const { Text, Title } = Typography;
   let navigate = useNavigate();
-
   const [prodListFltr, setProdListFltr] = useState(prodList);
+  let [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(
+    () =>
+      setProdListFltr(
+        prodList.filter((prod) =>
+          searchParams.get('stat') !== null
+            ? prod.prodStat === searchParams.get('stat')
+            : true
+        )
+      ),
+    [searchParams]
+  );
 
   const hideBtn = (props: any) => (
     <Button
@@ -79,6 +92,7 @@ const ProdMgmt = () => {
       dataIndex: ['prodNm', 'prodCat', 'prodImg'],
       key: 'prod',
       sorter: true,
+      width: 400,
       render: (_: any, data: { [x: string]: string }) => (
         <Row gutter={5}>
           <Col>
@@ -102,14 +116,16 @@ const ProdMgmt = () => {
       dataIndex: 'prodSKU',
       key: 'prodSKU',
       sorter: true,
+      width: 160,
     },
     {
       title: 'Price',
       dataIndex: 'prodPrice',
       key: 'prodPrice',
       sorter: true,
-      render: (amount: string) => (
-        <Text type='secondary'>RM {parseFloat(amount).toFixed(2)}</Text>
+      width: 150,
+      render: (amount: number) => (
+        <Text type='secondary'>{moneyFormatter(amount)}</Text>
       ),
     },
     {
@@ -117,11 +133,13 @@ const ProdMgmt = () => {
       dataIndex: 'prodStock',
       key: 'prodStock',
       sorter: true,
+      width: 120,
     },
     {
       title: 'Status',
       dataIndex: 'prodStat',
       key: 'prodStat',
+      width: 150,
       render: (status: string) => {
         const statusList = [
           { status: 'active', label: 'Active', color: 'success' },
@@ -191,6 +209,7 @@ const ProdMgmt = () => {
     {
       title: 'Action',
       key: 'action',
+      width: 100,
       render: () => (
         <Space direction='vertical' size={5}>
           <Button
@@ -233,13 +252,14 @@ const ProdMgmt = () => {
           <Row justify='center'>
             <ContainerCard
               tabList={prodTabList}
-              onTabChange={(key) =>
-                setProdListFltr(
-                  prodList.filter((prod) =>
-                    key !== 'all' ? prod.prodStat === key : true
-                  )
-                )
+              activeTabKey={
+                searchParams.get('stat') === null
+                  ? 'all'
+                  : searchParams.get('stat')
               }
+              onTabChange={(key) => {
+                setSearchParams(key !== 'all' ? { stat: key } : {});
+              }}
             >
               <Space direction='vertical' size={40} className='width-full'>
                 <FilterInputs />

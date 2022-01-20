@@ -5,11 +5,14 @@ import Layout from '@components/Layout/Layout';
 import Tag, { TagProps } from '@components/Tag/Tag';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography } from 'antd';
-import InformativeTable, { InformativeTableButtonProps } from '@components/Table/InformativeTable';
+import InformativeTable, {
+  InformativeTableButtonProps,
+} from '@components/Table/InformativeTable';
 import custList from './custList';
 import { HiCheckCircle, HiPause } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
+import { moneyFormatter } from '@utils/numUtils';
 
 const CustMgmt = () => {
   const { Text, Title } = Typography;
@@ -70,6 +73,7 @@ const CustMgmt = () => {
     key: string;
     sorter?: boolean;
     align?: 'left' | 'center' | 'right';
+    fixed?: 'left' | 'right';
     width?: number | string;
     render?: any;
   }[] = [
@@ -78,6 +82,8 @@ const CustMgmt = () => {
       dataIndex: 'custID',
       key: 'custID',
       sorter: true,
+      fixed: 'left',
+      width: 150,
       render: (data: number) => (
         <Button type='link' color='info'>
           #{data}
@@ -89,12 +95,14 @@ const CustMgmt = () => {
       dataIndex: 'custNm',
       key: 'custNm',
       sorter: true,
+      width: 200,
     },
     {
       title: 'Customer Type',
       dataIndex: 'custType',
       key: 'custType',
       sorter: true,
+      width: 150,
       render: (type: string) => (
         <Text type='secondary'>
           {type === 'agent'
@@ -103,7 +111,7 @@ const CustMgmt = () => {
             ? 'Dropshipper'
             : type === 'cust'
             ? 'Direct Customer'
-            : null}
+            : 'Unknown'}
         </Text>
       ),
     },
@@ -112,15 +120,17 @@ const CustMgmt = () => {
       dataIndex: 'regDt',
       key: 'regDt',
       sorter: true,
+      width: 160,
     },
     {
       title: 'Sales per Month',
       dataIndex: 'salesMth',
       key: 'salesMth',
       sorter: true,
-      render: (amount: string) =>
+      width: 160,
+      render: (amount: number) =>
         amount !== undefined ? (
-          <Text strong>RM {parseFloat(amount).toFixed(2)}</Text>
+          <Text strong>{moneyFormatter(amount)}</Text>
         ) : (
           '-'
         ),
@@ -130,11 +140,14 @@ const CustMgmt = () => {
       dataIndex: 'lastOrderDt',
       key: 'lastOrderDt',
       sorter: true,
+      width: 150,
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      align: 'center' as const,
+      width: 130,
       render: (status: string) => {
         const statusList = [
           { status: 'active', label: 'Active', color: 'success' },
@@ -172,6 +185,8 @@ const CustMgmt = () => {
       title: 'Action',
       dataIndex: ['custType', 'status'],
       key: 'action',
+      fixed: 'right',
+      width: 100,
       render: (_: any, data: { [x: string]: string }) =>
         data['custType'] === 'cust' ? (
           '-'
@@ -244,6 +259,7 @@ const CustMgmt = () => {
                     dataSource={custListFltr}
                     columns={custMgmtColumns}
                     buttons={onSelectBtn}
+                    scroll={{ x: 1200 }}
                   />
                 </Space>
               </Space>
