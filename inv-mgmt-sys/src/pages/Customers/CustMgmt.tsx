@@ -85,9 +85,11 @@ const CustMgmt = () => {
       fixed: 'left',
       width: 150,
       render: (data: number) => (
-        <Button type='link' color='info'>
-          #{data}
-        </Button>
+        <div className='text-button-wrapper'>
+          <Text strong className='text-button'>
+            #{data}
+          </Text>
+        </div>
       ),
     },
     {

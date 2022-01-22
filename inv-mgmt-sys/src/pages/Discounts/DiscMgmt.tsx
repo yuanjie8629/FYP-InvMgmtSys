@@ -4,14 +4,17 @@ import Button from '@components/Button/Button';
 import Layout from '@components/Layout/Layout';
 import Tag, { TagProps } from '@components/Tag/Tag';
 import FilterInputs from './FilterInputs';
-import { Row, Space, Col, Typography } from 'antd';
+import { Row, Space, Col, Typography, Dropdown, Menu } from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
 import discList from './discList';
-import { HiCheckCircle, HiPause, HiTrash } from 'react-icons/hi';
+import { HiCheckCircle, HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
+import { MdAllInclusive, MdArrowDropDown, MdSync } from 'react-icons/md';
+import Tooltip from 'antd/es/tooltip';
+import { moneyFormatter, percentFormatter } from '@utils/numUtils';
 
 const DiscMgmt = () => {
   const { Text, Title } = Typography;
@@ -41,6 +44,22 @@ const DiscMgmt = () => {
     </Button>
   );
 
+  const hideBtn = (props: any) => (
+    <Button
+      type='primary'
+      color='grey'
+      icon={
+        <HiEyeOff
+          size={16}
+          style={{ marginRight: 5, position: 'relative', top: 3 }}
+        />
+      }
+      {...props}
+    >
+      Hide
+    </Button>
+  );
+
   const deleteBtn = (props: any) => (
     <Button
       type='primary'
@@ -60,12 +79,16 @@ const DiscMgmt = () => {
     {
       element: activateBtn,
       key: 'activate',
-      fltr: [{ fld: 'status', val: 'suspended', rel: 'eq' }],
+      fltr: [{ fld: 'status', val: 'hidden', rel: 'eq' }],
+    },
+    {
+      element: hideBtn,
+      key: 'hide',
+      fltr: [{ fld: 'status', val: 'active', rel: 'eq' }],
     },
     {
       element: deleteBtn,
       key: 'delete',
-      fltr: [{ fld: 'status', val: 'active', rel: 'eq' }],
     },
   ];
 
@@ -75,87 +98,152 @@ const DiscMgmt = () => {
     key: string;
     sorter?: boolean;
     align?: 'left' | 'center' | 'right';
+    fixed?: 'left' | 'right';
     width?: number | string;
     render?: any;
   }[] = [
     {
       title: 'Discount Code',
-      dataIndex: 'discCde',
+      dataIndex: ['discCde', 'autoApply'],
       key: 'discCode',
       sorter: true,
-      render: (data: number) => (
-        <Button type='link' color='info'>
-          {data}
-        </Button>
+      fixed: 'left',
+      width: 150,
+      render: (_: any, data: { [x: string]: boolean }) => (
+        <Row>
+          <Col span={20} className='text-button-wrapper'>
+            <Text strong className='text-button'>
+              {data['discCde']}
+            </Text>
+          </Col>
+          <Col span={4} className='justify-end'>
+            {data['autoApply'] === true ? (
+              <Tooltip title='Automatically applied'>
+                <MdSync />
+              </Tooltip>
+            ) : null}
+          </Col>
+        </Row>
       ),
     },
     {
       title: 'Discount Details',
-      dataIndex: 'custNm',
-      key: 'custNm',
+      dataIndex: ['discType', 'discAmt', 'minSpend', 'maxDisc', 'usageLimit'],
+      key: 'discDetl',
       sorter: true,
+      width: 280,
+      render: (_: any, data) => (
+        <>
+          <Text strong className='color-grey'>
+            {data['discType'] === 'amount'
+              ? moneyFormatter(data['discAmt'])
+              : percentFormatter(data['discAmt'])}{' '}
+            off
+          </Text>
+          <ul style={{ padding: '0 25px' }}>
+            {data['minSpend'] !== undefined ? (
+              <li>Min spend of {moneyFormatter(data['minSpend'])}</li>
+            ) : null}
+            {data['maxDisc'] !== undefined ? (
+              <li>Capped at {moneyFormatter(data['maxDisc'])}</li>
+            ) : null}
+            {data['usageLimit'] !== undefined ? (
+              <li>Limit for {data['usageLimit']} transactions per user</li>
+            ) : null}
+          </ul>
+        </>
+      ),
     },
     {
       title: 'Customer Type',
       dataIndex: 'custType',
       key: 'custType',
       sorter: true,
-      render: (type: string) => (
-        <Text type='secondary'>
-          {type === 'agent'
-            ? 'Agent'
-            : type === 'drpshpr'
-            ? 'Dropshipper'
-            : type === 'cust'
-            ? 'Direct Customer'
-            : null}
-        </Text>
+      width: 150,
+      render: (types: []) => (
+        <Space direction='vertical'>
+          {types.map((type: string) => (
+            <Text type='secondary'>
+              {type === 'agent'
+                ? 'Agent'
+                : type === 'drpshpr'
+                ? 'Dropshipper'
+                : type === 'cust'
+                ? 'Direct Customer'
+                : null}
+            </Text>
+          ))}
+        </Space>
       ),
     },
     {
-      title: 'Registration Date',
-      dataIndex: 'regDt',
-      key: 'regDt',
+      title: 'Availability',
+      dataIndex: 'availability',
+      key: 'availability',
       sorter: true,
-    },
-    {
-      title: 'Sales per Month',
-      dataIndex: 'salesMth',
-      key: 'salesMth',
-      sorter: true,
-      render: (amount: string) =>
-        amount !== undefined ? (
-          <Text strong>RM {parseFloat(amount).toFixed(2)}</Text>
+      width: 100,
+      render: (availability: string) =>
+        availability === 'infinite' ? (
+          <Tooltip title='Unlimited'>
+            <MdAllInclusive />
+          </Tooltip>
         ) : (
-          '-'
+          availability
         ),
     },
     {
-      title: 'Last Order Date',
-      dataIndex: 'lastOrderDt',
-      key: 'lastOrderDt',
+      title: 'Start Time',
+      dataIndex: 'startTm',
+      key: 'startTm',
       sorter: true,
+      width: 150,
+    },
+    {
+      title: 'End Time',
+      dataIndex: 'endTm',
+      key: 'endTm',
+      sorter: true,
+      width: 150,
+      render: (endTm: string) => (endTm !== undefined ? endTm : '-'),
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      width: 120,
       render: (status: string) => {
         const statusList = [
           { status: 'active', label: 'Active', color: 'success' },
-          { status: 'suspended', label: 'Suspended', color: 'error' },
+          { status: 'scheduled', label: 'Scheduled', color: 'processing' },
+          { status: 'expired', label: 'Expired', color: 'error' },
+          { status: 'hidden', label: 'Hidden', color: 'default' },
         ];
+        const menu = (
+          <Menu>
+            {statusList.map((statusItem) =>
+              !(
+                status === statusItem.status ||
+                (statusItem.status !== 'hidden' &&
+                  statusItem.status !== 'active')
+              ) ? (
+                <Menu.Item key='{statusItem.status}'>
+                  {statusItem.label}
+                </Menu.Item>
+              ) : null
+            )}
+          </Menu>
+        );
 
-        interface custStatusTagProps extends TagProps {
+        interface ProdStatusTagProps extends TagProps {
           color: string;
           children: React.ReactNode;
         }
-        const CustStatusTag = ({
+        const ProdStatusTag = ({
           color,
           children,
           ...props
-        }: custStatusTagProps) => (
-          <Tag minWidth='80%' maxWidth='100%' color={color} {...props}>
+        }: ProdStatusTagProps) => (
+          <Tag minWidth='50%' maxWidth='100%' color={color} {...props}>
             {children}
           </Tag>
         );
@@ -164,49 +252,67 @@ const DiscMgmt = () => {
           (statusItem) => status === statusItem.status
         );
 
-        return (
-          <CustStatusTag
-            color={matchedStatus !== undefined ? matchedStatus.color : ''}
+        return !(
+          ['expired', 'scheduled'].indexOf(matchedStatus!.status) >= 0
+        ) ? (
+          <Row align='middle'>
+            <ProdStatusTag color={matchedStatus!.color}>
+              {matchedStatus!.label}
+            </ProdStatusTag>
+            <Dropdown overlay={menu} placement='bottomRight'>
+              <MdArrowDropDown size={25} style={{ cursor: 'pointer' }} />
+            </Dropdown>
+          </Row>
+        ) : (
+          <ProdStatusTag
+            color={
+              statusList.find(
+                (statusItem) => statusItem.status === matchedStatus?.status
+              )!.color
+            }
           >
-            {matchedStatus !== undefined ? matchedStatus.label : null}
-          </CustStatusTag>
+            {
+              statusList.find(
+                (statusItem) => statusItem.status === matchedStatus?.status
+              )!.label
+            }
+          </ProdStatusTag>
         );
       },
     },
     {
       title: 'Action',
-      dataIndex: ['custType', 'status'],
       key: 'action',
-      render: (_: any, data: { [x: string]: string }) =>
-        data['custType'] === 'cust' ? (
-          '-'
-        ) : data['status'] === 'suspended' ? (
+      width: 100,
+      fixed: 'right',
+      render: (_: any, data: { [x: string]: string }) => (
+        <Space direction='vertical' size={5}>
           <Button
             type='link'
             color='info'
             icon={
-              <HiCheckCircle
+              <HiPencilAlt
                 size={16}
                 style={{ marginRight: 5, position: 'relative', top: 3 }}
               />
             }
           >
-            Activate
+            Edit
           </Button>
-        ) : (
           <Button
             type='link'
             color='info'
             icon={
-              <HiPause
+              <HiTrash
                 size={16}
-                style={{ marginRight: 5, position: 'relative', top: 3 }}
+                style={{ marginRight: 5, position: 'relative', top: 2 }}
               />
             }
           >
-            Suspend
+            Delete
           </Button>
-        ),
+        </Space>
+      ),
     },
   ];
 
@@ -224,7 +330,7 @@ const DiscMgmt = () => {
               onTabChange={(key) =>
                 setDiscListFltr(
                   discList.filter((disc) =>
-                    key !== 'all' ? disc.discType === key : true
+                    key !== 'all' ? disc.status === key : true
                   )
                 )
               }
@@ -249,6 +355,7 @@ const DiscMgmt = () => {
                     dataSource={discListFltr}
                     columns={discMgmtColumns}
                     buttons={onSelectBtn}
+                    scroll={{ x: 1200 }}
                   />
                 </Space>
               </Space>
