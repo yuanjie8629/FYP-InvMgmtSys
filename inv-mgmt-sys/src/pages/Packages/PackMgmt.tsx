@@ -8,7 +8,7 @@ import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
 import packageList from './packageList';
-import { HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
+import { HiCheckCircle, HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
 import { MdArrowDropDown } from 'react-icons/md';
 import packTabList from './packTabList';
 import React, { useState } from 'react';
@@ -22,6 +22,21 @@ const PackMgmt = () => {
 
   const [packageListFltr, setPackageListFltr] = useState(packageList);
 
+  const activateBtn = (props: any) => (
+    <Button
+      type='primary'
+      icon={
+        <HiCheckCircle
+          size={16}
+          style={{ marginRight: 5, position: 'relative', top: 3 }}
+        />
+      }
+      {...props}
+    >
+      Activate
+    </Button>
+  );
+  
   const hideBtn = (props: any) => (
     <Button
       type='primary'
@@ -55,6 +70,11 @@ const PackMgmt = () => {
 
   const onSelectBtn: InformativeTableButtonProps = [
     {
+      element: activateBtn,
+      key: 'activate',
+      fltr: [{ fld: 'packStat', val: 'hidden', rel: 'eq' }],
+    },
+    {
       element: hideBtn,
       key: 'hide',
       fltr: [{ fld: 'packStat', val: 'active', rel: 'eq' }],
@@ -87,9 +107,11 @@ const PackMgmt = () => {
           </Col>
           <Col xs={15} xl={17}>
             <Space direction='vertical' size={5}>
-              <Button type='link' color='info' className='text-break'>
-                {data['packNm']}
-              </Button>
+              <div className='text-button-wrapper'>
+                <Text strong className='text-button'>
+                  {data['packNm']}
+                </Text>
+              </div>
               <Text type='secondary' className='text-sm text-break'>
                 {data['packSKU']}
               </Text>
@@ -135,7 +157,7 @@ const PackMgmt = () => {
       dataIndex: 'packStock',
       key: 'paclStock',
       sorter: true,
-      width:100,
+      width: 100,
     },
     {
       title: 'Status',

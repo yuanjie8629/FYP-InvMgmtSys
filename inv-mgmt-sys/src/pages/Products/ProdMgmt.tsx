@@ -8,7 +8,7 @@ import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
 import prodList from './prodList';
-import { HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
+import { HiCheckCircle, HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
 import { MdArrowDropDown } from 'react-icons/md';
 import prodTabList from './prodTabList';
 import React, { useEffect, useState } from 'react';
@@ -32,6 +32,21 @@ const ProdMgmt = () => {
         )
       ),
     [searchParams]
+  );
+
+  const activateBtn = (props: any) => (
+    <Button
+      type='primary'
+      icon={
+        <HiCheckCircle
+          size={16}
+          style={{ marginRight: 5, position: 'relative', top: 3 }}
+        />
+      }
+      {...props}
+    >
+      Activate
+    </Button>
   );
 
   const hideBtn = (props: any) => (
@@ -67,6 +82,11 @@ const ProdMgmt = () => {
 
   const onSelectBtn: InformativeTableButtonProps = [
     {
+      element: activateBtn,
+      key: 'activate',
+      fltr: [{ fld: 'prodStat', val: 'hidden', rel: 'eq' }],
+    },
+    {
       element: hideBtn,
       key: 'hide',
       fltr: [{ fld: 'prodStat', val: 'active', rel: 'eq' }],
@@ -95,15 +115,17 @@ const ProdMgmt = () => {
       width: 400,
       render: (_: any, data: { [x: string]: string }) => (
         <Row gutter={5}>
-          <Col>
+          <Col xs={9} xl={7}>
             <Image src={data['prodImg']} height={120} width={120} />
           </Col>
-          <Col>
+          <Col xs={15} xl={17}>
             <Space direction='vertical' size={5}>
-              <Button type='link' color='info'>
-                {data['prodNm']}
-              </Button>
-              <Text type='secondary' className='text-sm'>
+              <div className='text-button-wrapper'>
+                <Text strong className='text-button'>
+                  {data['prodNm']}
+                </Text>
+              </div>
+              <Text type='secondary' className='text-sm text-break'>
                 {data['prodCat']}
               </Text>
             </Space>

@@ -10,14 +10,11 @@ import InformativeTable, {
 } from '@components/Table/InformativeTable';
 import orderList from './orderList';
 import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
-import {
-  HiExclamation,
-  HiPencilAlt,
-  HiPrinter,
-} from 'react-icons/hi';
+import { HiExclamation, HiPrinter } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
+import { MdUpdate } from 'react-icons/md';
 
 const OrderMgmt = () => {
   const { Text, Title } = Typography;
@@ -92,9 +89,11 @@ const OrderMgmt = () => {
       fixed: 'left',
       width: 110,
       render: (data: number) => (
-        <Button type='link' color='info'>
-          #{data}
-        </Button>
+        <div className='text-button-wrapper'>
+          <Text strong className='text-button'>
+            #{data}
+          </Text>
+        </div>
       ),
     },
     {
@@ -226,13 +225,13 @@ const OrderMgmt = () => {
               type='link'
               color='info'
               icon={
-                <HiPencilAlt
+                <MdUpdate
                   size={16}
                   style={{ marginRight: 5, position: 'relative', top: 3 }}
                 />
               }
             >
-              {data['trackNum'] === undefined ? 'Update' : 'Edit'}
+              Update
             </Button>
           </Space>
         ) : (

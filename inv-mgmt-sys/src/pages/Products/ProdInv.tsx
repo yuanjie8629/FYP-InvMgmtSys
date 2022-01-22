@@ -66,15 +66,17 @@ const ProdInv = () => {
       sorter: true,
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={5}>
-          <Col>
+          <Col xs={9} xl={7}>
             <Image src={data['prodImg']} height={120} width={120} />
           </Col>
-          <Col>
+          <Col xs={15} xl={17}>
             <Space direction='vertical' size={5}>
-              <Button type='link' color='info'>
-                {data['prodNm']}
-              </Button>
-              <Text type='secondary' className='text-sm'>
+              <div className='text-button-wrapper'>
+                <Text strong className='text-button'>
+                  {data['prodNm']}
+                </Text>
+              </div>
+              <Text type='secondary' className='text-sm text-break'>
                 {data['prodCat']}
               </Text>
             </Space>

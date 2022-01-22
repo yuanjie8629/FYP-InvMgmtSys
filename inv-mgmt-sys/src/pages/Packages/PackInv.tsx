@@ -70,9 +70,11 @@ const ProdInv = () => {
           </Col>
           <Col xs={15} xl={17}>
             <Space direction='vertical' size={5}>
-              <Button type='link' color='info' className='text-break'>
-                {data['packNm']}
-              </Button>
+              <div className='text-button-wrapper'>
+                <Text strong className='text-button'>
+                  {data['packNm']}
+                </Text>
+              </div>
               <Text type='secondary' className='text-sm text-break'>
                 {data['packSKU']}
               </Text>
