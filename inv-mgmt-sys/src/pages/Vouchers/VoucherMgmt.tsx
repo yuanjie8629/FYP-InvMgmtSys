@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ContainerCard from '@components/ContainerCard/ContainerCard';
+import ContainerCard from '@components/Card/ContainerCard';
 import Button from '@components/Button/Button';
 import Layout from '@components/Layout/Layout';
 import Tag, { TagProps } from '@components/Tag/Tag';
@@ -8,20 +8,21 @@ import { Row, Space, Col, Typography, Dropdown, Menu } from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
-import discList from './discList';
+import voucherList from './voucherList';
 import { HiCheckCircle, HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { MdAllInclusive, MdArrowDropDown, MdSync } from 'react-icons/md';
 import Tooltip from 'antd/es/tooltip';
 import { moneyFormatter, percentFormatter } from '@utils/numUtils';
+import { sortByOrder } from '@utils/sortUtils';
 
-const DiscMgmt = () => {
+const VoucherMgmt = () => {
   const { Text, Title } = Typography;
   let navigate = useNavigate();
 
-  const [discListFltr, setDiscListFltr] = useState(discList);
-  const discTabList = [
+  const [voucherListFltr, setVoucherListFltr] = useState(voucherList);
+  const voucherTabList = [
     { key: 'all', tab: 'All' },
     { key: 'active', tab: 'Active' },
     { key: 'hidden', tab: 'Hidden' },
@@ -92,7 +93,7 @@ const DiscMgmt = () => {
     },
   ];
 
-  const discMgmtColumns: {
+  const voucherMgmtColumns: {
     title: string;
     dataIndex?: string | string[];
     key: string;
@@ -103,9 +104,9 @@ const DiscMgmt = () => {
     render?: any;
   }[] = [
     {
-      title: 'Discount Code',
-      dataIndex: ['discCde', 'autoApply'],
-      key: 'discCode',
+      title: 'Voucher Code',
+      dataIndex: ['voucherCde', 'autoApply'],
+      key: 'voucherCde',
       sorter: true,
       fixed: 'left',
       width: 150,
@@ -113,7 +114,7 @@ const DiscMgmt = () => {
         <Row>
           <Col span={20} className='text-button-wrapper'>
             <Text strong className='text-button'>
-              {data['discCde']}
+              {data['voucherCde']}
             </Text>
           </Col>
           <Col span={4} className='justify-end'>
@@ -162,7 +163,7 @@ const DiscMgmt = () => {
       width: 150,
       render: (types: []) => (
         <Space direction='vertical'>
-          {types.map((type: string) => (
+          {sortByOrder(types).map((type: string) => (
             <Text type='secondary'>
               {type === 'agent'
                 ? 'Agent'
@@ -183,7 +184,7 @@ const DiscMgmt = () => {
       sorter: true,
       width: 100,
       render: (availability: string) =>
-        availability === 'infinite' ? (
+        availability === 'unlimited' ? (
           <Tooltip title='Unlimited'>
             <MdAllInclusive />
           </Tooltip>
@@ -318,7 +319,7 @@ const DiscMgmt = () => {
 
   return (
     <Layout>
-      <div className='disc-mgmt'>
+      <div className='voucher-mgmt'>
         <Space
           direction='vertical'
           size={20}
@@ -326,11 +327,11 @@ const DiscMgmt = () => {
         >
           <Row justify='center'>
             <ContainerCard
-              tabList={discTabList}
+              tabList={voucherTabList}
               onTabChange={(key) =>
-                setDiscListFltr(
-                  discList.filter((disc) =>
-                    key !== 'all' ? disc.status === key : true
+                setVoucherListFltr(
+                  voucherList.filter((voucher) =>
+                    key !== 'all' ? voucher.status === key : true
                   )
                 )
               }
@@ -340,20 +341,20 @@ const DiscMgmt = () => {
                 <Space direction='vertical' size={15} className='width-full'>
                   <Row justify='space-between'>
                     <Col>
-                      <Title level={4}>Discount List</Title>
+                      <Title level={4}>Voucher List</Title>
                     </Col>
                     <Col>
                       <Button
                         type='primary'
-                        onClick={() => navigate(findRoutePath('discAdd'))}
+                        onClick={() => navigate(findRoutePath('voucherAdd'))}
                       >
-                        Create Discount Code
+                        Create Voucher
                       </Button>
                     </Col>
                   </Row>
                   <InformativeTable
-                    dataSource={discListFltr}
-                    columns={discMgmtColumns}
+                    dataSource={voucherListFltr}
+                    columns={voucherMgmtColumns}
                     buttons={onSelectBtn}
                     scroll={{ x: 1200 }}
                   />
@@ -367,4 +368,4 @@ const DiscMgmt = () => {
   );
 };
 
-export default DiscMgmt;
+export default VoucherMgmt;

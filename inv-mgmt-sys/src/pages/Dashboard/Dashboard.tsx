@@ -35,7 +35,7 @@ import RankingList from '@components/List/RankingList';
 
 const LineChart = lazy(() => import('@components/Chart/LineChart'));
 const ContainerCard = lazy(
-  () => import('@components/ContainerCard/ContainerCard')
+  () => import('@components/Card/ContainerCard')
 );
 const Dashboard = () => {
   const { Text, Title } = Typography;

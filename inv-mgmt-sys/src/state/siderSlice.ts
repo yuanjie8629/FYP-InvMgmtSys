@@ -1,12 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-interface SiderState {
-  collapsed: boolean;
-  renderCount: number;
-}
-const initialState: SiderState = {
+const initialState = {
   collapsed: false,
-  renderCount: 0
+  renderCount: 0,
 };
 
 export const siderSlice = createSlice({
@@ -21,7 +17,7 @@ export const siderSlice = createSlice({
     },
     increment: (state) => {
       state.renderCount++;
-    }
+    },
   },
 });
 

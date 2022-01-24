@@ -1,4 +1,4 @@
-import ContainerCard from '@components/ContainerCard/ContainerCard';
+import ContainerCard from '@components/Card/ContainerCard';
 import Button from '@components/Button/Button';
 import Layout from '@components/Layout/Layout';
 import Tag, { TagProps } from '@components/Tag/Tag';

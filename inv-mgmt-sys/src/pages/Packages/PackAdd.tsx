@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ContainerCard from '@components/ContainerCard/ContainerCard';
+import ContainerCard from '@components/Card/ContainerCard';
 import Layout from '@components/Layout/Layout';
 import UploadPicWall from '@components/Upload/UploadPicWall';
 import Table from '@components/Table/Table';

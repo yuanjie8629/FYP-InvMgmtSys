@@ -98,12 +98,12 @@ const menuList: {
       },
 
       {
-        key: 'discount',
-        label: 'Discounts',
+        key: 'voucher',
+        label: 'Vouchers',
         icon: MdConfirmationNumber,
         child: [
-          { key: 'discMgmt', label: 'Manage Discounts' },
-          { key: 'discAdd', label: 'Add Discount' },
+          { key: 'voucherMgmt', label: 'Manage Vouchers' },
+          { key: 'voucherAdd', label: 'Add Voucher' },
         ],
       },
     ],
