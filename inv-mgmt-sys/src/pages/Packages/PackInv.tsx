@@ -1,4 +1,4 @@
-import ContainerCard from '@components/ContainerCard/ContainerCard';
+import ContainerCard from '@components/Card/ContainerCard';
 import Layout from '@components/Layout/Layout';
 import InformativeTable, {
   InformativeTableButtonProps,

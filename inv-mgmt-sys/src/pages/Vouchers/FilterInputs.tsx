@@ -13,8 +13,8 @@ const FilterInputs = () => {
       label: string;
     }[];
   } = {
-    defaultVal: 'discCde',
-    options: [{ value: 'discCde', label: 'Discount Code' }],
+    defaultVal: 'voucherCde',
+    options: [{ value: 'voucherCde', label: 'Voucher Code' }],
   };
 
   const custCatSelect = {

@@ -1,12 +1,12 @@
-const discList: {
+const voucherList: {
   key: string;
-  discCde: string;
+  voucherCde: string;
   discType: 'amount' | 'percentage';
   discAmt: number;
   minSpend?: number;
   maxDisc?: number;
   custType: ('agent' | 'drpshpr' | 'cust')[];
-  availability: number | 'infinite';
+  availability: number | 'unlimited';
   usageLimit?: number;
   autoApply?: boolean;
   startTm: string;
@@ -15,31 +15,31 @@ const discList: {
 }[] = [
   {
     key: '1',
-    discCde: 'shrfagent',
+    voucherCde: 'shrfagent',
     discType: 'percentage',
     discAmt: 0.3,
     minSpend: 150,
     custType: ['agent'],
-    availability: 'infinite',
+    availability: 'unlimited',
     autoApply: true,
     startTm: '01-01-2018 00:00',
     status: 'active',
   },
   {
     key: '2',
-    discCde: 'shrfdropship',
+    voucherCde: 'shrfdropship',
     discType: 'percentage',
     discAmt: 0.2,
     minSpend: 150,
     custType: ['drpshpr'],
-    availability: 'infinite',
+    availability: 'unlimited',
     autoApply: true,
     startTm: '01-01-2018 00:00',
     status: 'active',
   },
   {
     key: '3',
-    discCde: 'merdeka64',
+    voucherCde: 'merdeka64',
     discType: 'amount',
     discAmt: 10,
     minSpend: 50,
@@ -53,4 +53,4 @@ const discList: {
   },
 ];
 
-export default discList;
+export default voucherList;

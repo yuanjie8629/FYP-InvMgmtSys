@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ContainerCard from '@components/ContainerCard/ContainerCard';
+import ContainerCard from '@components/Card/ContainerCard';
 import Layout from '@components/Layout/Layout';
 import UploadPicWall from '@components/Upload/UploadPicWall';
 import AffixAdd from '@components/Affix/AffixAdd';
@@ -19,6 +19,7 @@ import {
 import { MaskedInput } from 'antd-mask-input';
 import profilePic from '@assets/avatar.png';
 import { getStates, getCities, getPostcodes } from 'malaysia-postcodes';
+import { sortByOrder } from '@utils/sortUtils';
 
 const CustAdd = () => {
   const { Title } = Typography;
@@ -83,7 +84,7 @@ const CustAdd = () => {
   ];
 
   useEffect(() => {
-    setTargetOffset(window.innerHeight / 1.3);
+    setTargetOffset(window.innerHeight / 1.5);
   }, []);
 
   return (
@@ -330,15 +331,14 @@ const CustAdd = () => {
                           onChange={(value: string) => {
                             setState(value);
                             custForm.resetFields(['city', 'postcode']);
+                            setCity('');
                           }}
                         >
-                          {getStates()
-                            .sort((a: string, b: string) => a.localeCompare(b))
-                            .map((state: string) => (
-                              <Option key={state} value={state}>
-                                {state}
-                              </Option>
-                            ))}
+                          {sortByOrder(getStates()).map((state: string) => (
+                            <Option key={state} value={state}>
+                              {state}
+                            </Option>
+                          ))}
                         </Select>
                       </Form.Item>
 
@@ -355,17 +355,15 @@ const CustAdd = () => {
                       >
                         <Select
                           placeholder='Please select the city'
-                          disabled={state === ''}
+                          disabled={!state}
                           onChange={(value: string) => {
                             setCity(value);
                             custForm.resetFields(['postcode']);
                           }}
                         >
-                          {getCities(state)
-                            .sort((a: string, b: string) => a.localeCompare(b))
-                            .map((city: string) => (
-                              <Option key={city}>{city}</Option>
-                            ))}
+                          {sortByOrder(getCities(state)).map((city: string) => (
+                            <Option key={city}>{city}</Option>
+                          ))}
                         </Select>
                       </Form.Item>
 
@@ -383,15 +381,15 @@ const CustAdd = () => {
                       >
                         <Select
                           placeholder='Please select the postal code'
-                          disabled={state === '' || city === ''}
+                          disabled={!state || !city}
                         >
-                          {getPostcodes(state, city)
-                            .sort((a: string, b: string) => a.localeCompare(b))
-                            .map((postcode: string) => (
+                          {sortByOrder(getPostcodes(state, city)).map(
+                            (postcode: string) => (
                               <Option val={postcode} key={postcode}>
                                 {postcode}
                               </Option>
-                            ))}
+                            )
+                          )}
                         </Select>
                       </Form.Item>
 

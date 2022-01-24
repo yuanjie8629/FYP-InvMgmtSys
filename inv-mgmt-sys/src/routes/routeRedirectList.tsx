@@ -10,7 +10,7 @@ const routeRedirectList: {
   { path: '/shipment', redirect: '/shipment/management' },
   { path: '/customer', redirect: '/customer/management' },
   { path: '/business-insights', redirect: '/business-insights/statistics' },
-  { path: '/discount', redirect: '/discount/management' },
+  { path: '/voucher', redirect: '/voucher/management' },
   { path: '/my-acc', redirect: '/my-acc/profile-management' },
   { path: '/admin', redirect: '/admin/management' },
 ];

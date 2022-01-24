@@ -14,8 +14,8 @@ import CustReg from '@pages/Customers/CustReg';
 import CustAdd from '@pages/Customers/CustAdd';
 import Statistics from '@pages/BusinessInsights/Statistics';
 import InvAnalysis from '@pages/BusinessInsights/InvAnalysis';
-import DiscMgmt from '@pages/Discounts/DiscMgmt';
-import DiscAdd from '@pages/Discounts/DiscAdd';
+import VoucherMgmt from '@pages/Vouchers/VoucherMgmt';
+import VoucherAdd from '@pages/Vouchers/VoucherAdd';
 import ProfileMgmt from '@pages/MyAccount/ProfileMgmt';
 import AccSettings from '@pages/MyAccount/AccSettings';
 import AdminMgmt from '@pages/Admins/AdminMgmt';
@@ -158,18 +158,18 @@ const routeList: {
     component: <InvAnalysis />,
   },
   {
-    label: 'discount',
-    path: '/discount',
+    label: 'voucher',
+    path: '/voucher',
   },
   {
-    label: 'discMgmt',
-    path: '/discount/management',
-    component: <DiscMgmt />,
+    label: 'voucherMgmt',
+    path: '/voucher/management',
+    component: <VoucherMgmt />,
   },
   {
-    label: 'discAdd',
-    path: '/discount/add',
-    component: <DiscAdd />,
+    label: 'voucherAdd',
+    path: '/voucher/add',
+    component: <VoucherAdd />,
   },
   {
     label: 'myAccount',
