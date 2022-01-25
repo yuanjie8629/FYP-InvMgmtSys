@@ -1,13 +1,15 @@
 import { Card, CardProps } from 'antd';
-
+import './ContainerCard.less';
 interface ContainerCardProps extends CardProps {
   width?: string | number;
   height?: string | number;
+  contentStyle?: React.CSSProperties;
   children?: React.ReactNode;
 }
 const ContainerCard = ({
   width = '95%',
   height = '100%',
+  contentStyle = { padding: '10px 25px' },
   ...props
 }: ContainerCardProps) => {
   return (
@@ -15,15 +17,12 @@ const ContainerCard = ({
       bordered={false}
       style={{
         width: width,
-
         height: height,
-        boxShadow:
-          '0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)',
-        borderRadius: 12,
       }}
+      className='container-card'
       {...props}
     >
-      <div style={{ padding: '10px 25px' }}>{props.children}</div>
+      <div style={contentStyle}>{props.children}</div>
     </Card>
   );
 };

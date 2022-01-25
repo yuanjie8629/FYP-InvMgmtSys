@@ -6,6 +6,14 @@ body {
   height: 100%;
 }
 
+p {
+  margin: 0 !important;
+  
+  span {
+    word-break: break-all !important;
+  }
+}
+
 .width-full {
   width: 100%;
 }
@@ -225,25 +233,39 @@ body {
   }
 
   
-    &-picker {
-      &-time {
-        &-panel {
-          &-cell {
-            &-selected {
-              .@{ant-prefix}-picker-time-panel-cell-inner {
-                color: @white !important;
-              }
+  &-picker {
+    &-time {
+      &-panel {
+        &-cell {
+          &-selected {
+            .@{ant-prefix}-picker-time-panel-cell-inner {
+              color: @white !important;
+            }
 
-              :hover {
-                background-color: @primary-color !important;
-              }
+            :hover {
+              background-color: @primary-color !important;
             }
           }
         }
       }
-  
     }
-  
+  }
+
+  &-list {
+    &-item {
+      &-meta {
+        align-items: center !important;
+        &-title {
+          margin: 0 !important;
+        }
+        
+        &-avatar{
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+  }
 
   &-form {
     &-item {

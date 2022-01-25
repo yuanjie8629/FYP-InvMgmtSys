@@ -1,7 +1,8 @@
-import Layout from '@components/Layout/Layout';
+import ComingSoon from '@components/Layout/ComingSoon';
+import Coding from '@assets/ComingSoon/Coding.gif';
 
 const AdminMgmt = () => {
-  return <Layout>Admin Management</Layout>;
+  return <ComingSoon img={Coding} />;
 };
 
 export default AdminMgmt;

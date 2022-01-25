@@ -53,7 +53,12 @@ const VoucherAdd = () => {
   return (
     <Layout>
       <div className='voucher-add'>
-        <Form name='voucherForm' layout='vertical' size='small'>
+        <Form
+          name='voucherForm'
+          layout='vertical'
+          size='small'
+          form={voucherForm}
+        >
           <Row justify='center'>
             <Col xs={16} xl={19}>
               <Space
@@ -120,10 +125,10 @@ const VoucherAdd = () => {
                             message: 'Please select the discount type.',
                           },
                         ]}
+                        initialValue='amount'
                       >
                         <Radio.Group
                           options={discCat}
-                          defaultValue='amount'
                           onChange={(e) => setDiscType(e.target.value)}
                         />
                       </Form.Item>
@@ -198,10 +203,16 @@ const VoucherAdd = () => {
                               'Please enter the availability number for the discount.',
                           },
                         ]}
+                        initialValue={0}
                       >
                         <Space size={20}>
                           <InputNumber
                             min={0}
+                            onChange={(value) =>
+                              voucherForm.setFieldsValue({
+                                availability: value,
+                              })
+                            }
                             defaultValue={0}
                             disabled={availabilityUltd}
                           />
@@ -231,16 +242,17 @@ const VoucherAdd = () => {
                               'Please enter the usage limit for each user.',
                           },
                         ]}
+                        initialValue={0}
                       >
                         <Space size={20}>
                           <InputNumber
                             min={0}
-                            defaultValue={0}
                             onChange={(value) =>
                               voucherForm.setFieldsValue({
                                 usageLimit: value,
                               })
                             }
+                            defaultValue={0}
                             disabled={usageLimitUltd}
                           />
                           <Checkbox

@@ -27,37 +27,12 @@ const NotificationDropdown = () => {
     return word.charAt(0).toUpperCase() + word.slice(1);
   };
 
-  const generateContent = (description: string) => {
-    if (
-      description.length > 38 &&
-      !description.substring(0, 38).includes('\n')
-    ) {
-      return (
-        <Col className='notification-menu-item-content-container'>
-          <Row>
-            <Text className='notification-menu-item-content'>
-              {description.substring(0, 38)}
-            </Text>
-          </Row>
-          <Row>
-            <Text
-              ellipsis={{ suffix: '...' }}
-              className='notification-menu-item-content'
-            >
-              {description.substring(39, 78 - 3)}
-            </Text>
-          </Row>
-        </Col>
-      );
-    }
-    return (
-      <Text className='notification-menu-item-content'>{description}</Text>
-    );
-  };
   const menuNotificationDropdown = (
     <Menu
       onClick={(item: { key: string }) => {
-        navigate(item.key.substring(0, item.key.length - 2), { replace: true });
+        navigate(item.key.substring(0, item.key.length - 2), {
+          replace: true,
+        });
       }}
       className='notification-menu'
     >
@@ -107,7 +82,7 @@ const NotificationDropdown = () => {
               </Col>
               <Col>
                 <Row className='notification-menu-item-title'>{menu.title}</Row>
-                {generateContent(menu.description)}
+                {menu.description}
                 <Row>
                   <Space
                     split={<Divider type='vertical' style={{ margin: 0 }} />}
@@ -126,6 +101,15 @@ const NotificationDropdown = () => {
           {index !== menuList.length - 1 ? <Menu.Divider /> : null}
         </Menu.ItemGroup>
       ))}
+      <Menu.Item
+        key='notiCenter'
+        disabled
+        style={{ cursor: 'default', padding: '15px 0', textAlign: 'center' }}
+      >
+        <Button type='link' color='info'>
+          View More
+        </Button>
+      </Menu.Item>
     </Menu>
   );
 

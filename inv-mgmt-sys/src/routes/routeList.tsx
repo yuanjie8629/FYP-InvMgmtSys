@@ -21,7 +21,7 @@ import AccSettings from '@pages/MyAccount/AccSettings';
 import AdminMgmt from '@pages/Admins/AdminMgmt';
 import AdminAdd from '@pages/Admins/AdminAdd';
 import Help from '@pages/Help/Help';
-import ShpFeeMgmt from '@pages/Shipments/ShpFeeMgmt';
+import ShpFeeMgmt from '@pages/Shipments/ShptFeeMgmt';
 import OrderPend from '@pages/Orders/OrderPend';
 import NotFound from '@pages/Not Found/NotFound';
 

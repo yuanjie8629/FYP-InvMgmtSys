@@ -4,6 +4,7 @@ import Breadcrumb from '@components/BreadCrumb/BreadCrump';
 import AvatarDropdown from '@components/AvatarDropdown/AvatarDropdown';
 import NotificationDropdown from '@components/NotificationDropdown/NotificationDropdown';
 import classNames from 'classnames';
+
 const Header = () => {
   const { Header } = Layout;
   const isSiderCollapsed = useAppSelector((state) => state.sider.collapsed);
@@ -15,13 +16,17 @@ const Header = () => {
           { 'header-collapsed': isSiderCollapsed },
           { 'header-expanded': !isSiderCollapsed }
         )}
+        style={{ minWidth: 1060 }}
       >
         <Row align='middle' justify='space-between' style={{ height: 80 }}>
           <Col>
             <Breadcrumb />
           </Col>
           <Col>
-            <Space size='large' split={<Divider type='vertical' style={{ height: 42 }} />}>
+            <Space
+              size='large'
+              split={<Divider type='vertical' style={{ height: 42 }} />}
+            >
               <NotificationDropdown />
               <AvatarDropdown />
             </Space>

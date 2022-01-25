@@ -135,7 +135,7 @@ const VoucherMgmt = () => {
       width: 280,
       render: (_: any, data) => (
         <>
-          <Text strong className='color-grey'>
+          <Text strong type='secondary'>
             {data['discType'] === 'amount'
               ? moneyFormatter(data['discAmt'])
               : percentFormatter(data['discAmt'])}{' '}
