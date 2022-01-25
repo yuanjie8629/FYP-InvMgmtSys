@@ -2,7 +2,7 @@ const menuList: {
   cat: string;
   status: 'success' | 'error' | 'processing' | 'default' | 'warning';
   title: string;
-  description: string;
+  description: JSX.Element;
   timestamp: string;
   read: boolean;
 }[] = [
@@ -10,8 +10,16 @@ const menuList: {
     cat: 'order',
     status: 'success',
     title: 'New Order',
-    description:
-      'Tan Yuan Jie has placed new order!\nPlease proceed his order.',
+    description: (
+      <>
+        <p>
+          <span>Tan Yuan Jie has placed new order!</span>
+        </p>
+        <p>
+          <span>Please proceed with his order.</span>
+        </p>
+      </>
+    ),
     timestamp: '08-11-2021 16:00',
     read: false,
   },
@@ -19,8 +27,16 @@ const menuList: {
     cat: 'product',
     status: 'error',
     title: 'Low Stock',
-    description:
-      'Kari Ayam is currently in low stock.\nPlease consider restocking it.',
+    description: (
+      <>
+        <p>
+          <span>Kari Ayam is currently in low stock.</span>
+        </p>
+        <p>
+          <span>Please consider restocking it.</span>
+        </p>
+      </>
+    ),
     timestamp: '07-11-2021 18:00',
     read: true,
   },

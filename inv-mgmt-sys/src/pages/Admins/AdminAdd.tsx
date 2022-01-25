@@ -1,7 +1,8 @@
-import Layout from '@components/Layout/Layout';
+import ComingSoon from '@components/Layout/ComingSoon';
+import Coding from '@assets/ComingSoon/Coding.gif';
 
 const AdminAdd = () => {
-  return <Layout>Add Admin</Layout>;
+  return <ComingSoon img={Coding} />;
 };
 
 export default AdminAdd;

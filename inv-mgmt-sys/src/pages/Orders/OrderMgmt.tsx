@@ -103,7 +103,7 @@ const OrderMgmt = () => {
       sorter: true,
       width: 200,
       render: (name: string) => (
-        <Text className='color-grey text-break'>{name}</Text>
+        <Text type='secondary' className='text-break'>{name}</Text>
       ),
     },
     {

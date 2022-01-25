@@ -28,10 +28,12 @@ const RankingList = (props: RankingListProps) => {
               description={
                 <Text className='ranking-list-cat'>{item.itemCat}</Text>
               }
-            ></List.Item.Meta>
+            />
             <Row align='middle' gutter={[5, 5]}>
               <Col>
-                <Title level={5} className='ranking-list-value'>{item.value}</Title>
+                <Title level={5} className='ranking-list-value'>
+                  {item.value}
+                </Title>
               </Col>
               <Col>
                 <Text className='ranking-list-sales'>
