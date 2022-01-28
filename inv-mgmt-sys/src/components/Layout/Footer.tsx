@@ -5,7 +5,7 @@ const Footer = () => {
   const { Footer } = Layout;
   return (
     <Footer className='footer'>
-      <CopyrightCircleOutlined className='footer-icon' /> 2021 Sharifah Food.
+      <CopyrightCircleOutlined className='footer-icon' /> 2022 Sharifah Food.
       All rights reserved.
     </Footer>
   );

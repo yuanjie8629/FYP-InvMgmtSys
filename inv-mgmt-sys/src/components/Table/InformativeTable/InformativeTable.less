@@ -1,0 +1,32 @@
+@import (reference) '/src/App.less';
+
+.informative-table {
+  .@{ant-prefix}{
+    &-table {
+      &-cell {
+        vertical-align: top;
+        color: @grey !important;
+      }
+
+      &-pagination {
+        align-items: center;
+      }
+    }
+
+    &-pagination {
+      &-options {
+        input {
+          height: 30px !important;
+        }
+
+        &-quick-jumper {
+          height: 30px !important;
+        }
+
+        &-quick-jumper, &-size-changer {
+          vertical-align: middle !important;
+        }
+      }
+    }
+  }
+}

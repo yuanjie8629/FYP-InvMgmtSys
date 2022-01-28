@@ -1,7 +1,8 @@
-import Layout from '@components/Layout/Layout';
+import ComingSoon from '@components/Layout/ComingSoon';
+import ECommerce from '@assets/ComingSoon/eCommerce.gif';
 
 const OrderAdd = () => {
-  return <Layout>Add Order</Layout>;
+  return <ComingSoon img={ECommerce} />;
 };
 
 export default OrderAdd;

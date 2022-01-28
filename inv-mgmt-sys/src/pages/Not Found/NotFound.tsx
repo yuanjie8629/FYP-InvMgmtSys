@@ -1,5 +1,5 @@
 import { Col, Row, Image, Layout, Typography, Space } from 'antd';
-import Button from '@components/Button/Button';
+import Button from '@components/Button';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import Img404 from '@assets/404.svg';

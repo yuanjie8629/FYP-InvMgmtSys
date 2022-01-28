@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ContainerCard from '@components/Card/ContainerCard';
-import Button from '@components/Button/Button';
+import Button from '@components/Button';
 import Layout from '@components/Layout/Layout';
-import Tag, { TagProps } from '@components/Tag/Tag';
+import Tag, { TagProps } from '@components/Tag';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography, Dropdown, Menu } from 'antd';
 import InformativeTable, {
@@ -10,7 +10,7 @@ import InformativeTable, {
 } from '@components/Table/InformativeTable';
 import voucherList from './voucherList';
 import { HiCheckCircle, HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { MdAllInclusive, MdArrowDropDown, MdSync } from 'react-icons/md';
 import Tooltip from 'antd/es/tooltip';
@@ -19,9 +19,22 @@ import { sortByOrder } from '@utils/sortUtils';
 
 const VoucherMgmt = () => {
   const { Text, Title } = Typography;
-  let navigate = useNavigate();
-
   const [voucherListFltr, setVoucherListFltr] = useState(voucherList);
+
+  let navigate = useNavigate();
+  let [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(
+    () =>
+      setVoucherListFltr(
+        voucherList.filter((voucher) =>
+          searchParams.get('stat') !== null
+            ? voucher.status === searchParams.get('stat')
+            : true
+        )
+      ),
+    [searchParams]
+  );
   const voucherTabList = [
     { key: 'all', tab: 'All' },
     { key: 'active', tab: 'Active' },
@@ -80,12 +93,12 @@ const VoucherMgmt = () => {
     {
       element: activateBtn,
       key: 'activate',
-      fltr: [{ fld: 'status', val: 'hidden', rel: 'eq' }],
+      fltr: [{ fld: 'status', value: 'hidden', rel: 'eq' }],
     },
     {
       element: hideBtn,
       key: 'hide',
-      fltr: [{ fld: 'status', val: 'active', rel: 'eq' }],
+      fltr: [{ fld: 'status', value: 'active', rel: 'eq' }],
     },
     {
       element: deleteBtn,
@@ -328,13 +341,14 @@ const VoucherMgmt = () => {
           <Row justify='center'>
             <ContainerCard
               tabList={voucherTabList}
-              onTabChange={(key) =>
-                setVoucherListFltr(
-                  voucherList.filter((voucher) =>
-                    key !== 'all' ? voucher.status === key : true
-                  )
-                )
+              activeTabKey={
+                searchParams.get('stat') === null
+                  ? 'all'
+                  : searchParams.get('stat')
               }
+              onTabChange={(key) => {
+                setSearchParams(key !== 'all' ? { stat: key } : {});
+              }}
             >
               <Space direction='vertical' size={40} className='width-full'>
                 <FilterInputs />

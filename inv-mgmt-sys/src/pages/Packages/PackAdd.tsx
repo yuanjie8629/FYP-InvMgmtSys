@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ContainerCard from '@components/Card/ContainerCard';
 import Layout from '@components/Layout/Layout';
-import UploadPicWall from '@components/Upload/UploadPicWall';
-import Table from '@components/Table/Table';
+import UploadPicWall from '@components/Upload/UploadPicWall/UploadPicWall';
 import AffixAdd from '@components/Affix/AffixAdd';
 import {
   Anchor,
@@ -16,9 +15,10 @@ import {
   InputNumber,
   Row,
   Space,
+  Table,
   Typography,
 } from 'antd';
-import Button from '@components/Button/Button';
+import Button from '@components/Button';
 import TextEditor from '@components/Input/TextEditor';
 
 const PackAdd = () => {
@@ -91,6 +91,7 @@ const PackAdd = () => {
     },
   ];
 
+  //retrieve from database
   const options: any = [
     {
       label: 'Ready-To-Eat',

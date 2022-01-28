@@ -12,8 +12,9 @@ import {
   Typography,
 } from 'antd';
 import AvatarImg from '@assets/avatar.png';
-import Button from '@components/Button/Button';
+import Button from '@components/Button';
 import moment from 'moment';
+import { genderCat } from '@utils/optionUtils';
 
 const ProfileMgmt = () => {
   const { Text, Title } = Typography;
@@ -28,11 +29,6 @@ const ProfileMgmt = () => {
   const InputText = (props) => (
     <Text style={{ marginRight: 30 }}>{props.children}</Text>
   );
-
-  const genderCat = [
-    { value: 'm', label: 'Male' },
-    { value: 'f', label: 'Female' },
-  ];
 
   return (
     <Layout>

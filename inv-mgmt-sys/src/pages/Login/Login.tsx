@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Col, Form, Input, Image, Row, Space, Typography } from 'antd';
 import { CaretLeftOutlined } from '@ant-design/icons';
-import Button from '@components/Button/Button';
+import Button from '@components/Button';
 import './Login.less';
 import Hashtag from '@assets/Login/Hashtag.svg';
 import Inventory from '@assets/Login/LoginBackground.webp';

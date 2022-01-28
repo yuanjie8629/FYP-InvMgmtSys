@@ -59,6 +59,7 @@ const menuList: {
         child: [
           { key: 'orderMgmt', label: 'Manage Orders' },
           { key: 'orderPend', label: 'Pending Orders' },
+          { key: 'orderCancel', label: 'Cancellation' },
           { key: 'orderAdd', label: 'Add Order' },
         ],
       },

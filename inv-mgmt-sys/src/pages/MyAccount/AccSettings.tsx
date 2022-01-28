@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Button from '@components/Button/Button';
+import Button from '@components/Button';
 import ContainerCard from '@components/Card/ContainerCard';
 import Layout from '@components/Layout/Layout';
 import { Col, List, Row, Space, Typography, Grid } from 'antd';
@@ -17,22 +17,22 @@ const AccSettings = () => {
   const data = [
     {
       label: 'Username',
-      val: username,
+      value: username,
       icon: MdPerson,
     },
     {
       label: 'Email',
-      val: email,
+      value: email,
       icon: MdEmail,
     },
     {
       label: 'Phone Number',
-      val: phoneNum,
+      value: phoneNum,
       icon: MdPhone,
     },
     {
       label: 'Password',
-      val: (
+      value: (
         <Text type='secondary'>
           Password must contains at least 8 characters, including 1 uppercase
           letter, 1 number and 1 symbol
@@ -53,7 +53,7 @@ const AccSettings = () => {
         </Col>
         <Col>
           {' '}
-          <div>{item.val}</div>
+          <div>{item.value}</div>
         </Col>
       </Row>
     </List.Item>

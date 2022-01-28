@@ -14,6 +14,14 @@ p {
   }
 }
 
+.visible {
+  visibility: visible;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
 .width-full {
   width: 100%;
 }
@@ -159,6 +167,7 @@ p {
     }
     &-selected,
     &-submenu-title-selected {
+      font-weight: bold !important;
       background-color: transparent !important;
       &:hover {
         background-color: @grey-200 !important;
@@ -249,6 +258,33 @@ p {
         }
       }
     }
+
+    &-cell {
+      &-disabled {
+        pointer-events: all !important;
+        cursor: not-allowed !important;
+        background-color: transparent !important;
+      }
+
+      &-today &-inner {
+        color: @primary-color;
+      }
+
+      &-today&-disabled &-inner {
+        color: #00000040 !important;
+        &::before {
+          border-color: @grey-400 !important;
+        }
+      }
+      
+      .@{ant-prefix}-picker-week-panel-row-selected &-disabled& &-inner{
+        color: #00000040 !important;
+      }
+
+      &-week {
+        display: none !important;
+      }
+    }
   }
 
   &-list {
@@ -310,6 +346,18 @@ p {
     font-size: @heading-4-size !important;
     }
   }
+
+  &-popover {
+    &-inner-content {
+      padding: 6px 16px !important;
+    }
+  }
+
+  &-checkbox {
+    &-indeterminate .@{ant-prefix}-checkbox-inner::after{
+      border-radius: 2px;
+    }
+  }
 }
 
 //Custom scrollbar
@@ -335,4 +383,8 @@ p {
   box-shadow: inset 0 0 0px #000000 !important;
   border: 0px solid #000000 !important;
   border-radius: 1.75px !important;
+}
+
+[aria-label='empty cell'] {
+  display: none;
 }

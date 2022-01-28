@@ -2,6 +2,7 @@ import FilterInputCol from '@components/Grid/FilterInputCol';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
+import { prodCat } from '@utils/optionUtils';
 import { Button, Col, Row, Space } from 'antd';
 
 const FilterInputs = () => {
@@ -21,12 +22,9 @@ const FilterInputs = () => {
 
   const prodCatSelect = {
     placeholder: 'Select Category',
-    options: [
-      { value: 'rte', label: 'Ready-To-Eat' },
-      { value: 'rtc', label: 'Ready-To-Cook' },
-      { value: 'paste', label: 'Paste' },
-    ],
+    options: prodCat,
   };
+
   return (
     <Space direction='vertical' size={20} className='width-full'>
       <Row gutter={[30, 30]}>
@@ -38,10 +36,7 @@ const FilterInputs = () => {
           ></InputSelect>
         </FilterInputCol>
         <FilterInputCol>
-          <SelectWithLabel
-            label='Category'
-            select={prodCatSelect}
-          />
+          <SelectWithLabel label='Category' select={prodCatSelect} />
         </FilterInputCol>
         <FilterInputCol>
           <InputNumberRange
@@ -60,7 +55,6 @@ const FilterInputs = () => {
             prefixWidth={60}
             min={0}
             precision={2}
-
           />
         </FilterInputCol>
       </Row>

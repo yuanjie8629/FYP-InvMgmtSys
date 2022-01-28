@@ -3,6 +3,7 @@ import DatePickerWithLabel from '@components/Input/DatePickerWithLabel';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
+import { custStatusCat } from '@utils/optionUtils';
 import { Button, Col, Row, Space } from 'antd';
 
 const FilterInputs = () => {
@@ -22,10 +23,7 @@ const FilterInputs = () => {
 
   const custStatus = {
     placeholder: 'Select Customer Status',
-    options: [
-      { value: 'active', label: 'Active' },
-      { value: 'suspended', label: 'Suspended' },
-    ],
+    options: custStatusCat,
   };
 
   return (

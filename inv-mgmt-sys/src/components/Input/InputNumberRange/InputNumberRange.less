@@ -1,0 +1,60 @@
+.input {
+  &-range {
+    .@{ant-prefix} {
+      &-input {
+        &-group {
+          .input-range {
+            &-splitter {
+              background-color: transparent;
+              border-left: none;
+              border-right: none;
+            }
+
+            &-splitter,
+            &-prefix,
+            &-suffix {
+              pointer-events: none;
+            }
+
+            &-prefix,
+            &-suffix {
+              text-align: center;
+            }
+          }
+        }
+        &-number {
+          z-index: 5;
+
+          &-input {
+            text-align: center;
+          }
+
+          &:hover,
+          &-focused {
+            border-color: @hover-color !important;
+          }
+
+          &.input-range {
+            &-left {
+              border-right-color: transparent;
+            }
+
+            &-right {
+              border-left-color: transparent;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &-date {
+    .@{ant-prefix} {
+      &-picker {
+        &-input > input {
+          text-align: center;
+        }
+      }
+    }
+  }
+}
