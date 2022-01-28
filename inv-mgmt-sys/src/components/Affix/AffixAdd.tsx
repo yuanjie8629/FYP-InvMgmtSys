@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Affix, AffixProps, Card, Col, Row } from 'antd';
-import Button from '@components/Button/Button';
+import Button from '@components/Button';
 
 interface AffixAddProps extends AffixProps {
   label?: string;

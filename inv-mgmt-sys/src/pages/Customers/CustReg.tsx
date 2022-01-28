@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ContainerCard from '@components/Card/ContainerCard';
-import Button from '@components/Button/Button';
+import Button from '@components/Button';
 import Layout from '@components/Layout/Layout';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography } from 'antd';
@@ -9,14 +9,27 @@ import InformativeTable, {
 } from '@components/Table/InformativeTable';
 import custRegList from './custRegList';
 import { HiThumbDown, HiThumbUp } from 'react-icons/hi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 
 const CustReg = () => {
   const { Text, Title } = Typography;
-  let navigate = useNavigate();
-
   const [custListFltr, setCustListFltr] = useState(custRegList);
+
+  let navigate = useNavigate();
+  let [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(
+    () =>
+      setCustListFltr(
+        custRegList.filter((cust) =>
+          searchParams.get('stat') !== null
+            ? cust.custType === searchParams.get('stat')
+            : true
+        )
+      ),
+    [searchParams]
+  );
   const custTabList = [
     { key: 'all', tab: 'All' },
     { key: 'agent', tab: 'Agent' },
@@ -177,13 +190,14 @@ const CustReg = () => {
           <Row justify='center'>
             <ContainerCard
               tabList={custTabList}
-              onTabChange={(key) =>
-                setCustListFltr(
-                  custRegList.filter((cust) =>
-                    key !== 'all' ? cust.custType === key : true
-                  )
-                )
+              activeTabKey={
+                searchParams.get('stat') === null
+                  ? 'all'
+                  : searchParams.get('stat')
               }
+              onTabChange={(key) => {
+                setSearchParams(key !== 'all' ? { stat: key } : {});
+              }}
             >
               <Space direction='vertical' size={40} className='width-full'>
                 <FilterInputs />

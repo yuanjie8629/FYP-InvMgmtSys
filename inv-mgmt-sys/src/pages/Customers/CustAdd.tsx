@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ContainerCard from '@components/Card/ContainerCard';
 import Layout from '@components/Layout/Layout';
-import UploadPicWall from '@components/Upload/UploadPicWall';
+import UploadPicWall from '@components/Upload/UploadPicWall/UploadPicWall';
 import AffixAdd from '@components/Affix/AffixAdd';
 import {
   Anchor,
@@ -20,6 +20,13 @@ import { MaskedInput } from 'antd-mask-input';
 import profilePic from '@assets/avatar.png';
 import { getStates, getCities, getPostcodes } from 'malaysia-postcodes';
 import { sortByOrder } from '@utils/sortUtils';
+import {
+  custPositionCat,
+  custStatusCat,
+  genderCat,
+  maritalStatCat,
+  ynOptions,
+} from '@utils/optionUtils';
 
 const CustAdd = () => {
   const { Title } = Typography;
@@ -46,33 +53,6 @@ const CustAdd = () => {
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
   );
-
-  const genderCat = [
-    { value: 'm', label: 'Male' },
-    { value: 'f', label: 'Female' },
-  ];
-
-  const maritalStatCat = [
-    { value: 'single', label: 'Single' },
-    { value: 'married', label: 'Married' },
-    { value: 'seperated', label: 'Seperated' },
-    { value: 'divorced', label: 'Divorced' },
-  ];
-
-  const positionCat = [
-    { value: 'agent', label: 'Agent' },
-    { value: 'drpshpr', label: 'Dropshipper' },
-  ];
-
-  const statusCat = [
-    { value: 'active', label: 'Active' },
-    { value: 'suspended', label: 'Suspended' },
-  ];
-
-  const ynOptions = [
-    { value: true, label: 'Yes' },
-    { value: false, label: 'No' },
-  ];
 
   const anchorList = [
     { link: 'basicInfo', title: 'Basic Information' },
@@ -144,6 +124,7 @@ const CustAdd = () => {
                             setFileList([...info.fileList]);
                           }}
                           maxCount={1}
+                          accept='.jpg'
                         />
                       </Form.Item>
                       <Form.Item
@@ -385,7 +366,7 @@ const CustAdd = () => {
                         >
                           {sortByOrder(getPostcodes(state, city)).map(
                             (postcode: string) => (
-                              <Option val={postcode} key={postcode}>
+                              <Option value={postcode} key={postcode}>
                                 {postcode}
                               </Option>
                             )
@@ -478,7 +459,7 @@ const CustAdd = () => {
                           },
                         ]}
                       >
-                        <Radio.Group options={positionCat} />
+                        <Radio.Group options={custPositionCat} />
                       </Form.Item>
                       <Form.Item
                         label='Status'
@@ -490,7 +471,7 @@ const CustAdd = () => {
                           },
                         ]}
                       >
-                        <Radio.Group options={statusCat} />
+                        <Radio.Group options={custStatusCat} />
                       </Form.Item>
                     </Space>
                   </ContainerCard>

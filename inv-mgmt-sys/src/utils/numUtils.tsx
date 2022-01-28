@@ -1,3 +1,4 @@
+
 const moneyFormatter = (num: number) => {
   if (num >= 1000 && num < 1000000) {
     return 'RM ' + (num / 1000).toFixed(1) + 'K'; // convert to K for number from > 1000 < 1 million

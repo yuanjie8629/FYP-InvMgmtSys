@@ -1,8 +1,8 @@
 import { useAppSelector } from '@hooks/reduxHooks';
 import { Col, Divider, Layout, Row, Space } from 'antd';
-import Breadcrumb from '@components/BreadCrumb/BreadCrump';
-import AvatarDropdown from '@components/AvatarDropdown/AvatarDropdown';
-import NotificationDropdown from '@components/NotificationDropdown/NotificationDropdown';
+import Breadcrumb from '@components/BreadCrumb';
+import AvatarDropdown from '@components/AvatarDropdown';
+import NotificationDropdown from '@components/NotificationDropdown';
 import classNames from 'classnames';
 
 const Header = () => {

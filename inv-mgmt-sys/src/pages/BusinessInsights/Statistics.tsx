@@ -1,7 +1,8 @@
 import ContainerCard from '@components/Card/ContainerCard';
+import DropdownDate from '@components/Input/DropdownDate';
 import Layout from '@components/Layout/Layout';
-import { DatePicker, Row, Space } from 'antd';
-import moment from 'moment';
+import { Row, Space } from 'antd';
+
 import './BusinessInsights.less';
 
 const Statistics = () => {
@@ -21,12 +22,7 @@ const Statistics = () => {
         >
           <Row justify='center'>
             <DateCard>
-              <DatePicker
-                allowClear={false}
-                bordered={false}
-                size='large'
-                defaultValue={moment('2022-01-21')}
-              />
+              <DropdownDate />
             </DateCard>
           </Row>
           <Row></Row>

@@ -3,6 +3,7 @@ import DatePickerWithLabel from '@components/Input/DatePickerWithLabel';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
+import { custCat } from '@utils/optionUtils';
 import { Button, Col, Row, Space } from 'antd';
 
 const FilterInputs = () => {
@@ -23,11 +24,7 @@ const FilterInputs = () => {
 
   const custCatSelect = {
     placeholder: 'Select Customer Type',
-    options: [
-      { value: 'agent', label: 'Agent' },
-      { value: 'drpshpr', label: 'Dropshipper' },
-      { value: 'cust', label: 'Direct Customer' },
-    ],
+    options: custCat,
   };
 
   const payMthdSelect = {

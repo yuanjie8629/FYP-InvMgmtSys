@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ContainerCard from '@components/Card/ContainerCard';
-import Button from '@components/Button/Button';
+import Button from '@components/Button';
 import Layout from '@components/Layout/Layout';
-import Tag, { TagProps } from '@components/Tag/Tag';
+import Tag, { TagProps } from '@components/Tag';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography } from 'antd';
 import InformativeTable, {
@@ -11,24 +11,31 @@ import InformativeTable, {
 import orderList from './orderList';
 import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
 import { HiExclamation, HiPrinter } from 'react-icons/hi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
 import { MdUpdate } from 'react-icons/md';
+import orderTabList from './orderTabList';
+import { orderStatList } from '@utils/optionUtils';
 
 const OrderMgmt = () => {
   const { Text, Title } = Typography;
-  let navigate = useNavigate();
-
   const [orderListFltr, setOrderListFltr] = useState(orderList);
-  const orderTabList = [
-    { key: 'all', tab: 'All' },
-    { key: 'unpaid', tab: 'Unpaid' },
-    { key: 'toShip', tab: 'To Ship' },
-    { key: 'shipping', tab: 'Shipping' },
-    { key: 'completed', tab: 'Completed' },
-    { key: 'cancel', tab: 'Cancellation' },
-  ];
+
+  let navigate = useNavigate();
+  let [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(
+    () =>
+      setOrderListFltr(
+        orderList.filter((order) =>
+          searchParams.get('stat') !== null
+            ? order.orderStat === searchParams.get('stat')
+            : true
+        )
+      ),
+    [searchParams]
+  );
 
   const genInvoiceBtn = (props: any) => (
     <Button
@@ -65,8 +72,8 @@ const OrderMgmt = () => {
       element: bulkUpdBtn,
       key: 'bulkUpd',
       fltr: [
-        { fld: 'trackNum', val: undefined, rel: 'eq' },
-        { fld: 'orderStat', val: 'cancel', rel: 'neq' },
+        { fld: 'trackNum', value: undefined, rel: 'eq' },
+        { fld: 'orderStat', value: 'cancel', rel: 'neq' },
       ],
     },
   ];
@@ -103,7 +110,9 @@ const OrderMgmt = () => {
       sorter: true,
       width: 200,
       render: (name: string) => (
-        <Text type='secondary' className='text-break'>{name}</Text>
+        <Text type='secondary' className='text-break'>
+          {name}
+        </Text>
       ),
     },
     {
@@ -165,14 +174,6 @@ const OrderMgmt = () => {
       align: 'center' as const,
       width: 130,
       render: (status: string) => {
-        const statusList = [
-          { status: 'completed', label: 'Completed', color: 'success' },
-          { status: 'cancel', label: 'Cancelled', color: 'error' },
-          { status: 'unpaid', label: 'Unpaid', color: 'error' },
-          { status: 'toShip', label: 'To Ship', color: 'warning' },
-          { status: 'shipping', label: 'Shipping', color: 'processing' },
-        ];
-
         interface OrderStatusTagProps extends TagProps {
           color: string;
           children: React.ReactNode;
@@ -187,7 +188,7 @@ const OrderMgmt = () => {
           </Tag>
         );
 
-        const matchedStatus = statusList.find(
+        const matchedStatus = orderStatList.find(
           (statusItem) => status === statusItem.status
         );
 
@@ -251,13 +252,14 @@ const OrderMgmt = () => {
           <Row justify='center'>
             <ContainerCard
               tabList={orderTabList}
-              onTabChange={(key) =>
-                setOrderListFltr(
-                  orderList.filter((order) =>
-                    key !== 'all' ? order.orderStat === key : true
-                  )
-                )
+              activeTabKey={
+                searchParams.get('stat') === null
+                  ? 'all'
+                  : searchParams.get('stat')
               }
+              onTabChange={(key) => {
+                setSearchParams(key !== 'all' ? { stat: key } : {});
+              }}
             >
               <Space direction='vertical' size={40} className='width-full'>
                 <FilterInputs />

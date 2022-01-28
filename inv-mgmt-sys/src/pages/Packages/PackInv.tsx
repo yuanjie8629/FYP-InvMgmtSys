@@ -3,22 +3,35 @@ import Layout from '@components/Layout/Layout';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
-import Button from '@components/Button/Button';
+import Button from '@components/Button';
 import { Col, Image, Row, Space, Typography, InputNumber, Radio } from 'antd';
 import FilterInputs from './FilterInputs';
 import packageList from './packageList';
 import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
 import { MdAdd, MdRemove } from 'react-icons/md';
 import packTabList from './packTabList';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 
 const ProdInv = () => {
   const { Text, Title } = Typography;
-  let navigate = useNavigate();
-
   const [packageListFltr, setPackageListFltr] = useState(packageList);
+
+  let navigate = useNavigate();
+  let [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(
+    () =>
+      setPackageListFltr(
+        packageList.filter((pack) =>
+          searchParams.get('stat') !== null
+            ? pack.packStat === searchParams.get('stat')
+            : true
+        )
+      ),
+    [searchParams]
+  );
 
   const bulkUpdBtn = (props: any) => (
     <Button
@@ -202,13 +215,14 @@ const ProdInv = () => {
           <Row justify='center'>
             <ContainerCard
               tabList={packTabList}
-              onTabChange={(key) =>
-                setPackageListFltr(
-                  packageList.filter((pack) =>
-                    key !== 'all' ? pack.packStat === key : true
-                  )
-                )
+              activeTabKey={
+                searchParams.get('stat') === null
+                  ? 'all'
+                  : searchParams.get('stat')
               }
+              onTabChange={(key) => {
+                setSearchParams(key !== 'all' ? { stat: key } : {});
+              }}
             >
               <Space direction='vertical' size={40} className='width-full'>
                 <FilterInputs />

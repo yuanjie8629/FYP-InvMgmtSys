@@ -7,6 +7,7 @@ import Logo from '@assets/logo.webp';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import classNames from 'classnames';
+import siderDefKeyList from './siderDefKeyList';
 
 const Sider = () => {
   const { Sider } = Layout;
@@ -15,10 +16,22 @@ const Sider = () => {
   const screens = useBreakpoint();
   const navigate = useNavigate();
   const location = useLocation();
-
   const isSiderCollapsed = useAppSelector((state) => state.sider.collapsed);
   const renderCount = useAppSelector((state) => state.sider.renderCount);
   const dispatch = useAppDispatch();
+
+  const selectedKeys =
+    siderDefKeyList.find(
+      (defKey) => defKey.path === location.pathname + location.search
+    ) !== undefined
+      ? [
+          findRoutePath(
+            siderDefKeyList.find(
+              (defKey) => defKey.path === location.pathname + location.search
+            ).key
+          ),
+        ]
+      : [location.pathname];
 
   const openKey = [location.pathname.split('/')[1]];
   useEffect(() => {
@@ -66,7 +79,7 @@ const Sider = () => {
         </div>
         <Menu
           mode='inline'
-          defaultSelectedKeys={[location.pathname]}
+          selectedKeys={selectedKeys}
           defaultOpenKeys={!isSiderCollapsed ? openKey : undefined}
           inlineIndent={15}
           onClick={(item: { key: string }) => {
@@ -99,8 +112,13 @@ const Sider = () => {
               )
             ),
             menuLevel.level !== menuList.length ? (
-              <Menu.Divider key={menuLevel.level}style={{ margin: '24px 0' }} />
-            ) : <div  style={{ height: 48 }}/>,
+              <Menu.Divider
+                key={menuLevel.level}
+                style={{ margin: '24px 0' }}
+              />
+            ) : (
+              <div style={{ height: 48 }} />
+            ),
           ])}
           <Menu.Item
             key='siderCollapsedTrigger'

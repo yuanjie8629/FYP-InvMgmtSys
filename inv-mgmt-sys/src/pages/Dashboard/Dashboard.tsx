@@ -4,6 +4,7 @@ import Col from 'antd/es/col';
 import Row from 'antd/es/row';
 import Space from 'antd/es/space';
 import Spin from 'antd/es/spin';
+import Table from 'antd/es/table'
 import Typography from 'antd/es/typography';
 import Radio from 'antd/es/radio';
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined';
@@ -19,10 +20,10 @@ import {
 import { IconType } from 'react-icons';
 import Layout from '@components/Layout/Layout';
 import SmallCard from '@components/Card/SmallCard';
-import Button from '@components/Button/Button';
-import StatisticsDashboard from '@components/Statistics/Statistics';
-import Table from '@components/Table/Table';
-import Tag from '@components/Tag/Tag';
+import Button from '@components/Button';
+import StatisticsDashboard from '@components/Statistics';
+
+import Tag from '@components/Tag';
 import { findRoutePath } from '@utils/routingUtils';
 import toDoList from './toDoList';
 import { dataYear, dataMonth, dataWeek, dataDay } from './salesData';
@@ -41,7 +42,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [salesDateRange, setSalesDateRange] = useState('year');
 
-  const getSalesData =
+  const getSalesData = 
     salesDateRange === 'month'
       ? dataMonth.data
       : salesDateRange === 'week'
@@ -178,6 +179,8 @@ const Dashboard = () => {
     dataIndex: string | string[];
     key: string;
     align?: 'left' | 'center' | 'right';
+    fixed?: 'left' | 'right';
+    width?: string | number;
     render?: (status: string) => any;
   }[] = [
     {

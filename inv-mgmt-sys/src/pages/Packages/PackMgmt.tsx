@@ -1,7 +1,7 @@
 import ContainerCard from '@components/Card/ContainerCard';
-import Button from '@components/Button/Button';
+import Button from '@components/Button';
 import Layout from '@components/Layout/Layout';
-import Tag, { TagProps } from '@components/Tag/Tag';
+import Tag, { TagProps } from '@components/Tag';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography, Image, Dropdown, Menu } from 'antd';
 import InformativeTable, {
@@ -11,16 +11,29 @@ import packageList from './packageList';
 import { HiCheckCircle, HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
 import { MdArrowDropDown } from 'react-icons/md';
 import packTabList from './packTabList';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
+import { packStatList } from '@utils/optionUtils';
 
 const PackMgmt = () => {
   const { Text, Title } = Typography;
+  const [packageListFltr, setPackageListFltr] = useState(packageList);
 
   let navigate = useNavigate();
+  let [searchParams, setSearchParams] = useSearchParams();
 
-  const [packageListFltr, setPackageListFltr] = useState(packageList);
+  useEffect(
+    () =>
+      setPackageListFltr(
+        packageList.filter((pack) =>
+          searchParams.get('stat') !== null
+            ? pack.packStat === searchParams.get('stat')
+            : true
+        )
+      ),
+    [searchParams]
+  );
 
   const activateBtn = (props: any) => (
     <Button
@@ -36,7 +49,7 @@ const PackMgmt = () => {
       Activate
     </Button>
   );
-  
+
   const hideBtn = (props: any) => (
     <Button
       type='primary'
@@ -72,12 +85,12 @@ const PackMgmt = () => {
     {
       element: activateBtn,
       key: 'activate',
-      fltr: [{ fld: 'packStat', val: 'hidden', rel: 'eq' }],
+      fltr: [{ fld: 'packStat', value: 'hidden', rel: 'eq' }],
     },
     {
       element: hideBtn,
       key: 'hide',
-      fltr: [{ fld: 'packStat', val: 'active', rel: 'eq' }],
+      fltr: [{ fld: 'packStat', value: 'active', rel: 'eq' }],
     },
     {
       element: deleteBtn,
@@ -165,16 +178,9 @@ const PackMgmt = () => {
       key: 'packStat',
       width: 100,
       render: (status: string) => {
-        const statusList = [
-          { status: 'active', label: 'Active', color: 'success' },
-          { status: 'oos', label: 'Out of Stock', color: 'error' },
-          { status: 'scheduled', label: 'Scheduled', color: 'processing' },
-          { status: 'expired', label: 'Expired', color: 'warning' },
-          { status: 'hidden', label: 'Hidden', color: 'default' },
-        ];
         const menu = (
           <Menu>
-            {statusList.map((statusItem) =>
+            {packStatList.map((statusItem) =>
               !(
                 status === statusItem.status ||
                 (statusItem.status !== 'hidden' &&
@@ -202,7 +208,7 @@ const PackMgmt = () => {
           </Tag>
         );
 
-        const matchedStatus = statusList.find(
+        const matchedStatus = packStatList.find(
           (statusItem) => status === statusItem.status
         );
 
@@ -220,13 +226,13 @@ const PackMgmt = () => {
         ) : (
           <ProdStatusTag
             color={
-              statusList.find(
+              packStatList.find(
                 (statusItem) => statusItem.status === matchedStatus?.status
               )!.color
             }
           >
             {
-              statusList.find(
+              packStatList.find(
                 (statusItem) => statusItem.status === matchedStatus?.status
               )!.label
             }
@@ -280,13 +286,14 @@ const PackMgmt = () => {
           <Row justify='center'>
             <ContainerCard
               tabList={packTabList}
-              onTabChange={(key) =>
-                setPackageListFltr(
-                  packageList.filter((pack) =>
-                    key !== 'all' ? pack.packStat === key : true
-                  )
-                )
+              activeTabKey={
+                searchParams.get('stat') === null
+                  ? 'all'
+                  : searchParams.get('stat')
               }
+              onTabChange={(key) => {
+                setSearchParams(key !== 'all' ? { stat: key } : {});
+              }}
             >
               <Space direction='vertical' size={40} className='width-full'>
                 <FilterInputs />

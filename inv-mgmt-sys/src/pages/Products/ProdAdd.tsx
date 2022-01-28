@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ContainerCard from '@components/Card/ContainerCard';
 import Layout from '@components/Layout/Layout';
-import UploadPicWall from '@components/Upload/UploadPicWall';
+import UploadPicWall from '@components/Upload/UploadPicWall/UploadPicWall';
 import AffixAdd from '@components/Affix/AffixAdd';
 import {
   Anchor,
@@ -17,6 +17,7 @@ import {
   Typography,
 } from 'antd';
 import TextEditor from '@components/Input/TextEditor';
+import { prodCat } from '@utils/optionUtils';
 
 const ProdAdd = () => {
   const { Text, Title } = Typography;
@@ -34,12 +35,6 @@ const ProdAdd = () => {
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
   );
-
-  const prodCat = [
-    { value: 'rte', label: 'Ready-To-Eat' },
-    { value: 'rtc', label: 'Ready-To-Cook' },
-    { value: 'paste', label: 'Paste' },
-  ];
 
   const anchorList = [
     { link: 'basicInfo', title: 'Basic Information' },

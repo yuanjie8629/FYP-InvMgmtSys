@@ -1,7 +1,7 @@
 import ContainerCard from '@components/Card/ContainerCard';
-import Button from '@components/Button/Button';
+import Button from '@components/Button';
 import Layout from '@components/Layout/Layout';
-import Tag, { TagProps } from '@components/Tag/Tag';
+import Tag, { TagProps } from '@components/Tag';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography, Image, Dropdown, Menu } from 'antd';
 import InformativeTable, {
@@ -15,6 +15,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
+import { prodStatList } from '@utils/optionUtils';
 
 const ProdMgmt = () => {
   const { Text, Title } = Typography;
@@ -84,12 +85,12 @@ const ProdMgmt = () => {
     {
       element: activateBtn,
       key: 'activate',
-      fltr: [{ fld: 'prodStat', val: 'hidden', rel: 'eq' }],
+      fltr: [{ fld: 'prodStat', value: 'hidden', rel: 'eq' }],
     },
     {
       element: hideBtn,
       key: 'hide',
-      fltr: [{ fld: 'prodStat', val: 'active', rel: 'eq' }],
+      fltr: [{ fld: 'prodStat', value: 'active', rel: 'eq' }],
     },
     {
       element: deleteBtn,
@@ -163,14 +164,9 @@ const ProdMgmt = () => {
       key: 'prodStat',
       width: 150,
       render: (status: string) => {
-        const statusList = [
-          { status: 'active', label: 'Active', color: 'success' },
-          { status: 'oos', label: 'Out of Stock', color: 'error' },
-          { status: 'hidden', label: 'Hidden', color: 'default' },
-        ];
         const menu = (
           <Menu>
-            {statusList.map((statusItem) =>
+            {prodStatList.map((statusItem) =>
               !(
                 status === statusItem.status ||
                 (statusItem.status !== 'hidden' &&
@@ -198,7 +194,7 @@ const ProdMgmt = () => {
           </Tag>
         );
 
-        const matchedStatus = statusList.find(
+        const matchedStatus = prodStatList.find(
           (statusItem) => status === statusItem.status
         );
 
@@ -214,13 +210,13 @@ const ProdMgmt = () => {
         ) : (
           <ProdStatusTag
             color={
-              statusList.find(
+              prodStatList.find(
                 (statusItem) => statusItem.status === matchedStatus.status
               )!.color
             }
           >
             {
-              statusList.find(
+              prodStatList.find(
                 (statusItem) => statusItem.status === matchedStatus.status
               )!.label
             }

@@ -22,7 +22,6 @@ import AdminMgmt from '@pages/Admins/AdminMgmt';
 import AdminAdd from '@pages/Admins/AdminAdd';
 import Help from '@pages/Help/Help';
 import ShpFeeMgmt from '@pages/Shipments/ShptFeeMgmt';
-import OrderPend from '@pages/Orders/OrderPend';
 import NotFound from '@pages/Not Found/NotFound';
 
 const routeList: {
@@ -94,9 +93,12 @@ const routeList: {
   },
   {
     label: 'orderPend',
-    path: '/order/pending',
-    component: <OrderPend />,
-  },
+    path: '/order/management?stat=toShip',
+    },
+    {
+      label: 'orderCancel',
+      path: '/order/management?stat=cancel',
+    },
   {
     label: 'orderAdd',
     path: '/order/add',

@@ -3,7 +3,7 @@ import Layout from '@components/Layout/Layout';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
-import Button from '@components/Button/Button';
+import Button from '@components/Button';
 import { Col, Image, Row, Space, Typography, InputNumber, Radio } from 'antd';
 import FilterInputs from './FilterInputs';
 import prodList from './prodList';
@@ -26,7 +26,7 @@ const ProdInv = () => {
     <Button
       type='primary'
       icon={<BulkEditIcon style={{ marginRight: 5 }} />}
-      style={{ display: 'flex', alignItems: 'center' }}
+      className='centerFlex'
       {...props}
     >
       Bulk Updates
