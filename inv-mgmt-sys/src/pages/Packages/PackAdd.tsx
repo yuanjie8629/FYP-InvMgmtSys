@@ -15,10 +15,10 @@ import {
   InputNumber,
   Row,
   Space,
-  Table,
   Typography,
 } from 'antd';
 import Button from '@components/Button';
+import Table from '@components/Table';
 import TextEditor from '@components/Input/TextEditor';
 
 const PackAdd = () => {

@@ -12,10 +12,8 @@ import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { HiOutlineCalendar } from 'react-icons/hi';
 import MenuDatePicker from '../MenuDatePicker';
 import {
-  getTdyDt,
-  getYtdDt,
-  getPast7Days,
-  getPast30Days,
+  getDt,
+  getPastDays,
   getNextDt,
   getDayOfWeek,
   getWeekOfYear,
@@ -24,22 +22,24 @@ import {
   getPrevDt,
   getPrevWeek,
   getPrevMth,
-  getMthNm,
-  getThisWeekTilTdy,
-  getThisMthTilTdy,
+  getMth,
+  getThisWeekTilYtd,
+  getThisMthTilYtd,
   getNextYr,
   getYr,
   getPrevYr,
-  getThisYrTilTdy,
+  getThisYrTilYtd,
+  getMomentNextDt,
+  getMomentPrevDt,
 } from '@utils/dateUtils';
 
 interface Dropdownprops extends Omit<AntdDropdownProps, 'overlay'> {}
 
 const DropdownDate = (props: Dropdownprops) => {
-  const [date, setDate] = useState(getTdyDt);
+  const [date, setDate] = useState(getDt());
   const [dateCat, setDateCat] = useState('tdy');
   const [dropdownOnBlur, setDropdownOnBlur] = useState(true);
-  const [selected, setSelected] = useState(['tdy/' + getTdyDt]);
+  const [selected, setSelected] = useState(['tdy/' + getDt()]);
   const [itemHovered, setItemHovered] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [todayPopover, setTodayPopover] = useState(false);
@@ -84,16 +84,13 @@ const DropdownDate = (props: Dropdownprops) => {
       dateCat === 'ytd' ||
       dateCat === getDayOfWeek(date, 'DD-MM-YYYY')
     ) {
-      let nxtDt = getNextDt(date, 'DD-MM-YYYY').format('DD-MM-YYYY');
+      let nxtDt = getNextDt(date, 'DD-MM-YYYY');
       setDate(nxtDt);
-      if (nxtDt === getTdyDt) setDateCat('tdy');
-      else if (nxtDt === getYtdDt) setDateCat('ytd');
-      else
-        setDateCat(
-          moment(getNextDt(date, 'DD-MM-YYYY'), 'DD-MM-YYYY').format('dddd')
-        );
+      if (nxtDt === getDt()) setDateCat('tdy');
+      else if (nxtDt === getPrevDt()) setDateCat('ytd');
+      else setDateCat(getDayOfWeek(getMomentNextDt(date, 'DD-MM-YYYY')));
     } else if (
-      (dateCat === 'past7d' || dateCat === getWeekOfYear(date, 'DD-MM-YYYY')) &&
+      dateCat === getWeekOfYear(date, 'DD-MM-YYYY') &&
       !moment().isBetween(
         moment(date, 'DD-MM-YYYY').startOf('week'),
         moment(date, 'DD-MM-YYYY').endOf('week')
@@ -101,10 +98,16 @@ const DropdownDate = (props: Dropdownprops) => {
     ) {
       setDate(getNextWeek(date, 'DD-MM-YYYY'));
       setDateCat(getWeekOfYear(getNextWeek(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
-    } else if (!(getMthNm(date, 'DD-MM-YYYY') === moment().format('MMMM'))) {
+    } else if (
+      dateCat === getMth(date, 'DD-MM-YYYY') &&
+      !(getMth(date, 'DD-MM-YYYY') === getMth())
+    ) {
       setDate(getNextMth(date, 'DD-MM-YYYY'));
-      setDateCat(getMthNm(getNextMth(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
-    } else if (!(getYr(date, 'DD-MM-YYYY') === moment().format('YYYY'))) {
+      setDateCat(getMth(getNextMth(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
+    } else if (
+      dateCat === getYr(date, 'DD-MM-YYYY') &&
+      !(getYr(date, 'DD-MM-YYYY') === getYr())
+    ) {
       setDate(getNextYr(date, 'DD-MM-YYYY'));
       setDateCat(getYr(getNextYr(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
     }
@@ -116,27 +119,18 @@ const DropdownDate = (props: Dropdownprops) => {
       dateCat === 'ytd' ||
       dateCat === getDayOfWeek(date, 'DD-MM-YYYY')
     ) {
-      let prevDt = getPrevDt(date, 'DD-MM-YYYY').format('DD-MM-YYYY');
+      let prevDt = getPrevDt(date, 'DD-MM-YYYY');
       setDate(prevDt);
-      if (prevDt === getTdyDt) setDateCat('tdy');
-      else if (prevDt === getYtdDt) setDateCat('ytd');
-      else
-        setDateCat(
-          getDayOfWeek(
-            getPrevDt(date, 'DD-MM-YYYY').format('DD-MM-YYYY'),
-            'DD-MM-YYYY'
-          )
-        );
-    } else if (
-      dateCat === 'past7d' ||
-      dateCat === getWeekOfYear(date, 'DD-MM-YYYY')
-    ) {
+      if (prevDt === getDt()) setDateCat('tdy');
+      else if (prevDt === getPrevDt()) setDateCat('ytd');
+      else setDateCat(getDayOfWeek(getMomentPrevDt(date, 'DD-MM-YYYY')));
+    } else if (dateCat === getWeekOfYear(date, 'DD-MM-YYYY')) {
       setDate(getPrevWeek(date, 'DD-MM-YYYY'));
       setDateCat(getWeekOfYear(getPrevWeek(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
-    } else if (dateCat === getYr(date, 'DD-MM-YYYY')) {
+    } else if (dateCat === getMth(date, 'DD-MM-YYYY')) {
       setDate(getPrevMth(date, 'DD-MM-YYYY'));
-      setDateCat(getMthNm(getPrevMth(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
-    } else {
+      setDateCat(getMth(getPrevMth(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
+    } else if (dateCat === getYr(date, 'DD-MM-YYYY')) {
       setDate(getPrevYr(date, 'DD-MM-YYYY'));
       setDateCat(getYr(getPrevYr(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
     }
@@ -149,11 +143,8 @@ const DropdownDate = (props: Dropdownprops) => {
         dateCat === 'ytd' ||
         dateCat === getDayOfWeek(date, 'DD-MM-YYYY')
       ) {
-        setDisableNext(getNextDt(date, 'DD-MM-YYYY').isAfter(moment()));
-      } else if (
-        dateCat === 'past7d' ||
-        dateCat === getWeekOfYear(date, 'DD-MM-YYYY')
-      ) {
+        setDisableNext(getMomentNextDt(date, 'DD-MM-YYYY').isAfter(moment()));
+      } else if (dateCat === getWeekOfYear(date, 'DD-MM-YYYY')) {
         setDisableNext(
           moment(date, 'DD-MM-YYYY')
             .add(1, 'week')
@@ -167,12 +158,12 @@ const DropdownDate = (props: Dropdownprops) => {
             moment(date, 'DD-MM-YYYY').endOf('week')
           )
         ) {
-          setDate(getThisWeekTilTdy(date, 'DD-MM-YYYY'));
+          setDate(getThisWeekTilYtd(date, 'DD-MM-YYYY'));
           setDateCat(
-            getWeekOfYear(getThisWeekTilTdy(date, 'DD-MM-YYYY'), 'DD-MM-YYYY')
+            getWeekOfYear(getThisWeekTilYtd(date, 'DD-MM-YYYY'), 'DD-MM-YYYY')
           );
         }
-      } else if (dateCat === getMthNm(date, 'DD-MM-YYYY')) {
+      } else if (dateCat === getMth(date, 'DD-MM-YYYY')) {
         setDisableNext(
           moment(date, 'DD-MM-YYYY')
             .add(1, 'month')
@@ -180,20 +171,20 @@ const DropdownDate = (props: Dropdownprops) => {
             .isAfter(moment())
         );
 
-        if (getMthNm(date, 'DD-MM-YYYY') === moment().format('MMMM')) {
-          setDate(getThisMthTilTdy(date, 'DD-MM-YYYY'));
+        if (getMth(date, 'DD-MM-YYYY') === getMth()) {
+          setDate(getThisMthTilYtd(date, 'DD-MM-YYYY'));
           setDateCat(
-            getMthNm(getThisMthTilTdy(date, 'DD-MM-YYYY'), 'DD-MM-YYYY')
+            getMth(getThisMthTilYtd(date, 'DD-MM-YYYY'), 'DD-MM-YYYY')
           );
         }
-      } else {
+      } else if (dateCat === getYr(date, 'DD-MM-YYYY')) {
         setDisableNext(
           moment(date, 'DD-MM-YYYY').add(1, 'year').isAfter(moment())
         );
 
-        if (getYr(date, 'DD-MM-YYYY') === moment().format('YYYY')) {
-          setDate(getThisYrTilTdy(date, 'DD-MM-YYYY'));
-          setDateCat(getYr(getThisYrTilTdy(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
+        if (getYr(date, 'DD-MM-YYYY') === getYr()) {
+          setDate(getThisYrTilYtd(date, 'DD-MM-YYYY'));
+          setDateCat(getYr(getThisYrTilYtd(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
         }
       }
     };
@@ -221,7 +212,7 @@ const DropdownDate = (props: Dropdownprops) => {
       style={{ width: 150 }}
     >
       <Menu.Item
-        key={'tdy/' + getTdyDt}
+        key={'tdy/' + getDt()}
         onMouseOver={() => {
           hideAllPickers();
           setItemHovered(true);
@@ -232,9 +223,9 @@ const DropdownDate = (props: Dropdownprops) => {
         }}
       >
         <Popover
-          visible={todayPopover || validateDefOpen('tdy/' + getTdyDt)}
-          key={getTdyDt}
-          content={getTdyDt}
+          visible={todayPopover || validateDefOpen('tdy/' + getDt())}
+          key={getDt()}
+          content={getDt()}
           placement='right'
           align={{
             points: ['cc', 'cr'],
@@ -246,7 +237,7 @@ const DropdownDate = (props: Dropdownprops) => {
       </Menu.Item>
 
       <Menu.Item
-        key={'ytd/' + getYtdDt}
+        key={'ytd/' + getPrevDt()}
         onMouseOver={() => {
           hideAllPickers();
           setItemHovered(true);
@@ -257,8 +248,8 @@ const DropdownDate = (props: Dropdownprops) => {
         }}
       >
         <Popover
-          visible={ytdPopover || validateDefOpen('ytd/' + getYtdDt)}
-          content={getYtdDt}
+          visible={ytdPopover || validateDefOpen('ytd/' + getPrevDt())}
+          content={getPrevDt()}
           placement='right'
           align={{
             points: ['cc', 'cr'],
@@ -270,7 +261,7 @@ const DropdownDate = (props: Dropdownprops) => {
       </Menu.Item>
 
       <Menu.Item
-        key={'past7d/' + getPast7Days}
+        key={'past7d/' + getPastDays(7)}
         onMouseOver={() => {
           hideAllPickers();
           setItemHovered(true);
@@ -281,20 +272,20 @@ const DropdownDate = (props: Dropdownprops) => {
         }}
       >
         <Popover
-          visible={past7dPopover || validateDefOpen('past7d/' + getPast7Days)}
-          content={getPast7Days}
+          visible={past7dPopover || validateDefOpen('past7d/' + getPastDays(7))}
+          content={getPastDays(7)}
           placement='right'
           align={{
             points: ['cc', 'cr'],
             offset: [182, 0],
           }}
         >
-          Past Week
+          {dateCatMapper.find((dateCat) => dateCat.value === 'past7d').label}
         </Popover>
       </Menu.Item>
 
       <Menu.Item
-        key={'past30d/' + getPast30Days}
+        key={'past30d/' + getPastDays(30)}
         onMouseOver={() => {
           hideAllPickers();
           setItemHovered(true);
@@ -306,16 +297,16 @@ const DropdownDate = (props: Dropdownprops) => {
       >
         <Popover
           visible={
-            past30dPopover || validateDefOpen('past30d/' + getPast30Days)
+            past30dPopover || validateDefOpen('past30d/' + getPastDays(30))
           }
-          content={getPast30Days}
+          content={getPastDays(30)}
           placement='right'
           align={{
             points: ['cc', 'cr'],
             offset: [175, 0],
           }}
         >
-          Past Month
+          {dateCatMapper.find((dateCat) => dateCat.value === 'past30d').label}
         </Popover>
       </Menu.Item>
 
@@ -338,11 +329,11 @@ const DropdownDate = (props: Dropdownprops) => {
             let newDt = value.format('DD-MM-YYYY');
             setDropdownVisible(false);
             setSelected(['byDay']);
-            newDt === getTdyDt
+            newDt === getDt()
               ? setDateCat('tdy')
-              : newDt === getYtdDt
+              : newDt === getPrevDt()
               ? setDateCat('ytd')
-              : setDateCat(value.format('dddd'));
+              : setDateCat(getDayOfWeek(value));
             setDate(newDt);
             setDayPicker({ ind: false, defVal: value });
             setWeekPicker({ ind: weekPicker.ind, defVal: null });
@@ -372,7 +363,7 @@ const DropdownDate = (props: Dropdownprops) => {
           onChange={(value) => {
             setDropdownVisible(false);
             setSelected(['byWeek']);
-            setDateCat(`Week ${value.format('w')}`);
+            setDateCat(getWeekOfYear(value));
             setDate(
               `${value.startOf('week').format('DD-MM-YYYY')} ~ ${value
                 .endOf('week')
@@ -405,15 +396,14 @@ const DropdownDate = (props: Dropdownprops) => {
           value={mthPicker.defVal !== null ? mthPicker.defVal : null}
           disabledDate={(current) => current > moment()}
           onChange={(value) => {
-            let newMth = `${value
-              .startOf('month')
-              .format('DD-MM-YYYY')} ~ ${value
-              .endOf('month')
-              .format('DD-MM-YYYY')}`;
             setDropdownVisible(false);
             setSelected(['byMth']);
-            setDateCat(value.format('MMMM'));
-            setDate(newMth);
+            setDateCat(getMth(value));
+            setDate(
+              `${value.startOf('month').format('DD-MM-YYYY')} ~ ${value
+                .endOf('month')
+                .format('DD-MM-YYYY')}`
+            );
             setDayPicker({ ind: dayPicker.ind, defVal: null });
             setWeekPicker({ ind: weekPicker.ind, defVal: null });
             setMthPicker({ ind: false, defVal: value });
@@ -440,14 +430,14 @@ const DropdownDate = (props: Dropdownprops) => {
           value={yrPicker.defVal !== null ? yrPicker.defVal : null}
           disabledDate={(current) => current > moment()}
           onChange={(value) => {
-            let newYr = `${value.startOf('year').format('DD-MM-YYYY')} ~ ${value
-              .endOf('year')
-              .format('DD-MM-YYYY')}`;
-
             setDropdownVisible(false);
             setSelected(['byYr']);
-            setDateCat(value.format('YYYY'));
-            setDate(newYr);
+            setDateCat(getYr(value));
+            setDate(
+              `${value.startOf('year').format('DD-MM-YYYY')} ~ ${value
+                .endOf('year')
+                .format('DD-MM-YYYY')}`
+            );
             setDayPicker({ ind: dayPicker.ind, defVal: null });
             setWeekPicker({ ind: weekPicker.ind, defVal: null });
             setMthPicker({ ind: mthPicker.ind, defVal: null });
@@ -474,6 +464,7 @@ const DropdownDate = (props: Dropdownprops) => {
           />
         }
         onClick={subtractDate}
+        hidden={dateCat === 'past7d' || dateCat === 'past30d'}
       />
       <Dropdown
         visible={dropdownVisible}
@@ -520,6 +511,7 @@ const DropdownDate = (props: Dropdownprops) => {
         }
         onClick={addDate}
         disabled={disableNext}
+        hidden={dateCat === 'past7d' || dateCat === 'past30d'}
       />
     </Space>
   );

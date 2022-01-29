@@ -1,7 +1,7 @@
 import { Avatar, Col, Row, Typography } from 'antd';
 import { IconType } from 'react-icons';
 
-interface StatisticsDashboardProps {
+interface StatisticsProps {
   value: number;
   title: string;
   icon: IconType;
@@ -11,7 +11,7 @@ interface StatisticsDashboardProps {
   toFixed?: number;
 }
 
-const StatisticsDashboard = (props: StatisticsDashboardProps) => {
+const Statistics = (props: StatisticsProps) => {
   const { Text, Title } = Typography;
 
   return (
@@ -40,4 +40,4 @@ const StatisticsDashboard = (props: StatisticsDashboardProps) => {
   );
 };
 
-export default StatisticsDashboard;
+export default Statistics;

@@ -1,121 +1,180 @@
 import moment from 'moment';
 
-const getTdyDt = moment().format('DD-MM-YYYY');
+const getDt = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'DD-MM-YYYY'
+) => moment(date, inputFormat).format(format);
 
-const getYtdDt = moment().subtract(1, 'days').format('DD-MM-YYYY');
+const getDayOfWeek = (date?: moment.Moment | string, inputFormat?: string) =>
+  moment(date, inputFormat).format('dddd');
 
-const getPast7Days = `${moment()
-  .subtract(7, 'd')
-  .format('DD-MM-YYYY')} ~ ${moment().format('DD-MM-YYYY')}`;
+const getWeekOfYear = (date?: moment.Moment | string, inputFormat?: string) =>
+  `Week ${moment(date, inputFormat).format('w')} of ${moment(date, inputFormat)
+    .endOf('week')
+    .format('YYYY')}`;
 
-const getPast30Days = `${moment()
-  .subtract(30, 'd')
-  .format('DD-MM-YYYY')} ~ ${moment().format('DD-MM-YYYY')}`;
+const getMth = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'MMMM'
+) => moment(date, inputFormat).format(format);
 
-const getDayOfWeek = (date: string, format?: string) =>
-  moment(date, format).format('dddd');
+const getYr = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'YYYY'
+) => moment(date, inputFormat).format(format);
 
-const getWeekOfYear = (date: string, format?: string) =>
-  `Week ${moment(date, format).format('w')}`;
+const getPastDays = (num: number, format: string = 'DD-MM-YYYY') =>
+  `${moment().subtract(num, 'd').format(format)} ~ ${moment().format(format)}`;
 
-const getMthNm = (date: string, format?: string) =>
-  moment(date, format).format('MMMM');
+const getNextDt = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'DD-MM-YYYY'
+) => moment(date, inputFormat).add(1, 'day').format(format);
 
-const getYr = (date: string, format?: string) =>
-  moment(date, format).format('YYYY');
+const getMomentNextDt = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'DD-MM-YYYY'
+) => moment(date, inputFormat).add(1, 'day');
 
-const getNextDt = (date: string, format?: string) =>
-  moment(date, format).add(1, 'day');
-
-const getNextWeek = (date: string, format?: string) =>
-  `${moment(date, format)
+const getNextWeek = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'DD-MM-YYYY'
+) =>
+  `${moment(date, inputFormat)
     .add(1, 'week')
     .startOf('week')
-    .format('DD-MM-YYYY')} ~ ${moment(date, format)
+    .format(format)} ~ ${moment(date, inputFormat)
     .add(1, 'week')
     .endOf('week')
-    .format('DD-MM-YYYY')}`;
+    .format(format)}`;
 
-const getThisWeekTilTdy = (date: string, format?: string) =>
-  `${moment(date, format)
-    .startOf('week')
-    .format('DD-MM-YYYY')} ~ ${moment().format('DD-MM-YYYY')}`;
+const getThisWeekTilYtd = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'DD-MM-YYYY'
+) =>
+  `${moment(date, inputFormat).startOf('week').format(format)} ~ ${moment()
+    .subtract(1, 'day')
+    .format(format)}`;
 
-const getNextMth = (date: string, format?: string) =>
-  `${moment(date, format)
+const getNextMth = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'DD-MM-YYYY'
+) =>
+  `${moment(date, inputFormat)
     .add(1, 'month')
     .startOf('month')
-    .format('DD-MM-YYYY')} ~ ${moment(date, format)
+    .format(format)} ~ ${moment(date, inputFormat)
     .add(1, 'month')
     .endOf('month')
+    .format(format)}`;
+
+const getThisMthTilYtd = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'DD-MM-YYYY'
+) =>
+  `${moment(date, inputFormat).startOf('month').format(format)} ~ ${moment()
+    .subtract(1, 'day')
     .format('DD-MM-YYYY')}`;
 
-const getThisMthTilTdy = (date: string, format?: string) =>
-  `${moment(date, 'DD-MM-YYYY')
-    .startOf('month')
-    .format('DD-MM-YYYY')} ~ ${moment().format('DD-MM-YYYY')}`;
-
-const getNextYr = (date: string, format?: string) =>
-  `${moment(date, format)
+const getNextYr = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'DD-MM-YYYY'
+) =>
+  `${moment(date, inputFormat)
     .add(1, 'year')
     .startOf('year')
-    .format('DD-MM-YYYY')} ~ ${moment(date, format)
+    .format(format)} ~ ${moment(date, inputFormat)
     .add(1, 'year')
     .endOf('year')
-    .format('DD-MM-YYYY')}`;
+    .format(format)}`;
 
-const getThisYrTilTdy = (date: string, format?: string) =>
-  `${moment(date, format)
-    .startOf('year')
-    .format('DD-MM-YYYY')} ~ ${moment().format('DD-MM-YYYY')}`;
+const getThisYrTilYtd = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'DD-MM-YYYY'
+) =>
+  `${moment(date, inputFormat).startOf('year').format(format)} ~ ${moment()
+    .subtract(1, 'day')
+    .format(format)}`;
 
-const getPrevDt = (date: string, format?: string) =>
-  moment(date, format).subtract(1, 'day');
+const getPrevDt = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'DD-MM-YYYY'
+) => moment(date, inputFormat).subtract(1, 'day').format(format);
 
-const getPrevWeek = (date: string, format?: string) =>
-  `${moment(date, format)
+const getMomentPrevDt = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'DD-MM-YYYY'
+) => moment(date, inputFormat).subtract(1, 'day');
+
+const getPrevWeek = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'DD-MM-YYYY'
+) =>
+  `${moment(date, inputFormat)
     .subtract(1, 'week')
     .startOf('week')
-    .format('DD-MM-YYYY')} ~ ${moment(date, format)
+    .format(format)} ~ ${moment(date, inputFormat)
     .subtract(1, 'week')
     .endOf('week')
-    .format('DD-MM-YYYY')}`;
+    .format(format)}`;
 
-const getPrevMth = (date: string, format?: string) =>
-  `${moment(date, format)
+const getPrevMth = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'DD-MM-YYYY'
+) =>
+  `${moment(date, inputFormat)
     .subtract(1, 'month')
     .startOf('month')
-    .format('DD-MM-YYYY')} ~ ${moment(date, format)
+    .format(format)} ~ ${moment(date, inputFormat)
     .subtract(1, 'month')
     .endOf('month')
-    .format('DD-MM-YYYY')}`;
+    .format(format)}`;
 
-const getPrevYr = (date: string, format?: string) =>
-  `${moment(date, format)
+const getPrevYr = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  format: string = 'DD-MM-YYYY'
+) =>
+  `${moment(date, inputFormat)
     .subtract(1, 'year')
     .startOf('year')
-    .format('DD-MM-YYYY')} ~ ${moment(date, format)
+    .format(format)} ~ ${moment(date, inputFormat)
     .subtract(1, 'year')
     .endOf('year')
-    .format('DD-MM-YYYY')}`;
+    .format(format)}`;
 
 export {
-  getTdyDt,
-  getYtdDt,
-  getPast7Days,
-  getPast30Days,
+  getDt,
   getDayOfWeek,
   getWeekOfYear,
-  getMthNm,
+  getMth,
   getYr,
+  getPastDays,
   getNextDt,
+  getMomentNextDt,
   getNextWeek,
-  getThisWeekTilTdy,
+  getThisWeekTilYtd,
   getNextMth,
-  getThisMthTilTdy,
+  getThisMthTilYtd,
   getNextYr,
-  getThisYrTilTdy,
+  getThisYrTilYtd,
   getPrevDt,
+  getMomentPrevDt,
   getPrevWeek,
   getPrevMth,
   getPrevYr,

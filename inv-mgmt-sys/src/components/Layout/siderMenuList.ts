@@ -90,7 +90,7 @@ const menuList: {
         label: 'Business Insights',
         icon: MdInsertChart,
         child: [
-          { key: 'statistics', label: 'Statistics' },
+          { key: 'bizStatistics', label: 'Statistics' },
           {
             key: 'invAnalysis',
             label: 'Inventory Analysis',
