@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import { Col, Row, Table, TableProps, Typography, Space } from 'antd';
+import { Col, Row, Typography, Space } from 'antd';
 import './InformativeTable.less';
 import { ButtonType } from '@components/Button';
-
-interface RecordType {
-  key: string;
-}
+import Table, { TableProps } from '@components/Table';
 
 type InformativeTableButtonProps = {
   element: ButtonType;
@@ -17,7 +14,7 @@ type InformativeTableButtonProps = {
   }[];
 }[];
 
-interface InformativeTableProps extends TableProps<RecordType> {
+interface InformativeTableProps extends TableProps {
   defPg?: number;
   buttons: InformativeTableButtonProps;
 }
@@ -121,7 +118,6 @@ const InformativeTable = ({ defPg = 10, ...props }: InformativeTableProps) => {
             defaultPageSize: defPg,
             pageSizeOptions: ['5', '10', '15', '20'],
           }}
-          className={'width-full ' + props.className}
           {...props}
         ></Table>
       </Row>

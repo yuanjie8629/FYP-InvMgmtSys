@@ -3,6 +3,13 @@ const ynOptions = [
   { value: false, label: 'No' },
 ];
 
+const dateRangeOptions = [
+  { value: 'year', label: 'Year' },
+  { value: 'month', label: 'Month' },
+  { value: 'week', label: 'Week' },
+  { value: 'day', label: 'Day' },
+];
+
 const prodCat = [
   { value: 'rte', label: 'Ready-To-Eat' },
   { value: 'rtc', label: 'Ready-To-Cook' },
@@ -66,6 +73,7 @@ const custCat = [
 
 export {
   ynOptions,
+  dateRangeOptions,
   prodCat,
   prodStatList,
   packStatList,

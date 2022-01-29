@@ -1,3 +1,5 @@
+import moment from "moment";
+
 const dataYear: {
   year: string;
   data: {
@@ -5,7 +7,7 @@ const dataYear: {
     Sales: number;
   }[];
 } = {
-  year: '2021',
+  year: moment().format('YYYY'),
   data: [
     { Month: 'Jan', Sales: 4000 },
     { Month: 'Feb', Sales: 4500 },

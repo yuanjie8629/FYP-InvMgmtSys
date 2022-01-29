@@ -4,25 +4,15 @@ import Col from 'antd/es/col';
 import Row from 'antd/es/row';
 import Space from 'antd/es/space';
 import Spin from 'antd/es/spin';
-import Table from 'antd/es/table'
 import Typography from 'antd/es/typography';
 import Radio from 'antd/es/radio';
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined';
-import {
-  MdArrowRight,
-  MdChevronRight,
-  MdOutlineTrendingUp,
-  MdOutlineAttachMoney,
-  MdOutlineVisibility,
-  MdPersonOutline,
-  MdOutlineAssignment,
-} from 'react-icons/md';
-import { IconType } from 'react-icons';
+import { MdArrowRight, MdChevronRight } from 'react-icons/md';
 import Layout from '@components/Layout/Layout';
 import SmallCard from '@components/Card/SmallCard';
 import Button from '@components/Button';
-import StatisticsDashboard from '@components/Statistics';
-
+import Table from '@components/Table';
+import Statistics from '@components/Statistics';
 import Tag from '@components/Tag';
 import { findRoutePath } from '@utils/routingUtils';
 import toDoList from './toDoList';
@@ -33,6 +23,8 @@ import topProduct from './topProducts';
 import invAnalysis from './invAnalysis';
 import './Dashboard.less';
 import RankingList from '@components/List/RankingList';
+import statisticsList from '@components/Statistics/statisticsList';
+import { dateRangeOptions } from '@utils/optionUtils';
 
 const LineChart = lazy(() => import('@components/Chart/LineChart'));
 const ContainerCard = lazy(() => import('@components/Card/ContainerCard'));
@@ -42,7 +34,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [salesDateRange, setSalesDateRange] = useState('year');
 
-  const getSalesData = 
+  const getSalesData =
     salesDateRange === 'month'
       ? dataMonth.data
       : salesDateRange === 'week'
@@ -86,22 +78,6 @@ const Dashboard = () => {
       <MdChevronRight size={22} className='dashboard-right-arrow' />
     </Button>
   );
-
-  const salesRadioBtn: {
-    defaultValue: string;
-    data: {
-      value: string;
-      label: React.ReactNode;
-    }[];
-  } = {
-    defaultValue: 'year',
-    data: [
-      { value: 'year', label: 'Year' },
-      { value: 'month', label: 'Month' },
-      { value: 'week', label: 'Week' },
-      { value: 'day', label: 'Day' },
-    ],
-  };
 
   const recentOrderColumns: {
     title: string;
@@ -221,51 +197,6 @@ const Dashboard = () => {
     },
   ];
 
-  const statisticsList: {
-    key: string;
-    title: string;
-    icon: IconType;
-    color: string;
-    prefix?: string;
-    suffix?: string;
-    toFixed?: number;
-  }[] = [
-    {
-      key: 'sales',
-      title: 'Sales',
-      icon: MdOutlineTrendingUp,
-      color: '#7367F0',
-      prefix: 'RM ',
-      toFixed: 2,
-    },
-    {
-      key: 'profit',
-      title: 'Profit',
-      icon: MdOutlineAttachMoney,
-      color: '#28C76F',
-      prefix: 'RM ',
-      toFixed: 2,
-    },
-    {
-      key: 'visitors',
-      title: 'Visitors',
-      icon: MdOutlineVisibility,
-      color: '#FDBA39',
-    },
-    {
-      key: 'newCust',
-      title: 'New Customers',
-      icon: MdPersonOutline,
-      color: '#00CFE8',
-    },
-    {
-      key: 'newOrder',
-      title: 'New Orders',
-      icon: MdOutlineAssignment,
-      color: '#EA5455',
-    },
-  ];
-
   const toDoItemPlaceHolder = () => {
     const cols = [];
     const numItemPerRow = 6;
@@ -351,8 +282,8 @@ const Dashboard = () => {
               size='large'
               style={{ marginRight: 30 }}
               onChange={(e) => setSalesDateRange(e.target.value)}
-              defaultValue={salesRadioBtn.defaultValue}
-              options={salesRadioBtn.data}
+              value={salesDateRange}
+              options={dateRangeOptions}
               optionType='button'
             ></Radio.Group>
           </Col>
@@ -385,7 +316,7 @@ const Dashboard = () => {
     </ContainerCard>
   );
 
-  const Statistics = () => (
+  const StatisticsDashboard = () => (
     <ContainerCard width={'95%'}>
       <Title level={5}>Statistics</Title>
 
@@ -397,7 +328,7 @@ const Dashboard = () => {
         style={{ width: '100%', paddingTop: 25 }}
       >
         {statisticsList.map((statistics) => (
-          <StatisticsDashboard
+          <Statistics
             key={statistics.key}
             title={statistics.title}
             icon={statistics.icon}
@@ -503,7 +434,7 @@ const Dashboard = () => {
             className='dashboard-multiple-container-card'
           >
             <Col span={7} className='padding-0'>
-              <Statistics />
+              <StatisticsDashboard />
             </Col>
             <Col span={17} className='padding-0'>
               <RecentOrder />
