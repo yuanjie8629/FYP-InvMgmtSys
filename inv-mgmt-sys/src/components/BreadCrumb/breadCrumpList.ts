@@ -11,7 +11,7 @@ const breadcrumbNameMap: any = {
   '/shipment': 'Shipment',
   '/shipment/shipping-fee': 'Shipping Fee Management',
   '/customer': 'Customer',
-  '/customer/registrations': 'Agent/Dropshipper Registration Management',
+  '/customer/registrations': 'Agent/Dropshipper Registration',
   '/customer/add': 'Add Customer',
   '/business-insights': 'Business Insights',
   '/business-insights/inventory-analysis': 'Inventory Analysis',

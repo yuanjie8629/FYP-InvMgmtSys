@@ -470,8 +470,8 @@ const DropdownDate = (props: Dropdownprops) => {
         visible={dropdownVisible}
         overlay={DateMenu}
         placement='bottomCenter'
-        className='dropdown-date'
         {...props}
+        className={`dropdown-date ${props.className}`}
       >
         <Button
           type='text'

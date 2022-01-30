@@ -1,15 +1,15 @@
 import React, { Suspense } from 'react';
-import { Layout as AntdLayout, Spin } from 'antd';
+import { Layout as AntdLayout, Row, RowProps, Spin } from 'antd';
 import { Helmet } from 'react-helmet';
 import Header from './Header';
 import Sider from './Sider';
 import Footer from './Footer';
 import './Layout.less';
-interface CustomLayoutProps {
+interface CustomLayoutProps extends RowProps {
   children?: React.ReactNode;
 }
 
-const Layout = (props: CustomLayoutProps) => {
+const Layout = ({ justify = 'center', ...props }: CustomLayoutProps) => {
   const { Content } = AntdLayout;
   return (
     <AntdLayout>
@@ -30,7 +30,9 @@ const Layout = (props: CustomLayoutProps) => {
             className='content'
             style={{ minWidth: 1060 }} //1280px - sider width
           >
-            {props.children}
+            <Row justify={justify} {...props}>
+              {props.children}
+            </Row>
           </Content>
           <Footer />
         </Suspense>

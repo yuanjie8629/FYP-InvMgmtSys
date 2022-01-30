@@ -1,4 +1,4 @@
-import FilterInputCol from '@components/Grid/FilterInputCol';
+import FilterInputCol from '@components/Container/FilterInputCol';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';

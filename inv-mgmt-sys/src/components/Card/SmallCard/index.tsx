@@ -8,25 +8,22 @@ interface CardProps extends AntdCardProps {
     | 'warning'
     | 'error'
     | 'info'
-    | 'unselected';
-  width?: number | string;
+    | 'unselected'
+    | 'grey';
   children?: React.ReactNode;
 }
 
 const SmallCard = ({
-  children,
-  width = '100%',
   backgroundColor = 'default',
   className,
+  ...props
 }: CardProps) => {
   return (
     <Card
+      {...props}
       bordered={false}
       className={`small-card small-card-${backgroundColor} ${className}`}
-      bodyStyle={{ width: width }}
-    >
-      {children}
-    </Card>
+    />
   );
 };
 

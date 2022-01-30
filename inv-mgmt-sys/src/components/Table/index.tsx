@@ -9,7 +9,7 @@ export interface TableProps extends AntdTableProps<RecordType> {}
 const Table = (props: TableProps) => {
   return (
     <AntdTable
-      className={'width-full ' + props.className}
+      className={`width-full ${props.className}`}
       {...props}
     ></AntdTable>
   );

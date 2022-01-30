@@ -31,9 +31,7 @@ const Tag = ({
         margin: 0,
       }}
       {...props}
-    >
-      {props.children}
-    </AntdTag>
+    />
   );
 };
 

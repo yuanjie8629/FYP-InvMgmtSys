@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import ContainerCard from '@components/Card/ContainerCard';
+import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout/Layout';
 import UploadPicWall from '@components/Upload/UploadPicWall/UploadPicWall';
 import AffixAdd from '@components/Affix/AffixAdd';
+import MainCardContainer from '@components/Container/MainCardContainer';
 import {
   Anchor,
   AutoComplete,
@@ -122,356 +123,295 @@ const PackAdd = () => {
   }, []);
 
   return (
-    <Layout>
-      <div className='pack-add'>
-        <Form name='packForm' layout='vertical' size='small'>
-          <Row justify='center'>
-            <Col xs={16} xl={19}>
-              <Space
-                direction='vertical'
-                size={20}
-                className='container-card-wrapper'
-              >
-                <Row justify='center'>
-                  <ContainerCard>
-                    <Space
-                      direction='vertical'
-                      size={20}
-                      className='width-full'
-                    >
-                      <Title
-                        level={4}
-                        id='basicInfo'
-                        style={{ fontWeight: 500 }}
-                      >
-                        Basic Information
-                      </Title>
-                      <Form.Item
-                        label='Package Name'
-                        name='packNm'
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please enter the package name.',
-                          },
-                        ]}
-                      >
-                        <Input
-                          placeholder='e.g. Promo Raya Qurban'
-                          style={{ width: '40%' }}
-                        />
-                      </Form.Item>
+    <Form name='packForm' layout='vertical' size='small'>
+      <Layout>
+        <Col xs={16} xl={19} className='centerFlex'>
+          <MainCardContainer func='add' className='pack-add'>
+            <MainCard>
+              <Space direction='vertical' size={20} className='width-full'>
+                <Title level={4} id='basicInfo' style={{ fontWeight: 500 }}>
+                  Basic Information
+                </Title>
+                <Form.Item
+                  label='Package Name'
+                  name='packNm'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter the package name.',
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder='e.g. Promo Raya Qurban'
+                    style={{ width: '40%' }}
+                  />
+                </Form.Item>
 
-                      <Form.Item
-                        label='Package Image'
-                        name='packImg'
-                        rules={[
-                          {
-                            required: true,
-                            message:
-                              'Please upload at least ONE package image.',
-                          },
-                        ]}
-                      >
-                        <UploadPicWall
-                          fileList={fileList}
-                          onChange={(info) => {
-                            setFileList([...info.fileList]);
-                          }}
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        label='Package Description'
-                        name='packDesc'
-                        rules={[
-                          {
-                            required: true,
-                            validator: (_, value) => {
-                              if (value === undefined || value.isEmpty()) {
-                                return Promise.reject(
-                                  'Please add some description on the package.'
-                                );
-                              } else {
-                                return Promise.resolve();
-                              }
-                            },
-                          },
-                        ]}
-                      >
-                        {/* <Input.TextArea style={{ height: 200 }} /> */}
-                        <TextEditor placeholder='Please add the package description here.' />
-                      </Form.Item>
-                      <Form.Item label='Package Status' name='packStat'>
-                        <Checkbox>Hidden</Checkbox>
-                      </Form.Item>
-                    </Space>
-                  </ContainerCard>
-                </Row>
-                <Row justify='center'>
-                  <ContainerCard>
-                    <Space
-                      direction='vertical'
-                      size={20}
-                      className='width-full'
-                    >
-                      <Title
-                        level={4}
-                        id='products'
-                        style={{ fontWeight: 500 }}
-                      >
-                        Products
-                      </Title>
-
-                      <Form.Item label='Products To Be Included' name='prodNm'>
-                        <Input.Group compact>
-                          <AutoComplete
-                            placeholder='Product Name'
-                            options={options}
-                            filterOption
-                            notFoundContent='Not Found'
-                            style={{ width: '40%' }}
-                          >
-                            <Input />
-                          </AutoComplete>
-                          <Button type='primary' style={{ padding: '0 15px' }}>
-                            Add
-                          </Button>
-                        </Input.Group>
-
-                        <Paragraph type='secondary'>
-                          Note: Selected products will be displayed below.
-                        </Paragraph>
-                      </Form.Item>
-                      <Table columns={prodColumns} />
-                    </Space>
-                  </ContainerCard>
-                </Row>
-                <Row justify='center'>
-                  <ContainerCard>
-                    <Space
-                      direction='vertical'
-                      size={20}
-                      className='width-full'
-                    >
-                      <Title level={4} id='pricing' style={{ fontWeight: 500 }}>
-                        Pricing
-                      </Title>
-                      <Row gutter={30}>
-                        <Col>
-                          <Form.Item
-                            label='Price'
-                            name='packPrice'
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Please enter the product price.',
-                              },
-                            ]}
-                          >
-                            <InputNumber
-                              addonBefore='RM'
-                              precision={2}
-                              min={0}
-                              placeholder='Input'
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col>
-                          <Form.Item
-                            label='Special Price'
-                            name='packSPrice'
-                            tooltip={{
-                              title: 'Discounted Price',
-                            }}
-                          >
-                            <InputNumber
-                              addonBefore='RM'
-                              precision={2}
-                              min={0}
-                              placeholder='Input'
-                            />
-                          </Form.Item>
-                        </Col>
-                      </Row>
-                    </Space>
-                  </ContainerCard>
-                </Row>
-                <Row justify='center'>
-                  <ContainerCard>
-                    <Space
-                      direction='vertical'
-                      size={20}
-                      className='width-full'
-                    >
-                      <Title level={4} id='inv' style={{ fontWeight: 500 }}>
-                        Inventory
-                      </Title>
-
-                      <Form.Item
-                        label='Stock Keeping Unit (SKU)'
-                        name='packSKU'
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please enter the SKU for the product.',
-                          },
-                        ]}
-                        style={{ width: '40%' }}
-                      >
-                        <Input placeholder='e.g. SHRF-PP-PRQ' />
-                      </Form.Item>
-
-                      <Form.Item
-                        label='Stock Quantity'
-                        name='packQuantity'
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please enter the product stock quantity.',
-                          },
-                        ]}
-                      >
-                        <InputNumber min={0} defaultValue={0} />
-                      </Form.Item>
-                    </Space>
-                  </ContainerCard>
-                </Row>
-                <Row justify='center' className='width-full'>
-                  <ContainerCard>
-                    <Space
-                      direction='vertical'
-                      size={20}
-                      className='width-full'
-                    >
-                      <Title
-                        level={4}
-                        id='shipping'
-                        style={{ fontWeight: 500 }}
-                      >
-                        Shipping
-                      </Title>
-                      <Form.Item
-                        label='Weight (kg)'
-                        name='packWeight'
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please enter the product weight.',
-                          },
-                        ]}
-                      >
-                        <InputNumber
-                          min={0}
-                          defaultValue={0}
-                          style={{ width: '10%' }}
-                        />
-                      </Form.Item>
-
-                      <Form.Item
-                        label='Dimension (cm)'
-                        name='packDimension'
-                        rules={[
-                          {
-                            required: true,
-                            message:
-                              'Please enter the product dimension in cm.',
-                          },
-                        ]}
-                      >
-                        <Space size={10}>
-                          <InputNumber
-                            min={0}
-                            placeholder='Length'
-                            addonAfter='cm'
-                          />
-                          <Text type='secondary'>x</Text>
-                          <InputNumber
-                            min={0}
-                            placeholder='Width'
-                            addonAfter='cm'
-                          />
-                          <Text type='secondary'>x</Text>
-                          <InputNumber
-                            min={0}
-                            placeholder='Height'
-                            addonAfter='cm'
-                          />
-                        </Space>
-                      </Form.Item>
-                    </Space>
-                  </ContainerCard>
-                </Row>
-                <Row justify='center' className='width-full'>
-                  <ContainerCard>
-                    <Space
-                      direction='vertical'
-                      size={20}
-                      className='width-full'
-                    >
-                      <Title
-                        level={4}
-                        id='availPeriod'
-                        style={{ fontWeight: 500 }}
-                      >
-                        Available Period
-                      </Title>
-                      <Form.Item
-                        label='Start Time'
-                        name='packStartTime'
-                        rules={[
-                          {
-                            required: true,
-                            message:
-                              'Please select the start time to launch the package.',
-                          },
-                        ]}
-                      >
-                        <DatePicker
-                          showTime
-                          placeholder='Select Date and Time'
-                        />
-                      </Form.Item>
-                      <Checkbox
-                        onChange={() =>
-                          hideEndTime
-                            ? setHideEndTime(false)
-                            : setHideEndTime(true)
+                <Form.Item
+                  label='Package Image'
+                  name='packImg'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please upload at least ONE package image.',
+                    },
+                  ]}
+                >
+                  <UploadPicWall
+                    fileList={fileList}
+                    onChange={(info) => {
+                      setFileList([...info.fileList]);
+                    }}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label='Package Description'
+                  name='packDesc'
+                  rules={[
+                    {
+                      required: true,
+                      validator: (_, value) => {
+                        if (value === undefined || value.isEmpty()) {
+                          return Promise.reject(
+                            'Please add some description on the package.'
+                          );
+                        } else {
+                          return Promise.resolve();
                         }
-                      >
-                        Set End Time
-                      </Checkbox>
+                      },
+                    },
+                  ]}
+                >
+                  {/* <Input.TextArea style={{ height: 200 }} /> */}
+                  <TextEditor placeholder='Please add the package description here.' />
+                </Form.Item>
+                <Form.Item label='Package Status' name='packStat'>
+                  <Checkbox>Hidden</Checkbox>
+                </Form.Item>
+              </Space>
+            </MainCard>
 
-                      <Form.Item
-                        label='End Time'
-                        name='packEndTime'
-                        hidden={hideEndTime}
-                      >
-                        <DatePicker
-                          showTime
-                          placeholder='Select Date and Time'
-                        />
-                      </Form.Item>
-                    </Space>
-                  </ContainerCard>
+            <MainCard>
+              <Space direction='vertical' size={20} className='width-full'>
+                <Title level={4} id='products' style={{ fontWeight: 500 }}>
+                  Products
+                </Title>
+
+                <Form.Item label='Products To Be Included' name='prodNm'>
+                  <Input.Group compact>
+                    <AutoComplete
+                      placeholder='Product Name'
+                      options={options}
+                      filterOption
+                      notFoundContent='Not Found'
+                      style={{ width: '40%' }}
+                    >
+                      <Input />
+                    </AutoComplete>
+                    <Button type='primary' style={{ padding: '0 15px' }}>
+                      Add
+                    </Button>
+                  </Input.Group>
+
+                  <Paragraph type='secondary'>
+                    Note: Selected products will be displayed below.
+                  </Paragraph>
+                </Form.Item>
+                <Table columns={prodColumns} />
+              </Space>
+            </MainCard>
+
+            <MainCard>
+              <Space direction='vertical' size={20} className='width-full'>
+                <Title level={4} id='pricing' style={{ fontWeight: 500 }}>
+                  Pricing
+                </Title>
+                <Row gutter={30}>
+                  <Col>
+                    <Form.Item
+                      label='Price'
+                      name='packPrice'
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Please enter the package price.',
+                        },
+                      ]}
+                    >
+                      <InputNumber
+                        addonBefore='RM'
+                        precision={2}
+                        min={0}
+                        placeholder='Input'
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col>
+                    <Form.Item
+                      label='Special Price'
+                      name='packSPrice'
+                      tooltip={{
+                        title: 'Discounted Price',
+                      }}
+                    >
+                      <InputNumber
+                        addonBefore='RM'
+                        precision={2}
+                        min={0}
+                        placeholder='Input'
+                      />
+                    </Form.Item>
+                  </Col>
                 </Row>
               </Space>
-              <AffixAdd offsetBottom={0} label='Package' />
-            </Col>
-            <Col xs={8} xl={5}>
-              <Anchor offsetTop={150} targetOffset={targetOffset}>
-                {anchorList.map((anchor) => (
-                  <Link
-                    key={anchor.link}
-                    href={`#${anchor.link}`}
-                    title={anchor.title}
-                  />
-                ))}
-              </Anchor>
-            </Col>
-          </Row>
-        </Form>
-      </div>
-    </Layout>
+            </MainCard>
+
+            <Row justify='center'>
+              <MainCard>
+                <Space direction='vertical' size={20} className='width-full'>
+                  <Title level={4} id='inv' style={{ fontWeight: 500 }}>
+                    Inventory
+                  </Title>
+
+                  <Form.Item
+                    label='Stock Keeping Unit (SKU)'
+                    name='packSKU'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter the SKU for the package.',
+                      },
+                    ]}
+                    style={{ width: '40%' }}
+                  >
+                    <Input placeholder='e.g. SHRF-PP-PRQ' />
+                  </Form.Item>
+
+                  <Form.Item
+                    label='Stock Quantity'
+                    name='packQuantity'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter the package stock quantity.',
+                      },
+                    ]}
+                  >
+                    <InputNumber min={0} defaultValue={0} />
+                  </Form.Item>
+                </Space>
+              </MainCard>
+            </Row>
+            <Row justify='center' className='width-full'>
+              <MainCard>
+                <Space direction='vertical' size={20} className='width-full'>
+                  <Title level={4} id='shipping' style={{ fontWeight: 500 }}>
+                    Shipping
+                  </Title>
+                  <Form.Item
+                    label='Weight (kg)'
+                    name='packWeight'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter the package weight.',
+                      },
+                    ]}
+                  >
+                    <InputNumber
+                      min={0}
+                      defaultValue={0}
+                      style={{ width: '10%' }}
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    label='Dimension (cm)'
+                    name='packDimension'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter the package dimension in cm.',
+                      },
+                    ]}
+                  >
+                    <Space size={10}>
+                      <InputNumber
+                        min={0}
+                        placeholder='Length'
+                        addonAfter='cm'
+                      />
+                      <Text type='secondary'>x</Text>
+                      <InputNumber
+                        min={0}
+                        placeholder='Width'
+                        addonAfter='cm'
+                      />
+                      <Text type='secondary'>x</Text>
+                      <InputNumber
+                        min={0}
+                        placeholder='Height'
+                        addonAfter='cm'
+                      />
+                    </Space>
+                  </Form.Item>
+                </Space>
+              </MainCard>
+            </Row>
+            <Row justify='center' className='width-full'>
+              <MainCard>
+                <Space direction='vertical' size={20} className='width-full'>
+                  <Title level={4} id='availPeriod' style={{ fontWeight: 500 }}>
+                    Available Period
+                  </Title>
+                  <Form.Item
+                    label='Start Time'
+                    name='packStartTime'
+                    rules={[
+                      {
+                        required: true,
+                        message:
+                          'Please select the start time to launch the package.',
+                      },
+                    ]}
+                  >
+                    <DatePicker showTime placeholder='Select Date and Time' />
+                  </Form.Item>
+                  <Checkbox
+                    onChange={() =>
+                      hideEndTime ? setHideEndTime(false) : setHideEndTime(true)
+                    }
+                  >
+                    Set End Time
+                  </Checkbox>
+
+                  <Form.Item
+                    label='End Time'
+                    name='packEndTime'
+                    hidden={hideEndTime}
+                  >
+                    <DatePicker showTime placeholder='Select Date and Time' />
+                  </Form.Item>
+                </Space>
+              </MainCard>
+            </Row>
+            <AffixAdd offsetBottom={0} label='Package' />
+          </MainCardContainer>
+        </Col>
+        <Col xs={8} xl={5}>
+          <Anchor offsetTop={150} targetOffset={targetOffset}>
+            {anchorList.map((anchor) => (
+              <Link
+                key={anchor.link}
+                href={`#${anchor.link}`}
+                title={anchor.title}
+              />
+            ))}
+          </Anchor>
+        </Col>
+      </Layout>{' '}
+    </Form>
   );
 };
 

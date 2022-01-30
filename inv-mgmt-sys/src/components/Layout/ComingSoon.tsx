@@ -1,6 +1,5 @@
-import ContainerCard from '@components/Card/ContainerCard';
 import Layout from '@components/Layout/Layout';
-import { Space, SpaceProps, Typography } from 'antd';
+import { Card, Space, SpaceProps, Typography } from 'antd';
 import Button from '@components/Button';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,17 +16,17 @@ const ComingSoon = (props: ComingSoonProps) => {
         <Space
           direction='vertical'
           size={20}
-          className='container-card-wrapper'
+          className='main-card-container'
           align='center'
         >
-          <ContainerCard width='100%' contentStyle={{ padding: '0 10px' }}>
+          <Card bodyStyle={{padding: 15}}>
             <img
               src={props.img}
               alt='comingSoonImg'
               height={370}
               width={490}
             ></img>
-          </ContainerCard>
+          </Card>
           <Title>Coming Soon</Title>
           <Text type='secondary' className='text-lg'>
             We Are Working Hard to Give You a Better Experience.

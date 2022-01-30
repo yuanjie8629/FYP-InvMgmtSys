@@ -13,9 +13,7 @@ const Button = (props: ButtonProps) => {
       className={`${props.className === undefined ? '' : props.className} btn-${
         props.color
       }`}
-    >
-      {props.children}
-    </AntdButton>
+    />
   );
 };
 

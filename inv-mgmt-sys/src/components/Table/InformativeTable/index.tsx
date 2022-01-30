@@ -119,7 +119,7 @@ const InformativeTable = ({ defPg = 10, ...props }: InformativeTableProps) => {
             pageSizeOptions: ['5', '10', '15', '20'],
           }}
           {...props}
-        ></Table>
+        />
       </Row>
     </Space>
   );

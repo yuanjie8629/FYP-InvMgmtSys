@@ -14,6 +14,7 @@ import Button from '@components/Button';
 import Table from '@components/Table';
 import Statistics from '@components/Statistics';
 import Tag from '@components/Tag';
+import MainCardContainer from '@components/Container/MainCardContainer';
 import { findRoutePath } from '@utils/routingUtils';
 import toDoList from './toDoList';
 import { dataYear, dataMonth, dataWeek, dataDay } from './salesData';
@@ -27,7 +28,7 @@ import statisticsList from '@components/Statistics/statisticsList';
 import { dateRangeOptions } from '@utils/optionUtils';
 
 const LineChart = lazy(() => import('@components/Chart/LineChart'));
-const ContainerCard = lazy(() => import('@components/Card/ContainerCard'));
+const MainCard = lazy(() => import('@components/Card/MainCard'));
 const Dashboard = () => {
   const { Text, Title } = Typography;
 
@@ -219,7 +220,7 @@ const Dashboard = () => {
   };
 
   const ToDoList = () => (
-    <ContainerCard>
+    <MainCard bodyStyle={{ padding: '35px 35px 0' }}>
       <Space direction='vertical' size={15}>
         <Title level={5}>To Do List</Title>
         <Row gutter={[30, 30]}>
@@ -233,7 +234,14 @@ const Dashboard = () => {
               }
               className='dashboard-toDoList-col'
             >
-              <SmallCard width={255} className='dashboard-toDoList-item'>
+              <SmallCard
+                backgroundColor='grey'
+                bodyStyle={{
+                  width: '255px',
+                  padding: '25px 12px 15px',
+                }}
+                className='dashboard-toDoList-item'
+              >
                 <Space direction='vertical' size={15}>
                   <Title
                     level={5}
@@ -257,11 +265,11 @@ const Dashboard = () => {
           {toDoItemPlaceHolder()}
         </Row>
       </Space>
-    </ContainerCard>
+    </MainCard>
   );
 
   const Sales = () => (
-    <ContainerCard>
+    <MainCard>
       <Space direction='vertical' size={5} className='width-full'>
         <Row justify='space-between'>
           <Col>
@@ -313,11 +321,11 @@ const Dashboard = () => {
           </Suspense>
         </Row>
       </Space>
-    </ContainerCard>
+    </MainCard>
   );
 
   const StatisticsDashboard = () => (
-    <ContainerCard width={'95%'}>
+    <MainCard>
       <Title level={5}>Statistics</Title>
 
       <Text className='dashboard-grey-text'>{statisticsData.date}</Text>
@@ -340,11 +348,11 @@ const Dashboard = () => {
           />
         ))}
       </Space>
-    </ContainerCard>
+    </MainCard>
   );
 
   const RecentOrder = () => (
-    <ContainerCard width='100%'>
+    <MainCard>
       <Space direction='vertical' size={15} className='width-full'>
         <Row justify='space-between'>
           <Col>
@@ -365,11 +373,11 @@ const Dashboard = () => {
           ></Table>
         </Row>
       </Space>
-    </ContainerCard>
+    </MainCard>
   );
 
   const TopProducts = () => (
-    <ContainerCard width={'95%'}>
+    <MainCard>
       <Space direction='vertical' size={5} className='width-full'>
         <div>
           <Row justify='space-between'>
@@ -386,11 +394,11 @@ const Dashboard = () => {
         </div>
         <RankingList itemList={topProduct} />
       </Space>
-    </ContainerCard>
+    </MainCard>
   );
 
   const InvAnalysis = () => (
-    <ContainerCard width='100%'>
+    <MainCard>
       <Space direction='vertical' size={30} className='width-full'>
         <Row justify='space-between'>
           <Col>
@@ -411,49 +419,31 @@ const Dashboard = () => {
           ></Table>
         </Row>
       </Space>
-    </ContainerCard>
+    </MainCard>
   );
 
   return (
     <Layout>
-      <div className='dashboard'>
-        <Space
-          direction='vertical'
-          size={20}
-          className='container-card-wrapper'
-        >
-          <Row justify='center'>
-            <ToDoList />
-          </Row>
-          <Row justify='center'>
-            <Sales />
-          </Row>
-          <Row
-            justify='center'
-            gutter={[30, 20]}
-            className='dashboard-multiple-container-card'
-          >
-            <Col span={7} className='padding-0'>
-              <StatisticsDashboard />
-            </Col>
-            <Col span={17} className='padding-0'>
-              <RecentOrder />
-            </Col>
-          </Row>
-          <Row
-            justify='center'
-            gutter={[30, 20]}
-            className='dashboard-multiple-container-card'
-          >
-            <Col span={9} className='padding-0'>
-              <TopProducts />
-            </Col>
-            <Col span={15} className='padding-0'>
-              <InvAnalysis />
-            </Col>
-          </Row>
-        </Space>
-      </div>
+      <MainCardContainer className='dashboard'>
+        <ToDoList />
+        <Sales />
+        <Row justify='center' gutter={[30, 20]}>
+          <Col span={7}>
+            <StatisticsDashboard />
+          </Col>
+          <Col span={17}>
+            <RecentOrder />
+          </Col>
+        </Row>
+        <Row justify='center' gutter={[30, 20]}>
+          <Col span={9}>
+            <TopProducts />
+          </Col>
+          <Col span={15}>
+            <InvAnalysis />
+          </Col>
+        </Row>
+      </MainCardContainer>
     </Layout>
   );
 };
