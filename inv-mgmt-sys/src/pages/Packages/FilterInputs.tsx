@@ -1,4 +1,4 @@
-import FilterInputCol from '@components/Grid/FilterInputCol';
+import FilterInputCol from '@components/Container/FilterInputCol';
 import DatePickerWithLabel from '@components/Input/DatePickerWithLabel';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
@@ -50,7 +50,7 @@ const FilterInputs = () => {
           />
         </FilterInputCol>
         <FilterInputCol>
-          <DatePickerWithLabel label='Available Period' textSpan={7} />
+          <DatePickerWithLabel label='Available Period' textSpan={7}/>
         </FilterInputCol>
       </Row>
       <Row gutter={20}>

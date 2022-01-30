@@ -68,9 +68,16 @@ p {
   }
 }
 
-.container-card-wrapper {
-  width: 100%;
-  padding-top: 10px;
+.main-card-container {
+  width: 95% !important;
+  padding-top: 10px !important;
+}
+
+.main-card-container-add {
+  .main-card-container;
+  &>.@{ant-prefix}-space-item:nth-last-child(2) {
+    margin: 0 !important;
+  }
 }
 
 .padding-0 {

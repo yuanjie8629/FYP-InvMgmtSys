@@ -35,11 +35,11 @@ const Sider = () => {
 
   const openKey = [location.pathname.split('/')[1]];
   useEffect(() => {
-    if (renderCount < 1 && !(screens.xl || screens.xl === undefined)) {
+    if (renderCount < 1 && !(screens.xl || screens.xxl || screens.xl === undefined || screens.xxl === undefined)) {
       dispatch(collapse());
       dispatch(increment());
     }
-  }, [dispatch, renderCount, screens.xl]);
+  }, [dispatch, renderCount, screens.xl, screens.xxl]);
 
   return (
     <div

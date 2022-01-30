@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import ContainerCard from '@components/Card/ContainerCard';
+import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
 import Layout from '@components/Layout/Layout';
 import Tag, { TagProps } from '@components/Tag';
+import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography, Dropdown, Menu } from 'antd';
 import InformativeTable, {
@@ -332,52 +333,42 @@ const VoucherMgmt = () => {
 
   return (
     <Layout>
-      <div className='voucher-mgmt'>
-        <Space
-          direction='vertical'
-          size={20}
-          className='container-card-wrapper'
+      <MainCardContainer className='voucher-mgmt'>
+        <MainCard
+          tabList={voucherTabList}
+          activeTabKey={
+            searchParams.get('stat') === null ? 'all' : searchParams.get('stat')
+          }
+          onTabChange={(key) => {
+            setSearchParams(key !== 'all' ? { stat: key } : {});
+          }}
         >
-          <Row justify='center'>
-            <ContainerCard
-              tabList={voucherTabList}
-              activeTabKey={
-                searchParams.get('stat') === null
-                  ? 'all'
-                  : searchParams.get('stat')
-              }
-              onTabChange={(key) => {
-                setSearchParams(key !== 'all' ? { stat: key } : {});
-              }}
-            >
-              <Space direction='vertical' size={40} className='width-full'>
-                <FilterInputs />
-                <Space direction='vertical' size={15} className='width-full'>
-                  <Row justify='space-between'>
-                    <Col>
-                      <Title level={4}>Voucher List</Title>
-                    </Col>
-                    <Col>
-                      <Button
-                        type='primary'
-                        onClick={() => navigate(findRoutePath('voucherAdd'))}
-                      >
-                        Create Voucher
-                      </Button>
-                    </Col>
-                  </Row>
-                  <InformativeTable
-                    dataSource={voucherListFltr}
-                    columns={voucherMgmtColumns}
-                    buttons={onSelectBtn}
-                    scroll={{ x: 1200 }}
-                  />
-                </Space>
-              </Space>
-            </ContainerCard>
-          </Row>
-        </Space>
-      </div>
+          <Space direction='vertical' size={40} className='width-full'>
+            <FilterInputs />
+            <Space direction='vertical' size={15} className='width-full'>
+              <Row justify='space-between'>
+                <Col>
+                  <Title level={4}>Voucher List</Title>
+                </Col>
+                <Col>
+                  <Button
+                    type='primary'
+                    onClick={() => navigate(findRoutePath('voucherAdd'))}
+                  >
+                    Create Voucher
+                  </Button>
+                </Col>
+              </Row>
+              <InformativeTable
+                dataSource={voucherListFltr}
+                columns={voucherMgmtColumns}
+                buttons={onSelectBtn}
+                scroll={{ x: 1200 }}
+              />
+            </Space>
+          </Space>
+        </MainCard>
+      </MainCardContainer>
     </Layout>
   );
 };

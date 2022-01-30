@@ -1,7 +1,8 @@
-import ContainerCard from '@components/Card/ContainerCard';
+import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
 import Layout from '@components/Layout/Layout';
 import Tag, { TagProps } from '@components/Tag';
+import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography, Image, Dropdown, Menu } from 'antd';
 import InformativeTable, {
@@ -180,15 +181,11 @@ const ProdMgmt = () => {
           </Menu>
         );
 
-        interface ProdStatusTagProps extends TagProps {
+        interface StatusTagProps extends TagProps {
           color: string;
           children: React.ReactNode;
         }
-        const ProdStatusTag = ({
-          color,
-          children,
-          ...props
-        }: ProdStatusTagProps) => (
+        const StatusTag = ({ color, children, ...props }: StatusTagProps) => (
           <Tag minWidth='50%' maxWidth='100%' color={color} {...props}>
             {children}
           </Tag>
@@ -200,15 +197,15 @@ const ProdMgmt = () => {
 
         return matchedStatus?.status !== 'oos' ? (
           <Row align='middle'>
-            <ProdStatusTag color={matchedStatus!.color}>
+            <StatusTag color={matchedStatus!.color}>
               {matchedStatus!.label}
-            </ProdStatusTag>
+            </StatusTag>
             <Dropdown overlay={menu} placement='bottomRight'>
               <MdArrowDropDown size={25} style={{ cursor: 'pointer' }} />
             </Dropdown>
           </Row>
         ) : (
-          <ProdStatusTag
+          <StatusTag
             color={
               prodStatList.find(
                 (statusItem) => statusItem.status === matchedStatus.status
@@ -220,7 +217,7 @@ const ProdMgmt = () => {
                 (statusItem) => statusItem.status === matchedStatus.status
               )!.label
             }
-          </ProdStatusTag>
+          </StatusTag>
         );
       },
     },
@@ -261,52 +258,42 @@ const ProdMgmt = () => {
 
   return (
     <Layout>
-      <div className='prod-mgmt'>
-        <Space
-          direction='vertical'
-          size={20}
-          className='container-card-wrapper'
+      <MainCardContainer className='prod-mgmt'>
+        <MainCard
+          tabList={prodTabList}
+          activeTabKey={
+            searchParams.get('stat') === null ? 'all' : searchParams.get('stat')
+          }
+          onTabChange={(key) => {
+            setSearchParams(key !== 'all' ? { stat: key } : {});
+          }}
         >
-          <Row justify='center'>
-            <ContainerCard
-              tabList={prodTabList}
-              activeTabKey={
-                searchParams.get('stat') === null
-                  ? 'all'
-                  : searchParams.get('stat')
-              }
-              onTabChange={(key) => {
-                setSearchParams(key !== 'all' ? { stat: key } : {});
-              }}
-            >
-              <Space direction='vertical' size={40} className='width-full'>
-                <FilterInputs />
-                <Space direction='vertical' size={15} className='width-full'>
-                  <Row justify='space-between'>
-                    <Col>
-                      <Title level={4}>Product List</Title>
-                    </Col>
-                    <Col>
-                      <Button
-                        type='primary'
-                        onClick={() => navigate(findRoutePath('prodAdd'))}
-                      >
-                        Add Product
-                      </Button>
-                    </Col>
-                  </Row>
-                  <InformativeTable
-                    dataSource={prodListFltr}
-                    columns={prodMgmtColumns}
-                    buttons={onSelectBtn}
-                    defPg={5}
-                  />
-                </Space>
-              </Space>
-            </ContainerCard>
-          </Row>
-        </Space>
-      </div>
+          <Space direction='vertical' size={40} className='width-full'>
+            <FilterInputs />
+            <Space direction='vertical' size={15} className='width-full'>
+              <Row justify='space-between'>
+                <Col>
+                  <Title level={4}>Product List</Title>
+                </Col>
+                <Col>
+                  <Button
+                    type='primary'
+                    onClick={() => navigate(findRoutePath('prodAdd'))}
+                  >
+                    Add Product
+                  </Button>
+                </Col>
+              </Row>
+              <InformativeTable
+                dataSource={prodListFltr}
+                columns={prodMgmtColumns}
+                buttons={onSelectBtn}
+                defPg={5}
+              />
+            </Space>
+          </Space>
+        </MainCard>
+      </MainCardContainer>
     </Layout>
   );
 };

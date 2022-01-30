@@ -17,8 +17,8 @@ const MenuDatePicker = (props: MenuDatePickerProps) => (
       allowClear={false}
       inputReadOnly
       style={{ height: 0, width: 0, padding: 0 }}
-      className={'menu-date-picker ' + props.className}
       {...props}
+      className={`menu-date-picker ${props.className}`}
     />
   </Row>
 );

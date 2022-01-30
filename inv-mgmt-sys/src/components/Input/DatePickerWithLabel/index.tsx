@@ -1,14 +1,16 @@
-import { Col, DatePicker, DatePickerProps, Row, Typography } from 'antd';
+import { Col, DatePicker, Row, Typography } from 'antd';
+import { RangePickerProps } from 'antd/es/date-picker';
 
-type DatePickerWithLabelProps = Partial<DatePickerProps> & {
+type DatePickerWithLabelProps = RangePickerProps & {
   label: string;
   textSpan?: number;
   justify?: 'start' | 'end';
 };
 
 const DatePickerWithLabel = ({
-  justify = 'end',
+  label,
   textSpan = 5,
+  justify = 'end',
   ...props
 }: DatePickerWithLabelProps) => {
   const { Text } = Typography;
@@ -17,10 +19,10 @@ const DatePickerWithLabel = ({
   return (
     <Row align='middle' gutter={30} className='input-date'>
       <Col span={textSpan} className={justify === 'start' ? '' : 'justify-end'}>
-        <Text type='secondary'>{props.label}</Text>
+        <Text type='secondary'>{label}</Text>
       </Col>
       <Col span={24 - textSpan}>
-        <RangePicker className='width-full' />
+        <RangePicker className='width-full' {...props} />
       </Col>
     </Row>
   );

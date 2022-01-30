@@ -75,7 +75,7 @@ const LineChart = ({
     },
   };
 
-  return <Line {...config} />;
+  return <Line {...config} {...props} />;
 };
 
 export default LineChart;

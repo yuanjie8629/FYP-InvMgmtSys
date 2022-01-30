@@ -44,8 +44,7 @@ const RankingList = (props: RankingListProps) => {
           </Skeleton>
         </List.Item>
       )}
-      {...props}
-    ></List>
+    />
   );
 };
 

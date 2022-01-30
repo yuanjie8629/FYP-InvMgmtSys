@@ -28,10 +28,10 @@ const SelectWithLabel = ({
       <Col span={24 - textSpan}>
         <Select
           placeholder={props.select.placeholder}
-          className='width-full'
           options={props.select.options}
           allowClear
           {...props}
+          className={`width-full ${props.className}`}
         />
       </Col>
     </Row>

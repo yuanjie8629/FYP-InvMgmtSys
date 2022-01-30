@@ -1,3 +1,7 @@
+import { MdAdd, MdRemove } from 'react-icons/md';
+import { Typography } from 'antd';
+const { Text } = Typography;
+
 const ynOptions = [
   { value: true, label: 'Yes' },
   { value: false, label: 'No' },
@@ -71,6 +75,25 @@ const custCat = [
   { label: 'Dropshipper', value: 'drpshpr' },
 ];
 
+const invInputOptions = [
+  {
+    value: '+',
+    label: <MdAdd size={20} style={{ position: 'relative', top: 5 }} />,
+  },
+  {
+    value: '-',
+    label: <MdRemove size={20} style={{ position: 'relative', top: 5 }} />,
+  },
+  {
+    value: 'Set',
+    label: (
+      <Text strong style={{ color: 'white', padding: '0 12px' }}>
+        Set
+      </Text>
+    ),
+  },
+];
+
 export {
   ynOptions,
   dateRangeOptions,
@@ -84,4 +107,5 @@ export {
   custStatusCat,
   discCat,
   custCat,
+  invInputOptions,
 };

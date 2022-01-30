@@ -1,19 +1,20 @@
-import ContainerCard from '@components/Card/ContainerCard';
+import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout/Layout';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
 import Button from '@components/Button';
+import MainCardContainer from '@components/Container/MainCardContainer';
 import { Col, Image, Row, Space, Typography, InputNumber, Radio } from 'antd';
 import FilterInputs from './FilterInputs';
 import prodList from './prodList';
 import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
-import { MdAdd, MdRemove } from 'react-icons/md';
 import prodTabList from './prodTabList';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
+import { invInputOptions } from '@utils/optionUtils';
 
 const ProdInv = () => {
   const { Text, Title } = Typography;
@@ -112,118 +113,77 @@ const ProdInv = () => {
       title: 'Action',
       key: 'action',
       width: 280,
-      render: () => {
-        const prodInvRadioBtn: {
-          defaultValue: string;
-          data: {
-            value: string;
-            label: React.ReactNode;
-          }[];
-        } = {
-          defaultValue: '+',
-          data: [
-            {
-              value: '+',
-              label: (
-                <MdAdd size={20} style={{ position: 'relative', top: 5 }} />
-              ),
-            },
-            {
-              value: '-',
-              label: (
-                <MdRemove size={20} style={{ position: 'relative', top: 5 }} />
-              ),
-            },
-            {
-              value: 'Set',
-              label: (
-                <Text strong style={{ color: 'white', padding: '0 12px' }}>
-                  Set
-                </Text>
-              ),
-            },
-          ],
-        };
-        return (
-          <Space size={10} direction='vertical'>
-            <Row>
-              <Radio.Group
-                buttonStyle='solid'
+      render: () => (
+        <Space size={10} direction='vertical'>
+          <Row>
+            <Radio.Group
+              buttonStyle='solid'
+              size={'small'}
+              onChange={(e) => getSalesData(e.target.value)}
+              defaultValue={invInputOptions[0].value}
+              options={invInputOptions}
+              optionType='button'
+            />
+          </Row>
+          <Row gutter={[10, 10]}>
+            <Col>
+              <InputNumber
+                defaultValue={0}
+                min={0}
                 size={'small'}
-                onChange={(e) => getSalesData(e.target.value)}
-                defaultValue={prodInvRadioBtn.defaultValue}
-                options={prodInvRadioBtn.data}
-                optionType='button'
-              />
-            </Row>
-            <Row gutter={[10, 10]}>
-              <Col>
-                <InputNumber
-                  defaultValue={0}
-                  min={0}
-                  size={'small'}
-                  style={{ width: 150 }}
-                ></InputNumber>
-              </Col>
-              <Col>
-                <Button type='primary' size={'small'}>
-                  Save
-                </Button>
-              </Col>
-            </Row>
-          </Space>
-        );
-      },
+                style={{ width: 150 }}
+              ></InputNumber>
+            </Col>
+            <Col>
+              <Button type='primary' size={'small'}>
+                Save
+              </Button>
+            </Col>
+          </Row>
+        </Space>
+      ),
     },
   ];
   return (
     <Layout>
-      <div className='prod-inv'>
-        <Space
-          direction='vertical'
-          size={20}
-          className='container-card-wrapper'
+      <MainCardContainer className='prod-inv'>
+        <MainCard
+          tabList={prodTabList}
+          onTabChange={(key) =>
+            setProdListFltr(
+              prodList.filter((prod) =>
+                key !== 'all' ? prod.prodStat === key : true
+              )
+            )
+          }
         >
-          <Row justify='center'>
-            <ContainerCard
-              tabList={prodTabList}
-              onTabChange={(key) =>
-                setProdListFltr(
-                  prodList.filter((prod) =>
-                    key !== 'all' ? prod.prodStat === key : true
-                  )
-                )
-              }
-            >
-              <Space direction='vertical' size={40} className='width-full'>
-                <FilterInputs />
-                <Space direction='vertical' size={15} className='width-full'>
-                  <Row justify='space-between'>
-                    <Col>
-                      <Title level={4}>Product List</Title>
-                    </Col>
-                    <Col>
-                      <Button
-                        type='primary'
-                        onClick={() => navigate(findRoutePath('prodMgmt'))}
-                      >
-                        View Products
-                      </Button>
-                    </Col>
-                  </Row>
+          <Space direction='vertical' size={40} className='width-full'>
+            <FilterInputs />
+            <Space direction='vertical' size={15} className='width-full'>
+              <Row justify='space-between'>
+                <Col>
+                  <Title level={4}>Product List</Title>
+                </Col>
+                <Col>
+                  <Button
+                    type='primary'
+                    onClick={() => navigate(findRoutePath('prodMgmt'))}
+                  >
+                    View Products
+                  </Button>
+                </Col>
+              </Row>
 
-                  <InformativeTable
-                    dataSource={prodListFltr}
-                    columns={prodInvColumns}
-                    buttons={onSelectBtn}
-                    defPg={5}
-                  />
-                </Space>
-              </Space>
-            </ContainerCard>
-          </Row>
-        </Space>
-      </div>
+              <InformativeTable
+                dataSource={prodListFltr}
+                columns={prodInvColumns}
+                buttons={onSelectBtn}
+                defPg={5}
+              />
+            </Space>
+          </Space>
+        </MainCard>
+      </MainCardContainer>
     </Layout>
   );
 };

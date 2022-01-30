@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Button from '@components/Button';
-import ContainerCard from '@components/Card/ContainerCard';
+import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout/Layout';
+import MainCardContainer from '@components/Container/MainCardContainer';
 import { Col, List, Row, Space, Typography, Grid } from 'antd';
 import { MdEmail, MdLock, MdPerson, MdPhone } from 'react-icons/md';
 
@@ -61,26 +62,18 @@ const AccSettings = () => {
 
   return (
     <Layout>
-      <div className='acc-settings'>
-        <Space
-          direction='vertical'
-          size={20}
-          className='container-card-wrapper'
-        >
-          <Row justify='center'>
-            <ContainerCard>
-              <Space direction='vertical' size={30} className='width-full'>
-                <Title level={4}>Login Information</Title>
-                <List
-                  size={screens.xl ? 'large' : 'default'}
-                  dataSource={data}
-                  renderItem={LoginInfo}
-                />
-              </Space>
-            </ContainerCard>
-          </Row>
-        </Space>
-      </div>
+      <MainCardContainer className='acc-settings'>
+        <MainCard>
+          <Space direction='vertical' size={30} className='width-full'>
+            <Title level={4}>Login Information</Title>
+            <List
+              size={screens.xl && screens.xxl ? 'large' : 'default'}
+              dataSource={data}
+              renderItem={LoginInfo}
+            />
+          </Space>
+        </MainCard>
+      </MainCardContainer>
     </Layout>
   );
 };
