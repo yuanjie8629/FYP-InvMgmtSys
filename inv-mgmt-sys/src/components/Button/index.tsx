@@ -10,8 +10,8 @@ const Button = (props: ButtonProps) => {
   return (
     <AntdButton
       {...props}
-      className={`${props.className === undefined ? '' : props.className} btn-${
-        props.color
+      className={`${props.className !== undefined ? props.className : ''}${
+        props.color !== undefined ? ` btn-${props.color}` : ''
       }`}
     />
   );

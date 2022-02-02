@@ -31,7 +31,9 @@ const SelectWithLabel = ({
           options={props.select.options}
           allowClear
           {...props}
-          className={`width-full ${props.className}`}
+          className={`width-full ${
+            props.className !== undefined ? props.className : ''
+          }`}
         />
       </Col>
     </Row>

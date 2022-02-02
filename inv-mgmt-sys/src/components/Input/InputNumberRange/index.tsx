@@ -77,8 +77,9 @@ const InputNumberRange = ({
               width: inputNumWidth,
             }}
             {...props}
-            className={`input-range-left ${props.className}`}
-            
+            className={`input-range-left ${
+              props.className !== undefined ? props.className : ''
+            }`}
           />
           <Input
             style={{ width: 30 }}
@@ -92,8 +93,9 @@ const InputNumberRange = ({
               width: inputNumWidth,
             }}
             {...props}
-            className={`input-range-right ${props.className}`}
-           
+            className={`input-range-right ${
+              props.className !== undefined ? props.className : ''
+            }`}
           />
           {suffix !== undefined ? (
             <Input

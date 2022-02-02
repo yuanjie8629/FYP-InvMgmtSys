@@ -269,7 +269,6 @@ const CustAdd = () => {
                 >
                   <Select
                     placeholder='Please select the state'
-                    value={state}
                     onChange={(value: string) => {
                       setState(value);
                       custForm.resetFields(['city', 'postcode']);
@@ -277,9 +276,7 @@ const CustAdd = () => {
                     }}
                   >
                     {sortByOrder(getStates()).map((state: string) => (
-                      <Option key={state} value={state}>
-                        {state}
-                      </Option>
+                      <Option key={state}>{state}</Option>
                     ))}
                   </Select>
                 </Form.Item>
