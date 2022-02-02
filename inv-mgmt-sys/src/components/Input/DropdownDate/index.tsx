@@ -1,12 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Button from '@components/Button';
-import {
-  Dropdown,
-  DropDownProps as AntdDropdownProps,
-  Menu,
-  Popover,
-  Space,
-} from 'antd';
+import { Card, Dropdown, Menu, MenuProps, Popover, Space } from 'antd';
 import moment from 'moment';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { HiOutlineCalendar } from 'react-icons/hi';
@@ -14,46 +8,65 @@ import MenuDatePicker from '../MenuDatePicker';
 import {
   getDt,
   getPastDays,
-  getNextDt,
-  getDayOfWeek,
-  getWeekOfYear,
-  getNextWeek,
-  getNextMth,
   getPrevDt,
-  getPrevWeek,
-  getPrevMth,
-  getMth,
-  getThisWeekTilYtd,
-  getThisMthTilYtd,
-  getNextYr,
-  getYr,
-  getPrevYr,
-  getThisYrTilYtd,
-  getMomentNextDt,
+  validateDay,
+  validateWeek,
+  validateMonth,
+  validateYear,
+  validateDropdownDate,
   getMomentPrevDt,
 } from '@utils/dateUtils';
 
-interface Dropdownprops extends Omit<AntdDropdownProps, 'overlay'> {}
+interface DateInfo {
+  date: string;
+  label: string;
+  cat: string;
+}
 
-const DropdownDate = (props: Dropdownprops) => {
+interface DropdownDateProps extends Omit<MenuProps, 'onChange'> {
+  onChange?: (dateInfo: DateInfo) => void;
+}
+
+const DropdownDate = ({
+  onChange = () => '',
+  style,
+  ...props
+}: DropdownDateProps) => {
   const [date, setDate] = useState(getDt());
-  const [dateCat, setDateCat] = useState('tdy');
+  const [label, setLabel] = useState('Today');
   const [dropdownOnBlur, setDropdownOnBlur] = useState(true);
-  const [selected, setSelected] = useState(['tdy/' + getDt()]);
+  const [cat, setCat] = useState('tdy');
   const [itemHovered, setItemHovered] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [todayPopover, setTodayPopover] = useState(false);
   const [ytdPopover, setYtdPopover] = useState(false);
   const [past7dPopover, setpast7dPopover] = useState(false);
   const [past30dPopover, setpast30dPopover] = useState(false);
-  const [dayPicker, setDayPicker] = useState({ ind: false, defVal: null });
+  const [dayPicker, setDayPicker] = useState({ ind: false, defVal: moment() });
   const [weekPicker, setWeekPicker] = useState({ ind: false, defVal: null });
   const [mthPicker, setMthPicker] = useState({ ind: false, defVal: null });
   const [yrPicker, setYrPicker] = useState({ ind: false, defVal: null });
-  const [disableNext, setDisableNext] = useState(false);
+  const [disableNext, setDisableNext] = useState(true);
+
+  const pickerKeys = ['byDay', 'byWeek', 'byMonth', 'byYear'];
+
+  const getKey = (date, cat) =>
+    pickerKeys.includes(cat) ? cat : `${cat}/${date}`;
 
   const validateDefOpen = (key: string) =>
-    selected.includes(key) && dropdownVisible && !itemHovered;
+    getKey(date, cat).includes(key) && dropdownVisible && !itemHovered;
+
+  const setNewDt = (dateInfo: DateInfo & { disabledNext?: boolean }) => {
+    setDate(dateInfo.date);
+    setLabel(dateInfo.label);
+    setCat(dateInfo.cat);
+    setDisableNext(dateInfo.disabledNext);
+    onChange({
+      date: dateInfo.date,
+      label: dateInfo.label,
+      cat: dateInfo.cat,
+    });
+  };
 
   const hideAllPickers = () => {
     setDayPicker({ ind: false, defVal: dayPicker.defVal });
@@ -62,144 +75,72 @@ const DropdownDate = (props: Dropdownprops) => {
     setYrPicker({ ind: false, defVal: yrPicker.defVal });
   };
 
-  const pickerKeys = ['byDay', 'byWeek', 'byMth', 'byYr'];
+  const setPicker = (picker: 'day' | 'week' | 'month' | 'year', value) => {
+    if (picker === 'day') {
+      setDayPicker({ ind: false, defVal: value });
+      setWeekPicker({ ind: weekPicker.ind, defVal: null });
+      setMthPicker({ ind: mthPicker.ind, defVal: null });
+      setYrPicker({ ind: yrPicker.ind, defVal: null });
+    } else if (picker === 'week') {
+      setDayPicker({ ind: dayPicker.ind, defVal: null });
+      setWeekPicker({ ind: false, defVal: value });
+      setMthPicker({ ind: mthPicker.ind, defVal: null });
+      setYrPicker({ ind: yrPicker.ind, defVal: null });
+    } else if (picker === 'month') {
+      setDayPicker({ ind: dayPicker.ind, defVal: null });
+      setWeekPicker({ ind: weekPicker.ind, defVal: null });
+      setMthPicker({ ind: false, defVal: value });
+      setYrPicker({ ind: yrPicker.ind, defVal: null });
+    } else if (picker === 'year') {
+      setDayPicker({ ind: dayPicker.ind, defVal: null });
+      setWeekPicker({ ind: weekPicker.ind, defVal: null });
+      setMthPicker({ ind: mthPicker.ind, defVal: null });
+      setYrPicker({ ind: false, defVal: value });
+    }
+  };
 
-  const dateCatMapper = [
-    { value: 'tdy', label: 'Today' },
-    { value: 'ytd', label: 'Yesterday' },
-    { value: 'past7d', label: 'Past 7 Days' },
-    { value: 'past30d', label: 'Past 30 Days' },
-  ];
-
-  const generateDate = () =>
-    dateCatMapper.find((dateCategory) => dateCat === dateCategory.value) !==
-    undefined
-      ? dateCatMapper.find((dateCategory) => dateCat === dateCategory.value)
-          .label + ` (${date})`
-      : `${dateCat} (${date})`;
+  const handlePickerChange = (
+    dateInfo: DateInfo & { disabledNext: boolean },
+    picker: 'day' | 'week' | 'month' | 'year',
+    value: moment.Moment
+  ) => {
+    setNewDt(dateInfo);
+    setDropdownVisible(false);
+    setPicker(picker, value);
+  };
 
   const addDate = () => {
-    if (
-      dateCat === 'tdy' ||
-      dateCat === 'ytd' ||
-      dateCat === getDayOfWeek(date, 'DD-MM-YYYY')
-    ) {
-      let nxtDt = getNextDt(date, 'DD-MM-YYYY');
-      setDate(nxtDt);
-      if (nxtDt === getDt()) setDateCat('tdy');
-      else if (nxtDt === getPrevDt()) setDateCat('ytd');
-      else setDateCat(getDayOfWeek(getMomentNextDt(date, 'DD-MM-YYYY')));
-    } else if (
-      dateCat === getWeekOfYear(date, 'DD-MM-YYYY') &&
-      !moment().isBetween(
-        moment(date, 'DD-MM-YYYY').startOf('week'),
-        moment(date, 'DD-MM-YYYY').endOf('week')
-      )
-    ) {
-      setDate(getNextWeek(date, 'DD-MM-YYYY'));
-      setDateCat(getWeekOfYear(getNextWeek(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
-    } else if (
-      dateCat === getMth(date, 'DD-MM-YYYY') &&
-      !(getMth(date, 'DD-MM-YYYY') === getMth())
-    ) {
-      setDate(getNextMth(date, 'DD-MM-YYYY'));
-      setDateCat(getMth(getNextMth(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
-    } else if (
-      dateCat === getYr(date, 'DD-MM-YYYY') &&
-      !(getYr(date, 'DD-MM-YYYY') === getYr())
-    ) {
-      setDate(getNextYr(date, 'DD-MM-YYYY'));
-      setDateCat(getYr(getNextYr(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
-    }
+    handleDateFunc('next');
   };
 
   const subtractDate = () => {
-    if (
-      dateCat === 'tdy' ||
-      dateCat === 'ytd' ||
-      dateCat === getDayOfWeek(date, 'DD-MM-YYYY')
-    ) {
-      let prevDt = getPrevDt(date, 'DD-MM-YYYY');
-      setDate(prevDt);
-      if (prevDt === getDt()) setDateCat('tdy');
-      else if (prevDt === getPrevDt()) setDateCat('ytd');
-      else setDateCat(getDayOfWeek(getMomentPrevDt(date, 'DD-MM-YYYY')));
-    } else if (dateCat === getWeekOfYear(date, 'DD-MM-YYYY')) {
-      setDate(getPrevWeek(date, 'DD-MM-YYYY'));
-      setDateCat(getWeekOfYear(getPrevWeek(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
-    } else if (dateCat === getMth(date, 'DD-MM-YYYY')) {
-      setDate(getPrevMth(date, 'DD-MM-YYYY'));
-      setDateCat(getMth(getPrevMth(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
-    } else if (dateCat === getYr(date, 'DD-MM-YYYY')) {
-      setDate(getPrevYr(date, 'DD-MM-YYYY'));
-      setDateCat(getYr(getPrevYr(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
-    }
+    handleDateFunc('previous');
   };
 
-  useEffect(() => {
-    const validateDate = () => {
-      if (
-        dateCat === 'tdy' ||
-        dateCat === 'ytd' ||
-        dateCat === getDayOfWeek(date, 'DD-MM-YYYY')
-      ) {
-        setDisableNext(getMomentNextDt(date, 'DD-MM-YYYY').isAfter(moment()));
-      } else if (dateCat === getWeekOfYear(date, 'DD-MM-YYYY')) {
-        setDisableNext(
-          moment(date, 'DD-MM-YYYY')
-            .add(1, 'week')
-            .startOf('week')
-            .isSameOrAfter(moment())
-        );
+  const handleDateFunc = (func: 'next' | 'previous') => {
+    let dateInfo =
+      func === 'next'
+        ? validateDropdownDate(date, cat, 'DD-MM-YYYY', undefined, 'next')
+        : validateDropdownDate(date, cat, 'DD-MM-YYYY', undefined, 'previous');
+    setNewDt(dateInfo);
+  };
 
-        if (
-          moment().isBetween(
-            moment(date, 'DD-MM-YYYY').startOf('week'),
-            moment(date, 'DD-MM-YYYY').endOf('week')
-          )
-        ) {
-          setDate(getThisWeekTilYtd(date, 'DD-MM-YYYY'));
-          setDateCat(
-            getWeekOfYear(getThisWeekTilYtd(date, 'DD-MM-YYYY'), 'DD-MM-YYYY')
-          );
-        }
-      } else if (dateCat === getMth(date, 'DD-MM-YYYY')) {
-        setDisableNext(
-          moment(date, 'DD-MM-YYYY')
-            .add(1, 'month')
-            .startOf('month')
-            .isAfter(moment())
-        );
+  const hideNxtPrevBtn = new RegExp(/^past\d*d$/).test(cat);
 
-        if (getMth(date, 'DD-MM-YYYY') === getMth()) {
-          setDate(getThisMthTilYtd(date, 'DD-MM-YYYY'));
-          setDateCat(
-            getMth(getThisMthTilYtd(date, 'DD-MM-YYYY'), 'DD-MM-YYYY')
-          );
-        }
-      } else if (dateCat === getYr(date, 'DD-MM-YYYY')) {
-        setDisableNext(
-          moment(date, 'DD-MM-YYYY').add(1, 'year').isAfter(moment())
-        );
-
-        if (getYr(date, 'DD-MM-YYYY') === getYr()) {
-          setDate(getThisYrTilYtd(date, 'DD-MM-YYYY'));
-          setDateCat(getYr(getThisYrTilYtd(date, 'DD-MM-YYYY'), 'DD-MM-YYYY'));
-        }
-      }
-    };
-    validateDate();
-  }, [date, dateCat]);
+  const dateLabelMapper = [
+    { cat: 'tdy', label: 'Today' },
+    { cat: 'ytd', label: 'Yesterday' },
+    { cat: 'past7d', label: 'Past 7 Days' },
+    { cat: 'past30d', label: 'Past 30 Days' },
+  ];
 
   const DateMenu = (
     <Menu
       onClick={(item) => {
-        let [dateCat, date] = item.key.split('/');
+        let [newDtCat, newDt] = item.key.split('/');
         if (!pickerKeys.includes(item.key)) {
+          setNewDt(validateDropdownDate(newDt, newDtCat, 'DD-MM-YYYY'));
           setDropdownVisible(false);
-          setSelected([item.key]);
-          setDateCat(dateCat);
-          setDate(date);
           setDayPicker({ ind: dayPicker.ind, defVal: null });
           setWeekPicker({ ind: weekPicker.ind, defVal: null });
           setMthPicker({ ind: mthPicker.ind, defVal: null });
@@ -208,11 +149,12 @@ const DropdownDate = (props: Dropdownprops) => {
       }}
       onMouseOver={() => setDropdownOnBlur(false)}
       onMouseLeave={() => setDropdownOnBlur(true)}
-      selectedKeys={selected}
+      selectedKeys={[getKey(date, cat)]}
       style={{ width: 150 }}
+      {...props}
     >
       <Menu.Item
-        key={'tdy/' + getDt()}
+        key={`tdy/${getDt()}`}
         onMouseOver={() => {
           hideAllPickers();
           setItemHovered(true);
@@ -223,7 +165,7 @@ const DropdownDate = (props: Dropdownprops) => {
         }}
       >
         <Popover
-          visible={todayPopover || validateDefOpen('tdy/' + getDt())}
+          visible={todayPopover || validateDefOpen(`tdy/${getDt()}`)}
           key={getDt()}
           content={getDt()}
           placement='right'
@@ -232,12 +174,12 @@ const DropdownDate = (props: Dropdownprops) => {
             offset: [160, 0],
           }}
         >
-          Today
+          {dateLabelMapper.find((mapper) => mapper.cat === 'tdy').label}
         </Popover>
       </Menu.Item>
 
       <Menu.Item
-        key={'ytd/' + getPrevDt()}
+        key={`ytd/${getPrevDt()}`}
         onMouseOver={() => {
           hideAllPickers();
           setItemHovered(true);
@@ -248,20 +190,20 @@ const DropdownDate = (props: Dropdownprops) => {
         }}
       >
         <Popover
-          visible={ytdPopover || validateDefOpen('ytd/' + getPrevDt())}
+          visible={ytdPopover || validateDefOpen(`ytd/${getPrevDt()}`)}
           content={getPrevDt()}
           placement='right'
           align={{
             points: ['cc', 'cr'],
-            offset: [142, 0],
+            offset: [140, 0],
           }}
         >
-          Yesterday
+          {dateLabelMapper.find((mapper) => mapper.cat === 'ytd').label}
         </Popover>
       </Menu.Item>
 
       <Menu.Item
-        key={'past7d/' + getPastDays(7)}
+        key={`past7d/${getPastDays(7)}`}
         onMouseOver={() => {
           hideAllPickers();
           setItemHovered(true);
@@ -272,20 +214,20 @@ const DropdownDate = (props: Dropdownprops) => {
         }}
       >
         <Popover
-          visible={past7dPopover || validateDefOpen('past7d/' + getPastDays(7))}
+          visible={past7dPopover || validateDefOpen(`past7d/${getPastDays(7)}`)}
           content={getPastDays(7)}
           placement='right'
           align={{
             points: ['cc', 'cr'],
-            offset: [182, 0],
+            offset: [173, 0],
           }}
         >
-          {dateCatMapper.find((dateCat) => dateCat.value === 'past7d').label}
+          {dateLabelMapper.find((mapper) => mapper.cat === 'past7d').label}
         </Popover>
       </Menu.Item>
 
       <Menu.Item
-        key={'past30d/' + getPastDays(30)}
+        key={`past30d/${getPastDays(30)}`}
         onMouseOver={() => {
           hideAllPickers();
           setItemHovered(true);
@@ -297,16 +239,16 @@ const DropdownDate = (props: Dropdownprops) => {
       >
         <Popover
           visible={
-            past30dPopover || validateDefOpen('past30d/' + getPastDays(30))
+            past30dPopover || validateDefOpen(`past30d/${getPastDays(30)}`)
           }
           content={getPastDays(30)}
           placement='right'
           align={{
             points: ['cc', 'cr'],
-            offset: [175, 0],
+            offset: [166, 0],
           }}
         >
-          {dateCatMapper.find((dateCat) => dateCat.value === 'past30d').label}
+          {dateLabelMapper.find((mapper) => mapper.cat === 'past30d').label}
         </Popover>
       </Menu.Item>
 
@@ -323,25 +265,15 @@ const DropdownDate = (props: Dropdownprops) => {
         <MenuDatePicker
           label='By Day'
           open={dayPicker.ind || validateDefOpen('byDay')}
+          showToday={false}
           value={dayPicker.defVal !== null ? dayPicker.defVal : null}
           disabledDate={(current) => current > moment()}
           onChange={(value) => {
-            let newDt = value.format('DD-MM-YYYY');
-            setDropdownVisible(false);
-            setSelected(['byDay']);
-            newDt === getDt()
-              ? setDateCat('tdy')
-              : newDt === getPrevDt()
-              ? setDateCat('ytd')
-              : setDateCat(getDayOfWeek(value));
-            setDate(newDt);
-            setDayPicker({ ind: false, defVal: value });
-            setWeekPicker({ ind: weekPicker.ind, defVal: null });
-            setMthPicker({ ind: mthPicker.ind, defVal: null });
+            handlePickerChange(validateDay(value, 'byDay'), 'day', value);
           }}
           dropdownAlign={{
             points: ['cc', 'cr'],
-            offset: [285, -20],
+            offset: [285, -30],
           }}
         />
       </Menu.Item>
@@ -359,30 +291,19 @@ const DropdownDate = (props: Dropdownprops) => {
           picker='week'
           open={weekPicker.ind || validateDefOpen('byWeek')}
           value={weekPicker.defVal !== null ? weekPicker.defVal : null}
-          disabledDate={(current) => current >= moment()}
+          disabledDate={(current) => current > getMomentPrevDt()}
           onChange={(value) => {
-            setDropdownVisible(false);
-            setSelected(['byWeek']);
-            setDateCat(getWeekOfYear(value));
-            setDate(
-              `${value.startOf('week').format('DD-MM-YYYY')} ~ ${value
-                .endOf('week')
-                .format('DD-MM-YYYY')}`
-            );
-            setDayPicker({ ind: dayPicker.ind, defVal: null });
-            setWeekPicker({ ind: false, defVal: value });
-            setMthPicker({ ind: mthPicker.ind, defVal: null });
-            setYrPicker({ ind: yrPicker.ind, defVal: null });
+            handlePickerChange(validateWeek(value, 'byWeek'), 'week', value);
           }}
           dropdownAlign={{
             points: ['cc', 'cr'],
-            offset: [285, -65],
+            offset: [285, -64],
           }}
         />
       </Menu.Item>
 
       <Menu.Item
-        key='byMth'
+        key='byMonth'
         onMouseOver={() => {
           hideAllPickers();
           setItemHovered(true);
@@ -392,22 +313,11 @@ const DropdownDate = (props: Dropdownprops) => {
         <MenuDatePicker
           label='By Month'
           picker='month'
-          open={mthPicker.ind || validateDefOpen('byMth')}
+          open={mthPicker.ind || validateDefOpen('byMonth')}
           value={mthPicker.defVal !== null ? mthPicker.defVal : null}
           disabledDate={(current) => current > moment()}
           onChange={(value) => {
-            setDropdownVisible(false);
-            setSelected(['byMth']);
-            setDateCat(getMth(value));
-            setDate(
-              `${value.startOf('month').format('DD-MM-YYYY')} ~ ${value
-                .endOf('month')
-                .format('DD-MM-YYYY')}`
-            );
-            setDayPicker({ ind: dayPicker.ind, defVal: null });
-            setWeekPicker({ ind: weekPicker.ind, defVal: null });
-            setMthPicker({ ind: false, defVal: value });
-            setYrPicker({ ind: yrPicker.ind, defVal: null });
+            handlePickerChange(validateMonth(value, 'byMonth'), 'month', value);
           }}
           dropdownAlign={{
             points: ['cc', 'cr'],
@@ -416,7 +326,7 @@ const DropdownDate = (props: Dropdownprops) => {
         />
       </Menu.Item>
       <Menu.Item
-        key='byYr'
+        key='byYear'
         onMouseOver={() => {
           hideAllPickers();
           setItemHovered(true);
@@ -430,18 +340,7 @@ const DropdownDate = (props: Dropdownprops) => {
           value={yrPicker.defVal !== null ? yrPicker.defVal : null}
           disabledDate={(current) => current > moment()}
           onChange={(value) => {
-            setDropdownVisible(false);
-            setSelected(['byYr']);
-            setDateCat(getYr(value));
-            setDate(
-              `${value.startOf('year').format('DD-MM-YYYY')} ~ ${value
-                .endOf('year')
-                .format('DD-MM-YYYY')}`
-            );
-            setDayPicker({ ind: dayPicker.ind, defVal: null });
-            setWeekPicker({ ind: weekPicker.ind, defVal: null });
-            setMthPicker({ ind: mthPicker.ind, defVal: null });
-            setYrPicker({ ind: false, defVal: value });
+            handlePickerChange(validateYear(value, 'byYear'), 'year', value);
           }}
           dropdownAlign={{
             points: ['cc', 'cr'],
@@ -453,67 +352,67 @@ const DropdownDate = (props: Dropdownprops) => {
   );
 
   return (
-    <Space align='center' size={5}>
-      <Button
-        type='text'
-        style={{ background: 'none' }}
-        icon={
-          <MdChevronLeft
-            size={25}
-            style={{ position: 'relative', top: 4, marginRight: 5 }}
-          />
-        }
-        onClick={subtractDate}
-        hidden={dateCat === 'past7d' || dateCat === 'past30d'}
-      />
-      <Dropdown
-        visible={dropdownVisible}
-        overlay={DateMenu}
-        placement='bottomCenter'
-        {...props}
-        className={`dropdown-date ${props.className}`}
-      >
+    <Card bodyStyle={{ padding: 5, textAlign: 'center' }} style={style}>
+      <Space align='center' size={5}>
         <Button
           type='text'
+          style={{ background: 'none' }}
           icon={
-            <HiOutlineCalendar
-              size={20}
+            <MdChevronLeft
+              size={25}
               style={{ position: 'relative', top: 4, marginRight: 5 }}
             />
           }
-          style={{
-            background: 'none',
-          }}
-          onBlur={() => {
-            if (dropdownOnBlur === true) {
-              setDropdownVisible(false);
-              hideAllPickers();
-            }
-          }}
-          onClick={() => {
-            dropdownVisible === false
-              ? setDropdownVisible(true)
-              : setDropdownVisible(false);
-            setItemHovered(false);
-          }}
+          onClick={subtractDate}
+          hidden={hideNxtPrevBtn}
+        />
+        <Dropdown
+          visible={dropdownVisible}
+          overlay={DateMenu}
+          placement='bottomCenter'
         >
-          {generateDate()}
-        </Button>
-      </Dropdown>
-      <Button
-        type='text'
-        style={{ background: 'none' }}
-        icon={
-          <MdChevronRight
-            size={25}
-            style={{ position: 'relative', top: 4, marginRight: 5 }}
-          />
-        }
-        onClick={addDate}
-        disabled={disableNext}
-        hidden={dateCat === 'past7d' || dateCat === 'past30d'}
-      />
-    </Space>
+          <Button
+            type='text'
+            icon={
+              <HiOutlineCalendar
+                size={20}
+                style={{ position: 'relative', top: 4, marginRight: 5 }}
+              />
+            }
+            style={{
+              background: 'none',
+            }}
+            onBlur={() => {
+              if (dropdownOnBlur === true) {
+                setDropdownVisible(false);
+                hideAllPickers();
+              }
+            }}
+            onClick={() => {
+              dropdownVisible === false
+                ? setDropdownVisible(true)
+                : setDropdownVisible(false);
+              setItemHovered(false);
+            }}
+          >
+            {`${label} (${date})`}
+          </Button>
+        </Dropdown>
+        <Button
+          type='text'
+          style={{ background: 'none' }}
+          icon={
+            <MdChevronRight
+              size={25}
+              style={{ position: 'relative', top: 4, marginRight: 5 }}
+            />
+          }
+          onClick={addDate}
+          disabled={disableNext}
+          hidden={hideNxtPrevBtn}
+        />
+      </Space>
+    </Card>
   );
 };
 

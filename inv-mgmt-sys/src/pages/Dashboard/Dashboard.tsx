@@ -276,7 +276,7 @@ const Dashboard = () => {
             <Title level={5}>Sales</Title>
           </Col>
           <Col>
-            <More route='statistics' />
+            <More route='bizStatistics' />
           </Col>
         </Row>
 
