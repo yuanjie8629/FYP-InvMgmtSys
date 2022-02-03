@@ -7,7 +7,7 @@ const MainCard = (props: CardProps) => {
       bordered={false}
       bodyStyle={{ padding: 35 }}
       {...props}
-      className={`container-card width-full height-full ${
+      className={`container-card full-width full-height ${
         props.className !== undefined ? props.className : ''
       }`}
     />

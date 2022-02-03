@@ -22,7 +22,7 @@ const DatePickerWithLabel = ({
         <Text type='secondary'>{label}</Text>
       </Col>
       <Col span={24 - textSpan}>
-        <RangePicker className='width-full' {...props} />
+        <RangePicker className='full-width' {...props} />
       </Col>
     </Row>
   );

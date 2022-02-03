@@ -128,7 +128,7 @@ const PackAdd = () => {
         <Col xs={16} xl={19} className='centerFlex'>
           <MainCardContainer func='add' className='pack-add'>
             <MainCard>
-              <Space direction='vertical' size={20} className='width-full'>
+              <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='basicInfo' style={{ fontWeight: 500 }}>
                   Basic Information
                 </Title>
@@ -193,7 +193,7 @@ const PackAdd = () => {
             </MainCard>
 
             <MainCard>
-              <Space direction='vertical' size={20} className='width-full'>
+              <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='products' style={{ fontWeight: 500 }}>
                   Products
                 </Title>
@@ -223,7 +223,7 @@ const PackAdd = () => {
             </MainCard>
 
             <MainCard>
-              <Space direction='vertical' size={20} className='width-full'>
+              <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='pricing' style={{ fontWeight: 500 }}>
                   Pricing
                 </Title>
@@ -269,7 +269,7 @@ const PackAdd = () => {
 
             <Row justify='center'>
               <MainCard>
-                <Space direction='vertical' size={20} className='width-full'>
+                <Space direction='vertical' size={20} className='full-width'>
                   <Title level={4} id='inv' style={{ fontWeight: 500 }}>
                     Inventory
                   </Title>
@@ -303,9 +303,9 @@ const PackAdd = () => {
                 </Space>
               </MainCard>
             </Row>
-            <Row justify='center' className='width-full'>
+            <Row justify='center' className='full-width'>
               <MainCard>
-                <Space direction='vertical' size={20} className='width-full'>
+                <Space direction='vertical' size={20} className='full-width'>
                   <Title level={4} id='shipping' style={{ fontWeight: 500 }}>
                     Shipping
                   </Title>
@@ -359,9 +359,9 @@ const PackAdd = () => {
                 </Space>
               </MainCard>
             </Row>
-            <Row justify='center' className='width-full'>
+            <Row justify='center' className='full-width'>
               <MainCard>
-                <Space direction='vertical' size={20} className='width-full'>
+                <Space direction='vertical' size={20} className='full-width'>
                   <Title level={4} id='availPeriod' style={{ fontWeight: 500 }}>
                     Available Period
                   </Title>

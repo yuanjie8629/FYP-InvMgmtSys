@@ -254,9 +254,9 @@ const OrderMgmt = () => {
             setSearchParams(key !== 'all' ? { stat: key } : {});
           }}
         >
-          <Space direction='vertical' size={40} className='width-full'>
+          <Space direction='vertical' size={40} className='full-width'>
             <FilterInputs />
-            <Space direction='vertical' size={15} className='width-full'>
+            <Space direction='vertical' size={15} className='full-width'>
               <Row justify='space-between'>
                 <Col>
                   <Title level={4}>Order List</Title>

@@ -45,7 +45,7 @@ const AccSettings = () => {
 
   const LoginInfo = (item) => (
     <List.Item actions={[<Button type='primary'>Change</Button>]}>
-      <Row className='width-full' align='middle'>
+      <Row className='full-width' align='middle'>
         <Col span={5}>
           <List.Item.Meta
             avatar={<item.icon size={25} className='color-grey' />}
@@ -64,7 +64,7 @@ const AccSettings = () => {
     <Layout>
       <MainCardContainer className='acc-settings'>
         <MainCard>
-          <Space direction='vertical' size={30} className='width-full'>
+          <Space direction='vertical' size={30} className='full-width'>
             <Title level={4}>Login Information</Title>
             <List
               size={screens.xl && screens.xxl ? 'large' : 'default'}

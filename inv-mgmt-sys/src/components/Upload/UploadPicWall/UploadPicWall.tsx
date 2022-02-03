@@ -45,7 +45,9 @@ const UploadPicWall = (props: AntdUploadProps) => {
         multiple
         {...props}
       >
-        {props.fileList !== undefined && props.fileList.length >= 8 ? null : uploadButton}
+        {props.fileList !== undefined && props.fileList.length >= 8
+          ? null
+          : uploadButton}
       </AntdUpload>
       <Modal
         visible={previewVisible}
@@ -53,7 +55,7 @@ const UploadPicWall = (props: AntdUploadProps) => {
         footer={null}
         onCancel={handleCancel}
       >
-        <img alt='uploadPreviewImg' className='width-full' src={previewImage} />
+        <img alt='uploadPreviewImg' className='full-width' src={previewImage} />
       </Modal>
     </div>
   );

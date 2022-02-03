@@ -270,7 +270,7 @@ const Dashboard = () => {
 
   const Sales = () => (
     <MainCard>
-      <Space direction='vertical' size={5} className='width-full'>
+      <Space direction='vertical' size={5} className='full-width'>
         <Row justify='space-between'>
           <Col>
             <Title level={5}>Sales</Title>
@@ -299,15 +299,15 @@ const Dashboard = () => {
         <Row style={{ paddingTop: 15 }}>
           <Suspense
             fallback={
-              <div className='centerFlex height-full width-full'>
+              <div className='centerFlex full-height full-width'>
                 <Spin
                   indicator={<LoadingOutlined style={{ fontSize: 30 }} spin />}
                 />
               </div>
             }
           >
-            <Space direction='vertical' className='width-full' size={20}>
-              <Text strong>RM</Text>
+            <Space direction='vertical' className='full-width' size={20}>
+              <Text strong type='secondary'>RM</Text>
               <LineChart
                 data={getSalesData}
                 titleX={getChartTitle}
@@ -353,7 +353,7 @@ const Dashboard = () => {
 
   const RecentOrder = () => (
     <MainCard>
-      <Space direction='vertical' size={15} className='width-full'>
+      <Space direction='vertical' size={15} className='full-width'>
         <Row justify='space-between'>
           <Col>
             <Row>
@@ -378,7 +378,7 @@ const Dashboard = () => {
 
   const TopProducts = () => (
     <MainCard>
-      <Space direction='vertical' size={5} className='width-full'>
+      <Space direction='vertical' size={5} className='full-width'>
         <div>
           <Row justify='space-between'>
             <Col>
@@ -399,7 +399,7 @@ const Dashboard = () => {
 
   const InvAnalysis = () => (
     <MainCard>
-      <Space direction='vertical' size={30} className='width-full'>
+      <Space direction='vertical' size={30} className='full-width'>
         <Row justify='space-between'>
           <Col>
             <Row>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from '@components/Button';
-import { Card, Dropdown, Menu, MenuProps, Popover, Space } from 'antd';
+import { Card, Dropdown, Menu, MenuProps, Popover, Row } from 'antd';
 import moment from 'moment';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { HiOutlineCalendar } from 'react-icons/hi';
@@ -353,16 +353,12 @@ const DropdownDate = ({
 
   return (
     <Card bodyStyle={{ padding: 5, textAlign: 'center' }} style={style}>
-      <Space align='center' size={5}>
+      <Row justify='center' align='middle'>
         <Button
           type='text'
           style={{ background: 'none' }}
-          icon={
-            <MdChevronLeft
-              size={25}
-              style={{ position: 'relative', top: 4, marginRight: 5 }}
-            />
-          }
+          className='centerFlex'
+          icon={<MdChevronLeft size={25} />}
           onClick={subtractDate}
           hidden={hideNxtPrevBtn}
         />
@@ -373,15 +369,9 @@ const DropdownDate = ({
         >
           <Button
             type='text'
-            icon={
-              <HiOutlineCalendar
-                size={20}
-                style={{ position: 'relative', top: 4, marginRight: 5 }}
-              />
-            }
-            style={{
-              background: 'none',
-            }}
+            icon={<HiOutlineCalendar size={20} style={{ marginRight: 5 }} />}
+            style={{ background: 'none' }}
+            className='centerFlex'
             onBlur={() => {
               if (dropdownOnBlur === true) {
                 setDropdownVisible(false);
@@ -401,17 +391,13 @@ const DropdownDate = ({
         <Button
           type='text'
           style={{ background: 'none' }}
-          icon={
-            <MdChevronRight
-              size={25}
-              style={{ position: 'relative', top: 4, marginRight: 5 }}
-            />
-          }
+          className='centerFlex'
+          icon={<MdChevronRight size={25} />}
           onClick={addDate}
           disabled={disableNext}
           hidden={hideNxtPrevBtn}
         />
-      </Space>
+      </Row>
     </Card>
   );
 };
