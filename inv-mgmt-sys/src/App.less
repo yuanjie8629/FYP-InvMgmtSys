@@ -29,11 +29,11 @@ p {
   visibility: hidden;
 }
 
-.width-full {
+.full-width {
   width: 100%;
 }
 
-.height-full {
+.full-height {
   height: 100%;
 }
 
@@ -279,8 +279,6 @@ p {
         }
       }
       &-disabled {
-        pointer-events: all !important;
-        cursor: not-allowed !important;
         background-color: transparent !important;
 
         &:first-child:before {
@@ -316,7 +314,25 @@ p {
 
     &-week {
       &-panel-row {
-        & > .@{ant-prefix}-picker-cell-disabled {
+        &:hover {
+          background-color: @item-hover-bg !important;
+        }
+
+        & > .@{ant-prefix}-picker-cell {
+          &:nth-child(2) {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+          }
+          &:last-child {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+          }
+        }
+        &-selected > .@{ant-prefix}-picker-cell-disabled {
+          background-color: @item-hover-bg !important;
+          &::before {
+            background-color: transparent !important;
+          }
           &:nth-child(2)::before {
             border-top-left-radius: 6px;
             border-bottom-left-radius: 6px;
@@ -399,20 +415,45 @@ p {
   }
 
   &-carousel {
-    & .slick-prev, & .slick-prev:hover  {
-      left: -10 !important;
+    & .slick-prev {
       z-index: 2 !important;
       color: @black !important;
       font-size: 20px !important;
-      height: 30px !important;
+      height: 25px !important;
+      width: 25px !important;
+      border-radius: 50% !important;
+      padding: 2px !important;
+      box-shadow: 0 0 10px @grey-200 !important;
+      &:hover { 
+        background-color: @primary-color !important;
+        box-shadow: 0 0 10px @green-200 !important;
+        color: @white !important;
+      }
     }
 
-    & .slick-next, & .slick-next:hover {
-      right: -10 !important;
+    & .slick-next {
       z-index: 2 !important;
       color: @black !important;
       font-size: 20px !important;
-       height: 30px !important;
+      height: 25px !important;
+      width: 25px !important;
+      border-radius: 50% !important;
+      padding: 2px !important;
+      box-shadow: 0 0 10px @grey-200 !important;
+      &:hover { 
+        background-color: @primary-color !important;
+        box-shadow: 0 0 10px @green-200 !important;
+        color: @white !important;
+      }
+    }
+
+    & .slick-slider {
+      display: flex !important;
+      justify-content: center;
+    }
+    
+    & .slick-list {
+    width: 99% !important;
     }
   }
 }

@@ -20,7 +20,7 @@ const FilterInputs = () => {
   };
 
   return (
-    <Space direction='vertical' size={20} className='width-full'>
+    <Space direction='vertical' size={20} className='full-width'>
       <Row gutter={[30, 30]}>
         <FilterInputCol>
           <InputSelect
@@ -50,7 +50,7 @@ const FilterInputs = () => {
           />
         </FilterInputCol>
         <FilterInputCol>
-          <DatePickerWithLabel label='Available Period' textSpan={7}/>
+          <DatePickerWithLabel label='Available Period' textSpan={7} />
         </FilterInputCol>
       </Row>
       <Row gutter={20}>

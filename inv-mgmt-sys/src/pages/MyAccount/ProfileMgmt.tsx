@@ -35,7 +35,7 @@ const ProfileMgmt = () => {
     <Layout>
       <MainCardContainer className='profile-mgmt'>
         <MainCard>
-          <Space direction='vertical' size={50} className='width-full'>
+          <Space direction='vertical' size={50} className='full-width'>
             <Row justify='center' align='middle' gutter={50}>
               <Col pull={1}>
                 <Avatar
@@ -93,7 +93,7 @@ const ProfileMgmt = () => {
                   name='birthdate'
                   initialValue={moment('2000-08-17')}
                 >
-                  <DatePicker className='width-full' />
+                  <DatePicker className='full-width' />
                 </Form.Item>
                 <Row justify='end' style={{ marginTop: 20 }}>
                   <Button htmlType='submit' type='primary' size='large'>

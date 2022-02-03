@@ -1,14 +1,19 @@
-
-const moneyFormatter = (num: number) => {
+const moneyFormatter = (num: number, numOnly: boolean = false) => {
+  let value = '';
   if (num >= 1000 && num < 1000000) {
-    return 'RM ' + (num / 1000).toFixed(1) + 'K'; // convert to K for number from > 1000 < 1 million
+    value = (num / 1000).toFixed(1) + 'K'; // convert to K for number from > 1000 < 1 million
   } else if (num > 1000000) {
-    return 'RM ' + (num / 1000000).toFixed(1) + 'M'; // convert to M for number from > 1 million
+    value = (num / 1000000).toFixed(1) + 'M'; // convert to M for number from > 1 million
   } else {
-    return 'RM ' + num.toFixed(2); // if value < 1000, nothing to do
+    value = num.toFixed(2); // if value < 1000, nothing to do
   }
+
+  return numOnly === true ? value : `RM ${value}`;
 };
 
-const percentFormatter = (num: number) => (num * 100).toFixed() + '%';
+const percentFormatter = (num: number, numOnly: boolean = false) => {
+  let value = (num * 100).toFixed();
+  return numOnly === true ? value : `${value}%`;
+};
 
 export { moneyFormatter, percentFormatter };

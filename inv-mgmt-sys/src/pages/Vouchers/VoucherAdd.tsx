@@ -57,7 +57,7 @@ const VoucherAdd = () => {
         <Col xs={16} xl={19} className='centerFlex'>
           <MainCardContainer func='add' className='voucher-add'>
             <MainCard>
-              <Space direction='vertical' size={20} className='width-full'>
+              <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='basicInfo' style={{ fontWeight: 500 }}>
                   Basic Information
                 </Title>
@@ -83,7 +83,7 @@ const VoucherAdd = () => {
             </MainCard>
 
             <MainCard>
-              <Space direction='vertical' size={20} className='width-full'>
+              <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='discSettings' style={{ fontWeight: 500 }}>
                   Discount Settings
                 </Title>
@@ -241,7 +241,7 @@ const VoucherAdd = () => {
             </MainCard>
 
             <MainCard>
-              <Space direction='vertical' size={20} className='width-full'>
+              <Space direction='vertical' size={20} className='full-width'>
                 <Title
                   level={4}
                   id='custEligibility'
@@ -275,7 +275,7 @@ const VoucherAdd = () => {
             </MainCard>
 
             <MainCard>
-              <Space direction='vertical' size={20} className='width-full'>
+              <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='availPeriod' style={{ fontWeight: 500 }}>
                   Available Period
                 </Title>

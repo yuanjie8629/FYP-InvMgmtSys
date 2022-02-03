@@ -140,7 +140,7 @@ const PackMgmt = () => {
       key: 'packProds.prodNm',
       width: 280,
       render: (products: []) => (
-        <Space direction='vertical' size={10} className='width-full'>
+        <Space direction='vertical' size={10} className='full-width'>
           {products.map((product: any) => (
             <Row justify='space-between' gutter={20}>
               <Col span={20}>
@@ -284,9 +284,9 @@ const PackMgmt = () => {
             setSearchParams(key !== 'all' ? { stat: key } : {});
           }}
         >
-          <Space direction='vertical' size={40} className='width-full'>
+          <Space direction='vertical' size={40} className='full-width'>
             <FilterInputs />
-            <Space direction='vertical' size={15} className='width-full'>
+            <Space direction='vertical' size={15} className='full-width'>
               <Row justify='space-between'>
                 <Col>
                   <Title level={4}>Package List</Title>

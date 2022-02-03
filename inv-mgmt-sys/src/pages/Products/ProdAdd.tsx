@@ -54,7 +54,7 @@ const ProdAdd = () => {
         <Col xs={16} xl={19} className='centerFlex'>
           <MainCardContainer func='add' className='prod-add'>
             <MainCard>
-              <Space direction='vertical' size={20} className='width-full'>
+              <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='basicInfo' style={{ fontWeight: 500 }}>
                   Basic Information
                 </Title>
@@ -130,7 +130,7 @@ const ProdAdd = () => {
             </MainCard>
 
             <MainCard>
-              <Space direction='vertical' size={20} className='width-full'>
+              <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='pricing' style={{ fontWeight: 500 }}>
                   Pricing
                 </Title>
@@ -251,7 +251,7 @@ const ProdAdd = () => {
             </MainCard>
 
             <MainCard>
-              <Space direction='vertical' size={20} className='width-full'>
+              <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='inv' style={{ fontWeight: 500 }}>
                   Inventory
                 </Title>
@@ -321,7 +321,7 @@ const ProdAdd = () => {
             </MainCard>
 
             <MainCard>
-              <Space direction='vertical' size={20} className='width-full'>
+              <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='shipping' style={{ fontWeight: 500 }}>
                   Shipping
                 </Title>

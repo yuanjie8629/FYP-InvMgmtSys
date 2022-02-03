@@ -14,7 +14,7 @@ const NotFound = () => {
     <Layout className='not-found-layout'>
       <div className='header-fixed' />
       <Header className='header' style={{ width: '100%' }}>
-        <Row justify='center' align='middle' className='height-full'>
+        <Row justify='center' align='middle' className='full-height'>
           <Col className='not-found-logo-wrapper'>
             <Image
               src={Logo}

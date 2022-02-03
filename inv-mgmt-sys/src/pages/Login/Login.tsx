@@ -14,7 +14,9 @@ const Login = () => {
   const { Title } = Typography;
   return (
     <div className='login'>
-      <Helmet><meta name='viewport' content='width=576'></meta></Helmet>
+      <Helmet>
+        <meta name='viewport' content='width=576'></meta>
+      </Helmet>
       {/*Left half screen*/}
       <Row className='login-container'>
         <Col
@@ -44,7 +46,7 @@ const Login = () => {
                   Login
                 </Title>
                 <Form name='loginForm' layout='vertical'>
-                  <Space direction='vertical' className='width-full'>
+                  <Space direction='vertical' className='full-width'>
                     <Form.Item
                       name='username'
                       rules={[

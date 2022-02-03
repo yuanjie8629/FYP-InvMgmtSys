@@ -88,7 +88,7 @@ const InformativeTable = ({ defPg = 10, ...props }: InformativeTableProps) => {
     <Space
       direction='vertical'
       size={20}
-      className='informative-table width-full'
+      className='informative-table full-width'
     >
       <Row align='middle' gutter={20} style={{ height: 36 }}>
         <Col flex='100px'>
