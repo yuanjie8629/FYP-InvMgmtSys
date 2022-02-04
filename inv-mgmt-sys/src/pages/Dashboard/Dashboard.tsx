@@ -236,11 +236,11 @@ const Dashboard = () => {
             >
               <SmallCard
                 backgroundColor='grey'
+                hover='success'
                 bodyStyle={{
                   width: '255px',
                   padding: '25px 12px 15px',
                 }}
-                className='dashboard-toDoList-item'
               >
                 <Space direction='vertical' size={15}>
                   <Title
@@ -307,7 +307,9 @@ const Dashboard = () => {
             }
           >
             <Space direction='vertical' className='full-width' size={20}>
-              <Text strong type='secondary'>RM</Text>
+              <Text strong type='secondary'>
+                RM
+              </Text>
               <LineChart
                 data={getSalesData}
                 titleX={getChartTitle}

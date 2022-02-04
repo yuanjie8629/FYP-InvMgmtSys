@@ -4,25 +4,41 @@ import './SmallCard.less';
 interface CardProps extends AntdCardProps {
   backgroundColor?:
     | 'default'
+    | 'white'
     | 'success'
     | 'warning'
     | 'error'
     | 'info'
-    | 'unselected'
     | 'grey';
   children?: React.ReactNode;
+  hover?:
+    | boolean
+    | 'success'
+    | 'warning'
+    | 'error'
+    | 'info'
+    | 'grey';
 }
 
 const SmallCard = ({
   backgroundColor = 'default',
+  hover = false,
   className,
   ...props
 }: CardProps) => {
   return (
     <Card
-      {...props}
       bordered={false}
-      className={`small-card small-card-${backgroundColor} ${className}`}
+      {...props}
+      className={`small-card${
+        backgroundColor !== undefined ? `-${backgroundColor} ` : ''
+      }${
+        hover === true
+          ? `small-card-${backgroundColor}-hover`
+          : hover !== false
+          ? ` small-card-${hover}-hover`
+          : ''
+      } ${className !== undefined ? className : ''}`}
     />
   );
 };

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Datum, Line } from '@ant-design/charts';
+import { Datum, Line, LineConfig } from '@ant-design/charts';
 
-interface LineChartProps {
+interface LineChartProps extends LineConfig {
   data: any;
   titleX?: string;
   titleY?: string;
@@ -52,11 +52,13 @@ const LineChart = ({
             },
     },
     smooth: true,
+    legend: { position: 'bottom' },
     lineStyle: {
-      stroke: '#0e9f6e',
+      stroke: props.seriesField === undefined ? '#0e9f6e' : undefined,
       lineWidth: 4,
     },
-    color: '#0e9f6e',
+    color: ['#0e9f6e', '#138bd0', '#f05252', '#ffc107', '#ff6f00'],
+
     tooltip: {
       fields: [Object.keys(props.data[0])[0], Object.keys(props.data[0])[1]],
       formatter: (datum: Datum) => {
@@ -73,9 +75,16 @@ const LineChart = ({
         };
       },
     },
+    interactions: [
+      { type: 'legend-filter', enable: false },
+      { type: 'element-highlight' },
+    ],
   };
 
-  return <Line {...config} {...props} />;
+  return (
+    //@ts-ignore
+    <Line {...config} {...props} />
+  );
 };
 
 export default LineChart;
