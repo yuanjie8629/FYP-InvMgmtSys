@@ -5,8 +5,8 @@ import DropdownDate from '@components/Input/DropdownDate';
 import Layout from '@components/Layout/Layout';
 import Statistics from '@components/Statistics';
 import statisticsList from '@components/Statistics/statisticsList';
-import { Carousel, Col, Row, Space, Spin, Typography } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import { Col, Popover, Row, Space, Spin, Typography, message } from 'antd';
+import { LoadingOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import './BusinessInsights.less';
 import statisticsData from './statisticsData';
 import { formatDt, getDt } from '@utils/dateUtils';
@@ -14,14 +14,34 @@ import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
 import keyMetricsList from './keyMetricsList';
 import { splitIntoChunks } from '@utils/arrayUtils';
-import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { HiCheckCircle } from 'react-icons/hi';
 import { moneyFormatter, percentFormatter } from '@utils/numUtils';
 import LineChart from '@components/Chart/LineChart';
+import CarouselArrow from '@components/Carousel/CarouselArrow';
+import { useAppSelector } from '@hooks/reduxHooks';
+import RankingList from '@components/List/RankingList';
+import topProduct from './topProducts';
 
 const BusinessStatistics = () => {
+  message.config({ duration: 2 });
   const { Text, Title } = Typography;
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const isSiderCollapsed = useAppSelector((state) => state.sider.collapsed);
+
   const [statisticsDtInfo, setStatisticsDtInfo] = useState({
+    date: getDt(),
+    label: 'Today',
+    cat: 'tdy',
+  });
+
+  const [keyMetricsDtInfo, setKeyMetricsDtInfo] = useState({
+    date: getDt(),
+    label: 'Today',
+    cat: 'tdy',
+  });
+
+  const [rankingDtInfo, setRankingDtInfo] = useState({
     date: getDt(),
     label: 'Today',
     cat: 'tdy',
@@ -31,55 +51,100 @@ const BusinessStatistics = () => {
     getDt(undefined, undefined, 'HH:mm:ss')
   );
 
-  const [keyMetricsDtInfo, setKeyMetricsDtInfo] = useState({
-    date: getDt(),
-    label: 'Today',
-    cat: 'tdy',
-  });
+  const [selectedKeyMetrics, setSelectedKeyMetrics] = useState(['Sales']);
+  const minSelectedMetrics = 1;
+  const maxSelectedMetrics = 5;
 
-  const [carouselPrev, setCarouselPrev] = useState(false);
-  const [carouselNext, setCarouselNext] = useState(true);
+  const handleKeyMetricsClick = (keyMetrics) => {
+    if (
+      selectedKeyMetrics.length === minSelectedMetrics &&
+      selectedKeyMetrics.includes(keyMetrics.label)
+    ) {
+      messageApi.open({
+        key: 'minSelectedMetrics',
+        type: 'warning',
+        content: (
+          <span>
+            You should select at least <strong>{minSelectedMetrics}</strong> Key
+            Metrics.
+          </span>
+        ),
+        style: { marginLeft: isSiderCollapsed ? 80 : 220 },
+      });
+      setTimeout(() => message.destroy('minSelectedMetrics'), 2000);
+      return;
+    }
+
+    if (
+      selectedKeyMetrics.length >= maxSelectedMetrics &&
+      !selectedKeyMetrics.includes(keyMetrics.label)
+    ) {
+      messageApi.open({
+        key: 'maxSelectedMetrics',
+        type: 'warning',
+        content: (
+          <span>
+            You can only select up to <strong>{maxSelectedMetrics}</strong> Key
+            Metrics.
+          </span>
+        ),
+        style: { marginLeft: isSiderCollapsed ? 80 : 220 },
+      });
+
+      setTimeout(() => message.destroy('maxSelectedMetrics'), 2000);
+
+      return;
+    }
+    !selectedKeyMetrics.includes(keyMetrics.label)
+      ? setSelectedKeyMetrics([...selectedKeyMetrics, keyMetrics.label])
+      : setSelectedKeyMetrics([
+          ...selectedKeyMetrics.filter(
+            (selected) => selected !== keyMetrics.label
+          ),
+        ]);
+  };
 
   useEffect(() => {
     const updateStatistics = setInterval(
       () => setStatisticsTdy(getDt(undefined, undefined, 'HH:mm:ss')),
       600000
     );
-
-    return () => clearInterval(updateStatistics);
+    return () => {
+      clearInterval(updateStatistics);
+    };
   });
 
   const data = [
-    { Day: '1', Sales: 300 },
-    { Day: '2', Sales: 356 },
-    { Day: '3', Sales: 481 },
-    { Day: '4', Sales: 237 },
-    { Day: '5', Sales: 285 },
-    { Day: '6', Sales: 300 },
-    { Day: '7', Sales: 107 },
-    { Day: '8', Sales: 402 },
-    { Day: '9', Sales: 266 },
-    { Day: '10', Sales: 470 },
-    { Day: '11', Sales: 391 },
-    { Day: '12', Sales: 379 },
-    { Day: '13', Sales: 418 },
-    { Day: '14', Sales: 301 },
-    { Day: '15', Sales: 317 },
-    { Day: '16', Sales: 30 },
-    { Day: '17', Sales: 391 },
-    { Day: '18', Sales: 106 },
-    { Day: '19', Sales: 465 },
-    { Day: '20', Sales: 50 },
-    { Day: '21', Sales: 321 },
-    { Day: '22', Sales: 279 },
-    { Day: '23', Sales: 186 },
-    { Day: '24', Sales: 500 },
-    { Day: '25', Sales: 223 },
-    { Day: '26', Sales: 447 },
-    { Day: '27', Sales: 70 },
-    { Day: '28', Sales: 58 },
-    { Day: '29', Sales: 400 },
-    { Day: '30', Sales: 600 },
+    { Day: '1', Sales: 300, cat: '1' },
+    { Day: '2', Sales: 356, cat: '1' },
+    { Day: '3', Sales: 481, cat: '1' },
+    { Day: '4', Sales: 237, cat: '1' },
+    { Day: '5', Sales: 285, cat: '1' },
+    { Day: '6', Sales: 300, cat: '1' },
+    { Day: '7', Sales: 107, cat: '2' },
+    { Day: '8', Sales: 402, cat: '2' },
+    { Day: '9', Sales: 266, cat: '2' },
+    { Day: '10', Sales: 470, cat: '2' },
+    { Day: '11', Sales: 391, cat: '2' },
+    { Day: '12', Sales: 379, cat: '2' },
+    { Day: '13', Sales: 418, cat: '3' },
+    { Day: '14', Sales: 301, cat: '3' },
+    { Day: '15', Sales: 317, cat: '3' },
+    { Day: '16', Sales: 30, cat: '3' },
+    { Day: '17', Sales: 391, cat: '3' },
+    { Day: '18', Sales: 106, cat: '3' },
+    { Day: '19', Sales: 465, cat: '4' },
+    { Day: '20', Sales: 50, cat: '4' },
+    { Day: '21', Sales: 321, cat: '4' },
+    { Day: '22', Sales: 279, cat: '4' },
+    { Day: '23', Sales: 186, cat: '4' },
+    { Day: '24', Sales: 500, cat: '4' },
+    { Day: '25', Sales: 223, cat: '5' },
+    { Day: '26', Sales: 447, cat: '5' },
+    { Day: '27', Sales: 70, cat: '5' },
+    { Day: '28', Sales: 58, cat: '5' },
+    { Day: '29', Sales: 400, cat: '5' },
+    { Day: '30', Sales: 600, cat: '5' },
   ];
 
   const keyMetricsValList = [
@@ -109,6 +174,7 @@ const BusinessStatistics = () => {
 
   return (
     <Layout>
+      {contextHolder}
       <MainCardContainer className='business-statistics'>
         <DropdownDate
           onChange={(dateInfo) => {
@@ -118,15 +184,13 @@ const BusinessStatistics = () => {
         <Row justify='center' gutter={[20, 20]}>
           {statisticsList.map((statistics, index) => (
             <Col flex='20%'>
-              <SmallCard
-                bodyStyle={{ padding: '15px 10px 0 14px' }}
-                style={{ height: 90 }}
-              >
+              <SmallCard bodyStyle={{ padding: 15 }} style={{ height: 105 }}>
                 <Statistics
                   key={statistics.key}
                   value={statisticsData[statistics.key]}
                   title={statistics.title}
-                  date={
+                  date={statisticsDtInfo.date}
+                  untilTm={
                     statisticsDtInfo.cat === 'tdy'
                       ? `Until ${statisticsTdy}`
                       : ''
@@ -138,12 +202,12 @@ const BusinessStatistics = () => {
                   toFixed={statistics.toFixed}
                   space={15}
                   valueSize={16}
+                  avatarSize={55}
                 />
               </SmallCard>
             </Col>
           ))}
         </Row>
-
         <DropdownDate
           onChange={(dateInfo) => {
             setKeyMetricsDtInfo(dateInfo);
@@ -168,31 +232,21 @@ const BusinessStatistics = () => {
                 <Button type='primary'>Generate Report(s)</Button>
               </Col>
             </Row>
-
-            <Carousel
-              dots={false}
-              arrows
-              prevArrow={carouselPrev ? <MdChevronLeft /> : <></>}
-              nextArrow={carouselNext ? <MdChevronRight /> : <></>}
-              afterChange={(current) => {
-                if (current > 0) setCarouselPrev(true);
-                else setCarouselPrev(false);
-                if (
-                  current !== splitIntoChunks(keyMetricsList, 5).length - 1 ||
-                  current === 0
-                )
-                  setCarouselNext(true);
-                else setCarouselNext(false);
-              }}
-            >
+            <CarouselArrow>
               {splitIntoChunks(keyMetricsList, 5).map((chunks, index) => (
                 <div key={`keyMetricsChunk-${index}`}>
-                  <Row gutter={20}>
+                  <Row gutter={10}>
                     {chunks.map((keyMetrics) => (
                       <Col key={keyMetrics.key} flex='20%'>
                         <SmallCard
-                          backgroundColor='grey'
+                          backgroundColor={
+                            !selectedKeyMetrics.includes(keyMetrics.label)
+                              ? 'grey'
+                              : 'success'
+                          }
+                          hover='success'
                           bodyStyle={{ padding: 15 }}
+                          onClick={() => handleKeyMetricsClick(keyMetrics)}
                         >
                           <Space
                             direction='vertical'
@@ -200,15 +254,30 @@ const BusinessStatistics = () => {
                             className='full-width'
                           >
                             <Row justify='space-between' style={{ height: 35 }}>
-                              <Col span={20}>
-                                <Text type='secondary'>{keyMetrics.label}</Text>
+                              <Col span={22}>
+                                <Text>{keyMetrics.label}</Text>
+                                <Popover
+                                  content={keyMetrics.desc}
+                                  placement='topLeft'
+                                  overlayStyle={{
+                                    width: 300,
+                                    textAlign: 'justify',
+                                  }}
+                                >
+                                  <QuestionCircleOutlined
+                                    style={{ padding: '0 5px' }}
+                                    className='color-grey'
+                                  />
+                                </Popover>
                               </Col>
-                              <Col span={4}>
-                                <HiCheckCircle
-                                  size={20}
-                                  className='color-primary'
-                                />
-                              </Col>
+                              {selectedKeyMetrics.includes(keyMetrics.label) ? (
+                                <Col span={2}>
+                                  <HiCheckCircle
+                                    size={20}
+                                    className='color-primary'
+                                  />
+                                </Col>
+                              ) : null}
                             </Row>
                             <Row gutter={5} style={{ height: 40 }}>
                               <Col>
@@ -234,8 +303,25 @@ const BusinessStatistics = () => {
                   </Row>
                 </div>
               ))}
-            </Carousel>
-
+            </CarouselArrow>
+            <Row justify='end' align='middle' gutter={10}>
+              <Col>
+                <Text type='secondary' className='text-sm'>
+                  Metrics Selected: {selectedKeyMetrics.length}/
+                  {maxSelectedMetrics}
+                </Text>
+              </Col>
+              <Col>
+                <Button
+                  type='link'
+                  color='info'
+                  style={{ fontSize: 12 }}
+                  onClick={() => setSelectedKeyMetrics(['Sales'])}
+                >
+                  Reset
+                </Button>
+              </Col>
+            </Row>
             <Suspense
               fallback={
                 <div className='centerFlex full-height full-width'>
@@ -251,10 +337,56 @@ const BusinessStatistics = () => {
                 data={data}
                 tooltipValPrefix='RM '
                 tooltipName='Total Sales'
+                seriesField='cat'
               />
             </Suspense>
           </Space>
         </MainCard>
+        <DropdownDate
+          onChange={(dateInfo) => {
+            setRankingDtInfo(dateInfo);
+          }}
+        />
+        <Row justify='center' gutter={[30, 20]}>
+          <Col span={12}>
+            <MainCard>
+              <Space direction='vertical' size={5} className='full-width'>
+                <div>
+                  <Title level={5}>Product Rankings</Title>
+
+                  <Text className='dashboard-grey-text'>
+                    {formatDt(
+                      rankingDtInfo.date,
+                      rankingDtInfo.cat,
+                      'DD-MM-YYYY',
+                      'MMM DD, YYYY'
+                    )}
+                  </Text>
+                </div>
+                <RankingList itemList={topProduct} />
+              </Space>
+            </MainCard>
+          </Col>
+          <Col span={12}>
+          <MainCard>
+              <Space direction='vertical' size={5} className='full-width'>
+                <div>
+                  <Title level={5}>Promotion Rankings</Title>
+
+                  <Text className='dashboard-grey-text'>
+                    {formatDt(
+                      rankingDtInfo.date,
+                      rankingDtInfo.cat,
+                      'DD-MM-YYYY',
+                      'MMM DD, YYYY'
+                    )}
+                  </Text>
+                </div>
+                <RankingList itemList={topProduct} />
+              </Space>
+            </MainCard>
+          </Col>
+        </Row>
       </MainCardContainer>
     </Layout>
   );

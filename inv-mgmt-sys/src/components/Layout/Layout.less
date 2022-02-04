@@ -1,5 +1,18 @@
-@import (reference) '../../App.less';
+@import (reference) 'src/App.less';
 @sider-width: 220px;
+
+// Mixins
+.header-width(@sider-width) {
+  width: calc(100% - @sider-width);
+}
+
+.sider-fixed(@sider-width) {
+  width: @sider-width;
+}
+
+.sider-logo-fixed(@sider-logo-width) {
+  width: @sider-logo-width;
+}
 
 // Header
 .header {
@@ -103,18 +116,6 @@
       }
     }
   }
-}
-
-.header-width(@sider-width) {
-  width: calc(100% - @sider-width);
-}
-
-.sider-fixed(@sider-width) {
-  width: @sider-width;
-}
-
-.sider-logo-fixed(@sider-logo-width) {
-  width: @sider-logo-width;
 }
 
 .sider-wrapper-props {

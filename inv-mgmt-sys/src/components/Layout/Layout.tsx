@@ -28,7 +28,7 @@ const Layout = ({ justify = 'center', ...props }: CustomLayoutProps) => {
         >
           <Content
             className='content'
-            style={{ minWidth: 1060 }} //1280px - sider width
+            style={{ minWidth: 1280 }}
           >
             <Row justify={justify} {...props}>
               {props.children}

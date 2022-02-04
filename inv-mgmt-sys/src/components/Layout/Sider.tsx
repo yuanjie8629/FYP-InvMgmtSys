@@ -8,6 +8,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import classNames from 'classnames';
 import siderDefKeyList from './siderDefKeyList';
+import less from 'less';
 
 const Sider = () => {
   const { Sider } = Layout;
@@ -35,7 +36,15 @@ const Sider = () => {
 
   const openKey = [location.pathname.split('/')[1]];
   useEffect(() => {
-    if (renderCount < 1 && !(screens.xl || screens.xxl || screens.xl === undefined || screens.xxl === undefined)) {
+    if (
+      renderCount < 1 &&
+      !(
+        screens.xl ||
+        screens.xxl ||
+        screens.xl === undefined ||
+        screens.xxl === undefined
+      )
+    ) {
       dispatch(collapse());
       dispatch(increment());
     }
@@ -52,9 +61,10 @@ const Sider = () => {
         theme='light'
         collapsible
         collapsed={isSiderCollapsed}
-        onCollapse={() =>
-          isSiderCollapsed ? dispatch(expand()) : dispatch(collapse())
-        }
+        onCollapse={() => {
+          isSiderCollapsed ? dispatch(expand()) : dispatch(collapse());
+          less.modifyVars({ '@message-margin': 40 });
+        }}
         width='220px'
         className='sider'
       >
