@@ -232,6 +232,7 @@ const validateDay = (
     newCat = 'ytd';
   } else {
     newLbl = getDayOfWeek(moment(newDt, outputFormat));
+    newCat = 'byDay';
   }
 
   return {
@@ -267,10 +268,10 @@ const validateWeek = (
         ))
       : moment(date, inputFormat);
   let newLbl = '';
-  let disabledNext = moment(getNextWeek(newDt), 'DD-MM-YYYY')
-    .startOf('week')
-    .isSameOrAfter(moment());
-
+  let disabledNext = moment(getNextWeek(newDt), 'DD-MM-YYYY').isSameOrAfter(
+    moment(),
+    'week'
+  );
   if (
     moment(newDt).isBetween(moment().startOf('week'), moment().endOf('week'))
   ) {
@@ -309,9 +310,10 @@ const validateMonth = (
         ))
       : moment(date, inputFormat);
   let newLbl = '';
-  let disabledNext = moment(getNextMth(newDt), 'DD-MM-YYYY')
-    .startOf('month')
-    .isSameOrAfter(moment());
+  let disabledNext = moment(getNextMth(newDt), 'DD-MM-YYYY').isAfter(
+    moment(),
+    'month'
+  );
 
   if (getMth(newDt) === getMth()) {
     newDt = getThisMthTilYtd(newDt, undefined, outputFormat);
@@ -349,9 +351,10 @@ const validateYear = (
         ))
       : moment(date, inputFormat);
   let newLbl = '';
-  let disabledNext = moment(getNextYr(newDt), 'DD-MM-YYYY')
-    .startOf('year')
-    .isSameOrAfter(moment());
+  let disabledNext = moment(getNextYr(newDt), 'DD-MM-YYYY').isAfter(
+    moment(),
+    'year'
+  );
 
   if (getYr(newDt) === getYr()) {
     newDt = getThisYrTilYtd(newDt, undefined, outputFormat);

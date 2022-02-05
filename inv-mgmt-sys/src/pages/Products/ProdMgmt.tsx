@@ -170,8 +170,7 @@ const ProdMgmt = () => {
             {prodStatList.map((statusItem) =>
               !(
                 status === statusItem.status ||
-                (statusItem.status !== 'hidden' &&
-                  statusItem.status !== 'active')
+                (!['hidden','active'].includes(statusItem.status) )
               ) ? (
                 <Menu.Item key={statusItem.status}>
                   {statusItem.label}

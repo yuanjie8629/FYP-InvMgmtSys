@@ -1,4 +1,4 @@
-const topProduct: {
+  const topProduct: {
   date: string;
   type: 'sales' | 'units';
   items: {

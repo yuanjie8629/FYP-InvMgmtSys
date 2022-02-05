@@ -1,5 +1,5 @@
-import React, { useEffect, useState, Suspense } from 'react';
-import SmallCard from '@components/Card/SmallCard';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
+import ColorCard from '@components/Card/ColorCard';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import DropdownDate from '@components/Input/DropdownDate';
 import Layout from '@components/Layout/Layout';
@@ -14,13 +14,14 @@ import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
 import keyMetricsList from './keyMetricsList';
 import { splitIntoChunks } from '@utils/arrayUtils';
-import { HiCheckCircle } from 'react-icons/hi';
 import { moneyFormatter, percentFormatter } from '@utils/numUtils';
-import LineChart from '@components/Chart/LineChart';
-import CarouselArrow from '@components/Carousel/CarouselArrow';
 import { useAppSelector } from '@hooks/reduxHooks';
 import RankingList from '@components/List/RankingList';
 import topProduct from './topProducts';
+import { prodCat } from '@utils/optionUtils';
+
+const LineChart = lazy(() => import('@components/Chart/LineChart'));
+const CarouselArrow = lazy(() => import('@components/Carousel/CarouselArrow'));
 
 const BusinessStatistics = () => {
   message.config({ duration: 2 });
@@ -121,6 +122,12 @@ const BusinessStatistics = () => {
     { Day: '4', Sales: 237, cat: '1' },
     { Day: '5', Sales: 285, cat: '1' },
     { Day: '6', Sales: 300, cat: '1' },
+    { Day: '1', Sales: 107, cat: '2' },
+    { Day: '2', Sales: 402, cat: '2' },
+    { Day: '3', Sales: 266, cat: '2' },
+    { Day: '4', Sales: 470, cat: '2' },
+    { Day: '5', Sales: 391, cat: '2' },
+    { Day: '6', Sales: 379, cat: '2' },
     { Day: '7', Sales: 107, cat: '2' },
     { Day: '8', Sales: 402, cat: '2' },
     { Day: '9', Sales: 266, cat: '2' },
@@ -184,7 +191,7 @@ const BusinessStatistics = () => {
         <Row justify='center' gutter={[20, 20]}>
           {statisticsList.map((statistics, index) => (
             <Col flex='20%'>
-              <SmallCard bodyStyle={{ padding: 15 }} style={{ height: 105 }}>
+              <ColorCard bodyStyle={{ padding: 15 }} style={{ height: 105 }}>
                 <Statistics
                   key={statistics.key}
                   value={statisticsData[statistics.key]}
@@ -204,7 +211,7 @@ const BusinessStatistics = () => {
                   valueSize={16}
                   avatarSize={55}
                 />
-              </SmallCard>
+              </ColorCard>
             </Col>
           ))}
         </Row>
@@ -238,66 +245,58 @@ const BusinessStatistics = () => {
                   <Row gutter={10}>
                     {chunks.map((keyMetrics) => (
                       <Col key={keyMetrics.key} flex='20%'>
-                        <SmallCard
+                        <ColorCard
                           backgroundColor={
                             !selectedKeyMetrics.includes(keyMetrics.label)
                               ? 'grey'
                               : 'success'
                           }
                           hover='success'
+                          label={
+                            <>
+                              <Text className='text-break'>
+                                {keyMetrics.label}
+                              </Text>
+                              <Popover
+                                content={keyMetrics.desc}
+                                overlayStyle={{
+                                  width: 300,
+                                  textAlign: 'justify',
+                                }}
+                              >
+                                <QuestionCircleOutlined
+                                  style={{ padding: '0 5px' }}
+                                  className='color-grey'
+                                />
+                              </Popover>
+                            </>
+                          }
+                          indicator={
+                            selectedKeyMetrics.includes(keyMetrics.label)
+                              ? 'true'
+                              : null
+                          }
                           bodyStyle={{ padding: 15 }}
                           onClick={() => handleKeyMetricsClick(keyMetrics)}
                         >
-                          <Space
-                            direction='vertical'
-                            size={10}
-                            className='full-width'
-                          >
-                            <Row justify='space-between' style={{ height: 35 }}>
-                              <Col span={22}>
-                                <Text>{keyMetrics.label}</Text>
-                                <Popover
-                                  content={keyMetrics.desc}
-                                  placement='topLeft'
-                                  overlayStyle={{
-                                    width: 300,
-                                    textAlign: 'justify',
-                                  }}
-                                >
-                                  <QuestionCircleOutlined
-                                    style={{ padding: '0 5px' }}
-                                    className='color-grey'
-                                  />
-                                </Popover>
-                              </Col>
-                              {selectedKeyMetrics.includes(keyMetrics.label) ? (
-                                <Col span={2}>
-                                  <HiCheckCircle
-                                    size={20}
-                                    className='color-primary'
-                                  />
-                                </Col>
+                          <Row gutter={5} style={{ height: 40 }}>
+                            <Col>
+                              {keyMetrics.cat === 'money' ? (
+                                <Text strong>RM</Text>
                               ) : null}
-                            </Row>
-                            <Row gutter={5} style={{ height: 40 }}>
-                              <Col>
-                                {keyMetrics.cat === 'money' ? (
-                                  <Text strong>RM</Text>
-                                ) : null}
-                              </Col>
-                              <Col>
-                                <Title level={4} style={{ fontWeight: 500 }}>
-                                  {getKeyMetricsVal(keyMetrics)}
-                                </Title>
-                              </Col>
-                              <Col>
-                                {keyMetrics.cat === 'percent' ? (
-                                  <Text strong>%</Text>
-                                ) : null}
-                              </Col>
-                            </Row>
-                          </Space>
-                        </SmallCard>
+                            </Col>
+                            <Col>
+                              <Title level={4} style={{ fontWeight: 500 }}>
+                                {getKeyMetricsVal(keyMetrics)}
+                              </Title>
+                            </Col>
+                            <Col>
+                              {keyMetrics.cat === 'percent' ? (
+                                <Text strong>%</Text>
+                              ) : null}
+                            </Col>
+                          </Row>
+                        </ColorCard>
                       </Col>
                     ))}
                   </Row>
@@ -363,12 +362,23 @@ const BusinessStatistics = () => {
                     )}
                   </Text>
                 </div>
-                <RankingList itemList={topProduct} />
+                <RankingList
+                  itemList={topProduct}
+                  cardSelections={[
+                    { key: 'bySales', label: 'By Sales', desc: '2323' },
+                    { key: 'byUnits', label: 'By Units', desc: '123213' },
+                  ]}
+                  selectOptions={{
+                    placeholder: 'Category',
+                    options: prodCat,
+                    allowClear: true,
+                  }}
+                />
               </Space>
             </MainCard>
           </Col>
           <Col span={12}>
-          <MainCard>
+            <MainCard>
               <Space direction='vertical' size={5} className='full-width'>
                 <div>
                   <Title level={5}>Promotion Rankings</Title>
@@ -382,7 +392,13 @@ const BusinessStatistics = () => {
                     )}
                   </Text>
                 </div>
-                <RankingList itemList={topProduct} />
+                <RankingList
+                  itemList={topProduct}
+                  cardSelections={[
+                    { key: 'bySales', label: 'By Sales', desc: '2323' },
+                    { key: 'byUnits', label: 'By Units', desc: '123213' },
+                  ]}
+                />
               </Space>
             </MainCard>
           </Col>
