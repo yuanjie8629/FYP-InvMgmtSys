@@ -75,10 +75,8 @@ const LineChart = ({
         };
       },
     },
-    interactions: [
-      { type: 'legend-filter', enable: false },
-      { type: 'element-highlight' },
-    ],
+    interactions: [{ type: 'legend-filter', enable: false }],
+    theme: { defaultColor: '#0e9f6e' },
   };
 
   return (

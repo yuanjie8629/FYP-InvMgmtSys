@@ -9,7 +9,7 @@ import Radio from 'antd/es/radio';
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined';
 import { MdArrowRight, MdChevronRight } from 'react-icons/md';
 import Layout from '@components/Layout/Layout';
-import SmallCard from '@components/Card/SmallCard';
+import ColorCard from '@components/Card/ColorCard';
 import Button from '@components/Button';
 import Table from '@components/Table';
 import Statistics from '@components/Statistics';
@@ -54,7 +54,7 @@ const Dashboard = () => {
       : dataYear.year;
 
   const getChartTitle =
-    salesDateRange === 'month' || salesDateRange === 'week'
+    ['month','week'].includes(salesDateRange)
       ? 'Day'
       : salesDateRange === 'day'
       ? 'Hour'
@@ -234,7 +234,7 @@ const Dashboard = () => {
               }
               className='dashboard-toDoList-col'
             >
-              <SmallCard
+              <ColorCard
                 backgroundColor='grey'
                 hover='success'
                 bodyStyle={{
@@ -259,7 +259,7 @@ const Dashboard = () => {
                     />
                   </div>
                 </Space>
-              </SmallCard>
+              </ColorCard>
             </Col>
           ))}
           {toDoItemPlaceHolder()}
@@ -387,7 +387,7 @@ const Dashboard = () => {
               <Title level={5}>Top Products</Title>
             </Col>
             <Col>
-              <More route='statistics' />
+              <More route='bizStatistics' />
             </Col>
           </Row>
           <Row>

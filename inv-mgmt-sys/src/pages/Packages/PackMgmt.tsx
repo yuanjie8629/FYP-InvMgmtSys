@@ -184,8 +184,7 @@ const PackMgmt = () => {
             {packStatList.map((statusItem) =>
               !(
                 status === statusItem.status ||
-                (statusItem.status !== 'hidden' &&
-                  statusItem.status !== 'active')
+                !['hidden', 'active'].includes(statusItem.status)
               ) ? (
                 <Menu.Item key='{statusItem.status}'>
                   {statusItem.label}
@@ -209,8 +208,8 @@ const PackMgmt = () => {
           (statusItem) => status === statusItem.status
         );
 
-        return !(
-          ['expired', 'oos', 'scheduled'].indexOf(matchedStatus!.status) >= 0
+        return !['expired', 'oos', 'scheduled'].includes(
+          matchedStatus!.status
         ) ? (
           <Row align='middle'>
             <StatusTag color={matchedStatus!.color}>

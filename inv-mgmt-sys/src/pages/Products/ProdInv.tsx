@@ -41,15 +41,6 @@ const ProdInv = () => {
     },
   ];
 
-  const getSalesData = (data: string) =>
-    data === 'month'
-      ? console.log('month')
-      : data === 'week'
-      ? console.log('week')
-      : data === 'day'
-      ? console.log('day')
-      : console.log('year');
-
   const prodInvColumns: {
     title: string;
     dataIndex?: string | string[];
@@ -119,7 +110,6 @@ const ProdInv = () => {
             <Radio.Group
               buttonStyle='solid'
               size={'small'}
-              onChange={(e) => getSalesData(e.target.value)}
               defaultValue={invInputOptions[0].value}
               options={invInputOptions}
               optionType='button'
