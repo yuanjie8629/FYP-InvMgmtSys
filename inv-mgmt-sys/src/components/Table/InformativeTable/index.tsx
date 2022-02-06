@@ -19,7 +19,11 @@ interface InformativeTableProps extends TableProps {
   buttons: InformativeTableButtonProps;
 }
 
-const InformativeTable = ({ defPg = 10, ...props }: InformativeTableProps) => {
+const InformativeTable = ({
+  defPg = 10,
+  buttons,
+  ...props
+}: InformativeTableProps) => {
   const { Text } = Typography;
   let [selectedRowKeys, setSelectedRowKeys] = useState();
   let [selectedRowCount, setSelectedRowCount] = useState(0);
@@ -28,10 +32,10 @@ const InformativeTable = ({ defPg = 10, ...props }: InformativeTableProps) => {
   );
 
   const onSelectChange = (selectedRowKeys: any, selectedRows: any) => {
-    if (props.buttons !== undefined) {
+    if (buttons !== undefined) {
       let buttonShow: { key: string; show: boolean }[] = [];
 
-      props.buttons.forEach((btn: any) =>
+      buttons.forEach((btn: any) =>
         selectedRows.forEach((selected: any) => {
           const btnShowCondition = !buttonShow.find(
             (btnToShow) => btnToShow.key === btn.key && !btnToShow.show
@@ -96,7 +100,7 @@ const InformativeTable = ({ defPg = 10, ...props }: InformativeTableProps) => {
         </Col>
         <Col>
           <Space size={15}>
-            {props.buttons?.map((btn, index) => {
+            {buttons?.map((btn, index) => {
               const Button = btn.element;
               return btnShow.map(
                 (btnToShow) => btnToShow.key === btn.key && btnToShow.show

@@ -13,7 +13,7 @@ interface LineChartProps extends LineConfig {
   toFixed?: number;
 }
 const LineChart = ({
-  toFixed = 0,
+data,
   titleX = '',
   titleY = '',
   tooltipName = titleY !== '' ? titleY : 'value',
@@ -21,12 +21,13 @@ const LineChart = ({
   tooltipTitleSuffix = '',
   tooltipValPrefix = '',
   tooltipValSuffix = '',
+  toFixed = 0,
   ...props
 }: LineChartProps) => {
   const config = {
-    data: props.data,
-    xField: Object.keys(props.data[0])[0],
-    yField: Object.keys(props.data[0])[1],
+    data: data,
+    xField: Object.keys(data[0])[0],
+    yField: Object.keys(data[0])[1],
     xAxis: {
       title:
         titleX === ''
@@ -60,17 +61,17 @@ const LineChart = ({
     color: ['#0e9f6e', '#138bd0', '#f05252', '#ffc107', '#ff6f00'],
 
     tooltip: {
-      fields: [Object.keys(props.data[0])[0], Object.keys(props.data[0])[1]],
+      fields: [Object.keys(data[0])[0], Object.keys(data[0])[1]],
       formatter: (datum: Datum) => {
         return {
           title:
             tooltipTitlePrefix +
-            datum[Object.keys(props.data[0])[0]] +
+            datum[Object.keys(data[0])[0]] +
             tooltipTitleSuffix,
           name: tooltipName,
           value:
             tooltipValPrefix +
-            datum[Object.keys(props.data[0])[1]].toFixed(toFixed) +
+            datum[Object.keys(data[0])[1]].toFixed(toFixed) +
             tooltipValSuffix,
         };
       },

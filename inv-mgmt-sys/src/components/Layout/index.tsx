@@ -6,6 +6,7 @@ import Sider from './Sider';
 import Footer from './Footer';
 import './Layout.less';
 interface CustomLayoutProps extends RowProps {
+  justify?: 'start' | 'end' | 'center' | 'space-around' | 'space-between';
   children?: React.ReactNode;
 }
 
@@ -26,10 +27,7 @@ const Layout = ({ justify = 'center', ...props }: CustomLayoutProps) => {
             </div>
           }
         >
-          <Content
-            className='content'
-            style={{ minWidth: 1280 }}
-          >
+          <Content className='content' style={{ minWidth: 1280 }}>
             <Row justify={justify} {...props}>
               {props.children}
             </Row>

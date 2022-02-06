@@ -1,18 +1,17 @@
 import './Button.less';
 import { Button as AntdButton, ButtonProps as AntdButtonProps } from 'antd';
 
-interface ButtonProps extends AntdButtonProps {
+export interface ButtonProps extends AntdButtonProps {
   color?: 'success' | 'warning' | 'error' | 'info' | 'grey';
-  children?: React.ReactNode;
 }
 
-const Button = (props: ButtonProps) => {
+const Button = ({ color, className, ...props }: ButtonProps) => {
   return (
     <AntdButton
-      {...props}
-      className={`${props.className !== undefined ? props.className : ''}${
-        props.color !== undefined ? ` btn-${props.color}` : ''
+      className={`${className !== undefined ? className : ''}${
+        color !== undefined ? ` btn-${color}` : ''
       }`}
+      {...props}
     />
   );
 };

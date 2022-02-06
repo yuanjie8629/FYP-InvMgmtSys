@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
-import Layout from '@components/Layout/Layout';
+import Layout from '@components/Layout';
 import Tag, { TagProps } from '@components/Tag';
 import MainCardContainer from '@components/Container/MainCardContainer';
-import FilterInputs from './FilterInputs';
+import FilterInputs from '@pages/Products/FilterInputs';
 import { Row, Space, Col, Typography, Dropdown, Menu } from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
@@ -29,9 +29,9 @@ const InvAnalysis = () => {
     () =>
       setInvAnalysisListFltr(
         voucherList.filter((voucher) =>
-          searchParams.get('stat') !== null
-            ? voucher.status === searchParams.get('stat')
-            : setSearchParams({ stat: 'abc' })
+          searchParams.get('type') !== null
+            ? voucher.status === searchParams.get('type')
+            : setSearchParams({ type: 'abc' })
         )
       ),
     [searchParams, setSearchParams]
@@ -334,9 +334,9 @@ const InvAnalysis = () => {
       <MainCardContainer className='voucher-mgmt'>
         <MainCard
           tabList={invAnalysisTab}
-          activeTabKey={searchParams.get('stat')}
+          activeTabKey={searchParams.get('type')}
           onTabChange={(key) => {
-            setSearchParams({ stat: key });
+            setSearchParams({ type: key });
           }}
         >
           <Space direction='vertical' size={40} className='full-width'>

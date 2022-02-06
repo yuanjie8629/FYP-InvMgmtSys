@@ -1,15 +1,15 @@
 import { Card, CardProps } from 'antd';
 import './MainCard.less';
 
-const MainCard = (props: CardProps) => {
+const MainCard = ({ className, ...props }: CardProps) => {
   return (
     <Card
       bordered={false}
       bodyStyle={{ padding: 35 }}
-      {...props}
-      className={`container-card full-width full-height ${
-        props.className !== undefined ? props.className : ''
+      className={`main-card full-width full-height ${
+        className !== undefined ? className : ''
       }`}
+      {...props}
     />
   );
 };

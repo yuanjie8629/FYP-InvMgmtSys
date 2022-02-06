@@ -14,8 +14,11 @@ interface SelectLabelProps extends SelectProps<any> {
 }
 
 const SelectWithLabel = ({
+  label,
+  select,
   textSpan = 5,
   justify = 'end',
+  className,
   ...props
 }: SelectLabelProps) => {
   const { Text } = Typography;
@@ -23,17 +26,15 @@ const SelectWithLabel = ({
   return (
     <Row align='middle' gutter={30} className='input-select-label'>
       <Col span={textSpan} className={justify === 'start' ? '' : 'justify-end'}>
-        <Text type='secondary'>{props.label}</Text>
+        <Text type='secondary'>{label}</Text>
       </Col>
       <Col span={24 - textSpan}>
         <Select
-          placeholder={props.select.placeholder}
-          options={props.select.options}
+          placeholder={select.placeholder}
+          options={select.options}
           allowClear
+          className={`full-width ${className !== undefined ? className : ''}`}
           {...props}
-          className={`full-width ${
-            props.className !== undefined ? props.className : ''
-          }`}
         />
       </Col>
     </Row>

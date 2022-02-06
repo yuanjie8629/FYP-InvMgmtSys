@@ -12,7 +12,6 @@ interface CardProps extends AntdCardProps {
     | 'error'
     | 'info'
     | 'grey';
-  children?: React.ReactNode;
   hover?: boolean | 'success' | 'warning' | 'error' | 'info' | 'grey';
   label?: React.ReactNode;
   indicator?: 'true' | 'false';
@@ -21,6 +20,8 @@ interface CardProps extends AntdCardProps {
 const ColorCard = ({
   backgroundColor = 'default',
   hover = false,
+  label,
+  indicator,
   className,
   ...props
 }: CardProps) => {
@@ -39,13 +40,13 @@ const ColorCard = ({
       } ${className !== undefined ? className : ''}`}
     >
       <Space direction='vertical' size={20} className='full-width'>
-        {props.label !== undefined || props.indicator !== undefined ? (
+        {label !== undefined || indicator !== undefined ? (
           <Row justify='space-between'>
-            <Col span={22}>{props.label}</Col>
+            <Col span={22}>{label}</Col>
             <Col span={2} style={{ position: 'absolute', right: 20 }}>
-              {props.indicator === 'true' ? (
+              {indicator === 'true' ? (
                 <HiCheckCircle size={20} className='color-primary' />
-              ) : props.indicator === 'false' ? (
+              ) : indicator === 'false' ? (
                 <HiXCircle size={20} className='color-error' />
               ) : null}
             </Col>

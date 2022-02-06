@@ -1,5 +1,5 @@
 import MainCard from '@components/Card/MainCard';
-import Layout from '@components/Layout/Layout';
+import Layout from '@components/Layout';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
