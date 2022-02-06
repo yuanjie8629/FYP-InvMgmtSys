@@ -1,6 +1,6 @@
 import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
-import Layout from '@components/Layout/Layout';
+import Layout from '@components/Layout';
 import Tag, { TagProps } from '@components/Tag';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';

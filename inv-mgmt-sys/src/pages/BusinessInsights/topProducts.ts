@@ -2,8 +2,8 @@
   date: string;
   type: 'sales' | 'units';
   items: {
-    itemNm: string;
-    itemCat?: string;
+    label: string;
+    cat?: string;
     value: number;
   }[];
 } = {
@@ -11,33 +11,33 @@
   type: 'sales',
   items: [
     {
-      itemNm: 'Kari Ayam',
-      itemCat: 'Ready-To-Eat',
+      label: 'Kari Ayam',
+      cat: 'Ready-To-Eat',
       value: 80,
     },
     {
-      itemNm: 'Sambal Ikan Bilis',
-      itemCat: 'Ready-To-Eat',
+      label: 'Sambal Ikan Bilis',
+      cat: 'Ready-To-Eat',
       value: 54,
     },
     {
-      itemNm: 'Nasi Briyani Bukhari',
-      itemCat: 'Ready-To-Cook',
+      label: 'Nasi Briyani Bukhari',
+      cat: 'Ready-To-Cook',
       value: 47,
     },
     {
-      itemNm: 'Rendang Dendeng Daging',
-      itemCat: 'Ready-To-Eat',
+      label: 'Rendang Dendeng Daging',
+      cat: 'Ready-To-Eat',
       value: 53,
     },
     {
-      itemNm: 'Pes Sambal Tumis',
-      itemCat: 'Paste',
+      label: 'Pes Sambal Tumis',
+      cat: 'Paste',
       value: 38,
     },
     {
-      itemNm: 'Pes Masakan Kerutuk',
-      itemCat: 'Paste',
+      label: 'Pes Masakan Kerutuk',
+      cat: 'Paste',
       value: 22,
     },
   ],

@@ -1,4 +1,4 @@
-import Layout from '@components/Layout/Layout';
+import Layout from '@components/Layout';
 
 const Help = () => {
   return <Layout>Help</Layout>;

@@ -6,7 +6,7 @@ interface AffixAddProps extends AffixProps {
   label?: string;
 }
 
-const AffixAdd = (props: Omit<AffixAddProps, 'children'>) => {
+const AffixAdd = ({label,...props}: Omit<AffixAddProps, 'children'>) => {
   const [hideCard, setHideCard] = useState(false);
   return (
     <Affix
@@ -35,7 +35,7 @@ const AffixAdd = (props: Omit<AffixAddProps, 'children'>) => {
           </Col>
           <Col>
             <Button size='middle' type='primary' htmlType='submit'>
-              Add {props.label}
+              Add {label}
             </Button>
           </Col>
         </Row>

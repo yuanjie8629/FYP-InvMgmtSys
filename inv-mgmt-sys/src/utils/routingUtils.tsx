@@ -1,5 +1,5 @@
 import routeList from '@routes/routeList';
-import siderMenuList from '@components/Layout/siderMenuList';
+import siderMenuList from '@components/Layout/Sider/siderMenuList';
 import { IconType } from 'react-icons';
 
 const findRoutePath = (label: string) => {
@@ -9,11 +9,11 @@ const findRoutePath = (label: string) => {
 
 const findIcon = (cat: string) => {
   let selected = siderMenuList.map((siderMenuLevel) =>
-    siderMenuLevel.items.find((item) => item.key === cat)
+    siderMenuLevel.items.find((item) => item.key === cat) 
   );
   let icons = selected.find((selectedItem) => selectedItem !== undefined);
   let MatchedIcon: IconType = icons!.icon;
-  return <MatchedIcon size={24} />;
+  return MatchedIcon;
 };
 
 export { findRoutePath, findIcon };

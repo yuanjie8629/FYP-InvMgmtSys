@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from '@components/Button';
-import { Card, Dropdown, Menu, MenuProps, Popover, Row } from 'antd';
+import { Card, Col, Dropdown, Menu, MenuProps, Popover, Row } from 'antd';
 import moment from 'moment';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { HiOutlineCalendar } from 'react-icons/hi';
@@ -29,6 +29,7 @@ interface DropdownDateProps extends Omit<MenuProps, 'onChange'> {
 
 const DropdownDate = ({
   onChange = () => '',
+  className,
   style,
   ...props
 }: DropdownDateProps) => {
@@ -352,51 +353,61 @@ const DropdownDate = ({
   );
 
   return (
-    <Card bodyStyle={{ padding: 5, textAlign: 'center' }} style={style}>
+    <Card
+      bodyStyle={{ padding: 5, textAlign: 'center' }}
+      style={style}
+      className={className}
+    >
       <Row justify='center' align='middle'>
-        <Button
-          type='text'
-          style={{ background: 'none' }}
-          className='centerFlex'
-          icon={<MdChevronLeft size={25} />}
-          onClick={subtractDate}
-          hidden={hideNxtPrevBtn}
-        />
-        <Dropdown
-          visible={dropdownVisible}
-          overlay={DateMenu}
-          placement='bottomCenter'
-        >
+        <Col>
           <Button
             type='text'
-            icon={<HiOutlineCalendar size={20} style={{ marginRight: 5 }} />}
             style={{ background: 'none' }}
             className='centerFlex'
-            onBlur={() => {
-              if (dropdownOnBlur === true) {
-                setDropdownVisible(false);
-                hideAllPickers();
-              }
-            }}
-            onClick={() => {
-              dropdownVisible === false
-                ? setDropdownVisible(true)
-                : setDropdownVisible(false);
-              setItemHovered(false);
-            }}
+            icon={<MdChevronLeft size={25} />}
+            onClick={subtractDate}
+            hidden={hideNxtPrevBtn}
+          />
+        </Col>
+        <Col>
+          <Dropdown
+            visible={dropdownVisible}
+            overlay={DateMenu}
+            placement='bottomCenter'
           >
-            {`${label} (${date})`}
-          </Button>
-        </Dropdown>
-        <Button
-          type='text'
-          style={{ background: 'none' }}
-          className='centerFlex'
-          icon={<MdChevronRight size={25} />}
-          onClick={addDate}
-          disabled={disableNext}
-          hidden={hideNxtPrevBtn}
-        />
+            <Button
+              type='text'
+              icon={<HiOutlineCalendar size={20} style={{ marginRight: 5 }} />}
+              style={{ background: 'none' }}
+              className='centerFlex'
+              onBlur={() => {
+                if (dropdownOnBlur === true) {
+                  setDropdownVisible(false);
+                  hideAllPickers();
+                }
+              }}
+              onClick={() => {
+                dropdownVisible === false
+                  ? setDropdownVisible(true)
+                  : setDropdownVisible(false);
+                setItemHovered(false);
+              }}
+            >
+              {`${label} (${date})`}
+            </Button>
+          </Dropdown>
+        </Col>
+        <Col>
+          <Button
+            type='text'
+            style={{ background: 'none' }}
+            className='centerFlex'
+            icon={<MdChevronRight size={25} />}
+            onClick={addDate}
+            disabled={disableNext}
+            hidden={hideNxtPrevBtn}
+          />
+        </Col>
       </Row>
     </Card>
   );

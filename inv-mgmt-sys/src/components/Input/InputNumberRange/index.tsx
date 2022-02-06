@@ -39,6 +39,7 @@ type AdvInputNumberRangeProps = InputNumberRangeProps &
   );
 
 const InputNumberRange = ({
+  label,
   justify = 'end',
   placeholder = ['', ''],
   textSpan = 5,
@@ -46,6 +47,7 @@ const InputNumberRange = ({
   suffix,
   prefixWidth = prefix !== undefined ? 80 : 0,
   suffixWidth = suffix !== undefined ? 80 : 0,
+  className,
   ...props
 }: AdvInputNumberRangeProps) => {
   const { Text } = Typography;
@@ -53,12 +55,12 @@ const InputNumberRange = ({
 
   return (
     <Row align='middle' gutter={30} className='input-range'>
-      {props.label !== undefined ? (
+      {label !== undefined ? (
         <Col
           span={textSpan}
           className={justify === 'start' ? '' : 'justify-end'}
         >
-          <Text type='secondary'>{props.label}</Text>
+          <Text type='secondary'>{label}</Text>
         </Col>
       ) : null}
       <Col span={24 - textSpan}>
@@ -76,10 +78,10 @@ const InputNumberRange = ({
             style={{
               width: inputNumWidth,
             }}
-            {...props}
             className={`input-range-left ${
-              props.className !== undefined ? props.className : ''
+              className !== undefined ? className : ''
             }`}
+            {...props}
           />
           <Input
             style={{ width: 30 }}
@@ -92,10 +94,10 @@ const InputNumberRange = ({
             style={{
               width: inputNumWidth,
             }}
-            {...props}
             className={`input-range-right ${
-              props.className !== undefined ? props.className : ''
+              className !== undefined ? className : ''
             }`}
+            {...props}
           />
           {suffix !== undefined ? (
             <Input

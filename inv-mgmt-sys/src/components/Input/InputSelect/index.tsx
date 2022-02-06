@@ -21,23 +21,25 @@ interface InputProps extends AntdInputProps {
 
 const InputSelect = ({
   width = '100%',
+  selectBefore,
+  selectAfter,
   selectWidth = 'fit-content',
   ...props
 }: InputProps) => {
   const inputSelectBefore =
-    props.selectBefore !== undefined ? (
+    selectBefore !== undefined ? (
       <Select
-        defaultValue={props.selectBefore?.defaultVal}
-        options={props.selectBefore.options}
+        defaultValue={selectBefore?.defaultVal}
+        options={selectBefore.options}
         style={{ width: selectWidth }}
       />
     ) : null;
 
   const inputSelectAfter =
-    props.selectAfter !== undefined ? (
+    selectAfter !== undefined ? (
       <Select
-        defaultValue={props.selectAfter?.defaultVal}
-        options={props.selectAfter.options}
+        defaultValue={selectAfter?.defaultVal}
+        options={selectAfter.options}
       />
     ) : null;
 

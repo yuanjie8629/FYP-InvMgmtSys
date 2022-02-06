@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
-import Layout from '@components/Layout/Layout';
+import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import Tag, { TagProps } from '@components/Tag';
 import FilterInputs from './FilterInputs';

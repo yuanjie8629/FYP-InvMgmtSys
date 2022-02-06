@@ -1,4 +1,4 @@
-import Layout from '@components/Layout/Layout';
+import Layout from '@components/Layout';
 import { Card, Space, SpaceProps, Typography } from 'antd';
 import Button from '@components/Button';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +7,7 @@ interface ComingSoonProps extends SpaceProps {
   img: string;
 }
 
-const ComingSoon = (props: ComingSoonProps) => {
+const ComingSoon = ({ img, ...props }: ComingSoonProps) => {
   const { Text, Title } = Typography;
   const navigate = useNavigate();
   return (
@@ -19,13 +19,8 @@ const ComingSoon = (props: ComingSoonProps) => {
           className='main-card-container'
           align='center'
         >
-          <Card bodyStyle={{padding: 15}}>
-            <img
-              src={props.img}
-              alt='comingSoonImg'
-              height={370}
-              width={490}
-            ></img>
+          <Card bodyStyle={{ padding: 15 }}>
+            <img src={img} alt='comingSoonImg' height={370} width={490}></img>
           </Card>
           <Title>Coming Soon</Title>
           <Text type='secondary' className='text-lg'>

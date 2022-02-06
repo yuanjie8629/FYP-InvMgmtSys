@@ -1,10 +1,3 @@
-// Mixins
-.main-card-container() {
-  width: 95% !important;
-  padding-top: 10px !important;
-}
-
-
 html,
 body {
   padding: 0;
@@ -74,19 +67,6 @@ p {
     justify-content: center !important;
   }
 }
-
-.main-card-container {
-  .main-card-container();
-  
-  &-add {
-    .main-card-container();
-
-    &>.@{ant-prefix}-space-item:nth-last-child(2) {
-      margin: 0 !important;
-    }
-  }
-}
-
 
 .padding-0 {
   padding: 0 !important;

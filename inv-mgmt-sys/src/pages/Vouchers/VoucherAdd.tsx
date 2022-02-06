@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
-import Layout from '@components/Layout/Layout';
+import Layout from '@components/Layout';
 import AffixAdd from '@components/Affix/AffixAdd';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import {

@@ -8,7 +8,7 @@ import Typography from 'antd/es/typography';
 import Radio from 'antd/es/radio';
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined';
 import { MdArrowRight, MdChevronRight } from 'react-icons/md';
-import Layout from '@components/Layout/Layout';
+import Layout from '@components/Layout';
 import ColorCard from '@components/Card/ColorCard';
 import Button from '@components/Button';
 import Table from '@components/Table';
@@ -53,12 +53,11 @@ const Dashboard = () => {
       ? dataDay.date
       : dataYear.year;
 
-  const getChartTitle =
-    ['month','week'].includes(salesDateRange)
-      ? 'Day'
-      : salesDateRange === 'day'
-      ? 'Hour'
-      : 'Month';
+  const getChartTitle = ['month', 'week'].includes(salesDateRange)
+    ? 'Day'
+    : salesDateRange === 'day'
+    ? 'Hour'
+    : 'Month';
 
   const getChartTooltipTitlePrefix = salesDateRange === 'month' ? 'Day ' : '';
 
@@ -394,7 +393,7 @@ const Dashboard = () => {
             <Text className='dashboard-grey-text'>{topProduct.date}</Text>
           </Row>
         </div>
-        <RankingList itemList={topProduct} />
+        <RankingList dataSource={topProduct} />
       </Space>
     </MainCard>
   );
