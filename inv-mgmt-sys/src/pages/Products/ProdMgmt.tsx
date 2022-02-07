@@ -170,7 +170,7 @@ const ProdMgmt = () => {
             {prodStatList.map((statusItem) =>
               !(
                 status === statusItem.status ||
-                (!['hidden','active'].includes(statusItem.status) )
+                !['hidden', 'active'].includes(statusItem.status)
               ) ? (
                 <Menu.Item key={statusItem.status}>
                   {statusItem.label}
@@ -267,29 +267,29 @@ const ProdMgmt = () => {
             setSearchParams(key !== 'all' ? { stat: key } : {});
           }}
         >
-          <Space direction='vertical' size={40} className='full-width'>
-            <FilterInputs />
-            <Space direction='vertical' size={15} className='full-width'>
-              <Row justify='space-between'>
-                <Col>
-                  <Title level={4}>Product List</Title>
-                </Col>
-                <Col>
-                  <Button
-                    type='primary'
-                    onClick={() => navigate(findRoutePath('prodAdd'))}
-                  >
-                    Add Product
-                  </Button>
-                </Col>
-              </Row>
-              <InformativeTable
-                dataSource={prodListFltr}
-                columns={prodMgmtColumns}
-                buttons={onSelectBtn}
-                defPg={5}
-              />
-            </Space>
+          <FilterInputs />
+        </MainCard>
+        <MainCard>
+          <Space direction='vertical' size={15} className='full-width'>
+            <Row justify='space-between'>
+              <Col>
+                <Title level={4}>Product List</Title>
+              </Col>
+              <Col>
+                <Button
+                  type='primary'
+                  onClick={() => navigate(findRoutePath('prodAdd'))}
+                >
+                  Add Product
+                </Button>
+              </Col>
+            </Row>
+            <InformativeTable
+              dataSource={prodListFltr}
+              columns={prodMgmtColumns}
+              buttons={onSelectBtn}
+              defPg={5}
+            />
           </Space>
         </MainCard>
       </MainCardContainer>

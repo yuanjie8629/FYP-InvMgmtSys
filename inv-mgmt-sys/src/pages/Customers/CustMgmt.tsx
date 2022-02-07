@@ -249,29 +249,29 @@ const CustMgmt = () => {
             setSearchParams(key !== 'all' ? { stat: key } : {});
           }}
         >
-          <Space direction='vertical' size={40} className='full-width'>
-            <FilterInputs />
-            <Space direction='vertical' size={15} className='full-width'>
-              <Row justify='space-between'>
-                <Col>
-                  <Title level={4}>Customer List</Title>
-                </Col>
-                <Col>
-                  <Button
-                    type='primary'
-                    onClick={() => navigate(findRoutePath('custAdd'))}
-                  >
-                    Add Customer
-                  </Button>
-                </Col>
-              </Row>
-              <InformativeTable
-                dataSource={custListFltr}
-                columns={custMgmtColumns}
-                buttons={onSelectBtn}
-                scroll={{ x: 1200 }}
-              />
-            </Space>
+          <FilterInputs />
+        </MainCard>
+        <MainCard>
+          <Space direction='vertical' size={15} className='full-width'>
+            <Row justify='space-between'>
+              <Col>
+                <Title level={4}>Customer List</Title>
+              </Col>
+              <Col>
+                <Button
+                  type='primary'
+                  onClick={() => navigate(findRoutePath('custAdd'))}
+                >
+                  Add Customer
+                </Button>
+              </Col>
+            </Row>
+            <InformativeTable
+              dataSource={custListFltr}
+              columns={custMgmtColumns}
+              buttons={onSelectBtn}
+              scroll={{ x: 1200 }}
+            />
           </Space>
         </MainCard>
       </MainCardContainer>

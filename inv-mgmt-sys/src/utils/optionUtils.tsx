@@ -85,7 +85,7 @@ const invInputOptions = [
     label: <MdRemove size={20} style={{ position: 'relative', top: 5 }} />,
   },
   {
-    value: 'Set',
+    value: 'set',
     label: (
       <Text strong style={{ color: 'white', padding: '0 12px' }}>
         Set

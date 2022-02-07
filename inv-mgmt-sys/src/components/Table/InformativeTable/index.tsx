@@ -14,14 +14,18 @@ type InformativeTableButtonProps = {
   }[];
 }[];
 
-interface InformativeTableProps extends TableProps {
-  defPg?: number;
-  buttons: InformativeTableButtonProps;
-}
+type InformativeTableProps = TableProps & { defPg?: number } & (
+    | {
+        buttons: InformativeTableButtonProps;
+        rowSelectable?: never | true;
+      }
+    | { buttons?: never; rowSelectable: false }
+  );
 
 const InformativeTable = ({
   defPg = 10,
   buttons,
+  rowSelectable = true,
   ...props
 }: InformativeTableProps) => {
   const { Text } = Typography;
@@ -94,26 +98,28 @@ const InformativeTable = ({
       size={20}
       className='informative-table full-width'
     >
-      <Row align='middle' gutter={20} style={{ height: 36 }}>
-        <Col flex='100px'>
-          <Text>Selected: {selectedRowCount}</Text>
-        </Col>
-        <Col>
-          <Space size={15}>
-            {buttons?.map((btn, index) => {
-              const Button = btn.element;
-              return btnShow.map(
-                (btnToShow) => btnToShow.key === btn.key && btnToShow.show
-              )[index] ? (
-                <Button />
-              ) : null;
-            })}
-          </Space>
-        </Col>
-      </Row>
+      {rowSelectable ? (
+        <Row align='middle' gutter={20} style={{ height: 36 }}>
+          <Col flex='100px'>
+            <Text>Selected: {selectedRowCount}</Text>
+          </Col>
+          <Col>
+            <Space size={15}>
+              {buttons?.map((btn, index) => {
+                const Button = btn.element;
+                return btnShow.map(
+                  (btnToShow) => btnToShow.key === btn.key && btnToShow.show
+                )[index] ? (
+                  <Button />
+                ) : null;
+              })}
+            </Space>
+          </Col>
+        </Row>
+      ) : null}
       <Row>
         <Table
-          rowSelection={rowSelection}
+          rowSelection={rowSelectable ? rowSelection : null}
           pagination={{
             size: 'small',
             showTotal: showTotal,

@@ -74,18 +74,22 @@ const RankingList = ({
                                 <Text className='text-break'>
                                   {selection.label}
                                 </Text>
-                                <Popover
-                                  content={selection.desc}
-                                  overlayStyle={{
-                                    width: 300,
-                                    textAlign: 'justify',
-                                  }}
-                                >
-                                  <QuestionCircleOutlined
-                                    style={{ padding: '0 5px' }}
-                                    className='color-grey'
-                                  />
-                                </Popover>
+                                {selection.desc !== undefined ? (
+                                  <Popover
+                                    content={selection.desc}
+                                    overlayStyle={{
+                                      width: 300,
+                                      textAlign: 'justify',
+                                    }}
+                                  >
+                                    <QuestionCircleOutlined
+                                      style={{
+                                        padding: '0 5px',
+                                      }}
+                                      className='color-grey'
+                                    />
+                                  </Popover>
+                                ) : null}
                               </>
                             }
                             indicator={

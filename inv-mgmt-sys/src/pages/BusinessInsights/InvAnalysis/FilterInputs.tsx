@@ -1,29 +1,34 @@
+import DatePickerWithLabel from '@/components/Input/DatePickerWithLabel';
 import FilterInputCol from '@components/Container/FilterInputCol';
-import DateRangePickerWithLabel from '@components/Input/DateRangePickerWithLabel';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
-import { custStatusCat } from '@utils/optionUtils';
+import { prodCat } from '@utils/optionUtils';
 import { Button, Col, Row, Space } from 'antd';
+import moment from 'moment';
 
-const FilterInputs = () => {
-  const orderInputSelect: {
+interface FilterInputsProps {
+  onSearch?: (searchParams: string[]) => void;
+}
+
+const FilterInputs = (props: FilterInputsProps) => {
+  const prodInputSelect: {
     defaultVal: string;
     options: {
       value: string;
       label: string;
     }[];
   } = {
-    defaultVal: 'custID',
+    defaultVal: 'prodName',
     options: [
-      { value: 'custID', label: 'Customer ID' },
-      { value: 'custNm', label: 'Customer Name' },
+      { value: 'prodName', label: 'Product Name' },
+      { value: 'prodSKU', label: 'Product SKU' },
     ],
   };
 
-  const custStatus = {
-    placeholder: 'Select Customer Status',
-    options: custStatusCat,
+  const prodCatSelect = {
+    placeholder: 'Select Category',
+    options: prodCat,
   };
 
   return (
@@ -31,43 +36,43 @@ const FilterInputs = () => {
       <Row gutter={[30, 30]}>
         <FilterInputCol>
           <InputSelect
-            selectBefore={orderInputSelect}
+            selectBefore={prodInputSelect}
             placeholder='Input'
             selectWidth={150}
           ></InputSelect>
         </FilterInputCol>
         <FilterInputCol>
-          <SelectWithLabel
-            label='Customer Status'
-            select={custStatus}
-            textSpan={7}
-          />
-        </FilterInputCol>
-
-        <FilterInputCol>
-          <DateRangePickerWithLabel
-            label='Birthdate'
-            justify='start'
-            textSpan={7}
-          />
-        </FilterInputCol>
-        <FilterInputCol>
-          <DateRangePickerWithLabel label='Registration Date' textSpan={7} />
+          <SelectWithLabel label='Category' select={prodCatSelect} />
         </FilterInputCol>
         <FilterInputCol>
           <InputNumberRange
-            label='Sales per Month'
+            label='Demand'
+            placeholder={['Start', 'End']}
+            min={0}
+            justify='start'
+          />
+        </FilterInputCol>
+        <FilterInputCol>
+          <InputNumberRange
+            label='Price'
             placeholder={['Start', 'End']}
             prefix='RM'
             prefixWidth={60}
             min={0}
             precision={2}
-            justify='start'
-            textSpan={7}
           />
         </FilterInputCol>
         <FilterInputCol>
-          <DateRangePickerWithLabel label='Last Order Date' textSpan={7} />
+          <DatePickerWithLabel
+            picker='month'
+            disabledDate={(current) => current > moment()}
+            defaultValue={moment()}
+            defaultPickerValue={moment()}
+            allowClear={false}
+            dropdownAlign={{ points: ['tc', 'bc'] }}
+            label='Analysis Month'
+            justify='start'
+          />
         </FilterInputCol>
       </Row>
       <Row gutter={20}>

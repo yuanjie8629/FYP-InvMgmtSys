@@ -10,7 +10,10 @@ module.exports = {
         lessLoaderOptions: {
           lessOptions: {
             modifyVars: {
-              hack: `true; @import "${path.resolve(__dirname, 'theme.less')}";`,
+              hack: `true; @import "${path.resolve(
+                __dirname,
+                'src/theme.less'
+              )}";`,
             },
             javascriptEnabled: true,
           },

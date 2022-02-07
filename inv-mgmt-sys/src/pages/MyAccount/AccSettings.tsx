@@ -17,32 +17,32 @@ const AccSettings = () => {
 
   const data: {
     key: string;
-    label: string;
+    title: string;
     desc?: string;
     content: React.ReactNode;
     icon: React.ReactNode;
   }[] = [
     {
       key: 'username',
-      label: 'Username',
+      title: 'Username',
       content: username,
       icon: <MdPerson size={25} className='color-grey' />,
     },
     {
       key: 'email',
-      label: 'Email',
+      title: 'Email',
       content: email,
       icon: <MdEmail size={25} className='color-grey' />,
     },
     {
       key: 'phoneNum',
-      label: 'Phone Number',
+      title: 'Phone Number',
       content: phoneNum,
       icon: <MdPhone size={25} className='color-grey' />,
     },
     {
       key: 'password',
-      label: 'Password',
+      title: 'Password',
       content: (
         <Text type='secondary'>
           Password must contains at least 8 characters, including 1 uppercase

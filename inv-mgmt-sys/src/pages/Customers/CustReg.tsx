@@ -192,28 +192,28 @@ const CustReg = () => {
             setSearchParams(key !== 'all' ? { stat: key } : {});
           }}
         >
-          <Space direction='vertical' size={40} className='full-width'>
-            <FilterInputs />
-            <Space direction='vertical' size={15} className='full-width'>
-              <Row justify='space-between'>
-                <Col>
-                  <Title level={4}>Customer List</Title>
-                </Col>
-                <Col>
-                  <Button
-                    type='primary'
-                    onClick={() => navigate(findRoutePath('custAdd'))}
-                  >
-                    Add Customer
-                  </Button>
-                </Col>
-              </Row>
-              <InformativeTable
-                dataSource={custListFltr}
-                columns={custRegColumns}
-                buttons={onSelectBtn}
-              />
-            </Space>
+          <FilterInputs />
+        </MainCard>
+        <MainCard>
+          <Space direction='vertical' size={15} className='full-width'>
+            <Row justify='space-between'>
+              <Col>
+                <Title level={4}>Customer List</Title>
+              </Col>
+              <Col>
+                <Button
+                  type='primary'
+                  onClick={() => navigate(findRoutePath('custAdd'))}
+                >
+                  Add Customer
+                </Button>
+              </Col>
+            </Row>
+            <InformativeTable
+              dataSource={custListFltr}
+              columns={custRegColumns}
+              buttons={onSelectBtn}
+            />
           </Space>
         </MainCard>
       </MainCardContainer>
