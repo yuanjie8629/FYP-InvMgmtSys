@@ -1,16 +1,20 @@
 import Button, { ButtonProps } from '@components/Button';
 import { Col, List, ListProps, Row, Typography } from 'antd';
+import { TextProps } from 'antd/es/typography/Text';
+import { TitleProps } from 'antd/es/typography/Title';
 
 interface DescriptionListProps extends Omit<ListProps<any>, 'dataSource'> {
   dataSource: {
     key: string;
-    label: string;
+    title: string;
     desc?: string;
-    content: React.ReactNode;
-    icon: React.ReactNode;
+    content?: React.ReactNode;
+    icon?: React.ReactNode;
   }[];
   buttons?: string[];
   buttonProps?: ButtonProps;
+  titleProps?: TextProps | TitleProps;
+  descProps?: TextProps | TitleProps;
   onButtonClick?: (key: string) => void;
 }
 
@@ -19,6 +23,8 @@ const DescriptionList = ({
   buttons,
   onButtonClick,
   buttonProps,
+  titleProps,
+  descProps,
   ...props
 }: DescriptionListProps) => {
   const { Text } = Typography;
@@ -35,19 +41,27 @@ const DescriptionList = ({
     ));
 
   const renderItem = (item: {
-    label: string;
+    title: string;
     desc?: string;
     content: React.ReactNode;
     icon: React.ReactNode;
   }) => (
-    <List.Item actions={actions(item)}>
-      <Row className='full-width' align='middle'>
-        <Col span={5}>
+    <List.Item actions={buttons !== undefined ? actions(item) : null}>
+      <Row className='full-width' align='middle' justify='center'>
+        <Col span={item.content !== undefined ? 5 : 24}>
           <List.Item.Meta
             avatar={item.icon}
-            // eslint-disable-next-line react/jsx-no-undef
-            title={<Text className='text-lg'>{item.label}</Text>}
-            description={<Text type='secondary'>{item.desc}</Text>}
+            title={
+              <Text className='text-lg' {...titleProps}>
+                {item.title}
+              </Text>
+            }
+            description={
+              <Text type='secondary' {...descProps}>
+                {item.desc}
+              </Text>
+            }
+            style={{ height: 116 }}
           />
         </Col>
         <Col>

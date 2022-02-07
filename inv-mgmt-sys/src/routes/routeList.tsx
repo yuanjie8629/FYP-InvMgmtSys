@@ -12,7 +12,7 @@ import ShptMgmt from '@pages/Shipments/ShptMgmt';
 import CustMgmt from '@pages/Customers/CustMgmt';
 import CustReg from '@pages/Customers/CustReg';
 import CustAdd from '@pages/Customers/CustAdd';
-import Statistics from '@pages/BusinessInsights/BusinessStatistics';
+import Statistics from '@/pages/BusinessInsights/BusinessStatistics';
 import InvAnalysis from '@pages/BusinessInsights/InvAnalysis';
 import VoucherMgmt from '@pages/Vouchers/VoucherMgmt';
 import VoucherAdd from '@pages/Vouchers/VoucherAdd';

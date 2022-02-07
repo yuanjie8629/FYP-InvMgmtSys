@@ -5,7 +5,7 @@ import InformativeTable, {
 } from '@components/Table/InformativeTable';
 import Button from '@components/Button';
 import MainCardContainer from '@components/Container/MainCardContainer';
-import { Col, Image, Row, Space, Typography, InputNumber, Radio } from 'antd';
+import { Col, Image, Row, Space, Typography } from 'antd';
 import FilterInputs from './FilterInputs';
 import packageList from './packageList';
 import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
@@ -13,7 +13,7 @@ import packTabList from './packTabList';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
-import { invInputOptions } from '@utils/optionUtils';
+import InvStockInput from '@/components/Input/InvStockInput';
 
 const PackInv = () => {
   const { Text, Title } = Typography;
@@ -133,32 +133,7 @@ const PackInv = () => {
       width: 250,
 
       render: () => (
-        <Space size={10} direction='vertical'>
-          <Row>
-            <Radio.Group
-              buttonStyle='solid'
-              size={'small'}
-              defaultValue={invInputOptions[0].value}
-              options={invInputOptions}
-              optionType='button'
-            />
-          </Row>
-          <Row gutter={[10, 10]}>
-            <Col>
-              <InputNumber
-                defaultValue={0}
-                min={0}
-                size={'small'}
-                style={{ width: 150 }}
-              ></InputNumber>
-            </Col>
-            <Col>
-              <Button type='primary' size={'small'}>
-                Save
-              </Button>
-            </Col>
-          </Row>
-        </Space>
+        <InvStockInput input={0} />
       ),
     },
   ];
@@ -174,30 +149,30 @@ const PackInv = () => {
             setSearchParams(key !== 'all' ? { stat: key } : {});
           }}
         >
-          <Space direction='vertical' size={40} className='full-width'>
-            <FilterInputs />
-            <Space direction='vertical' size={15} className='full-width'>
-              <Row justify='space-between'>
-                <Col>
-                  <Title level={4}>Package List</Title>
-                </Col>
-                <Col>
-                  <Button
-                    type='primary'
-                    onClick={() => navigate(findRoutePath('packMgmt'))}
-                  >
-                    View Packages
-                  </Button>
-                </Col>
-              </Row>
+          <FilterInputs />
+        </MainCard>
+        <MainCard>
+          <Space direction='vertical' size={15} className='full-width'>
+            <Row justify='space-between'>
+              <Col>
+                <Title level={4}>Package List</Title>
+              </Col>
+              <Col>
+                <Button
+                  type='primary'
+                  onClick={() => navigate(findRoutePath('packMgmt'))}
+                >
+                  View Packages
+                </Button>
+              </Col>
+            </Row>
 
-              <InformativeTable
-                dataSource={packageListFltr}
-                columns={packInvColumns}
-                buttons={onSelectBtn}
-                defPg={5}
-              />
-            </Space>
+            <InformativeTable
+              dataSource={packageListFltr}
+              columns={packInvColumns}
+              buttons={onSelectBtn}
+              defPg={5}
+            />
           </Space>
         </MainCard>
       </MainCardContainer>

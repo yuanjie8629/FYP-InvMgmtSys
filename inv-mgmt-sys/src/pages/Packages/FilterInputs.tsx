@@ -1,5 +1,5 @@
 import FilterInputCol from '@components/Container/FilterInputCol';
-import DatePickerWithLabel from '@components/Input/DatePickerWithLabel';
+import DateRangePickerWithLabel from '@components/Input/DateRangePickerWithLabel';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import { Button, Col, Row, Space } from 'antd';
@@ -50,7 +50,7 @@ const FilterInputs = () => {
           />
         </FilterInputCol>
         <FilterInputCol>
-          <DatePickerWithLabel label='Available Period' textSpan={7} />
+          <DateRangePickerWithLabel label='Available Period' textSpan={7} />
         </FilterInputCol>
       </Row>
       <Row gutter={20}>

@@ -1,3 +1,5 @@
+
+
 html,
 body {
   padding: 0;
@@ -61,7 +63,6 @@ p {
     display: flex !important;
     justify-content: flex-end !important;
   }
-
   &-center {
     display: flex !important;
     justify-content: center !important;
@@ -76,31 +77,33 @@ p {
   margin: 0 !important;
 }
 
-.item-img-container {
-  width: 120px;
-  height: 120px;
-
-  @media @desktop-xl {
-    width: 100px;
-    height: 100px;
-  }
+@color-list: green,blue,red,yellow,grey;
+@palette-list: 50,100,200,300,400,500,600,700,800,900;
+.color(@color-list);
+.color(@list,@index: 1) when (@index =< length(@list)) {
+  @color: extract(@list,@index);
+  .color-palette(@color,@palette-list);
+  .color(@list, @index + 1);
 }
 
-.form-horizontal {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center;
-
-  &>.@{ant-prefix}-form-item{
-    &-label {
-      padding: 0 8px 0 0 !important;
-    }
+.color-palette(@color,@list,@index: 1) when (@index =< length(@list)) {
+  @palette: extract(@list, @index);
+  .color-@{color}-@{palette} {
+    color: ~'@{@{color}-@{palette}}' !important;
   }
+  .bg-@{color}-@{palette} {
+    background-color: ~'@{@{color}-@{palette}}' !important;
+  }
+  .color-palette(@color,@list, @index + 1);
 }
 
 .color {
   &-primary {
     color: @primary-color !important;
+  }
+
+  &-success {
+    color: @success-color !important;
   }
 
   &-error {
@@ -117,6 +120,32 @@ p {
 
   &-grey {
     color: @grey !important;
+  }
+}
+
+.bg {
+  &-primary {
+    background-color: @primary-color !important;
+  }
+
+  &-success {
+    background-color: @success-color !important;
+  }
+
+  &-error {
+    background-color: @error-color !important;
+  }
+
+  &-warning {
+    background-color: @warning-color !important;
+  }
+
+  &-info {
+    background-color: @info-color !important;
+  }
+
+  &-grey {
+    background-color: @grey !important;
   }
 }
 
@@ -158,14 +187,14 @@ p {
 .@{ant-prefix} {
   &-dropdown-menu-item {
     &:hover:not(&-disabled) {
-      background-color: @grey-200 !important;
+      background-color: @grey-100 !important;
     }
     &-selected,
     &-submenu-title-selected {
       font-weight: bold !important;
       background-color: transparent !important;
       &:hover {
-        background-color: @grey-200 !important;
+        background-color: @grey-100 !important;
       }
     }
   }

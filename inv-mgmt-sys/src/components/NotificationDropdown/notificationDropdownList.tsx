@@ -39,7 +39,75 @@ const menuList: {
     ),
     timestamp: '07-11-2021 18:00',
     read: true,
-  },
+    },
+    {
+      cat: 'product',
+      status: 'error',
+      title: 'Low Stock',
+      description: (
+        <>
+          <p>
+            <span>Kari Ayam is currently in low stock.</span>
+          </p>
+          <p>
+            <span>Please consider restocking it.</span>
+          </p>
+        </>
+      ),
+      timestamp: '07-11-2021 18:00',
+      read: true,
+    },
+    {
+      cat: 'product',
+      status: 'error',
+      title: 'Low Stock',
+      description: (
+        <>
+          <p>
+            <span>Kari Ayam is currently in low stock.</span>
+          </p>
+          <p>
+            <span>Please consider restocking it.</span>
+          </p>
+        </>
+      ),
+      timestamp: '07-11-2021 18:00',
+      read: true,
+    },
+    {
+      cat: 'product',
+      status: 'error',
+      title: 'Low Stock',
+      description: (
+        <>
+          <p>
+            <span>Kari Ayam is currently in low stock.</span>
+          </p>
+          <p>
+            <span>Please consider restocking it.</span>
+          </p>
+        </>
+      ),
+      timestamp: '07-11-2021 18:00',
+      read: true,
+    },
+    {
+      cat: 'product',
+      status: 'error',
+      title: 'Low Stock',
+      description: (
+        <>
+          <p>
+            <span>Kari Ayam is currently in low stock.</span>
+          </p>
+          <p>
+            <span>Please consider restocking it.</span>
+          </p>
+        </>
+      ),
+      timestamp: '07-11-2021 18:00',
+      read: true,
+    },
 ];
 
 export default menuList;

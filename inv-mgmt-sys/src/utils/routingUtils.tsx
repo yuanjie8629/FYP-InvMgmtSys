@@ -9,7 +9,7 @@ const findRoutePath = (label: string) => {
 
 const findIcon = (cat: string) => {
   let selected = siderMenuList.map((siderMenuLevel) =>
-    siderMenuLevel.items.find((item) => item.key === cat) 
+    siderMenuLevel.items.find((item) => item.key === cat)
   );
   let icons = selected.find((selectedItem) => selectedItem !== undefined);
   let MatchedIcon: IconType = icons!.icon;

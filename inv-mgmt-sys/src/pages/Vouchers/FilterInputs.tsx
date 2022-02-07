@@ -1,5 +1,5 @@
 import FilterInputCol from '@components/Container/FilterInputCol';
-import DatePickerWithLabel from '@components/Input/DatePickerWithLabel';
+import DateRangePickerWithLabel from '@components/Input/DateRangePickerWithLabel';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
@@ -43,7 +43,7 @@ const FilterInputs = () => {
         </FilterInputCol>
 
         <FilterInputCol>
-          <DatePickerWithLabel
+          <DateRangePickerWithLabel
             label='Available Date'
             justify='start'
             textSpan={6}

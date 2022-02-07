@@ -283,29 +283,29 @@ const PackMgmt = () => {
             setSearchParams(key !== 'all' ? { stat: key } : {});
           }}
         >
-          <Space direction='vertical' size={40} className='full-width'>
-            <FilterInputs />
-            <Space direction='vertical' size={15} className='full-width'>
-              <Row justify='space-between'>
-                <Col>
-                  <Title level={4}>Package List</Title>
-                </Col>
-                <Col>
-                  <Button
-                    type='primary'
-                    onClick={() => navigate(findRoutePath('packAdd'))}
-                  >
-                    Add Package
-                  </Button>
-                </Col>
-              </Row>
-              <InformativeTable
-                dataSource={packageListFltr}
-                columns={packMgmtColumns}
-                buttons={onSelectBtn}
-                defPg={5}
-              />
-            </Space>
+          <FilterInputs />
+        </MainCard>
+        <MainCard>
+          <Space direction='vertical' size={15} className='full-width'>
+            <Row justify='space-between'>
+              <Col>
+                <Title level={4}>Package List</Title>
+              </Col>
+              <Col>
+                <Button
+                  type='primary'
+                  onClick={() => navigate(findRoutePath('packAdd'))}
+                >
+                  Add Package
+                </Button>
+              </Col>
+            </Row>
+            <InformativeTable
+              dataSource={packageListFltr}
+              columns={packMgmtColumns}
+              buttons={onSelectBtn}
+              defPg={5}
+            />
           </Space>
         </MainCard>
       </MainCardContainer>

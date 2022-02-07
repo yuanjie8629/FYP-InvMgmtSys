@@ -7,7 +7,6 @@ import Statistics from '@components/Statistics';
 import statisticsList from '@components/Statistics/statisticsList';
 import { Col, Popover, Row, Space, Spin, Typography, message } from 'antd';
 import { LoadingOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import './BusinessInsights.less';
 import statisticsData from './statisticsData';
 import { formatDt, getDt } from '@utils/dateUtils';
 import MainCard from '@components/Card/MainCard';
@@ -28,7 +27,7 @@ const BusinessStatistics = () => {
   const { Text, Title } = Typography;
 
   const DashboardContainer = (props) => (
-    <Space direction='vertical' size={20} className='full-width'>
+    <Space direction='vertical' size={25} className='full-width'>
       {props.children}
     </Space>
   );

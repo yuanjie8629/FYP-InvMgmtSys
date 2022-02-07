@@ -28,7 +28,7 @@ const Header = () => {
               split={<Divider type='vertical' style={{ height: 42 }} />}
             >
               <NotificationDropdown />
-              <AvatarDropdown />
+              <AvatarDropdown name='Tan Yuan Jie' role='Super Admin' />
             </Space>
           </Col>
         </Row>

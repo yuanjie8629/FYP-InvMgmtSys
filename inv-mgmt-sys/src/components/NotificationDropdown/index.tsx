@@ -59,60 +59,70 @@ const NotificationDropdown = () => {
         </Row>
       </Menu.Item>
       <Menu.Divider key='notification-header-divider' />
-      {menuList.map((menu, index) => {
-        const Icon = findIcon(menu.cat);
-        return (
-          <Menu.ItemGroup key={'notification-content-' + index}>
-            <Menu.Item
-              key={`${findRoutePath(menu.cat)}-${index}`}
-              className='notification-menu-item'
-            >
-              <Row align='middle'>
-                <Col className='notification-menu-item-avatar'>
-                  <Badge
-                    dot={menu.read}
-                    offset={[-5, 5]}
-                    status={menu.status}
-                    className='notification-menu-item-badge'
-                  >
-                    <Avatar
-                      icon={<Icon size={24} />}
-                      size={42}
-                      className={`centerFlex ${menu.status}Background`}
-                    />
-                  </Badge>
-                </Col>
-                <Col>
-                  <Row className='notification-menu-item-title'>
-                    {menu.title}
-                  </Row>
-                  {menu.description}
-                  <Row>
-                    <Space
-                      split={<Divider type='vertical' style={{ margin: 0 }} />}
+      <Menu.ItemGroup key={'notification-content'} className='notification-menu-item-group'>
+        {menuList.map((menu, index) => {
+          const Icon = findIcon(menu.cat);
+          return (
+            <>
+              <Menu.Item
+                key={`${findRoutePath(menu.cat)}-${index}`}
+                className='notification-menu-item'
+              >
+                <Row align='middle'>
+                  <Col className='notification-menu-item-avatar'>
+                    <Badge
+                      dot={menu.read}
+                      offset={[-5, 5]}
+                      status={menu.status}
+                      className='notification-menu-item-badge'
                     >
-                      <Text className='notification-menu-item-info'>
-                        {capitalize(menu.cat)}
-                      </Text>
-                      <Text className='notification-menu-item-info'>
-                        {menu.timestamp}
-                      </Text>
-                    </Space>
-                  </Row>
-                </Col>
-              </Row>
-            </Menu.Item>
-            {index !== menuList.length - 1 ? <Menu.Divider /> : null}
-          </Menu.ItemGroup>
-        );
-      })}
+                      <Avatar
+                        icon={<Icon size={24} />}
+                        size={42}
+                        className={`centerFlex ${menu.status}Background`}
+                      />
+                    </Badge>
+                  </Col>
+                  <Col>
+                    <Row className='notification-menu-item-title'>
+                      {menu.title}
+                    </Row>
+                    {menu.description}
+                    <Row>
+                      <Space
+                        split={
+                          <Divider
+                            type='vertical'
+                            style={{ margin: 0 }}
+                            className='notification-menu-item-split'
+                          />
+                        }
+                      >
+                        <Text className='notification-menu-item-info'>
+                          {capitalize(menu.cat)}
+                        </Text>
+                        <Text className='notification-menu-item-info'>
+                          {menu.timestamp}
+                        </Text>
+                      </Space>
+                    </Row>
+                  </Col>
+                </Row>
+              </Menu.Item>
+              {index !== menuList.length - 1 ? <Menu.Divider /> : null}
+            </>
+          );
+        })}
+      </Menu.ItemGroup>
+
+      <Menu.Divider key='noti-footer-divider' />
       <Menu.Item
-        key='notiCenter'
+        key='noti-footer'
         disabled
         style={{ cursor: 'default', padding: '15px 0', textAlign: 'center' }}
       >
         <Button type='link' color='info'>
-          View More
+          View All Notifications
         </Button>
       </Menu.Item>
     </Menu>

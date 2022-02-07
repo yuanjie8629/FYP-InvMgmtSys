@@ -58,12 +58,17 @@
         }
       }
       &-divider {
-        background-color: @grey-300;
+        border-color: @grey-300;
       }
     }
 
     &-item {
       padding: 15px !important;
+
+      &-group {
+        height: 300px;
+        overflow: auto;
+      }
 
       &-avatar {
         padding-right: 20px;
@@ -99,6 +104,10 @@
       &:hover &-content,
       &:hover &-info {
         color: @info-color !important;
+      }
+
+      &:hover .@{ant-prefix}-divider {
+        border-color: @info-color !important;
       }
     }
 

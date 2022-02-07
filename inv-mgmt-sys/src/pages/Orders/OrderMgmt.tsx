@@ -155,7 +155,7 @@ const OrderMgmt = () => {
           '-'
         ) : (
           <Space align='center'>
-            <HiExclamation size={20} color='#FFC107' />
+            <HiExclamation size={20} className='color-warning' />
             <Text type='warning'>Please update the tracking number.</Text>
           </Space>
         ),
@@ -254,8 +254,10 @@ const OrderMgmt = () => {
             setSearchParams(key !== 'all' ? { stat: key } : {});
           }}
         >
+          <FilterInputs />
+        </MainCard>
+        <MainCard>
           <Space direction='vertical' size={40} className='full-width'>
-            <FilterInputs />
             <Space direction='vertical' size={15} className='full-width'>
               <Row justify='space-between'>
                 <Col>

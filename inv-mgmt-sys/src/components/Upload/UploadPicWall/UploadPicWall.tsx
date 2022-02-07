@@ -34,7 +34,7 @@ const UploadPicWall = (props: AntdUploadProps) => {
     );
   };
 
-  const uploadButton = <MdAdd size={50} color='#D1D5DB' />;
+  const uploadButton = <MdAdd size={50} className='color-grey-300' />;
 
   return (
     <div className='upload-pic-wall'>

@@ -1,0 +1,28 @@
+.inv-analysis {
+  .@{ant-prefix} {
+    &-list {
+      &-item,
+      &-header,
+      &-footer {
+        padding: 0 25px !important;
+      }
+
+      &-grid {
+        .@{ant-prefix}-list{
+          &-item,
+          &-header,
+          &-footer {
+            padding: 25px 25px 0 25px !important;
+            text-align: justify;
+          }
+        }
+      }
+    }
+
+    &-collapse {
+      &-header {
+        padding: 15px 35px !important;
+      }
+    }
+  }
+}
