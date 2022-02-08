@@ -9,9 +9,9 @@ import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
 import custRegList from './custRegList';
-import { HiThumbDown, HiThumbUp } from 'react-icons/hi';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
+import { AcceptButton, RejectButton } from '@/components/Button/ActionButton';
 
 const CustReg = () => {
   const { Text, Title } = Typography;
@@ -37,31 +37,10 @@ const CustReg = () => {
     { key: 'drpshpr', tab: 'Dropshipper' },
   ];
 
-  const acceptBtn = (props: any) => (
-    <Button
-      type='primary'
-      icon={
-        <HiThumbUp
-          size={16}
-          style={{ marginRight: 5, position: 'relative', top: 3 }}
-        />
-      }
-      {...props}
-    >
-      Accept
-    </Button>
-  );
+  const acceptBtn = (props: any) => <AcceptButton type='primary' />;
 
   const rejectBtn = (props: any) => (
-    <Button
-      type='primary'
-      color='error'
-      icon={
-        <HiThumbDown style={{ marginRight: 5, position: 'relative', top: 3 }} />
-      }
-    >
-      Reject
-    </Button>
+    <RejectButton type='primary' color='error' />
   );
 
   const onSelectBtn: InformativeTableButtonProps = [
@@ -152,29 +131,8 @@ const CustReg = () => {
       width: 120,
       render: () => (
         <Space direction='vertical' size={5}>
-          <Button
-            type='link'
-            icon={
-              <HiThumbUp
-                size={16}
-                style={{ marginRight: 5, position: 'relative', top: 3 }}
-              />
-            }
-          >
-            Accept
-          </Button>
-          <Button
-            type='link'
-            color='error'
-            icon={
-              <HiThumbDown
-                size={16}
-                style={{ marginRight: 5, position: 'relative', top: 2 }}
-              />
-            }
-          >
-            Reject
-          </Button>
+          <AcceptButton type='link' />
+          <RejectButton type='link' color='error' />
         </Space>
       ),
     },

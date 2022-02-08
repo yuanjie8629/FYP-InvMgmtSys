@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Space, Typography, Collapse, Row, Col } from 'antd';
 import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
-import FilterInputs from './FilterInputs';
-import { Space, Typography, Collapse } from 'antd';
 import InformativeTable from '@components/Table/InformativeTable';
-import voucherList from './voucherList';
-import { useSearchParams } from 'react-router-dom';
 import DescriptionList from '@components/List/DescriptionList';
-import GradeIcon from './GradeIcon';
-import './InvAnalysis.less';
 import { getDt } from '@/utils/dateUtils';
+import voucherList from './voucherList';
+import FilterInputs from './FilterInputs';
+import './InvAnalysis.less';
+import { abcAnalysis, eoqAnalysis, hmlAnalysis, ssAnalysis } from './Analyses';
+import AnalysisCard from '@/components/Card/AnalysisCard';
 
 const InvAnalysis = () => {
   const { Text, Title } = Typography;
@@ -38,83 +39,94 @@ const InvAnalysis = () => {
     { key: 'ss', tab: 'Safety Stock' },
   ];
 
-  const abcDesc = {
-    header: 'ABC analysis grades the products based on sales per month.',
-    content: [
-      {
-        key: 'gradeA',
-        title: 'Grade A',
-        desc: 'Grade A contribute to 80% of revenue. Make sure to keep enough stocks since these products produce the most revenue.',
-        icon: <GradeIcon grade='A' className='bg-green-400' />,
-      },
-      {
-        key: 'gradeB',
-        title: 'Grade B',
-        desc: 'Grade B contribute to 15% of revenue. Do not keep too many stocks on hand since these products produce lower revenue.',
-        icon: <GradeIcon grade='B' className='bg-blue-400' />,
-      },
-      {
-        key: 'gradeC',
-        title: 'Grade C',
-        desc: 'Grade C contribute to 5% of revenue. These products are low in demand. Consider ways to promote these products.',
-        icon: <GradeIcon grade='C' className='bg-red-400' />,
-      },
-    ],
-  };
+  const getAnalysis = (
+    analysis: string
+  ): {
+    desc: {
+      header: string;
+      content: {
+        key: string;
+        title: string;
+        desc: string;
+        icon: JSX.Element;
+      }[];
+    };
+    component?: {
+      header: string;
+      content: {
+        key: string;
+        label: string;
+        desc: string;
+        prodList: string[];
+      }[];
+    };
+  } =>
+    analysis === 'abc'
+      ? abcAnalysis
+      : analysis === 'hml'
+      ? hmlAnalysis
+      : analysis === 'eoq'
+      ? eoqAnalysis
+      : ssAnalysis;
 
-  const hmlDesc = {
-    header: 'HML analysis grades the products based on sales per month.',
-    content: [
-      {
-        key: 'gradeH',
-        title: 'Grade H',
-        desc: 'Grade H products make up 75% of the total unit price ratio. These products are costly. Make sure you have strict control on these high-unit-value products.',
-        icon: <GradeIcon grade='H' className='bg-green-400' />,
-      },
-      {
-        key: 'gradeM',
-        title: 'Grade M',
-        desc: 'Grade M products make up 15% of the total unit price ratio. These products do not cost too much. Moderate control on these products is sufficient.',
-        icon: <GradeIcon grade='M' className='bg-blue-400' />,
-      },
-      {
-        key: 'gradeL',
-        title: 'Grade L',
-        desc: 'Grade L products make up 10% of the total unit price ratio. These products are low in unit price. Less control is required for the products.',
-        icon: <GradeIcon grade='L' className='bg-red-400' />,
-      },
-    ],
-  };
+  const getAnalysisDesc = (analysis: string) => getAnalysis(analysis).desc;
 
-  const getAnalysisDesc = (analysis: string) =>
-    analysis === 'abc' ? abcDesc : analysis === 'hml' ? hmlDesc : null;
+  const getAnalysisComponent = (analysis: string) =>
+    getAnalysis(analysis).hasOwnProperty('component')
+      ? getAnalysis(analysis).component
+      : null;
+
+  const analysisDesc = getAnalysisDesc(searchParams.get('type'));
+  const analysisComponent = getAnalysisComponent(searchParams.get('type'));
 
   return (
     <Layout>
       <MainCardContainer className='inv-analysis'>
-        <MainCard bodyStyle={{ padding: 0 }}>
-          <Collapse bordered={false} expandIconPosition='right'>
-            <Panel
-              header={
-                <Text style={{ fontWeight: 500 }} className='text-lg'>
-                  {getAnalysisDesc(searchParams.get('type'))?.header}
-                </Text>
-              }
-              key={`info-${searchParams.get('type')}`}
-              style={{
-                backgroundColor: 'white',
-                borderRadius: 6,
-              }}
-            >
-              <DescriptionList
-                grid={{ column: 3 }}
-                dataSource={getAnalysisDesc(searchParams.get('type'))?.content}
-                titleProps={{ style: { fontSize: 18 } }}
-                style={{ borderTop: '1px solid #f0f0f0' }}
-              />
-            </Panel>
-          </Collapse>
-        </MainCard>
+        {analysisDesc !== null ? (
+          <MainCard bodyStyle={{ padding: 0 }}>
+            <Collapse bordered={false} expandIconPosition='right'>
+              <Panel
+                header={
+                  <Text style={{ fontWeight: 500 }} className='text-lg'>
+                    {analysisDesc.header}
+                  </Text>
+                }
+                key={`info-${searchParams.get('type')}`}
+              >
+                <DescriptionList
+                  grid={{ column: 3 }}
+                  dataSource={analysisDesc?.content}
+                  titleProps={{ style: { fontSize: 18 } }}
+                  style={{ borderTop: '1px solid #f0f0f0' }}
+                />
+              </Panel>
+            </Collapse>
+          </MainCard>
+        ) : null}
+
+        {analysisComponent !== null ? (
+          <MainCard bodyStyle={{ padding: 0 }}>
+            <Collapse bordered={false} expandIconPosition='right'>
+              <Panel
+                header={
+                  <Text style={{ fontWeight: 500 }} className='text-lg'>
+                    {analysisComponent.header}
+                  </Text>
+                }
+                key={`info-${searchParams.get('type')}`}
+              >
+                <Row gutter={[30, 30]}>
+                  {analysisComponent.content.map((component) => (
+                    <Col key={component.key} flex='25%'>
+                      <AnalysisCard component={component} />
+                    </Col>
+                  ))}
+                </Row>
+              </Panel>
+            </Collapse>
+          </MainCard>
+        ) : null}
+
         <MainCard
           tabList={invAnalysisTab}
           activeTabKey={searchParams.get('type')}

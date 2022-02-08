@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './AvatarDropdown.less';
 import AvatarImg from '@assets/avatar.png';
 
-interface AvatarDropdownProps extends DropDownProps {
+export interface AvatarDropdownProps extends DropDownProps {
   name: string;
   role: string;
   img?: React.ReactNode;
@@ -22,7 +22,7 @@ const AvatarDropdown = ({
     <Menu
       defaultSelectedKeys={[location.pathname]}
       onClick={(item: { key: string }) => {
-        navigate(item.key, { replace: true });
+        navigate(item.key);
       }}
     >
       {menuList.map((menu) => (

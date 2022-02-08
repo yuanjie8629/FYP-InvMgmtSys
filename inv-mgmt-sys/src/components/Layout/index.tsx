@@ -5,7 +5,8 @@ import Header from './Header';
 import Sider from './Sider';
 import Footer from './Footer';
 import './Layout.less';
-interface CustomLayoutProps extends RowProps {
+
+export interface CustomLayoutProps extends RowProps {
   justify?: 'start' | 'end' | 'center' | 'space-around' | 'space-between';
   children?: React.ReactNode;
 }

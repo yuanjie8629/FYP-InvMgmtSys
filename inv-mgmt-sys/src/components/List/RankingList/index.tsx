@@ -17,7 +17,7 @@ import './RankingList.less';
 import CarouselArrow from '@components/Carousel/CarouselArrow';
 import { splitIntoChunks } from '@utils/arrayUtils';
 
-interface RankingListProps extends Omit<ListProps<any>, 'dataSource'> {
+export interface RankingListProps extends Omit<ListProps<any>, 'dataSource'> {
   dataSource: {
     date: string;
     type: 'sales' | 'units';

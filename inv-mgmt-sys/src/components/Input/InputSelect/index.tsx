@@ -1,6 +1,6 @@
 import { Input, InputProps as AntdInputProps, Select } from 'antd';
 
-interface InputProps extends AntdInputProps {
+export interface InputProps extends AntdInputProps {
   width?: number | string;
   selectBefore?: {
     defaultVal: string;

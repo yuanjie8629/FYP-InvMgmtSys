@@ -21,7 +21,7 @@ interface DescriptionListProps extends Omit<ListProps<any>, 'dataSource'> {
 const DescriptionList = ({
   dataSource,
   buttons,
-  onButtonClick,
+  onButtonClick = () => '',
   buttonProps,
   titleProps,
   descProps,
@@ -47,7 +47,7 @@ const DescriptionList = ({
     icon: React.ReactNode;
   }) => (
     <List.Item actions={buttons !== undefined ? actions(item) : null}>
-      <Row className='full-width' align='middle' justify='center'>
+      <Row className='full-width' align='middle'>
         <Col span={item.content !== undefined ? 5 : 24}>
           <List.Item.Meta
             avatar={item.icon}
@@ -61,7 +61,6 @@ const DescriptionList = ({
                 {item.desc}
               </Text>
             }
-            style={{ height: 116 }}
           />
         </Col>
         <Col>

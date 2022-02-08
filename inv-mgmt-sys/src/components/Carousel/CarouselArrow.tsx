@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import './CarouselArrow.less';
 
-interface CarouselArrowProps extends CarouselProps {}
+export interface CarouselArrowProps extends CarouselProps {}
 
 const CarouselArrow = (props: CarouselArrowProps) => {
   const [carouselPrev, setCarouselPrev] = useState(false);

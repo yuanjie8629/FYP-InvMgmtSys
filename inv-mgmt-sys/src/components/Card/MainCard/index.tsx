@@ -6,8 +6,8 @@ const MainCard = ({ className, ...props }: CardProps) => {
     <Card
       bordered={false}
       bodyStyle={{ padding: 35 }}
-      className={`main-card full-width full-height ${
-        className !== undefined ? className : ''
+      className={`main-card full-width full-height${
+        className !== undefined ? ` ${className}` : ''
       }`}
       {...props}
     />

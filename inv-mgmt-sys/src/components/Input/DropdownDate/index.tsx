@@ -17,13 +17,13 @@ import {
   getMomentPrevDt,
 } from '@utils/dateUtils';
 
-interface DateInfo {
+export interface DateInfo {
   date: string;
   label: string;
   cat: string;
 }
 
-interface DropdownDateProps extends Omit<MenuProps, 'onChange'> {
+export interface DropdownDateProps extends Omit<MenuProps, 'onChange'> {
   onChange?: (dateInfo: DateInfo) => void;
 }
 

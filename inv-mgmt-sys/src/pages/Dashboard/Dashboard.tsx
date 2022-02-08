@@ -67,15 +67,11 @@ const Dashboard = () => {
     <Button
       type='link'
       color='info'
-      onClick={() =>
-        navigate(findRoutePath(route), {
-          replace: true,
-        })
-      }
-      className='dashboard-more-btn'
+      onClick={() => navigate(findRoutePath(route))}
+      className='dashboard-more-btn centerFlex'
     >
       More
-      <MdChevronRight size={22} className='dashboard-right-arrow' />
+      <MdChevronRight size={23} style={{ position: 'relative', right: 3 }} />
     </Button>
   );
 
@@ -226,11 +222,7 @@ const Dashboard = () => {
           {toDoList.map((toDoItem) => (
             <Col
               key={toDoItem.label}
-              onClick={() =>
-                navigate(findRoutePath(toDoItem.link), {
-                  replace: true,
-                })
-              }
+              onClick={() => navigate(findRoutePath(toDoItem.link))}
               className='dashboard-toDoList-col'
             >
               <ColorCard

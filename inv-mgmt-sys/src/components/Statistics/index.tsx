@@ -1,7 +1,7 @@
 import { Avatar, Col, Row, Space, Typography } from 'antd';
 import { IconType } from 'react-icons';
 
-interface StatisticsProps {
+export interface StatisticsProps {
   value: number;
   title: string;
   date?: string;

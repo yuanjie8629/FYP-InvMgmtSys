@@ -10,12 +10,16 @@ import {
 } from 'antd';
 import { invInputOptions } from '@/utils/optionUtils';
 
-interface InvStockInputProps extends InputNumberProps {
+export interface InvStockInputProps extends InputNumberProps {
   input: number;
   onSave?: (data: { operation: string; value: number }) => void;
 }
 
-const InvStockInput = ({ input, onSave, ...props }: InvStockInputProps) => {
+const InvStockInput = ({
+  input,
+  onSave = () => '',
+  ...props
+}: InvStockInputProps) => {
   const [operation, setOperation] = useState(invInputOptions[0].value);
   const [value, setValue] = useState(input);
 
