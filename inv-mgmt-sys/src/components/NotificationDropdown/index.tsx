@@ -30,9 +30,7 @@ const NotificationDropdown = () => {
   const menuNotificationDropdown = (
     <Menu
       onClick={(item: { key: string }) => {
-        navigate(item.key.substring(0, item.key.length - 2), {
-          replace: true,
-        });
+        navigate(item.key.substring(0, item.key.length - 2));
       }}
       className='notification-menu'
     >

@@ -78,11 +78,11 @@ const custCat = [
 const invInputOptions = [
   {
     value: '+',
-    label: <MdAdd size={20} style={{ position: 'relative', top: 5 }} />,
+    label: <MdAdd size={20}  />,
   },
   {
     value: '-',
-    label: <MdRemove size={20} style={{ position: 'relative', top: 5 }} />,
+    label: <MdRemove size={20} />,
   },
   {
     value: 'set',

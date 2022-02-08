@@ -8,7 +8,7 @@ import {
 } from 'antd';
 import './InputNumberRange.less';
 
-interface InputNumberRangeProps
+export interface InputNumberRangeProps
   extends Omit<InputNumberProps, 'placeholder' | 'addonBefore' | 'addonAfter'> {
   label?: string;
   placeholder?: string[];
@@ -78,8 +78,8 @@ const InputNumberRange = ({
             style={{
               width: inputNumWidth,
             }}
-            className={`input-range-left ${
-              className !== undefined ? className : ''
+            className={`input-range-left${
+              className !== undefined ? ` ${className}` : ''
             }`}
             {...props}
           />
@@ -94,8 +94,8 @@ const InputNumberRange = ({
             style={{
               width: inputNumWidth,
             }}
-            className={`input-range-right ${
-              className !== undefined ? className : ''
+            className={`input-range-right${
+              className !== undefined ? ` ${className}` : ''
             }`}
             {...props}
           />

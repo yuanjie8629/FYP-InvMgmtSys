@@ -1,9 +1,9 @@
-import { Card, CardProps as AntdCardProps, Col, Row, Space } from 'antd';
+import { Card, CardProps, Col, Row, Space } from 'antd';
 import React from 'react';
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
 import './ColorCard.less';
 
-interface CardProps extends AntdCardProps {
+export interface ColorCardProps extends CardProps {
   backgroundColor?:
     | 'default'
     | 'white'
@@ -24,7 +24,7 @@ const ColorCard = ({
   indicator,
   className,
   ...props
-}: CardProps) => {
+}: ColorCardProps) => {
   return (
     <Card
       bordered={false}
@@ -37,13 +37,17 @@ const ColorCard = ({
           : hover !== false
           ? ` small-card-${hover}-hover`
           : ''
-      } ${className !== undefined ? className : ''}`}
+      } full-height ${className !== undefined ? ` ${className}` : ''}`}
     >
       <Space direction='vertical' size={20} className='full-width'>
         {label !== undefined || indicator !== undefined ? (
           <Row justify='space-between'>
             <Col span={22}>{label}</Col>
-            <Col span={2} style={{ position: 'absolute', right: 20 }}>
+            <Col
+              span={2}
+              style={{ position: 'absolute', right: 20 }}
+              className='centerFlex'
+            >
               {indicator === 'true' ? (
                 <HiCheckCircle size={20} className='color-primary' />
               ) : indicator === 'false' ? (
@@ -52,7 +56,7 @@ const ColorCard = ({
             </Col>
           </Row>
         ) : null}
-        {props.children}
+        <div>{props.children}</div>
       </Space>
     </Card>
   );

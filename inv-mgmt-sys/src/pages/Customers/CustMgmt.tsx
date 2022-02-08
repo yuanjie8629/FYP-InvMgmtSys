@@ -3,17 +3,20 @@ import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
-import Tag, { TagProps } from '@components/Tag';
+import Tag from '@components/Tag';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography } from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
 import custList from './custList';
-import { HiCheckCircle, HiPause } from 'react-icons/hi';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
+import {
+  ActivateButton,
+  SuspendButton,
+} from '@/components/Button/ActionButton';
 
 const CustMgmt = () => {
   const { Text, Title } = Typography;
@@ -41,33 +44,9 @@ const CustMgmt = () => {
     { key: 'drpshpr', tab: 'Dropshipper' },
   ];
 
-  const activateBtn = (props: any) => (
-    <Button
-      type='primary'
-      icon={
-        <HiCheckCircle
-          size={16}
-          style={{ marginRight: 5, position: 'relative', top: 3 }}
-        />
-      }
-      {...props}
-    >
-      Activate
-    </Button>
-  );
+  const activateBtn = (props: any) => <ActivateButton type='primary' />;
 
-  const suspendBtn = (props: any) => (
-    <Button
-      type='primary'
-      color='error'
-      icon={
-        <HiPause style={{ marginRight: 5, position: 'relative', top: 2 }} />
-      }
-      {...props}
-    >
-      Suspend
-    </Button>
-  );
+  const suspendBtn = (props: any) => <SuspendButton type='primary' />;
 
   const onSelectBtn: InformativeTableButtonProps = [
     {
@@ -171,30 +150,18 @@ const CustMgmt = () => {
           { status: 'suspended', label: 'Suspended', color: 'error' },
         ];
 
-        interface custStatusTagProps extends TagProps {
-          color: string;
-          children: React.ReactNode;
-        }
-        const CustStatusTag = ({
-          color,
-          children,
-          ...props
-        }: custStatusTagProps) => (
-          <Tag minWidth='80%' maxWidth='100%' color={color} {...props}>
-            {children}
-          </Tag>
-        );
-
         const matchedStatus = statusList.find(
           (statusItem) => status === statusItem.status
         );
 
         return (
-          <CustStatusTag
+          <Tag
+            minWidth='80%'
+            maxWidth='100%'
             color={matchedStatus !== undefined ? matchedStatus.color : ''}
           >
             {matchedStatus !== undefined ? matchedStatus.label : null}
-          </CustStatusTag>
+          </Tag>
         );
       },
     },
@@ -208,31 +175,9 @@ const CustMgmt = () => {
         data['custType'] === 'cust' ? (
           '-'
         ) : data['status'] === 'suspended' ? (
-          <Button
-            type='link'
-            color='info'
-            icon={
-              <HiCheckCircle
-                size={16}
-                style={{ marginRight: 5, position: 'relative', top: 3 }}
-              />
-            }
-          >
-            Activate
-          </Button>
+          <ActivateButton type='link' color='info' />
         ) : (
-          <Button
-            type='link'
-            color='info'
-            icon={
-              <HiPause
-                size={16}
-                style={{ marginRight: 5, position: 'relative', top: 3 }}
-              />
-            }
-          >
-            Suspend
-          </Button>
+          <SuspendButton type='link' color='info' />
         ),
     },
   ];

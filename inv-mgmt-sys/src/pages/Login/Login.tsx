@@ -34,6 +34,7 @@ const Login = () => {
               width='70%'
               height='auto'
               preview={false}
+              draggable='false'
               style={{ pointerEvents: 'none', userSelect: 'none' }}
             />
           </div>
@@ -88,7 +89,7 @@ const Login = () => {
                         htmlType='submit'
                         block
                         onClick={() => {
-                          navigate('/dashboard', { replace: true });
+                          navigate('/dashboard');
                         }}
                       >
                         Login
@@ -145,6 +146,7 @@ const Login = () => {
                 alt='logo'
                 width='20%'
                 preview={false}
+                draggable='false'
                 style={{
                   float: 'right',
                 }}
@@ -162,6 +164,7 @@ const Login = () => {
                 src={Inventory}
                 alt='inventory'
                 preview={false}
+                draggable='false'
                 className='login-responsive-img'
               />
             </Col>

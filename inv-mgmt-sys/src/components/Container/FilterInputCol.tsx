@@ -1,6 +1,6 @@
 import { Col, ColProps } from 'antd';
 
-interface FilterInputColProps extends ColProps {
+export interface FilterInputColProps extends ColProps {
   children: React.ReactNode;
 }
 

@@ -1,9 +1,10 @@
 import Layout from '@components/Layout';
-import { Card, Space, SpaceProps, Typography } from 'antd';
+import { Space, SpaceProps, Typography } from 'antd';
 import Button from '@components/Button';
 import { useNavigate } from 'react-router-dom';
+import MainCard from '@/components/Card/MainCard';
 
-interface ComingSoonProps extends SpaceProps {
+export interface ComingSoonProps extends SpaceProps {
   img: string;
 }
 
@@ -19,9 +20,20 @@ const ComingSoon = ({ img, ...props }: ComingSoonProps) => {
           className='main-card-container'
           align='center'
         >
-          <Card bodyStyle={{ padding: 15 }}>
-            <img src={img} alt='comingSoonImg' height={370} width={490}></img>
-          </Card>
+          <MainCard bodyStyle={{ padding: 15 }}>
+            <img
+              src={img}
+              alt='comingSoonImg'
+              height={370}
+              width={490}
+              draggable='false'
+              style={{
+                borderRadius: 6,
+                pointerEvents: 'none',
+                userSelect: 'none',
+              }}
+            />
+          </MainCard>
           <Title>Coming Soon</Title>
           <Text type='secondary' className='text-lg'>
             We Are Working Hard to Give You a Better Experience.

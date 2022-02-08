@@ -1,6 +1,6 @@
 import { Col, Row, Select, SelectProps, Typography } from 'antd';
 
-interface SelectLabelProps extends SelectProps<any> {
+export interface SelectLabelProps extends SelectProps<any> {
   label: string;
   select: {
     placeholder: string;
@@ -33,7 +33,7 @@ const SelectWithLabel = ({
           placeholder={select.placeholder}
           options={select.options}
           allowClear
-          className={`full-width ${className !== undefined ? className : ''}`}
+          className={`full-width${className !== undefined ? ` ${className}` : ''}`}
           {...props}
         />
       </Col>

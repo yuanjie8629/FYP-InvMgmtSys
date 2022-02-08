@@ -8,13 +8,13 @@ import MainCardContainer from '@components/Container/MainCardContainer';
 import { Col, Image, Row, Space, Typography } from 'antd';
 import FilterInputs from './FilterInputs';
 import prodList from './prodList';
-import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
 import prodTabList from './prodTabList';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
 import InvStockInput from '@/components/Input/InvStockInput';
+import { BulkEditButton } from '@/components/Button/ActionButton';
 
 const ProdInv = () => {
   const { Text, Title } = Typography;
@@ -23,16 +23,7 @@ const ProdInv = () => {
 
   const [prodListFltr, setProdListFltr] = useState(prodList);
 
-  const bulkUpdBtn = (props: any) => (
-    <Button
-      type='primary'
-      icon={<BulkEditIcon style={{ marginRight: 5 }} />}
-      className='centerFlex'
-      {...props}
-    >
-      Bulk Updates
-    </Button>
-  );
+  const bulkUpdBtn = (props: any) => <BulkEditButton />;
 
   const onSelectBtn: InformativeTableButtonProps = [
     {

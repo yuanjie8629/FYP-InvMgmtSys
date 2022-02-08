@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
 import Layout from '@components/Layout';
-import Tag, { TagProps } from '@components/Tag';
+import Tag from '@components/Tag';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography, Dropdown, Menu } from 'antd';
@@ -10,13 +10,18 @@ import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
 import voucherList from './voucherList';
-import { HiCheckCircle, HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { MdAllInclusive, MdArrowDropDown, MdSync } from 'react-icons/md';
 import Tooltip from 'antd/es/tooltip';
 import { moneyFormatter, percentFormatter } from '@utils/numUtils';
 import { sortByOrder } from '@utils/sortUtils';
+import {
+  ActivateButton,
+  DeleteButton,
+  EditButton,
+  HideButton,
+} from '@/components/Button/ActionButton';
 
 const VoucherMgmt = () => {
   const { Text, Title } = Typography;
@@ -44,50 +49,12 @@ const VoucherMgmt = () => {
     { key: 'expired', tab: 'Expired' },
   ];
 
-  const activateBtn = (props: any) => (
-    <Button
-      type='primary'
-      icon={
-        <HiCheckCircle
-          size={16}
-          style={{ marginRight: 5, position: 'relative', top: 3 }}
-        />
-      }
-      {...props}
-    >
-      Activate
-    </Button>
-  );
+  const activateBtn = (props: any) => <ActivateButton type='primary' />;
 
-  const hideBtn = (props: any) => (
-    <Button
-      type='primary'
-      color='grey'
-      icon={
-        <HiEyeOff
-          size={16}
-          style={{ marginRight: 5, position: 'relative', top: 3 }}
-        />
-      }
-      {...props}
-    >
-      Hide
-    </Button>
-  );
+  const hideBtn = (props: any) => <HideButton type='primary' color='grey' />;
 
   const deleteBtn = (props: any) => (
-    <Button
-      type='primary'
-      color='error'
-      icon={
-        <HiTrash
-          size={16}
-          style={{ marginRight: 5, position: 'relative', top: 3 }}
-        />
-      }
-    >
-      Delete
-    </Button>
+    <DeleteButton type='primary' color='error' />
   );
 
   const onSelectBtn: InformativeTableButtonProps = [
@@ -155,7 +122,7 @@ const VoucherMgmt = () => {
               : percentFormatter(data['discAmt'])}{' '}
             off
           </Text>
-          <ul style={{ padding: '0 25px' }}>
+          <ul>
             {data['minSpend'] !== undefined ? (
               <li>Min spend of {moneyFormatter(data['minSpend'])}</li>
             ) : null}
@@ -248,20 +215,6 @@ const VoucherMgmt = () => {
           </Menu>
         );
 
-        interface ProdStatusTagProps extends TagProps {
-          color: string;
-          children: React.ReactNode;
-        }
-        const ProdStatusTag = ({
-          color,
-          children,
-          ...props
-        }: ProdStatusTagProps) => (
-          <Tag minWidth='50%' maxWidth='100%' color={color} {...props}>
-            {children}
-          </Tag>
-        );
-
         const matchedStatus = statusList.find(
           (statusItem) => status === statusItem.status
         );
@@ -270,15 +223,17 @@ const VoucherMgmt = () => {
           ['expired', 'scheduled'].indexOf(matchedStatus!.status) >= 0
         ) ? (
           <Row align='middle'>
-            <ProdStatusTag color={matchedStatus!.color}>
+            <Tag minWidth='50%' maxWidth='100%' color={matchedStatus!.color}>
               {matchedStatus!.label}
-            </ProdStatusTag>
+            </Tag>
             <Dropdown overlay={menu} placement='bottomRight'>
               <MdArrowDropDown size={25} style={{ cursor: 'pointer' }} />
             </Dropdown>
           </Row>
         ) : (
-          <ProdStatusTag
+          <Tag
+            minWidth='50%'
+            maxWidth='100%'
             color={
               statusList.find(
                 (statusItem) => statusItem.status === matchedStatus?.status
@@ -290,7 +245,7 @@ const VoucherMgmt = () => {
                 (statusItem) => statusItem.status === matchedStatus?.status
               )!.label
             }
-          </ProdStatusTag>
+          </Tag>
         );
       },
     },
@@ -301,30 +256,8 @@ const VoucherMgmt = () => {
       fixed: 'right',
       render: (_: any, data: { [x: string]: string }) => (
         <Space direction='vertical' size={5}>
-          <Button
-            type='link'
-            color='info'
-            icon={
-              <HiPencilAlt
-                size={16}
-                style={{ marginRight: 5, position: 'relative', top: 3 }}
-              />
-            }
-          >
-            Edit
-          </Button>
-          <Button
-            type='link'
-            color='info'
-            icon={
-              <HiTrash
-                size={16}
-                style={{ marginRight: 5, position: 'relative', top: 2 }}
-              />
-            }
-          >
-            Delete
-          </Button>
+          <EditButton type='link' color='info' />
+          <DeleteButton type='link' color='info' />
         </Space>
       ),
     },

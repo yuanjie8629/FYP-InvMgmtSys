@@ -1,7 +1,7 @@
 import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
 import Layout from '@components/Layout';
-import Tag, { TagProps } from '@components/Tag';
+import Tag from '@components/Tag';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography, Image, Dropdown, Menu } from 'antd';
@@ -9,7 +9,6 @@ import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
 import prodList from './prodList';
-import { HiCheckCircle, HiEyeOff, HiPencilAlt, HiTrash } from 'react-icons/hi';
 import { MdArrowDropDown } from 'react-icons/md';
 import prodTabList from './prodTabList';
 import React, { useEffect, useState } from 'react';
@@ -17,6 +16,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
 import { prodStatList } from '@utils/optionUtils';
+import {
+  ActivateButton,
+  DeleteButton,
+  EditButton,
+  HideButton,
+} from '@/components/Button/ActionButton';
 
 const ProdMgmt = () => {
   const { Text, Title } = Typography;
@@ -36,50 +41,12 @@ const ProdMgmt = () => {
     [searchParams]
   );
 
-  const activateBtn = (props: any) => (
-    <Button
-      type='primary'
-      icon={
-        <HiCheckCircle
-          size={16}
-          style={{ marginRight: 5, position: 'relative', top: 3 }}
-        />
-      }
-      {...props}
-    >
-      Activate
-    </Button>
-  );
+  const activateBtn = (props: any) => <ActivateButton type='primary' />;
 
-  const hideBtn = (props: any) => (
-    <Button
-      type='primary'
-      color='grey'
-      icon={
-        <HiEyeOff
-          size={16}
-          style={{ marginRight: 5, position: 'relative', top: 3 }}
-        />
-      }
-      {...props}
-    >
-      Hide
-    </Button>
-  );
+  const hideBtn = (props: any) => <HideButton type='primary' color='grey' />;
 
   const deleteBtn = (props: any) => (
-    <Button
-      type='primary'
-      color='error'
-      icon={
-        <HiTrash
-          size={16}
-          style={{ marginRight: 5, position: 'relative', top: 3 }}
-        />
-      }
-    >
-      Delete
-    </Button>
+    <DeleteButton type='primary' color='error' />
   );
 
   const onSelectBtn: InformativeTableButtonProps = [
@@ -180,31 +147,23 @@ const ProdMgmt = () => {
           </Menu>
         );
 
-        interface StatusTagProps extends TagProps {
-          color: string;
-          children: React.ReactNode;
-        }
-        const StatusTag = ({ color, children, ...props }: StatusTagProps) => (
-          <Tag minWidth='50%' maxWidth='100%' color={color} {...props}>
-            {children}
-          </Tag>
-        );
-
         const matchedStatus = prodStatList.find(
           (statusItem) => status === statusItem.status
         );
 
         return matchedStatus?.status !== 'oos' ? (
           <Row align='middle'>
-            <StatusTag color={matchedStatus!.color}>
+            <Tag minWidth='50%' maxWidth='100%' color={matchedStatus!.color}>
               {matchedStatus!.label}
-            </StatusTag>
+            </Tag>
             <Dropdown overlay={menu} placement='bottomRight'>
               <MdArrowDropDown size={25} style={{ cursor: 'pointer' }} />
             </Dropdown>
           </Row>
         ) : (
-          <StatusTag
+          <Tag
+            minWidth='50%'
+            maxWidth='100%'
             color={
               prodStatList.find(
                 (statusItem) => statusItem.status === matchedStatus.status
@@ -216,7 +175,7 @@ const ProdMgmt = () => {
                 (statusItem) => statusItem.status === matchedStatus.status
               )!.label
             }
-          </StatusTag>
+          </Tag>
         );
       },
     },
@@ -226,30 +185,8 @@ const ProdMgmt = () => {
       width: 100,
       render: () => (
         <Space direction='vertical' size={5}>
-          <Button
-            type='link'
-            color='info'
-            icon={
-              <HiPencilAlt
-                size={16}
-                style={{ marginRight: 5, position: 'relative', top: 3 }}
-              />
-            }
-          >
-            Edit
-          </Button>
-          <Button
-            type='link'
-            color='info'
-            icon={
-              <HiTrash
-                size={16}
-                style={{ marginRight: 5, position: 'relative', top: 2 }}
-              />
-            }
-          >
-            Delete
-          </Button>
+          <EditButton type='link' color='info' />
+          <DeleteButton type='link' color='info' />
         </Space>
       ),
     },

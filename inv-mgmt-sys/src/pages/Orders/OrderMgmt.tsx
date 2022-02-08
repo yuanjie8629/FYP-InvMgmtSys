@@ -3,21 +3,21 @@ import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
-import Tag, { TagProps } from '@components/Tag';
+import Tag from '@components/Tag';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography } from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
 import orderList from './orderList';
-import { ReactComponent as BulkEditIcon } from '@assets/Icons/BulkEditIcon.svg';
-import { HiExclamation, HiPrinter } from 'react-icons/hi';
+import { HiExclamation } from 'react-icons/hi';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
-import { MdUpdate } from 'react-icons/md';
 import orderTabList from './orderTabList';
 import { orderStatList } from '@utils/optionUtils';
+import { BulkEditButton, PrintButton } from '@/components/Button/ActionButton';
+import UpdButton from '@/components/Button/ActionButton/UpdButton';
 
 const OrderMgmt = () => {
   const { Text, Title } = Typography;
@@ -39,30 +39,10 @@ const OrderMgmt = () => {
   );
 
   const genInvoiceBtn = (props: any) => (
-    <Button
-      type='primary'
-      icon={
-        <HiPrinter
-          size={16}
-          style={{ marginRight: 5, position: 'relative', top: 3 }}
-        />
-      }
-      {...props}
-    >
-      Generate Invoice(s)
-    </Button>
+    <PrintButton type='primary'>Generate Invoice(s)</PrintButton>
   );
 
-  const bulkUpdBtn = (props: any) => (
-    <Button
-      type='primary'
-      icon={<BulkEditIcon style={{ marginRight: 5 }} />}
-      className='centerFlex'
-      {...props}
-    >
-      Bulk Updates
-    </Button>
-  );
+  const bulkUpdBtn = (props: any) => <BulkEditButton />;
 
   const onSelectBtn: InformativeTableButtonProps = [
     {
@@ -175,30 +155,18 @@ const OrderMgmt = () => {
       align: 'center' as const,
       width: 130,
       render: (status: string) => {
-        interface OrderStatusTagProps extends TagProps {
-          color: string;
-          children: React.ReactNode;
-        }
-        const OrderStatusTag = ({
-          color,
-          children,
-          ...props
-        }: OrderStatusTagProps) => (
-          <Tag minWidth='80%' maxWidth='100%' color={color} {...props}>
-            {children}
-          </Tag>
-        );
-
         const matchedStatus = orderStatList.find(
           (statusItem) => status === statusItem.status
         );
 
         return (
-          <OrderStatusTag
+          <Tag
+            minWidth='80%'
+            maxWidth='100%'
             color={matchedStatus !== undefined ? matchedStatus.color : ''}
           >
             {matchedStatus !== undefined ? matchedStatus.label : null}
-          </OrderStatusTag>
+          </Tag>
         );
       },
     },
@@ -211,30 +179,8 @@ const OrderMgmt = () => {
       render: (_: any, data: { [x: string]: string }) =>
         data['orderStat'] !== 'cancel' ? (
           <Space direction='vertical' size={5}>
-            <Button
-              type='link'
-              color='info'
-              icon={
-                <HiPrinter
-                  size={16}
-                  style={{ marginRight: 5, position: 'relative', top: 3 }}
-                />
-              }
-            >
-              Invoice
-            </Button>
-            <Button
-              type='link'
-              color='info'
-              icon={
-                <MdUpdate
-                  size={16}
-                  style={{ marginRight: 5, position: 'relative', top: 3 }}
-                />
-              }
-            >
-              Update
-            </Button>
+            <PrintButton type='link' color='info' />
+            <UpdButton type='link' color='info' />
           </Space>
         ) : (
           '-'

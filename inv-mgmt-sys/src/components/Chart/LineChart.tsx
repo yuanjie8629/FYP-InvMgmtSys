@@ -1,7 +1,7 @@
 import React from 'react';
 import { Datum, Line, LineConfig } from '@ant-design/charts';
 
-interface LineChartProps extends LineConfig {
+export interface LineChartProps extends LineConfig {
   data: any;
   titleX?: string;
   titleY?: string;

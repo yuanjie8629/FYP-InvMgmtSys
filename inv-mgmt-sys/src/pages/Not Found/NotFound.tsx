@@ -22,7 +22,7 @@ const NotFound = () => {
               preview={false}
               height='65px'
               className='not-found-logo'
-              onClick={() => navigate(findRoutePath('root'), { replace: true })}
+              onClick={() => navigate(findRoutePath('root'))}
             />
           </Col>
           <Col>
@@ -57,7 +57,7 @@ const NotFound = () => {
             <Button
               type='primary'
               className='not-found-btn'
-              onClick={() => navigate(findRoutePath('root'), { replace: true })}
+              onClick={() => navigate(findRoutePath('root'))}
             >
               Go Back
             </Button>

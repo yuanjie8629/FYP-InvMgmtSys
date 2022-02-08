@@ -8,7 +8,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import classNames from 'classnames';
 import siderDefKeyList from './siderDefKeyList';
-import less from 'less';
 
 const Sider = () => {
   const { Sider } = Layout;
@@ -63,19 +62,18 @@ const Sider = () => {
         collapsed={isSiderCollapsed}
         onCollapse={() => {
           isSiderCollapsed ? dispatch(expand()) : dispatch(collapse());
-          less.modifyVars({ '@message-margin': 40 });
         }}
         width='220px'
         className='sider'
       >
-        <div className={'sider-logo-fixed'}>
+        <div className='sider-logo-fixed'>
           <div
             className={classNames(
               { 'sider-logo-collapsed-wrapper': isSiderCollapsed },
               { 'sider-logo-wrapper': !isSiderCollapsed }
             )}
             onClick={() => {
-              navigate(findRoutePath('dashboard'), { replace: true });
+              navigate(findRoutePath('dashboard'));
             }}
           >
             <Image
@@ -93,7 +91,7 @@ const Sider = () => {
           defaultOpenKeys={!isSiderCollapsed ? openKey : undefined}
           inlineIndent={15}
           onClick={(item: { key: string }) => {
-            navigate(item.key, { replace: true });
+            navigate(item.key);
           }}
           className='sider-menu'
         >
