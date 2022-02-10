@@ -21,13 +21,18 @@ import {
   HideButton,
 } from '@/components/Button/ActionButton';
 import StatusTag from '@/components/Tag/StatusTag';
+import { BoldTitle } from '@/components/Title';
+import { DeleteModal } from '@/components/Modal';
+import DescriptionList from '@/components/List/DescriptionList';
 
 const ProdMgmt = () => {
-  const { Text, Title } = Typography;
+  const { Text } = Typography;
+
   let navigate = useNavigate();
   const [prodListFltr, setProdListFltr] = useState(prodList);
+  const [loading, setLoading] = useState(false);
+  const [deleteMulti, setDeleteMulti] = useState(false);
   let [searchParams, setSearchParams] = useSearchParams();
-
   useEffect(
     () =>
       setProdListFltr(
@@ -40,12 +45,23 @@ const ProdMgmt = () => {
     [searchParams]
   );
 
+  const DeleteList = () => (
+    <DescriptionList dataSource={[]} bordered style={{ width: 400 }} />
+  );
+
   const activateBtn = (props: any) => <ActivateButton type='primary' />;
 
   const hideBtn = (props: any) => <HideButton type='primary' color='grey' />;
 
   const deleteBtn = (props: any) => (
-    <DeleteButton type='primary' color='error' />
+    <DeleteButton
+      type='primary'
+      color='error'
+      onClick={() => {
+        setDeleteMulti(true);
+        DeleteModal.show();
+      }}
+    />
   );
 
   const onSelectBtn: InformativeTableButtonProps = [
@@ -144,8 +160,21 @@ const ProdMgmt = () => {
       width: 100,
       render: () => (
         <Space direction='vertical' size={5}>
-          <EditButton type='link' color='info' />
-          <DeleteButton type='link' color='info' />
+          <EditButton
+            type='link'
+            color='info'
+            onClick={() => {
+              navigate(findRoutePath('prodAdd'));
+            }}
+          />
+          <DeleteButton
+            type='link'
+            color='info'
+            onClick={() => {
+              setDeleteMulti(false);
+              DeleteModal.show();
+            }}
+          />
         </Space>
       ),
     },
@@ -169,7 +198,7 @@ const ProdMgmt = () => {
           <Space direction='vertical' size={15} className='full-width'>
             <Row justify='space-between'>
               <Col>
-                <Title level={4}>Product List</Title>
+                <BoldTitle level={4}>Product List</BoldTitle>
               </Col>
               <Col>
                 <Button
@@ -185,10 +214,23 @@ const ProdMgmt = () => {
               columns={prodMgmtColumns}
               buttons={onSelectBtn}
               defPg={5}
+              onSelectChange={(selectedKeys) => console.log(selectedKeys)}
             />
           </Space>
         </MainCard>
       </MainCardContainer>
+      <DeleteModal
+        onOk={() => setLoading(true)}
+        onCancel={() => setLoading(false)}
+        loading={loading}
+        label={
+          deleteMulti
+            ? 'Do you really want to delete the following records?'
+            : undefined
+        }
+      >
+        {deleteMulti && <DeleteList />}
+      </DeleteModal>
     </Layout>
   );
 };

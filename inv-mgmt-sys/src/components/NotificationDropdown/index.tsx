@@ -57,7 +57,10 @@ const NotificationDropdown = () => {
         </Row>
       </Menu.Item>
       <Menu.Divider key='notification-header-divider' />
-      <Menu.ItemGroup key={'notification-content'} className='notification-menu-item-group'>
+      <Menu.ItemGroup
+        key={'notification-content'}
+        className='notification-menu-item-group'
+      >
         {menuList.map((menu, index) => {
           const Icon = findIcon(menu.cat);
           return (
@@ -107,7 +110,7 @@ const NotificationDropdown = () => {
                   </Col>
                 </Row>
               </Menu.Item>
-              {index !== menuList.length - 1 ? <Menu.Divider /> : null}
+              {index !== menuList.length - 1 && <Menu.Divider />}
             </>
           );
         })}

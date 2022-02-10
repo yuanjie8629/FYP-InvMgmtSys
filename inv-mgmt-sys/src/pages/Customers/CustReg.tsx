@@ -12,9 +12,10 @@ import custRegList from './custRegList';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { AcceptButton, RejectButton } from '@/components/Button/ActionButton';
+import { BoldTitle } from '@/components/Title';
 
 const CustReg = () => {
-  const { Text, Title } = Typography;
+  const { Text } = Typography;
   const [custListFltr, setCustListFltr] = useState(custRegList);
 
   let navigate = useNavigate();
@@ -156,7 +157,7 @@ const CustReg = () => {
           <Space direction='vertical' size={15} className='full-width'>
             <Row justify='space-between'>
               <Col>
-                <Title level={4}>Customer List</Title>
+                <BoldTitle level={4}>Customer List</BoldTitle>
               </Col>
               <Col>
                 <Button

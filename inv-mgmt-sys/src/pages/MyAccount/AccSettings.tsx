@@ -5,9 +5,10 @@ import MainCardContainer from '@components/Container/MainCardContainer';
 import { Space, Typography, Grid } from 'antd';
 import { MdEmail, MdLock, MdPerson, MdPhone } from 'react-icons/md';
 import DescriptionList from '@components/List/DescriptionList';
+import { BoldTitle } from '@/components/Title';
 
 const AccSettings = () => {
-  const { Text, Title } = Typography;
+  const { Text } = Typography;
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
 
@@ -58,7 +59,7 @@ const AccSettings = () => {
       <MainCardContainer className='acc-settings'>
         <MainCard>
           <Space direction='vertical' size={30} className='full-width'>
-            <Title level={4}>Login Information</Title>
+            <BoldTitle level={4}>Login Information</BoldTitle>
             <DescriptionList
               size={screens.xl && screens.xxl ? 'large' : 'default'}
               dataSource={data}

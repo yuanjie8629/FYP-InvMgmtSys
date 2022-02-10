@@ -48,9 +48,7 @@ const Sider = (props) => {
         breakpoint='xl'
         width={220}
         collapsed={!collapsedSiderOpen}
-        onMouseLeave={() =>
-          isSiderCollapsed ? setCollapsedSiderOpen(false) : null
-        }
+        onMouseLeave={() => isSiderCollapsed && setCollapsedSiderOpen(false)}
         onBreakpoint={(breakpoint) => {
           if (breakpoint) {
             dispatch(collapse());

@@ -36,30 +36,27 @@ const Statistics = ({
         </Col>
         <Col flex='auto'>
           <Space direction='vertical' size={0}>
-            <Title
-              level={5}
-              style={{ fontWeight: 600, fontSize: props.valueSize }}
-            >
+            <Title level={5} style={{ fontSize: props.valueSize }}>
               {props.prefix}
               {props.value.toFixed(props.toFixed)}
               {props.suffix}
             </Title>
             <Text type='secondary'>{props.title}</Text>
-            {props.date !== undefined ? (
+            {props.date !== undefined && (
               <Text type='secondary' style={{ fontSize: 10 }}>
                 {props.date}
               </Text>
-            ) : null}
+            )}
           </Space>
         </Col>
       </Row>
-      {props.untilTm !== undefined ? (
+      {props.untilTm !== undefined && (
         <Row justify='end'>
           <Text type='secondary' style={{ fontSize: 10 }}>
             {props.untilTm}
           </Text>
         </Row>
-      ) : null}
+      )}
     </>
   );
 };

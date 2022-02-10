@@ -18,14 +18,16 @@ type InformativeTableProps = TableProps & { defPg?: number } & (
     | {
         buttons: InformativeTableButtonProps;
         rowSelectable?: never | true;
+        onSelectChange?: (selectedRowKeys: string[]) => void;
       }
-    | { buttons?: never; rowSelectable: false }
+    | { buttons?: never; rowSelectable: false; onSelectChange?: never }
   );
 
 const InformativeTable = ({
   defPg = 10,
   buttons,
   rowSelectable = true,
+  onSelectChange = () => '',
   ...props
 }: InformativeTableProps) => {
   const { Text } = Typography;
@@ -35,7 +37,7 @@ const InformativeTable = ({
     []
   );
 
-  const onSelectChange = (selectedRowKeys: any, selectedRows: any) => {
+  const handleSelectChange = (selectedRowKeys: any, selectedRows: any) => {
     if (buttons !== undefined) {
       let buttonShow: { key: string; show: boolean }[] = [];
 
@@ -81,11 +83,12 @@ const InformativeTable = ({
     }
     setSelectedRowKeys(selectedRowKeys);
     setSelectedRowCount(selectedRowKeys.length);
+    onSelectChange(selectedRowKeys);
   };
 
   const rowSelection = {
     selectedRowKeys,
-    onChange: onSelectChange,
+    onChange: handleSelectChange,
   };
 
   const showTotal = (total: number) => {
@@ -98,7 +101,7 @@ const InformativeTable = ({
       size={20}
       className='informative-table full-width'
     >
-      {rowSelectable ? (
+      {rowSelectable && (
         <Row align='middle' gutter={20} style={{ height: 36 }}>
           <Col flex='100px'>
             <Text>Selected: {selectedRowCount}</Text>
@@ -107,19 +110,19 @@ const InformativeTable = ({
             <Space size={15}>
               {buttons?.map((btn, index) => {
                 const Button = btn.element;
-                return btnShow.map(
-                  (btnToShow) => btnToShow.key === btn.key && btnToShow.show
-                )[index] ? (
-                  <Button />
-                ) : null;
+                return (
+                  btnShow.map(
+                    (btnToShow) => btnToShow.key === btn.key && btnToShow.show
+                  )[index] && <Button />
+                );
               })}
             </Space>
           </Col>
         </Row>
-      ) : null}
+      )}
       <Row>
         <Table
-          rowSelection={rowSelectable ? rowSelection : null}
+          rowSelection={rowSelectable && rowSelection}
           pagination={{
             size: 'small',
             showTotal: showTotal,

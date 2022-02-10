@@ -19,9 +19,10 @@ import { BulkEditButton, PrintButton } from '@/components/Button/ActionButton';
 import UpdButton from '@/components/Button/ActionButton/UpdButton';
 import StatusTag from '@/components/Tag/StatusTag';
 import Popover from '@/components/Popover';
+import { BoldTitle } from '@/components/Title';
 
 const OrderMgmt = () => {
-  const { Text, Title } = Typography;
+  const { Text } = Typography;
   const [orderListFltr, setOrderListFltr] = useState(orderList);
 
   let navigate = useNavigate();
@@ -200,7 +201,7 @@ const OrderMgmt = () => {
             <Space direction='vertical' size={15} className='full-width'>
               <Row justify='space-between'>
                 <Col>
-                  <Title level={4}>Order List</Title>
+                  <BoldTitle level={4}>Order List</BoldTitle>
                 </Col>
                 <Col>
                   <Button

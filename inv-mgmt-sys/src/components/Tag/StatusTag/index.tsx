@@ -16,13 +16,12 @@ const StatusTag = ({
 }: StatusTagProps) => {
   const menu = (
     <Menu>
-      {statusList.map((statusItem) =>
-        !(
-          status === statusItem.status ||
-          !dropdownStatus?.includes(statusItem.status)
-        ) ? (
-          <Menu.Item key={statusItem.status}>{statusItem.label}</Menu.Item>
-        ) : null
+      {statusList.map(
+        (statusItem) =>
+          !(
+            status === statusItem.status ||
+            !dropdownStatus?.includes(statusItem.status)
+          ) && <Menu.Item key={statusItem.status}>{statusItem.label}</Menu.Item>
       )}
     </Menu>
   );

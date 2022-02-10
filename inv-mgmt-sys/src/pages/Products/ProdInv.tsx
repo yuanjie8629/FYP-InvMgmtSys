@@ -15,9 +15,10 @@ import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
 import InvStockInput from '@/components/Input/InvStockInput';
 import { BulkEditButton } from '@/components/Button/ActionButton';
+import { BoldTitle } from '@/components/Title';
 
 const ProdInv = () => {
-  const { Text, Title } = Typography;
+  const { Text } = Typography;
 
   let navigate = useNavigate();
 
@@ -118,7 +119,7 @@ const ProdInv = () => {
           <Space direction='vertical' size={15} className='full-width'>
             <Row justify='space-between'>
               <Col>
-                <Title level={4}>Product List</Title>
+                <BoldTitle level={4}>Product List</BoldTitle>
               </Col>
               <Col>
                 <Button

@@ -18,9 +18,10 @@ import {
 } from '@/components/Button/ActionButton';
 import StatusTag from '@/components/Tag/StatusTag';
 import { custStatList } from '@/utils/optionUtils';
+import { BoldTitle } from '@/components/Title';
 
 const CustMgmt = () => {
-  const { Text, Title } = Typography;
+  const { Text } = Typography;
   const [custListFltr, setCustListFltr] = useState(custList);
 
   let navigate = useNavigate();
@@ -184,7 +185,7 @@ const CustMgmt = () => {
           <Space direction='vertical' size={15} className='full-width'>
             <Row justify='space-between'>
               <Col>
-                <Title level={4}>Customer List</Title>
+                <BoldTitle level={4}>Customer List</BoldTitle>
               </Col>
               <Col>
                 <Button

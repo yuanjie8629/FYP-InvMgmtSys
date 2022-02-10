@@ -268,7 +268,7 @@ const DropdownDate = ({
           label='By Day'
           open={dayPicker.ind || validateDefOpen('byDay')}
           showToday={false}
-          value={dayPicker.defVal !== null ? dayPicker.defVal : null}
+          value={dayPicker.defVal !== null && dayPicker.defVal}
           disabledDate={(current) => current > moment()}
           onChange={(value) => {
             handlePickerChange(validateDay(value, 'byDay'), 'day', value);
@@ -292,7 +292,7 @@ const DropdownDate = ({
           label='By Week'
           picker='week'
           open={weekPicker.ind || validateDefOpen('byWeek')}
-          value={weekPicker.defVal !== null ? weekPicker.defVal : null}
+          value={weekPicker.defVal !== null && weekPicker.defVal}
           disabledDate={(current) => current > getMomentPrevDt()}
           onChange={(value) => {
             handlePickerChange(validateWeek(value, 'byWeek'), 'week', value);
@@ -316,7 +316,7 @@ const DropdownDate = ({
           label='By Month'
           picker='month'
           open={mthPicker.ind || validateDefOpen('byMonth')}
-          value={mthPicker.defVal !== null ? mthPicker.defVal : null}
+          value={mthPicker.defVal !== null && mthPicker.defVal}
           disabledDate={(current) => current > moment()}
           onChange={(value) => {
             handlePickerChange(validateMonth(value, 'byMonth'), 'month', value);
@@ -339,7 +339,7 @@ const DropdownDate = ({
           label='By Year'
           picker='year'
           open={yrPicker.ind || validateDefOpen('byYear')}
-          value={yrPicker.defVal !== null ? yrPicker.defVal : null}
+          value={yrPicker.defVal !== null && yrPicker.defVal}
           disabledDate={(current) => current > moment()}
           onChange={(value) => {
             handlePickerChange(validateYear(value, 'byYear'), 'year', value);

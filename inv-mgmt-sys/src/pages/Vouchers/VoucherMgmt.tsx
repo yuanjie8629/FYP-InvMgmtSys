@@ -23,9 +23,10 @@ import {
 import StatusTag from '@/components/Tag/StatusTag';
 import { voucherStatList } from '@/utils/optionUtils';
 import Tooltip from '@/components/Tooltip';
+import { BoldTitle } from '@/components/Title';
 
 const VoucherMgmt = () => {
-  const { Text, Title } = Typography;
+  const { Text } = Typography;
   const [voucherListFltr, setVoucherListFltr] = useState(voucherList);
 
   let navigate = useNavigate();
@@ -100,11 +101,11 @@ const VoucherMgmt = () => {
             </Text>
           </Col>
           <Col span={4} className='justify-end'>
-            {data['autoApply'] === true ? (
+            {data['autoApply'] === true && (
               <Tooltip title='Automatically applied'>
                 <MdSync />
               </Tooltip>
-            ) : null}
+            )}
           </Col>
         </Row>
       ),
@@ -124,15 +125,15 @@ const VoucherMgmt = () => {
             off
           </Text>
           <ul>
-            {data['minSpend'] !== undefined ? (
+            {data['minSpend'] !== undefined && (
               <li>Min spend of {moneyFormatter(data['minSpend'])}</li>
-            ) : null}
-            {data['maxDisc'] !== undefined ? (
+            )}
+            {data['maxDisc'] !== undefined && (
               <li>Capped at {moneyFormatter(data['maxDisc'])}</li>
-            ) : null}
-            {data['usageLimit'] !== undefined ? (
+            )}
+            {data['usageLimit'] !== undefined && (
               <li>Limit for {data['usageLimit']} transactions per user</li>
-            ) : null}
+            )}
           </ul>
         </>
       ),
@@ -234,7 +235,7 @@ const VoucherMgmt = () => {
           <Space direction='vertical' size={15} className='full-width'>
             <Row justify='space-between'>
               <Col>
-                <Title level={4}>Voucher List</Title>
+                <BoldTitle level={4}>Voucher List</BoldTitle>
               </Col>
               <Col>
                 <Button

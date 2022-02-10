@@ -50,10 +50,8 @@ const ProfileMgmt = () => {
               </Col>
               <Col pull={1}>
                 <Space direction='vertical'>
-                  <Title level={4} style={{ fontWeight: 500 }}>
-                    Tan Yuan Jie
-                  </Title>
-                  <Title type='secondary' level={5} style={{ fontWeight: 500 }}>
+                  <Title level={4}>Tan Yuan Jie</Title>
+                  <Title type='secondary' level={5}>
                     Super Admin
                   </Title>
                 </Space>

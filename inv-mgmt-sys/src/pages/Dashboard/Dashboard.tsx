@@ -26,11 +26,12 @@ import './Dashboard.less';
 import RankingList from '@components/List/RankingList';
 import statisticsList from '@components/Statistics/statisticsList';
 import { dateRangeOptions } from '@utils/optionUtils';
+import { BoldTitle } from '@/components/Title';
 
 const LineChart = lazy(() => import('@components/Chart/LineChart'));
 const MainCard = lazy(() => import('@components/Card/MainCard'));
 const Dashboard = () => {
-  const { Text, Title } = Typography;
+  const { Text } = Typography;
 
   const navigate = useNavigate();
   const [salesDateRange, setSalesDateRange] = useState('year');
@@ -217,7 +218,7 @@ const Dashboard = () => {
   const ToDoList = () => (
     <MainCard bodyStyle={{ padding: '35px 35px 0' }}>
       <Space direction='vertical' size={15}>
-        <Title level={5}>To Do List</Title>
+        <BoldTitle level={5}>To Do List</BoldTitle>
         <Row gutter={[30, 30]}>
           {toDoList.map((toDoItem) => (
             <Col
@@ -234,12 +235,12 @@ const Dashboard = () => {
                 }}
               >
                 <Space direction='vertical' size={15}>
-                  <Title
+                  <BoldTitle
                     level={5}
                     type={toDoItem.quantity === 0 ? 'secondary' : undefined}
                   >
                     {toDoItem.quantity}
-                  </Title>
+                  </BoldTitle>
                   <div>
                     <Text className='dashboard-grey-text'>
                       {toDoItem.label}
@@ -264,7 +265,7 @@ const Dashboard = () => {
       <Space direction='vertical' size={5} className='full-width'>
         <Row justify='space-between'>
           <Col>
-            <Title level={5}>Sales</Title>
+            <BoldTitle level={5}>Sales</BoldTitle>
           </Col>
           <Col>
             <More route='bizStatistics' />
@@ -319,7 +320,7 @@ const Dashboard = () => {
 
   const StatisticsDashboard = () => (
     <MainCard>
-      <Title level={5}>Statistics</Title>
+      <BoldTitle level={5}>Statistics</BoldTitle>
 
       <Text className='dashboard-grey-text'>{statisticsData.date}</Text>
 
@@ -350,7 +351,7 @@ const Dashboard = () => {
         <Row justify='space-between'>
           <Col>
             <Row>
-              <Title level={5}>Recent Orders</Title>
+              <BoldTitle level={5}>Recent Orders</BoldTitle>
             </Row>
           </Col>
           <Col>
@@ -375,7 +376,7 @@ const Dashboard = () => {
         <div>
           <Row justify='space-between'>
             <Col>
-              <Title level={5}>Top Products</Title>
+              <BoldTitle level={5}>Top Products</BoldTitle>
             </Col>
             <Col>
               <More route='bizStatistics' />
@@ -396,7 +397,7 @@ const Dashboard = () => {
         <Row justify='space-between'>
           <Col>
             <Row>
-              <Title level={5}>Inventory Analysis</Title>
+              <BoldTitle level={5}>Inventory Analysis</BoldTitle>
             </Row>
           </Col>
           <Col>

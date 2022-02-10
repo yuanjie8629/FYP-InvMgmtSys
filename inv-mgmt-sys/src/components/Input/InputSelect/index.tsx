@@ -26,22 +26,20 @@ const InputSelect = ({
   selectWidth = 'fit-content',
   ...props
 }: InputProps) => {
-  const inputSelectBefore =
-    selectBefore !== undefined ? (
-      <Select
-        defaultValue={selectBefore?.defaultVal}
-        options={selectBefore.options}
-        style={{ width: selectWidth }}
-      />
-    ) : null;
+  const inputSelectBefore = selectBefore !== undefined && (
+    <Select
+      defaultValue={selectBefore?.defaultVal}
+      options={selectBefore.options}
+      style={{ width: selectWidth }}
+    />
+  );
 
-  const inputSelectAfter =
-    selectAfter !== undefined ? (
-      <Select
-        defaultValue={selectAfter?.defaultVal}
-        options={selectAfter.options}
-      />
-    ) : null;
+  const inputSelectAfter = selectAfter !== undefined && (
+    <Select
+      defaultValue={selectAfter?.defaultVal}
+      options={selectAfter.options}
+    />
+  );
 
   return (
     <Input
