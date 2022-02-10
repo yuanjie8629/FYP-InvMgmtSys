@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@hooks/reduxHooks';
-import { collapse, expand, increment } from '@state/siderSlice';
-import { Layout, Menu, Image, Grid } from 'antd';
+import { collapse, expand } from '@state/siderSlice';
+import { Layout, Menu, Image } from 'antd';
+import { SiderProps as AntdSiderProps } from 'antd/lib/layout';
 import menuList from './siderMenuList';
 import Logo from '@assets/logo.webp';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -9,15 +10,15 @@ import { findRoutePath } from '@utils/routingUtils';
 import classNames from 'classnames';
 import siderDefKeyList from './siderDefKeyList';
 
-const Sider = () => {
+export interface SiderProps extends AntdSiderProps {}
+
+const Sider = (props) => {
   const { Sider } = Layout;
   const { SubMenu } = Menu;
-  const { useBreakpoint } = Grid;
-  const screens = useBreakpoint();
   const navigate = useNavigate();
   const location = useLocation();
+  const [collapsedSiderOpen, setCollapsedSiderOpen] = useState(true);
   const isSiderCollapsed = useAppSelector((state) => state.sider.collapsed);
-  const renderCount = useAppSelector((state) => state.sider.renderCount);
   const dispatch = useAppDispatch();
 
   const selectedKeys =
@@ -33,24 +34,10 @@ const Sider = () => {
         ]
       : [location.pathname];
 
-  const openKey = [location.pathname.split('/')[1]];
-  useEffect(() => {
-    if (
-      renderCount < 1 &&
-      !(
-        screens.xl ||
-        screens.xxl ||
-        screens.xl === undefined ||
-        screens.xxl === undefined
-      )
-    ) {
-      dispatch(collapse());
-      dispatch(increment());
-    }
-  }, [dispatch, renderCount, screens.xl, screens.xxl]);
+  const openKeys = [location.pathname.split('/')[1]];
 
   return (
-    <div
+    <span
       className={classNames(
         { 'sider-collapsed-fixed': isSiderCollapsed },
         { 'sider-fixed': !isSiderCollapsed }
@@ -58,19 +45,28 @@ const Sider = () => {
     >
       <Sider
         theme='light'
-        collapsible
-        collapsed={isSiderCollapsed}
-        onCollapse={() => {
-          isSiderCollapsed ? dispatch(expand()) : dispatch(collapse());
+        breakpoint='xl'
+        width={220}
+        collapsed={!collapsedSiderOpen}
+        onMouseLeave={() =>
+          isSiderCollapsed ? setCollapsedSiderOpen(false) : null
+        }
+        onBreakpoint={(breakpoint) => {
+          if (breakpoint) {
+            dispatch(collapse());
+            setCollapsedSiderOpen(false);
+          } else {
+            dispatch(expand());
+            setCollapsedSiderOpen(true);
+          }
         }}
-        width='220px'
         className='sider'
       >
         <div className='sider-logo-fixed'>
           <div
             className={classNames(
-              { 'sider-logo-collapsed-wrapper': isSiderCollapsed },
-              { 'sider-logo-wrapper': !isSiderCollapsed }
+              { 'sider-logo-collapsed-wrapper': !collapsedSiderOpen },
+              { 'sider-logo-wrapper': collapsedSiderOpen }
             )}
             onClick={() => {
               navigate(findRoutePath('dashboard'));
@@ -80,7 +76,7 @@ const Sider = () => {
               src={Logo}
               alt='Logo'
               preview={false}
-              height={isSiderCollapsed ? 25 : 65}
+              height={!collapsedSiderOpen ? 25 : 65}
               className='sider-logo'
             />
           </div>
@@ -88,11 +84,12 @@ const Sider = () => {
         <Menu
           mode='inline'
           selectedKeys={selectedKeys}
-          defaultOpenKeys={!isSiderCollapsed ? openKey : undefined}
+          defaultOpenKeys={openKeys}
           inlineIndent={15}
           onClick={(item: { key: string }) => {
             navigate(item.key);
           }}
+          onMouseOver={() => setCollapsedSiderOpen(true)}
           className='sider-menu'
         >
           {menuList.map((menuLevel) => [
@@ -125,16 +122,12 @@ const Sider = () => {
                 style={{ margin: '24px 0' }}
               />
             ) : (
-              <div style={{ height: 48 }} />
+              <div style={{ height: 35 }} />
             ),
           ])}
-          <Menu.Item
-            key='siderCollapsedTrigger'
-            style={{ height: 48 }}
-          ></Menu.Item>
         </Menu>
       </Sider>
-    </div>
+    </span>
   );
 };
 

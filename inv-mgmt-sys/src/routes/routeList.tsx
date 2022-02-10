@@ -27,22 +27,22 @@ import NotFound from '@pages/Not Found/NotFound';
 const routeList: {
   label: string;
   path: string;
-  component?: () => JSX.Element;
+  component?: JSX.Element;
 }[] = [
   {
     label: 'notFound',
     path: '/404',
-    component: NotFound,
+    component: <NotFound />,
   },
   {
     label: 'login',
     path: '/login',
-    component: Login,
+    component: <Login />,
   },
   {
     label: 'dashboard',
     path: '/dashboard',
-    component: Dashboard,
+    component: <Dashboard />,
   },
   {
     label: 'product',
@@ -51,17 +51,17 @@ const routeList: {
   {
     label: 'prodMgmt',
     path: '/product/management',
-    component: ProdMgmt,
+    component: <ProdMgmt />,
   },
   {
     label: 'prodInv',
     path: '/product/inventory',
-    component: ProdInv,
+    component: <ProdInv />,
   },
   {
     label: 'prodAdd',
     path: '/product/add',
-    component: ProdAdd,
+    component: <ProdAdd />,
   },
   {
     label: 'package',
@@ -70,17 +70,17 @@ const routeList: {
   {
     label: 'packMgmt',
     path: '/package/management',
-    component: PackMgmt,
+    component: <PackMgmt />,
   },
   {
     label: 'packInv',
     path: '/package/inventory',
-    component: PackInv,
+    component: <PackInv />,
   },
   {
     label: 'packAdd',
     path: '/package/add',
-    component: PackAdd,
+    component: <PackAdd />,
   },
   {
     label: 'order',
@@ -89,7 +89,7 @@ const routeList: {
   {
     label: 'orderMgmt',
     path: '/order/management',
-    component: OrderMgmt,
+    component: <OrderMgmt />,
   },
   {
     label: 'orderPend',
@@ -102,7 +102,7 @@ const routeList: {
   {
     label: 'orderAdd',
     path: '/order/add',
-    component: OrderAdd,
+    component: <OrderAdd />,
   },
   {
     label: 'orderUnpaid',
@@ -119,12 +119,12 @@ const routeList: {
   {
     label: 'shptMgmt',
     path: '/shipment/management',
-    component: ShptMgmt,
+    component: <ShptMgmt />,
   },
   {
     label: 'shpFeeMgmt',
     path: '/shipment/shipping-fee',
-    component: ShpFeeMgmt,
+    component: <ShpFeeMgmt />,
   },
   {
     label: 'customer',
@@ -133,17 +133,17 @@ const routeList: {
   {
     label: 'custMgmt',
     path: '/customer/management',
-    component: CustMgmt,
+    component: <CustMgmt />,
   },
   {
     label: 'custReg',
     path: '/customer/registrations',
-    component: CustReg,
+    component: <CustReg />,
   },
   {
     label: 'custAdd',
     path: '/customer/add',
-    component: CustAdd,
+    component: <CustAdd />,
   },
   {
     label: 'bizInsights',
@@ -152,12 +152,12 @@ const routeList: {
   {
     label: 'bizStatistics',
     path: '/business-insights/statistics',
-    component: Statistics,
+    component: <Statistics />,
   },
   {
     label: 'invAnalysis',
     path: '/business-insights/inventory-analysis',
-    component: InvAnalysis,
+    component: <InvAnalysis />,
   },
   {
     label: 'voucher',
@@ -166,12 +166,12 @@ const routeList: {
   {
     label: 'voucherMgmt',
     path: '/voucher/management',
-    component: VoucherMgmt,
+    component: <VoucherMgmt />,
   },
   {
     label: 'voucherAdd',
     path: '/voucher/add',
-    component: VoucherAdd,
+    component: <VoucherAdd />,
   },
   {
     label: 'myAccount',
@@ -180,12 +180,12 @@ const routeList: {
   {
     label: 'profileMgmt',
     path: '/my-acc/profile-management',
-    component: ProfileMgmt,
+    component: <ProfileMgmt />,
   },
   {
     label: 'accSettings',
     path: '/my-acc/acc-settings',
-    component: AccSettings,
+    component: <AccSettings />,
   },
   {
     label: 'admin',
@@ -194,17 +194,17 @@ const routeList: {
   {
     label: 'adminMgmt',
     path: '/admin/management',
-    component: AdminMgmt,
+    component: <AdminMgmt />,
   },
   {
     label: 'adminAdd',
     path: '/admin/add',
-    component: AdminAdd,
+    component: <AdminAdd />,
   },
   {
     label: 'help',
     path: '/help',
-    component: Help,
+    component: <Help />,
   },
   {
     label: 'logout',

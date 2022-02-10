@@ -1,3 +1,5 @@
+@import (reference) 'src/App.less';
+
 .not-found {
   margin-top: 50px;
   &-layout {
@@ -6,12 +8,13 @@
   &-logo {
     cursor: pointer;
     &-wrapper {
+      .centerFlex();
       position: absolute !important;
       left: 0 !important;
-      padding-left: 15px;
+      width: @layout-sider-width;
 
       &:hover {
-        opacity: 90%;
+        opacity: 0.9;
       }
     }
   }

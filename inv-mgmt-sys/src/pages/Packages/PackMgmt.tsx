@@ -1,15 +1,14 @@
 import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
 import Layout from '@components/Layout';
-import Tag from '@components/Tag';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
-import { Row, Space, Col, Typography, Image, Dropdown, Menu } from 'antd';
+import { Row, Space, Col, Typography, Image } from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
 import packageList from './packageList';
-import { MdArrowDropDown } from 'react-icons/md';
+
 import packTabList from './packTabList';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -21,6 +20,7 @@ import {
   EditButton,
   HideButton,
 } from '@/components/Button/ActionButton';
+import StatusTag from '@/components/Tag/StatusTag';
 
 const PackMgmt = () => {
   const { Text, Title } = Typography;
@@ -109,7 +109,11 @@ const PackMgmt = () => {
       render: (products: []) => (
         <Space direction='vertical' size={10} className='full-width'>
           {products.map((product: any) => (
-            <Row justify='space-between' gutter={20}>
+            <Row
+              key={`prodIncluded-${product}`}
+              justify='space-between'
+              gutter={20}
+            >
               <Col span={20}>
                 <Text type='secondary' className='text-break'>
                   {product.prodNm}
@@ -144,56 +148,14 @@ const PackMgmt = () => {
       title: 'Status',
       dataIndex: 'packStat',
       key: 'packStat',
-      width: 100,
-      render: (status: string) => {
-        const menu = (
-          <Menu>
-            {packStatList.map((statusItem) =>
-              !(
-                status === statusItem.status ||
-                !['hidden', 'active'].includes(statusItem.status)
-              ) ? (
-                <Menu.Item key='{statusItem.status}'>
-                  {statusItem.label}
-                </Menu.Item>
-              ) : null
-            )}
-          </Menu>
-        );
-
-        const matchedStatus = packStatList.find(
-          (statusItem) => status === statusItem.status
-        );
-
-        return !['expired', 'oos', 'scheduled'].includes(
-          matchedStatus!.status
-        ) ? (
-          <Row align='middle'>
-            <Tag minWidth='50%' maxWidth='100%' color={matchedStatus!.color}>
-              {matchedStatus!.label}
-            </Tag>
-            <Dropdown overlay={menu} placement='bottomRight'>
-              <MdArrowDropDown size={25} style={{ cursor: 'pointer' }} />
-            </Dropdown>
-          </Row>
-        ) : (
-          <Tag
-            minWidth='50%'
-            maxWidth='100%'
-            color={
-              packStatList.find(
-                (statusItem) => statusItem.status === matchedStatus?.status
-              )!.color
-            }
-          >
-            {
-              packStatList.find(
-                (statusItem) => statusItem.status === matchedStatus?.status
-              )!.label
-            }
-          </Tag>
-        );
-      },
+      width: 150,
+      render: (status: string) => (
+        <StatusTag
+          status={status}
+          statusList={packStatList}
+          dropdownStatus={['active', 'hidden']}
+        />
+      ),
     },
     {
       title: 'Action',

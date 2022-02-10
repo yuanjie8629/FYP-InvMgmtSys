@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from '@components/Button';
-import { Card, Col, Dropdown, Menu, MenuProps, Popover, Row } from 'antd';
+import { Card, Col, Dropdown, Menu, MenuProps, Row } from 'antd';
 import moment from 'moment';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { HiOutlineCalendar } from 'react-icons/hi';
@@ -16,6 +16,7 @@ import {
   validateDropdownDate,
   getMomentPrevDt,
 } from '@utils/dateUtils';
+import Popover from '@/components/Popover';
 
 export interface DateInfo {
   date: string;

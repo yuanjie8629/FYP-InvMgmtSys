@@ -378,11 +378,7 @@ const PackAdd = () => {
                   >
                     <DatePicker showTime placeholder='Select Date and Time' />
                   </Form.Item>
-                  <Checkbox
-                    onChange={() =>
-                      hideEndTime ? setHideEndTime(false) : setHideEndTime(true)
-                    }
-                  >
+                  <Checkbox onChange={(e) => setHideEndTime(e.target.checked)}>
                     Set End Time
                   </Checkbox>
 

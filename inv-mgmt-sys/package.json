@@ -64,5 +64,6 @@
   "devDependencies": {
     "craco-alias": "^3.0.1",
     "postinstall-prepare": "^2.0.0"
-  }
+  },
+  "proxy": "http://localhost:8000"
 }

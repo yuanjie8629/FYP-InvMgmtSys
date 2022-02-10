@@ -9,7 +9,7 @@ const CarouselArrow = (props: CarouselArrowProps) => {
   const [carouselPrev, setCarouselPrev] = useState(false);
   const [carouselNext, setCarouselNext] = useState(true);
   return (
-    <div className='carousel-arrow'>
+    <span className='carousel-arrow'>
       <Carousel
         dots={false}
         arrows
@@ -30,7 +30,7 @@ const CarouselArrow = (props: CarouselArrowProps) => {
       >
         {props.children}
       </Carousel>
-    </div>
+    </span>
   );
 };
 

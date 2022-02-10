@@ -128,7 +128,7 @@ const NotificationDropdown = () => {
 
   return (
     <Dropdown overlay={menuNotificationDropdown} arrow>
-      <div className='notification-container'>
+      <span className='notification-container'>
         <Badge
           dot={!markAllRead}
           offset={[-7, 5]}
@@ -137,7 +137,7 @@ const NotificationDropdown = () => {
         >
           <MdNotifications className='notification' />
         </Badge>
-      </div>
+      </span>
     </Dropdown>
   );
 };

@@ -42,6 +42,18 @@ const orderStatList = [
   { status: 'shipping', label: 'Shipping', color: 'processing' },
 ];
 
+const custStatList = [
+  { status: 'active', label: 'Active', color: 'success' },
+  { status: 'suspended', label: 'Suspended', color: 'error' },
+];
+
+const voucherStatList = [
+  { status: 'active', label: 'Active', color: 'success' },
+  { status: 'scheduled', label: 'Scheduled', color: 'processing' },
+  { status: 'expired', label: 'Expired', color: 'error' },
+  { status: 'hidden', label: 'Hidden', color: 'default' },
+];
+
 const genderCat = [
   { value: 'm', label: 'Male' },
   { value: 'f', label: 'Female' },
@@ -63,7 +75,6 @@ const custStatusCat = [
   { value: 'active', label: 'Active' },
   { value: 'suspended', label: 'Suspended' },
 ];
-
 const discCat = [
   { value: 'amount', label: 'Fixed Amount' },
   { value: 'percentage', label: 'Percentage' },
@@ -78,7 +89,7 @@ const custCat = [
 const invInputOptions = [
   {
     value: '+',
-    label: <MdAdd size={20}  />,
+    label: <MdAdd size={20} />,
   },
   {
     value: '-',
@@ -101,6 +112,8 @@ export {
   prodStatList,
   packStatList,
   orderStatList,
+  custStatList,
+  voucherStatList,
   genderCat,
   maritalStatCat,
   custPositionCat,

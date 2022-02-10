@@ -50,7 +50,7 @@ const ProdInv = () => {
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={5}>
           <Col xs={9} xl={7}>
-            <Image src={data['prodImg']} height={120} width={120} />
+            <Image src={data['prodImg']} height={100} width={100} />
           </Col>
           <Col xs={15} xl={17}>
             <Space direction='vertical' size={5}>

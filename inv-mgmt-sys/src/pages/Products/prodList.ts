@@ -19,7 +19,7 @@ const prodList = [
     prodImg: hashtag,
     prodPrice: 17.6,
     prodStock: 120,
-    prodStat: 'hidden',
+    prodStat: 'oos',
   },
 ];
 

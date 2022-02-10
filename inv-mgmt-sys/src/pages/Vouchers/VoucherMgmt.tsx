@@ -2,18 +2,16 @@ import React, { useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
 import Layout from '@components/Layout';
-import Tag from '@components/Tag';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
-import { Row, Space, Col, Typography, Dropdown, Menu } from 'antd';
+import { Row, Space, Col, Typography } from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
 import voucherList from './voucherList';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
-import { MdAllInclusive, MdArrowDropDown, MdSync } from 'react-icons/md';
-import Tooltip from 'antd/es/tooltip';
+import { MdAllInclusive, MdSync } from 'react-icons/md';
 import { moneyFormatter, percentFormatter } from '@utils/numUtils';
 import { sortByOrder } from '@utils/sortUtils';
 import {
@@ -22,6 +20,9 @@ import {
   EditButton,
   HideButton,
 } from '@/components/Button/ActionButton';
+import StatusTag from '@/components/Tag/StatusTag';
+import { voucherStatList } from '@/utils/optionUtils';
+import Tooltip from '@/components/Tooltip';
 
 const VoucherMgmt = () => {
   const { Text, Title } = Typography;
@@ -192,62 +193,14 @@ const VoucherMgmt = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      width: 120,
-      render: (status: string) => {
-        const statusList = [
-          { status: 'active', label: 'Active', color: 'success' },
-          { status: 'scheduled', label: 'Scheduled', color: 'processing' },
-          { status: 'expired', label: 'Expired', color: 'error' },
-          { status: 'hidden', label: 'Hidden', color: 'default' },
-        ];
-        const menu = (
-          <Menu>
-            {statusList.map((statusItem) =>
-              !(
-                status === statusItem.status ||
-                !['hidden', 'active'].includes(statusItem.status)
-              ) ? (
-                <Menu.Item key='{statusItem.status}'>
-                  {statusItem.label}
-                </Menu.Item>
-              ) : null
-            )}
-          </Menu>
-        );
-
-        const matchedStatus = statusList.find(
-          (statusItem) => status === statusItem.status
-        );
-
-        return !(
-          ['expired', 'scheduled'].indexOf(matchedStatus!.status) >= 0
-        ) ? (
-          <Row align='middle'>
-            <Tag minWidth='50%' maxWidth='100%' color={matchedStatus!.color}>
-              {matchedStatus!.label}
-            </Tag>
-            <Dropdown overlay={menu} placement='bottomRight'>
-              <MdArrowDropDown size={25} style={{ cursor: 'pointer' }} />
-            </Dropdown>
-          </Row>
-        ) : (
-          <Tag
-            minWidth='50%'
-            maxWidth='100%'
-            color={
-              statusList.find(
-                (statusItem) => statusItem.status === matchedStatus?.status
-              )!.color
-            }
-          >
-            {
-              statusList.find(
-                (statusItem) => statusItem.status === matchedStatus?.status
-              )!.label
-            }
-          </Tag>
-        );
-      },
+      width: 150,
+      render: (status: string) => (
+        <StatusTag
+          status={status}
+          statusList={voucherStatList}
+          dropdownStatus={['active', 'hidden']}
+        />
+      ),
     },
     {
       title: 'Action',

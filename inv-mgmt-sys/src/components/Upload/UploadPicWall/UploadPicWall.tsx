@@ -37,7 +37,7 @@ const UploadPicWall = (props: AntdUploadProps) => {
   const uploadButton = <MdAdd size={50} className='color-grey-300' />;
 
   return (
-    <div className='upload-pic-wall'>
+    <span className='upload-pic-wall'>
       <AntdUpload
         action='https://run.mocky.io/v3/74b79e58-0491-4fe0-ae9c-738eab6c90ba'
         listType='picture-card'
@@ -57,7 +57,7 @@ const UploadPicWall = (props: AntdUploadProps) => {
       >
         <img alt='uploadPreviewImg' className='full-width' src={previewImage} />
       </Modal>
-    </div>
+    </span>
   );
 };
 
