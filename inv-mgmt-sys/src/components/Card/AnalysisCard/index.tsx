@@ -16,22 +16,28 @@ const AnalysisCard = ({ component, ...props }: AnalysisCardProps) => {
   return (
     <ColorCard
       label={
-        <>
-          <Text strong type='secondary' className='text-break'>
-            {component.label}
-          </Text>
-          {component.desc !== undefined ? (
-            <Tooltip title={component.desc}>
+        component.desc !== undefined ? (
+          <Tooltip title={component.desc}>
+            <Text
+              strong
+              type='secondary'
+              className='text-break'
+              style={{ cursor: 'pointer' }}
+            >
+              {component.label}
               <QuestionCircleOutlined
                 style={{
                   padding: '0 5px',
-                  cursor: 'pointer',
                 }}
                 className='color-grey'
               />
-            </Tooltip>
-          ) : null}
-        </>
+            </Text>
+          </Tooltip>
+        ) : (
+          <Text strong type='secondary' className='text-break'>
+            {component.label}
+          </Text>
+        )
       }
       backgroundColor={component.prodList.length <= 0 ? 'success' : 'error'}
       indicator={component.prodList.length <= 0 ? 'true' : 'false'}

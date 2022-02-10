@@ -129,7 +129,7 @@ const PackAdd = () => {
           <MainCardContainer func='add' className='pack-add'>
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
-                <Title level={4} id='basicInfo' style={{ fontWeight: 500 }}>
+                <Title level={4} id='basicInfo'>
                   Basic Information
                 </Title>
                 <Form.Item
@@ -194,7 +194,7 @@ const PackAdd = () => {
 
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
-                <Title level={4} id='products' style={{ fontWeight: 500 }}>
+                <Title level={4} id='products'>
                   Products
                 </Title>
 
@@ -224,7 +224,7 @@ const PackAdd = () => {
 
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
-                <Title level={4} id='pricing' style={{ fontWeight: 500 }}>
+                <Title level={4} id='pricing'>
                   Pricing
                 </Title>
                 <Row gutter={30}>
@@ -270,7 +270,7 @@ const PackAdd = () => {
             <Row justify='center'>
               <MainCard>
                 <Space direction='vertical' size={20} className='full-width'>
-                  <Title level={4} id='inv' style={{ fontWeight: 500 }}>
+                  <Title level={4} id='inv'>
                     Inventory
                   </Title>
 
@@ -306,7 +306,7 @@ const PackAdd = () => {
             <Row justify='center' className='full-width'>
               <MainCard>
                 <Space direction='vertical' size={20} className='full-width'>
-                  <Title level={4} id='shipping' style={{ fontWeight: 500 }}>
+                  <Title level={4} id='shipping'>
                     Shipping
                   </Title>
                   <Form.Item
@@ -362,7 +362,7 @@ const PackAdd = () => {
             <Row justify='center' className='full-width'>
               <MainCard>
                 <Space direction='vertical' size={20} className='full-width'>
-                  <Title level={4} id='availPeriod' style={{ fontWeight: 500 }}>
+                  <Title level={4} id='availPeriod'>
                     Available Period
                   </Title>
                   <Form.Item

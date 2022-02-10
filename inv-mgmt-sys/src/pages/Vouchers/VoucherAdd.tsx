@@ -58,7 +58,7 @@ const VoucherAdd = () => {
           <MainCardContainer func='add' className='voucher-add'>
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
-                <Title level={4} id='basicInfo' style={{ fontWeight: 500 }}>
+                <Title level={4} id='basicInfo'>
                   Basic Information
                 </Title>
                 <Form.Item
@@ -84,7 +84,7 @@ const VoucherAdd = () => {
 
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
-                <Title level={4} id='discSettings' style={{ fontWeight: 500 }}>
+                <Title level={4} id='discSettings'>
                   Discount Settings
                 </Title>
                 <Form.Item
@@ -146,7 +146,7 @@ const VoucherAdd = () => {
                         )}
                       </Form.Item>
                     </Col>
-                    {discType === 'percentage' ? (
+                    {discType === 'percentage' && (
                       <Col>
                         <Form.Item label='Capped At' name='maxDisc'>
                           <InputNumber
@@ -157,7 +157,7 @@ const VoucherAdd = () => {
                           />
                         </Form.Item>
                       </Col>
-                    ) : null}
+                    )}
                   </Row>
                 </Form.Item>
                 <Form.Item
@@ -242,11 +242,7 @@ const VoucherAdd = () => {
 
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
-                <Title
-                  level={4}
-                  id='custEligibility'
-                  style={{ fontWeight: 500 }}
-                >
+                <Title level={4} id='custEligibility'>
                   Customer Eligibility
                 </Title>
 
@@ -276,7 +272,7 @@ const VoucherAdd = () => {
 
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
-                <Title level={4} id='availPeriod' style={{ fontWeight: 500 }}>
+                <Title level={4} id='availPeriod'>
                   Available Period
                 </Title>
                 <Form.Item

@@ -46,7 +46,7 @@ const DescriptionList = ({
     content: React.ReactNode;
     icon: React.ReactNode;
   }) => (
-    <List.Item actions={buttons !== undefined ? actions(item) : null}>
+    <List.Item actions={buttons !== undefined && actions(item)}>
       <Row className='full-width' align='middle'>
         <Col span={item.content !== undefined ? 5 : 24}>
           <List.Item.Meta

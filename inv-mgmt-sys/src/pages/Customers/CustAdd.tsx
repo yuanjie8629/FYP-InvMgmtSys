@@ -74,7 +74,7 @@ const CustAdd = () => {
           <MainCardContainer func='add' className='cust-add'>
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
-                <Title level={4} id='basicInfo' style={{ fontWeight: 500 }}>
+                <Title level={4} id='basicInfo'>
                   Basic Information
                 </Title>
                 <Form.Item
@@ -145,7 +145,7 @@ const CustAdd = () => {
 
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
-                <Title level={4} id='contactInfo' style={{ fontWeight: 500 }}>
+                <Title level={4} id='contactInfo'>
                   Contact Information
                 </Title>
                 <div>
@@ -188,9 +188,7 @@ const CustAdd = () => {
                   </Space>
                   <Divider />
                   <Space direction='vertical' size={15} className='full-width'>
-                    <Title level={5} style={{ fontWeight: 500 }}>
-                      Emergency Contact
-                    </Title>
+                    <Title level={5}>Emergency Contact</Title>
 
                     <Form.Item
                       label='Name'
@@ -252,7 +250,7 @@ const CustAdd = () => {
 
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
-                <Title level={4} id='address' style={{ fontWeight: 500 }}>
+                <Title level={4} id='address'>
                   Address
                 </Title>
 
@@ -355,7 +353,7 @@ const CustAdd = () => {
 
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
-                <Title level={4} id='employment' style={{ fontWeight: 500 }}>
+                <Title level={4} id='employment'>
                   Employment Details
                 </Title>
                 <Form.Item
@@ -385,7 +383,7 @@ const CustAdd = () => {
 
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
-                <Title level={4} id='position' style={{ fontWeight: 500 }}>
+                <Title level={4} id='position'>
                   Position
                 </Title>
                 <Form.Item
@@ -417,7 +415,7 @@ const CustAdd = () => {
 
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
-                <Title level={4} id='declaration' style={{ fontWeight: 500 }}>
+                <Title level={4} id='declaration'>
                   Declaration Form
                 </Title>
                 <Form.Item

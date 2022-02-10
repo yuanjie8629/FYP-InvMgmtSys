@@ -13,9 +13,10 @@ import FilterInputs from './FilterInputs';
 import { abcAnalysis, eoqAnalysis, hmlAnalysis, ssAnalysis } from './Analyses';
 import './InvAnalysis.less';
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
+import { BoldTitle } from '@/components/Title';
 
 const InvAnalysis = () => {
-  const { Text, Title } = Typography;
+  const { Text } = Typography;
 
   let [searchParams, setSearchParams] = useSearchParams();
 
@@ -83,7 +84,7 @@ const InvAnalysis = () => {
             : ''
         }`}
       >
-        {analysis.desc !== undefined ? (
+        {analysis.desc !== undefined && (
           <CollapseCard
             key={`desc-${searchParams.get('type')}`}
             label={analysis.desc.header}
@@ -95,9 +96,9 @@ const InvAnalysis = () => {
               style={{ borderTop: '1px solid #f0f0f0' }}
             />
           </CollapseCard>
-        ) : null}
+        )}
 
-        {analysis.component !== undefined ? (
+        {analysis.component !== undefined && (
           <CollapseCard
             key={`component-${searchParams.get('type')}`}
             label={analysis.component.header}
@@ -119,7 +120,7 @@ const InvAnalysis = () => {
               ))}
             </Row>
           </CollapseCard>
-        ) : null}
+        )}
 
         <MainCard
           tabList={invAnalysisTab}
@@ -133,13 +134,13 @@ const InvAnalysis = () => {
         <MainCard>
           <Space direction='vertical' size={15} className='full-width'>
             <Space direction='vertical' size={5}>
-              <Title level={4}>
+              <BoldTitle level={4}>
                 {`${
                   invAnalysisTab.find(
                     (tab) => tab.key === searchParams.get('type')
                   )?.tab
                 } Analysis`}
-              </Title>
+              </BoldTitle>
               <Text type='secondary'>
                 {getDt(undefined, undefined, 'YYYY MMMM')}
               </Text>

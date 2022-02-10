@@ -14,9 +14,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import InvStockInput from '@/components/Input/InvStockInput';
 import { BulkEditButton } from '@/components/Button/ActionButton';
+import { BoldTitle } from '@/components/Title';
 
 const PackInv = () => {
-  const { Text, Title } = Typography;
+  const { Text } = Typography;
   const [packageListFltr, setPackageListFltr] = useState(packageList);
 
   let navigate = useNavigate();
@@ -144,7 +145,7 @@ const PackInv = () => {
           <Space direction='vertical' size={15} className='full-width'>
             <Row justify='space-between'>
               <Col>
-                <Title level={4}>Package List</Title>
+                <BoldTitle level={4}>Package List</BoldTitle>
               </Col>
               <Col>
                 <Button

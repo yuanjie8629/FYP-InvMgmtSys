@@ -3,13 +3,14 @@ import { Space, SpaceProps, Typography } from 'antd';
 import Button from '@components/Button';
 import { useNavigate } from 'react-router-dom';
 import MainCard from '@/components/Card/MainCard';
+import { BoldTitle } from '@/components/Title';
 
 export interface ComingSoonProps extends SpaceProps {
   img: string;
 }
 
 const ComingSoon = ({ img, ...props }: ComingSoonProps) => {
-  const { Text, Title } = Typography;
+  const { Text } = Typography;
   const navigate = useNavigate();
   return (
     <Layout>
@@ -34,7 +35,7 @@ const ComingSoon = ({ img, ...props }: ComingSoonProps) => {
               }}
             />
           </MainCard>
-          <Title>Coming Soon</Title>
+          <BoldTitle>Coming Soon</BoldTitle>
           <Text type='secondary' className='text-lg'>
             We Are Working Hard to Give You a Better Experience.
           </Text>

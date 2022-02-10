@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Col, Form, Input, Image, Row, Space, Typography } from 'antd';
+import { Col, Form, Input, Image, Row, Space } from 'antd';
 import { CaretLeftOutlined } from '@ant-design/icons';
 import Button from '@components/Button';
 import './Login.less';
@@ -8,10 +8,10 @@ import Hashtag from '@assets/Login/Hashtag.svg';
 import Inventory from '@assets/Login/LoginBackground.webp';
 import Logo from '@assets/logo.webp';
 import { Helmet } from 'react-helmet';
+import { BoldTitle } from '@/components/Title';
 
 const Login = () => {
   let navigate = useNavigate();
-  const { Title } = Typography;
   return (
     <div className='login'>
       <Helmet>
@@ -43,9 +43,9 @@ const Login = () => {
             <Col span={24}>
               <div className='login-form'>
                 {/*Title*/}
-                <Title level={3} style={{ padding: 20 }}>
+                <BoldTitle level={3} style={{ padding: 20 }}>
                   Login
-                </Title>
+                </BoldTitle>
                 <Form name='loginForm' layout='vertical'>
                   <Space direction='vertical' className='full-width'>
                     <Form.Item
@@ -176,7 +176,7 @@ const Login = () => {
               xl={{ span: 24, order: 3 }}
             >
               <div className='login-title-container'>
-                <Title level={2}>Inventory Management System</Title>
+                <BoldTitle level={2}>Inventory Management System</BoldTitle>
               </div>
             </Col>
           </Row>

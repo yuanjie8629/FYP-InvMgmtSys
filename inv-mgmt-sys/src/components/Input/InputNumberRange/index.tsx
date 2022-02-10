@@ -55,24 +55,24 @@ const InputNumberRange = ({
 
   return (
     <Row align='middle' gutter={30} className='input-range'>
-      {label !== undefined ? (
+      {label !== undefined && (
         <Col
           span={textSpan}
           className={justify === 'start' ? '' : 'justify-end'}
         >
           <Text type='secondary'>{label}</Text>
         </Col>
-      ) : null}
+      )}
       <Col span={24 - textSpan}>
         <Input.Group compact>
-          {prefix !== undefined ? (
+          {prefix !== undefined && (
             <Input
               value={prefix}
               disabled
               style={{ width: prefixWidth }}
               className='input-range-prefix color-grey'
             />
-          ) : null}
+          )}
           <InputNumber
             placeholder={placeholder[0]}
             style={{
@@ -99,14 +99,14 @@ const InputNumberRange = ({
             }`}
             {...props}
           />
-          {suffix !== undefined ? (
+          {suffix !== undefined && (
             <Input
               value={suffix}
               disabled
               style={{ width: suffixWidth }}
               className='input-range-suffix color-grey'
             />
-          ) : null}
+          )}
         </Input.Group>
       </Col>
     </Row>

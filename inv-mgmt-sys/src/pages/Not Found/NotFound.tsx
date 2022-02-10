@@ -5,10 +5,11 @@ import { findRoutePath } from '@utils/routingUtils';
 import Img404 from '@assets/404.svg';
 import Logo from '@assets/logo.webp';
 import './NotFound.less';
+import { BoldTitle } from '@/components/Title';
 
 const NotFound = () => {
   const { Header } = Layout;
-  const { Title, Text } = Typography;
+  const { Text } = Typography;
   const navigate = useNavigate();
   return (
     <Layout className='not-found-layout'>
@@ -26,7 +27,7 @@ const NotFound = () => {
             />
           </Col>
           <Col>
-            <Title level={3}>Page Not Found</Title>
+            <BoldTitle level={3}>Page Not Found</BoldTitle>
           </Col>
         </Row>
       </Header>
@@ -46,7 +47,7 @@ const NotFound = () => {
               size={15}
               className='not-found-text-container'
             >
-              <Title className='not-found-title'>Oops!</Title>
+              <BoldTitle className='not-found-title'>Oops!</BoldTitle>
               <Text className='not-found-text'>
                 Looks like you followed a bad link. If you think this is a
                 problem with us, please tell us.

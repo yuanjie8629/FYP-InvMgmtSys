@@ -19,6 +19,7 @@ import RankingList from '@components/List/RankingList';
 import topProduct from './topProducts';
 import { prodCat } from '@utils/optionUtils';
 import Popover from '@/components/Popover';
+import { BoldTitle } from '@/components/Title';
 
 const LineChart = lazy(() => import('@components/Chart/LineChart'));
 const CarouselArrow = lazy(() => import('@components/Carousel/CarouselArrow'));
@@ -238,7 +239,7 @@ const BusinessStatistics = () => {
           <DashboardContainer>
             <Row justify='space-between' align='middle'>
               <Col>
-                <Title level={5}>Key Metrics</Title>
+                <BoldTitle level={5}>Key Metrics</BoldTitle>
                 <Text className='dashboard-grey-text'>
                   {formatDt(
                     keyMetricsDtInfo.date,
@@ -285,19 +286,19 @@ const BusinessStatistics = () => {
                         >
                           <Row gutter={5} style={{ height: 40 }}>
                             <Col>
-                              {keyMetrics.cat === 'money' ? (
+                              {keyMetrics.cat === 'money' && (
                                 <Text strong>RM</Text>
-                              ) : null}
+                              )}
                             </Col>
                             <Col>
-                              <Title level={4} style={{ fontWeight: 500 }}>
+                              <Title level={4}>
                                 {getKeyMetricsVal(keyMetrics)}
                               </Title>
                             </Col>
                             <Col>
-                              {keyMetrics.cat === 'percent' ? (
+                              {keyMetrics.cat === 'percent' && (
                                 <Text strong>%</Text>
-                              ) : null}
+                              )}
                             </Col>
                           </Row>
                         </ColorCard>
@@ -317,7 +318,7 @@ const BusinessStatistics = () => {
                       setMaxSelectedMetrics(5);
                     } else {
                       setMaxSelectedMetrics(1);
-                      setSelectedKeyMetrics(['Sales']);
+                      setSelectedKeyMetrics([selectedKeyMetrics[0]]);
                     }
                   }}
                 >
@@ -391,7 +392,7 @@ const BusinessStatistics = () => {
             <MainCard>
               <Space direction='vertical' size={5} className='full-width'>
                 <div>
-                  <Title level={5}>Product Rankings</Title>
+                  <BoldTitle level={5}>Product Rankings</BoldTitle>
 
                   <Text type='secondary'>
                     {formatDt(
@@ -421,7 +422,7 @@ const BusinessStatistics = () => {
             <MainCard>
               <Space direction='vertical' size={5} className='full-width'>
                 <div>
-                  <Title level={5}>Promotion Rankings</Title>
+                  <BoldTitle level={5}>Promotion Rankings</BoldTitle>
 
                   <Text className='dashboard-grey-text'>
                     {formatDt(

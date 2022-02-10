@@ -21,9 +21,10 @@ import {
   HideButton,
 } from '@/components/Button/ActionButton';
 import StatusTag from '@/components/Tag/StatusTag';
+import { BoldTitle } from '@/components/Title';
 
 const PackMgmt = () => {
-  const { Text, Title } = Typography;
+  const { Text } = Typography;
   const [packageListFltr, setPackageListFltr] = useState(packageList);
 
   let navigate = useNavigate();
@@ -188,7 +189,7 @@ const PackMgmt = () => {
           <Space direction='vertical' size={15} className='full-width'>
             <Row justify='space-between'>
               <Col>
-                <Title level={4}>Package List</Title>
+                <BoldTitle level={4}>Package List</BoldTitle>
               </Col>
               <Col>
                 <Button
