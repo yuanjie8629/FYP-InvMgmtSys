@@ -3,7 +3,6 @@ import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
-import Tag from '@components/Tag';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography } from 'antd';
 import InformativeTable, {
@@ -18,6 +17,8 @@ import orderTabList from './orderTabList';
 import { orderStatList } from '@utils/optionUtils';
 import { BulkEditButton, PrintButton } from '@/components/Button/ActionButton';
 import UpdButton from '@/components/Button/ActionButton/UpdButton';
+import StatusTag from '@/components/Tag/StatusTag';
+import Popover from '@/components/Popover';
 
 const OrderMgmt = () => {
   const { Text, Title } = Typography;
@@ -134,10 +135,14 @@ const OrderMgmt = () => {
         ) : data['orderStat'] === 'cancel' ? (
           '-'
         ) : (
-          <Space align='center'>
-            <HiExclamation size={20} className='color-warning' />
-            <Text type='warning'>Please update the tracking number.</Text>
-          </Space>
+          <Popover content='Please update the tracking number'>
+            <Space size={5}>
+              <HiExclamation size={20} className='color-warning' />
+              <Text strong className='color-warning'>
+                Not found
+              </Text>
+            </Space>
+          </Popover>
         ),
     },
     {
@@ -154,21 +159,9 @@ const OrderMgmt = () => {
       key: 'orderStat',
       align: 'center' as const,
       width: 130,
-      render: (status: string) => {
-        const matchedStatus = orderStatList.find(
-          (statusItem) => status === statusItem.status
-        );
-
-        return (
-          <Tag
-            minWidth='80%'
-            maxWidth='100%'
-            color={matchedStatus !== undefined ? matchedStatus.color : ''}
-          >
-            {matchedStatus !== undefined ? matchedStatus.label : null}
-          </Tag>
-        );
-      },
+      render: (status: string) => (
+        <StatusTag status={status} statusList={orderStatList} minWidth='90%' />
+      ),
     },
     {
       title: 'Action',

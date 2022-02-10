@@ -14,7 +14,7 @@ export interface CustomLayoutProps extends RowProps {
 const Layout = ({ justify = 'center', ...props }: CustomLayoutProps) => {
   const { Content } = AntdLayout;
   return (
-    <AntdLayout>
+    <AntdLayout hasSider>
       <Helmet>
         <meta name='viewport' content='width=1600' />
       </Helmet>

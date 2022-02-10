@@ -1,15 +1,13 @@
 import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
 import Layout from '@components/Layout';
-import Tag from '@components/Tag';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
-import { Row, Space, Col, Typography, Image, Dropdown, Menu } from 'antd';
+import { Row, Space, Col, Typography, Image } from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
 import prodList from './prodList';
-import { MdArrowDropDown } from 'react-icons/md';
 import prodTabList from './prodTabList';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -22,6 +20,7 @@ import {
   EditButton,
   HideButton,
 } from '@/components/Button/ActionButton';
+import StatusTag from '@/components/Tag/StatusTag';
 
 const ProdMgmt = () => {
   const { Text, Title } = Typography;
@@ -85,7 +84,7 @@ const ProdMgmt = () => {
       render: (_: any, data: { [x: string]: string }) => (
         <Row gutter={5}>
           <Col xs={9} xl={7}>
-            <Image src={data['prodImg']} height={120} width={120} />
+            <Image src={data['prodImg']} height={100} width={100} />
           </Col>
           <Col xs={15} xl={17}>
             <Space direction='vertical' size={5}>
@@ -131,53 +130,13 @@ const ProdMgmt = () => {
       dataIndex: 'prodStat',
       key: 'prodStat',
       width: 150,
-      render: (status: string) => {
-        const menu = (
-          <Menu>
-            {prodStatList.map((statusItem) =>
-              !(
-                status === statusItem.status ||
-                !['hidden', 'active'].includes(statusItem.status)
-              ) ? (
-                <Menu.Item key={statusItem.status}>
-                  {statusItem.label}
-                </Menu.Item>
-              ) : null
-            )}
-          </Menu>
-        );
-
-        const matchedStatus = prodStatList.find(
-          (statusItem) => status === statusItem.status
-        );
-
-        return matchedStatus?.status !== 'oos' ? (
-          <Row align='middle'>
-            <Tag minWidth='50%' maxWidth='100%' color={matchedStatus!.color}>
-              {matchedStatus!.label}
-            </Tag>
-            <Dropdown overlay={menu} placement='bottomRight'>
-              <MdArrowDropDown size={25} style={{ cursor: 'pointer' }} />
-            </Dropdown>
-          </Row>
-        ) : (
-          <Tag
-            minWidth='50%'
-            maxWidth='100%'
-            color={
-              prodStatList.find(
-                (statusItem) => statusItem.status === matchedStatus.status
-              )!.color
-            }
-          >
-            {
-              prodStatList.find(
-                (statusItem) => statusItem.status === matchedStatus.status
-              )!.label
-            }
-          </Tag>
-        );
-      },
+      render: (status: string) => (
+        <StatusTag
+          status={status}
+          statusList={prodStatList}
+          dropdownStatus={['active', 'hidden']}
+        />
+      ),
     },
     {
       title: 'Action',

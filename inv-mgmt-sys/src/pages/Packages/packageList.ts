@@ -24,7 +24,7 @@ const packageList: {
     packImg: PromoRayaQurban,
     packPrice: 50,
     packStock: 50,
-    packStat: 'hidden',
+    packStat: 'active',
   },
   {
     key: '2',
@@ -37,7 +37,7 @@ const packageList: {
     packImg: hashtag,
     packPrice: 100.2,
     packStock: 210,
-    packStat: 'active',
+    packStat: 'expired',
   },
 ];
 

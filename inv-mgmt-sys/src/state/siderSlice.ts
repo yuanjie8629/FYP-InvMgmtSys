@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   collapsed: false,
-  renderCount: 0,
 };
 
 export const siderSlice = createSlice({
@@ -15,12 +14,9 @@ export const siderSlice = createSlice({
     expand: (state) => {
       state.collapsed = false;
     },
-    increment: (state) => {
-      state.renderCount++;
-    },
   },
 });
 
-export const { collapse, expand, increment } = siderSlice.actions;
+export const { collapse, expand } = siderSlice.actions;
 
 export default siderSlice.reducer;

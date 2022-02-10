@@ -10,12 +10,12 @@ import {
   Space,
   Select,
   SelectProps,
-  Popover,
 } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import './RankingList.less';
 import CarouselArrow from '@components/Carousel/CarouselArrow';
 import { splitIntoChunks } from '@utils/arrayUtils';
+import Popover from '@/components/Popover';
 
 export interface RankingListProps extends Omit<ListProps<any>, 'dataSource'> {
   dataSource: {
@@ -75,13 +75,7 @@ const RankingList = ({
                                   {selection.label}
                                 </Text>
                                 {selection.desc !== undefined ? (
-                                  <Popover
-                                    content={selection.desc}
-                                    overlayStyle={{
-                                      width: 300,
-                                      textAlign: 'justify',
-                                    }}
-                                  >
+                                  <Popover content={selection.desc}>
                                     <QuestionCircleOutlined
                                       style={{
                                         padding: '0 5px',

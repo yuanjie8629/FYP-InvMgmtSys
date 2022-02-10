@@ -5,7 +5,7 @@ import DropdownDate from '@components/Input/DropdownDate';
 import Layout from '@components/Layout';
 import Statistics from '@components/Statistics';
 import statisticsList from '@components/Statistics/statisticsList';
-import { Col, Popover, Row, Space, Spin, Typography, message } from 'antd';
+import { Col, Row, Space, Spin, Typography, message, Checkbox } from 'antd';
 import { LoadingOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import statisticsData from './statisticsData';
 import { formatDt, getDt } from '@utils/dateUtils';
@@ -18,6 +18,7 @@ import { useAppSelector } from '@hooks/reduxHooks';
 import RankingList from '@components/List/RankingList';
 import topProduct from './topProducts';
 import { prodCat } from '@utils/optionUtils';
+import Popover from '@/components/Popover';
 
 const LineChart = lazy(() => import('@components/Chart/LineChart'));
 const CarouselArrow = lazy(() => import('@components/Carousel/CarouselArrow'));
@@ -99,14 +100,19 @@ const BusinessStatistics = () => {
       label: 'Today',
       cat: 'tdy',
     });
-
     const [selectedKeyMetrics, setSelectedKeyMetrics] = useState(['Sales']);
+
     const isSiderCollapsed = useAppSelector((state) => state.sider.collapsed);
 
     const minSelectedMetrics = 1;
-    const maxSelectedMetrics = 5;
+    const [maxSelectedMetrics, setMaxSelectedMetrics] = useState(5);
 
     const handleKeyMetricsClick = (keyMetrics) => {
+      if (maxSelectedMetrics === 1) {
+        setSelectedKeyMetrics([keyMetrics.label]);
+        return;
+      }
+
       if (
         selectedKeyMetrics.length === minSelectedMetrics &&
         selectedKeyMetrics.includes(keyMetrics.label)
@@ -233,7 +239,6 @@ const BusinessStatistics = () => {
             <Row justify='space-between' align='middle'>
               <Col>
                 <Title level={5}>Key Metrics</Title>
-
                 <Text className='dashboard-grey-text'>
                   {formatDt(
                     keyMetricsDtInfo.date,
@@ -247,6 +252,7 @@ const BusinessStatistics = () => {
                 <Button type='primary'>Generate Report(s)</Button>
               </Col>
             </Row>
+
             <CarouselArrow>
               {splitIntoChunks(keyMetricsList, 5).map((chunks, index) => (
                 <div key={`keyMetricsChunk-${index}`}>
@@ -261,23 +267,13 @@ const BusinessStatistics = () => {
                           }
                           hover='success'
                           label={
-                            <>
-                              <Text className='text-break'>
-                                {keyMetrics.label}
-                              </Text>
-                              <Popover
-                                content={keyMetrics.desc}
-                                overlayStyle={{
-                                  width: 300,
-                                  textAlign: 'justify',
-                                }}
-                              >
-                                <QuestionCircleOutlined
-                                  style={{ padding: '0 5px' }}
-                                  className='color-grey'
-                                />
-                              </Popover>
-                            </>
+                            <Popover content={keyMetrics.desc}>
+                              <Text>{keyMetrics.label}</Text>
+                              <QuestionCircleOutlined
+                                style={{ padding: '0 5px' }}
+                                className='color-grey'
+                              />
+                            </Popover>
                           }
                           indicator={
                             selectedKeyMetrics.includes(keyMetrics.label)
@@ -311,22 +307,38 @@ const BusinessStatistics = () => {
                 </div>
               ))}
             </CarouselArrow>
-            <Row justify='end' align='middle' gutter={10}>
+            <Row justify='space-between' align='middle' gutter={10}>
               <Col>
-                <Text type='secondary' className='text-sm'>
-                  Metrics Selected: {selectedKeyMetrics.length}/
-                  {maxSelectedMetrics}
-                </Text>
+                <Checkbox
+                  className='color-grey'
+                  defaultChecked
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setMaxSelectedMetrics(5);
+                    } else {
+                      setMaxSelectedMetrics(1);
+                      setSelectedKeyMetrics(['Sales']);
+                    }
+                  }}
+                >
+                  Stack Metrics
+                </Checkbox>
               </Col>
               <Col>
-                <Button
-                  type='link'
-                  color='info'
-                  style={{ fontSize: 12 }}
-                  onClick={() => setSelectedKeyMetrics(['Sales'])}
-                >
-                  Reset
-                </Button>
+                <Space>
+                  <Text type='secondary' className='text-sm'>
+                    Metrics Selected: {selectedKeyMetrics.length}/
+                    {maxSelectedMetrics}
+                  </Text>
+                  <Button
+                    type='link'
+                    color='info'
+                    style={{ fontSize: 12 }}
+                    onClick={() => setSelectedKeyMetrics(['Sales'])}
+                  >
+                    Reset
+                  </Button>
+                </Space>
               </Col>
             </Row>
             <Suspense
@@ -348,6 +360,9 @@ const BusinessStatistics = () => {
                 tooltipValPrefix='RM '
                 tooltipName='Total Sales'
                 seriesField='cat'
+                yAxis={{
+                  label: maxSelectedMetrics !== 1 ? null : undefined,
+                }}
               />
             </Suspense>
           </DashboardContainer>
@@ -378,7 +393,7 @@ const BusinessStatistics = () => {
                 <div>
                   <Title level={5}>Product Rankings</Title>
 
-                  <Text className='dashboard-grey-text'>
+                  <Text type='secondary'>
                     {formatDt(
                       rankingDtInfo.date,
                       rankingDtInfo.cat,

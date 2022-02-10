@@ -3,7 +3,6 @@ import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
-import Tag from '@components/Tag';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography } from 'antd';
 import InformativeTable, {
@@ -17,6 +16,8 @@ import {
   ActivateButton,
   SuspendButton,
 } from '@/components/Button/ActionButton';
+import StatusTag from '@/components/Tag/StatusTag';
+import { custStatList } from '@/utils/optionUtils';
 
 const CustMgmt = () => {
   const { Text, Title } = Typography;
@@ -144,26 +145,9 @@ const CustMgmt = () => {
       key: 'status',
       align: 'center' as const,
       width: 130,
-      render: (status: string) => {
-        const statusList = [
-          { status: 'active', label: 'Active', color: 'success' },
-          { status: 'suspended', label: 'Suspended', color: 'error' },
-        ];
-
-        const matchedStatus = statusList.find(
-          (statusItem) => status === statusItem.status
-        );
-
-        return (
-          <Tag
-            minWidth='80%'
-            maxWidth='100%'
-            color={matchedStatus !== undefined ? matchedStatus.color : ''}
-          >
-            {matchedStatus !== undefined ? matchedStatus.label : null}
-          </Tag>
-        );
-      },
+      render: (status: string) => (
+        <StatusTag status={status} statusList={custStatList} minWidth='90%' />
+      ),
     },
     {
       title: 'Action',

@@ -1,5 +1,5 @@
 @import (reference) 'src/App.less';
-@sider-width: 220px;
+@sider-width: @layout-sider-width;
 
 // Mixins
 .header-width(@sider-width) {
@@ -14,6 +14,21 @@
   width: @sider-logo-width;
 }
 
+.sider-wrapper-props {
+  .centerFlex();
+  position: fixed;
+  height: 80px;
+  background-color: @layout-sider-background;
+  z-index: 5;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+
 // Header
 .header {
   position: fixed;
@@ -23,11 +38,11 @@
   z-index: 999;
 
   &-expanded {
-    .header-width(220px);
+    .header-width(@layout-sider-width);
   }
 
   &-collapsed {
-    .header-width(80px);
+    .header-width(@menu-collapsed-width);
   }
 
   &-fixed {
@@ -57,11 +72,11 @@
   }
 
   &-fixed {
-    .sider-fixed(220px);
+    .sider-fixed(@layout-sider-width);
   }
 
   &-collapsed-fixed {
-    .sider-fixed(80px);
+    .sider-fixed(@menu-collapsed-width);
   }
 
   &-menu {
@@ -70,23 +85,23 @@
 
   &-logo {
     pointer-events: none;
-    transition: all 0.2s;
+    
     &-fixed {
       background-color: @layout-sider-background;
       position: relative;
-      height: 80px;
+      height: @menu-collapsed-width;
     }
 
     &-wrapper {
       .centerFlex();
       .sider-wrapper-props();
-      .sider-fixed(220px);
+      .sider-fixed(@layout-sider-width);
     }
 
     &-collapsed-wrapper {
       .centerFlex();
       .sider-wrapper-props();
-      .sider-fixed(80px);
+      .sider-fixed(@menu-collapsed-width);
     }
   }
 
@@ -115,20 +130,6 @@
         color: @primary-color !important;
       }
     }
-  }
-}
-
-.sider-wrapper-props {
-  .centerFlex();
-  position: fixed;
-  height: 80px;
-  background-color: @layout-sider-background;
-  z-index: 5;
-  cursor: pointer;
-  user-select: none;
-
-  &:hover {
-    opacity: 90%;
   }
 }
 

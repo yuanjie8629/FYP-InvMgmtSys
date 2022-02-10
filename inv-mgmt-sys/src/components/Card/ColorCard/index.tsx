@@ -42,10 +42,9 @@ const ColorCard = ({
       <Space direction='vertical' size={20} className='full-width'>
         {label !== undefined || indicator !== undefined ? (
           <Row justify='space-between'>
-            <Col span={22}>{label}</Col>
+            <Col span={22} className='text-break'>{label}</Col>
             <Col
-              span={2}
-              style={{ position: 'absolute', right: 20 }}
+              style={{ position: 'absolute', right: 10 }}
               className='centerFlex'
             >
               {indicator === 'true' ? (
@@ -56,7 +55,7 @@ const ColorCard = ({
             </Col>
           </Row>
         ) : null}
-        <div>{props.children}</div>
+        {props.children !== undefined ? <div>{props.children}</div> : null}
       </Space>
     </Card>
   );

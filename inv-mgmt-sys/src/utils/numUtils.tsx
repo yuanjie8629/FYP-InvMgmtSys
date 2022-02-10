@@ -11,9 +11,13 @@ const moneyFormatter = (num: number, numOnly: boolean = false) => {
   return numOnly === true ? value : `RM ${value}`;
 };
 
-const percentFormatter = (num: number, numOnly: boolean = false) => {
-  let value = (num * 100).toFixed();
-  return numOnly === true ? value : `${value}%`;
+const percentFormatter = (
+  num: number,
+  numOnly: boolean = false,
+  toFixed: number = 2
+) => {
+  let value = (num * 100).toFixed(toFixed);
+  return numOnly === true ? value : `${value} %`;
 };
 
 export { moneyFormatter, percentFormatter };

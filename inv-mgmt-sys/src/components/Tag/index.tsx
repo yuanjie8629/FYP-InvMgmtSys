@@ -17,6 +17,7 @@ const Tag = ({
   height = '100%',
   justify = 'center',
   border = 10,
+  style,
   ...props
 }: TagProps) => {
   return (
@@ -29,6 +30,7 @@ const Tag = ({
         borderRadius: border,
         textAlign: justify,
         margin: 0,
+        ...style,
       }}
       {...props}
     />

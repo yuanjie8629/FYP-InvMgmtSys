@@ -13,7 +13,7 @@ export interface LineChartProps extends LineConfig {
   toFixed?: number;
 }
 const LineChart = ({
-data,
+  data,
   titleX = '',
   titleY = '',
   tooltipName = titleY !== '' ? titleY : 'value',

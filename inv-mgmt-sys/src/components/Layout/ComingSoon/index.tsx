@@ -13,7 +13,7 @@ const ComingSoon = ({ img, ...props }: ComingSoonProps) => {
   const navigate = useNavigate();
   return (
     <Layout>
-      <div className='coming-soon'>
+      <span className='coming-soon'>
         <Space
           direction='vertical'
           size={20}
@@ -42,7 +42,7 @@ const ComingSoon = ({ img, ...props }: ComingSoonProps) => {
             Go Back to Dashboard
           </Button>
         </Space>
-      </div>
+      </span>
     </Layout>
   );
 };
