@@ -3,14 +3,19 @@ import { Col, List, ListProps, Row, Typography } from 'antd';
 import { TextProps } from 'antd/es/typography/Text';
 import { TitleProps } from 'antd/es/typography/Title';
 
-interface DescriptionListProps extends Omit<ListProps<any>, 'dataSource'> {
-  dataSource: {
-    key: string;
-    title: string;
-    desc?: string;
-    content?: React.ReactNode;
-    icon?: React.ReactNode;
-  }[];
+export interface DescriptionListDataProps {
+  key: string;
+  title: string;
+  desc?: string;
+  content?: React.ReactNode;
+  icon?: React.ReactNode;
+};
+
+export type TitleTextProps = TextProps | TitleProps;
+
+
+export interface DescriptionListProps extends Omit<ListProps<any>, 'dataSource'> {
+  dataSource: DescriptionListDataProps[];
   buttons?: string[];
   buttonProps?: ButtonProps;
   titleProps?: TextProps | TitleProps;
