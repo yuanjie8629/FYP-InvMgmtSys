@@ -14,7 +14,8 @@
   }
 
   .btn-active-cbo {
-    &:active {
+    &:active,
+    &:focus {
       color: @color-active;
       border-color: @color-active;
     }
@@ -44,9 +45,10 @@
           background-color: @color-hover;
           border-color: @color-hover;
         }
-        &:active {
+        &:active,
+        &:focus {
           background-color: @color-active;
-          border-color: @color-active;
+          border-color: @color-active !important;
         }
       }
 
@@ -69,7 +71,8 @@
       &:hover {
         color: @color-hover;
       }
-      &:active {
+      &:active,
+      &:focus {
         color: @color-active;
       }
     }
@@ -79,7 +82,8 @@
       &:hover {
         color: @color-hover;
       }
-      &:active {
+      &:active,
+      &:focus {
         color: @color-active;
       }
     }

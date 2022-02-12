@@ -14,7 +14,6 @@ import Button from '@components/Button';
 import keyMetricsList from './keyMetricsList';
 import { splitIntoChunks } from '@utils/arrayUtils';
 import { moneyFormatter, percentFormatter } from '@utils/numUtils';
-import { useAppSelector } from '@hooks/reduxHooks';
 import RankingList from '@components/List/RankingList';
 import topProduct from './topProducts';
 import { prodCat } from '@utils/optionUtils';
@@ -103,8 +102,6 @@ const BusinessStatistics = () => {
     });
     const [selectedKeyMetrics, setSelectedKeyMetrics] = useState(['Sales']);
 
-    const isSiderCollapsed = useAppSelector((state) => state.sider.collapsed);
-
     const minSelectedMetrics = 1;
     const [maxSelectedMetrics, setMaxSelectedMetrics] = useState(5);
 
@@ -127,7 +124,6 @@ const BusinessStatistics = () => {
               Key Metrics.
             </span>
           ),
-          style: { marginLeft: isSiderCollapsed ? 80 : 220 },
         });
         setTimeout(() => message.destroy('minSelectedMetrics'), 2000);
         return;
@@ -146,7 +142,6 @@ const BusinessStatistics = () => {
               Key Metrics.
             </span>
           ),
-          style: { marginLeft: isSiderCollapsed ? 80 : 220 },
         });
 
         setTimeout(() => message.destroy('maxSelectedMetrics'), 2000);

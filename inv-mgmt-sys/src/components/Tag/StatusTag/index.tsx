@@ -6,16 +6,18 @@ export interface StatusTagProps extends TagProps {
   status: string;
   statusList: { status: string; label: string; color: string }[];
   dropdownStatus?: string[];
+  onDropdownSelect?: (selectedStatus: string) => void;
 }
 
 const StatusTag = ({
   status,
   statusList,
   dropdownStatus,
+  onDropdownSelect = () => '',
   ...props
 }: StatusTagProps) => {
   const menu = (
-    <Menu>
+    <Menu onClick={(item) => onDropdownSelect(item.key)}>
       {statusList.map(
         (statusItem) =>
           !(
