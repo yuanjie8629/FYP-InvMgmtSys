@@ -47,7 +47,7 @@ const PackMgmt = () => {
   const hideBtn = (props: any) => <HideButton type='primary' color='grey' />;
 
   const deleteBtn = (props: any) => (
-    <DeleteButton type='primary' color='error' />
+    <DeleteButton type='primary' />
   );
 
   const onSelectBtn: InformativeTableButtonProps = [

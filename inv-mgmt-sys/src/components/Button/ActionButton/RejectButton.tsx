@@ -4,6 +4,7 @@ import Button, { ButtonProps } from '..';
 const RejectButton = ({ children = 'Reject', ...props }: ButtonProps) => {
   return (
     <Button
+      color='error'
       icon={<HiThumbDown size={16} style={{ marginRight: 4 }} />}
       className='centerFlex'
       {...props}

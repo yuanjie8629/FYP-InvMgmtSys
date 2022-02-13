@@ -85,7 +85,6 @@ const ProdMgmt = () => {
   const deleteBtn = (props: any) => (
     <DeleteButton
       type='primary'
-      color='error'
       onClick={() => {
         ActionModal.show('delete', {
           onOk: () =>
