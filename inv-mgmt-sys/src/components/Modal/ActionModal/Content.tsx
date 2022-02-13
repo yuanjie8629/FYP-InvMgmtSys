@@ -16,7 +16,7 @@ export interface ActionContentProps {
   color?: 'success' | 'warning' | 'error' | 'info' | 'grey';
   loading?: boolean;
   children?: React.ReactNode;
-  type?: string;
+  recordType?: string;
   dataSource?: DescriptionListDataProps[];
   titleProps?: TitleTextProps;
   descProps?: TitleTextProps;
@@ -35,7 +35,7 @@ const Content = memo(
       loading,
       children,
       dataSource,
-      type,
+      recordType,
       titleProps,
       descProps,
       multi,

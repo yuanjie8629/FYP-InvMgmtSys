@@ -24,6 +24,7 @@ import StatusTag from '@/components/Tag/StatusTag';
 import { BoldTitle } from '@/components/Title';
 import { ActionModal } from '@/components/Modal';
 import fetchMock from 'fetch-mock';
+import { ActionModalContentProps } from '@/components/Modal/ActionModal';
 
 fetchMock.mock('http://example.com', 200, { delay: 3000 });
 
@@ -47,8 +48,8 @@ const ProdMgmt = () => {
     [searchParams]
   );
 
-  const actionModalProps = {
-    type: 'product',
+  const actionModalProps: ActionModalContentProps = {
+    recordType: 'product',
     dataSource: selectedProds,
   };
 
@@ -64,22 +65,19 @@ const ProdMgmt = () => {
   };
 
   const activateBtn = (props: any) => <ActivateButton type='primary' />;
-  
+
   const hideBtn = (props: any) => (
     <HideButton
       type='primary'
       color='grey'
       onClick={() => {
-        ActionModal.show(
-          'hide',
-          {
-            onOk: () =>
-              fetch('http://example.com').then(() => {
-                showActionMsg('hide', true);
-              }),
-          },
-          true
-        );
+        ActionModal.show('hide', {
+          onOk: () =>
+            fetch('http://example.com').then(() => {
+              showActionMsg('hide', true);
+            }),
+          multiItem: true,
+        });
       }}
     />
   );
@@ -89,16 +87,13 @@ const ProdMgmt = () => {
       type='primary'
       color='error'
       onClick={() => {
-        ActionModal.show(
-          'delete',
-          {
-            onOk: () =>
-              fetch('http://example.com').then(() => {
-                showActionMsg('delete', true);
-              }),
-          },
-          true
-        );
+        ActionModal.show('delete', {
+          onOk: () =>
+            fetch('http://example.com').then(() => {
+              showActionMsg('delete', true);
+            }),
+          multiItem: true,
+        });
       }}
     />
   );
