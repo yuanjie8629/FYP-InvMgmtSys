@@ -41,7 +41,7 @@ const CustReg = () => {
   const acceptBtn = (props: any) => <AcceptButton type='primary' />;
 
   const rejectBtn = (props: any) => (
-    <RejectButton type='primary' color='error' />
+    <RejectButton type='primary' />
   );
 
   const onSelectBtn: InformativeTableButtonProps = [
@@ -133,7 +133,7 @@ const CustReg = () => {
       render: () => (
         <Space direction='vertical' size={5}>
           <AcceptButton type='link' />
-          <RejectButton type='link' color='error' />
+          <RejectButton type='link'/>
         </Space>
       ),
     },
