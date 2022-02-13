@@ -10,15 +10,19 @@ import HideModal from './HideModal';
 export type Payload = {
   onOk?: () => void;
   onCancel?: () => void;
+  multiItem?: boolean;
 };
 
-export const ActionModalType = {
+export const ActionModalComponent = {
   delete: DeleteModal,
   hide: HideModal,
 };
 
+export type ActionModalType = 'delete' | 'hide';
+
 export interface ActionModalContentProps {
-  type?: string;
+  recordType?: string;
+  loading?: boolean;
   dataSource?: DescriptionListDataProps[];
   titleProps?: TitleTextProps;
   descProps?: TitleTextProps;
@@ -30,14 +34,14 @@ export interface ActionModalContentProps {
 export type ActionModalProps = Omit<ModalProps, 'onOk' | 'onCancel'> &
   ActionModalContentProps;
 
-type ActionModalReturnType = React.FC<Partial<ActionModalProps>> & {
-  show?: (type: string, payload?: Payload, multiItem?: boolean) => void;
+type ActionModalReturnProps = React.FC<Partial<ActionModalProps>> & {
+  show?: (type: ActionModalType, payload?: Payload) => void;
 };
 
-const Modal: ActionModalReturnType = memo(
+const Modal: ActionModalReturnProps = memo(
   (
     {
-      type,
+      recordType = 'record',
       dataSource,
       titleProps,
       descProps,
@@ -49,14 +53,13 @@ const Modal: ActionModalReturnType = memo(
     const [visible, setVisible] = useState(false);
     const [loading, setLoading] = useState(false);
     const [multiItem, setMultiItem] = useState(false);
-    const [modalType, setModalType] = useState('');
+    const [modalType, setModalType] = useState<ActionModalType>(null);
     const payloadRef = useRef<Payload>({});
 
     useEffect(() => {
       Modal.show = (
-        type: string,
-        payload: Payload,
-        multiItem: boolean = false
+        type: ActionModalType,
+        { multiItem = false, ...payload }: Payload
       ) => {
         setVisible(true);
         setModalType(type);
@@ -66,11 +69,11 @@ const Modal: ActionModalReturnType = memo(
     }, []);
 
     const handleOk = (method?: () => void) => () => {
-      let asyncFunc = async () => {
+      let loadParentFunc = async () => {
         setLoading(true);
         return method && method();
       };
-      asyncFunc().then(() => setVisible(false));
+      loadParentFunc().then(() => setVisible(false));
     };
 
     const handleCancel = (method?: () => void) => () => {
@@ -79,12 +82,12 @@ const Modal: ActionModalReturnType = memo(
     };
 
     const renderModal = () => {
-      const ModalRender = ActionModalType[modalType]
-        ? ActionModalType[modalType]
+      const ModalRender = ActionModalComponent[modalType]
+        ? ActionModalComponent[modalType]
         : null;
       return (
         <ModalRender
-          type={type}
+          recordType={recordType}
           loading={loading}
           dataSource={dataSource}
           titleProps={titleProps}

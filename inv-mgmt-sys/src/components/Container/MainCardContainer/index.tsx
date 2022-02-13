@@ -1,21 +1,14 @@
 import { Space, SpaceProps } from 'antd';
 import './MainCardContainer.less';
 
-export interface MainCardContainerProps extends SpaceProps {
-  func?: string;
-}
+export interface MainCardContainerProps extends SpaceProps {}
 
-const MainCardContainer = ({
-  func,
-  className,
-  ...props
-}: MainCardContainerProps) => {
-  const container = 'main-card-container';
+const MainCardContainer = ({ className, ...props }: MainCardContainerProps) => {
   return (
     <Space
       direction='vertical'
       size={20}
-      className={`${func === 'add' ? `${container}-add` : container}${
+      className={`main-card-container${
         className !== undefined ? ` ${className}` : ''
       }`}
       {...props}

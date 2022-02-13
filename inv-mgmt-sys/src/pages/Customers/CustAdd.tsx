@@ -71,7 +71,7 @@ const CustAdd = () => {
     <Form name='custForm' layout='vertical' size='small' form={custForm}>
       <Layout>
         <Col xs={16} xl={19} className='centerFlex'>
-          <MainCardContainer func='add' className='cust-add'>
+          <MainCardContainer>
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='basicInfo'>
@@ -142,7 +142,6 @@ const CustAdd = () => {
                 </Form.Item>
               </Space>
             </MainCard>
-
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='contactInfo'>
@@ -247,7 +246,6 @@ const CustAdd = () => {
                 </div>
               </Space>
             </MainCard>
-
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='address'>
@@ -350,7 +348,6 @@ const CustAdd = () => {
                 </Form.Item>
               </Space>
             </MainCard>
-
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='employment'>
@@ -380,7 +377,6 @@ const CustAdd = () => {
                 </Form.Item>
               </Space>
             </MainCard>
-
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='position'>
@@ -412,7 +408,6 @@ const CustAdd = () => {
                 </Form.Item>
               </Space>
             </MainCard>
-
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='declaration'>
@@ -535,7 +530,7 @@ const CustAdd = () => {
                 </Form.Item>
               </Space>
             </MainCard>
-            <AffixAdd offsetBottom={0} label='Product' />
+            <AffixAdd offsetBottom={0} label='Customer' />
           </MainCardContainer>
         </Col>
         <Col xs={8} xl={5}>

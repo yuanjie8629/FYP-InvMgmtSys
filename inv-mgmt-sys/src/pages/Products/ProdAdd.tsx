@@ -52,7 +52,7 @@ const ProdAdd = () => {
     <Form name='prodForm' form={prodForm} layout='vertical' size='small'>
       <Layout>
         <Col xs={16} xl={19} className='centerFlex'>
-          <MainCardContainer func='add' className='prod-add'>
+          <MainCardContainer>
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='basicInfo'>

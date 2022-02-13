@@ -6,19 +6,19 @@ export interface AffixAddProps extends AffixProps {
   label?: string;
 }
 
-const AffixAdd = ({label,...props}: Omit<AffixAddProps, 'children'>) => {
-  const [hideCard, setHideCard] = useState(false);
+const AffixAdd = ({ label, ...props }: Omit<AffixAddProps, 'children'>) => {
+  const [showCard, setShowCard] = useState(false);
   return (
     <Affix
       onChange={(affixed) =>
-        hideCard ? setHideCard(false) : setHideCard(true)
+        showCard ? setShowCard(false) : setShowCard(true)
       }
       {...props}
     >
       <Card
         bordered={false}
         style={
-          hideCard
+          showCard
             ? {
                 width: '100%',
                 boxShadow: '0 -1px 8px 0 rgb(39 52 120 / 12%)',
@@ -27,7 +27,7 @@ const AffixAdd = ({label,...props}: Omit<AffixAddProps, 'children'>) => {
               }
             : { width: '100%', background: 'none' }
         }
-        bodyStyle={{ padding: '20px 15px' }}
+        bodyStyle={showCard ? { padding: '20px 15px' } : { padding: '0 15px' }}
       >
         <Row justify='end' gutter={20}>
           <Col>
