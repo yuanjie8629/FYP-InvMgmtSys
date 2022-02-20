@@ -23,10 +23,7 @@ import {
 import StatusTag from '@/components/Tag/StatusTag';
 import { BoldTitle } from '@/components/Title';
 import { ActionModal } from '@/components/Modal';
-import fetchMock from 'fetch-mock';
 import { ActionModalContentProps } from '@/components/Modal/ActionModal';
-
-fetchMock.mock('http://example.com', 200, { delay: 3000 });
 
 const ProdMgmt = () => {
   const { Text } = Typography;

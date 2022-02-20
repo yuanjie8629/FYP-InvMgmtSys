@@ -5,6 +5,7 @@
   "dependencies": {
     "@ant-design/charts": "^1.2.14",
     "@ant-design/compatible": "^1.1.0",
+    "@apollo/client": "^3.5.9",
     "@craco/craco": "^6.3.0",
     "@reduxjs/toolkit": "^1.5.1",
     "@testing-library/jest-dom": "^4.2.4",
@@ -25,7 +26,7 @@
     "braft-utils": "^3.0.12",
     "classnames": "^2.3.1",
     "craco-less": "^1.20.0",
-    "fetch-mock": "^9.11.0",
+    "graphql": "^16.3.0",
     "less": "^4.1.2",
     "malaysia-postcodes": "^1.0.5",
     "patch-package": "^6.4.7",
