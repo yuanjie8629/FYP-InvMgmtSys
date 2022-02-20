@@ -9,9 +9,29 @@ import Inventory from '@assets/Login/LoginBackground.webp';
 import Logo from '@assets/logo.webp';
 import { Helmet } from 'react-helmet';
 import { BoldTitle } from '@/components/Title';
+import { gql, useMutation } from '@apollo/client';
+
+const LOGIN = gql`
+  mutation TokenAuth($username: String!, $password: String!) {
+    tokenAuth(username: $username, password: $password) {
+      success
+      errors
+      token
+      refreshToken
+      user {
+        username
+        isStaff
+      }
+    }
+  }
+`;
 
 const Login = () => {
   let navigate = useNavigate();
+  const [login, { loading }] = useMutation(LOGIN, {
+    onCompleted: ({ tokenAuth }) => tokenAuth.success && navigate('/'),
+  });
+
   return (
     <div className='login'>
       <Helmet>
@@ -46,7 +66,18 @@ const Login = () => {
                 <BoldTitle level={3} style={{ padding: 20 }}>
                   Login
                 </BoldTitle>
-                <Form name='loginForm' layout='vertical'>
+                <Form
+                  name='loginForm'
+                  layout='vertical'
+                  onFinish={(values) =>
+                    login({
+                      variables: {
+                        username: values.username,
+                        password: values.password,
+                      },
+                    })
+                  }
+                >
                   <Space direction='vertical' className='full-width'>
                     <Form.Item
                       name='username'
@@ -88,9 +119,7 @@ const Login = () => {
                         size='large'
                         htmlType='submit'
                         block
-                        onClick={() => {
-                          navigate('/dashboard');
-                        }}
+                        loading={loading}
                       >
                         Login
                       </Button>
