@@ -7,8 +7,9 @@ import {
 import AuthRoute from './AuthRoute';
 import routeList from './routeList';
 import routeRedirectList from './routeRedirectList';
-
 export default function AppRoute() {
+
+
   return (
     <Router>
       <Routes>
