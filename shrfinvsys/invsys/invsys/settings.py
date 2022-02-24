@@ -150,8 +150,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=15),
-    "REFRESH_TOKEN_LIFETIME": timedelta(seconds=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=30),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": False,
@@ -189,6 +189,8 @@ SENDGRID_API_KEY = (
 )
 
 SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+
+ALLOWED_HOSTS = ["*"]
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())

@@ -9,18 +9,22 @@ import Logo from '@assets/logo.webp';
 import { Helmet } from 'react-helmet';
 import { BoldTitle } from '@/components/Title';
 import { loginAPI } from '@/api/services/authAPI';
+import { useNavigate } from 'react-router-dom';
+import { findRoutePath } from '@/utils/routingUtils';
 
 const Login = () => {
   const { Text } = Typography;
   const [loginErr, setLoginErr] = useState();
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const handleLogin = async (values) => {
     setLoading(true);
     await loginAPI({
       username: values.username,
       password: values.password,
-    }).catch((e) => setLoginErr(e.response?.status));
+    })
+      .then(() => navigate(findRoutePath('login')))
+      .catch((e) => setLoginErr(e.response?.status));
     setLoading(false);
   };
 
@@ -98,7 +102,6 @@ const Login = () => {
                       <Input
                         size='large'
                         placeholder='Username'
-                        allowClear
                         className='login-input'
                       />
                     </Form.Item>
@@ -115,7 +118,6 @@ const Login = () => {
                         size='large'
                         placeholder='Password'
                         className='login-input'
-                        allowClear
                       />
                     </Form.Item>
 
