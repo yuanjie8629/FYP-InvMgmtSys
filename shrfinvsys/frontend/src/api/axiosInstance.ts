@@ -1,3 +1,4 @@
+import { clearStorage } from '@/utils/storageUtils';
 import oriAxios from 'axios';
 import Cookies from 'js-cookie';
 import { refreshTknAPI } from './services/authAPI';
@@ -5,7 +6,7 @@ const baseURL = 'http://127.0.0.1:8000/api/';
 
 const axios = oriAxios.create({
   baseURL: baseURL,
-  timeout: 5000,
+  timeout: 10000,
   headers: {
     Authorization: Cookies.get('access_token')
       ? `JWT ${Cookies.get('access_token')}`
@@ -32,7 +33,8 @@ axios.interceptors.response.use(
     ) {
       delete axios.defaults.headers['Authorization'];
       Cookies.remove('access_token');
-      localStorage.setItem('usr', 'expired');
+      clearStorage();
+      window.location.href = '';
       return Promise.reject(error);
     }
 

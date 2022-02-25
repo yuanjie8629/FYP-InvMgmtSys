@@ -91,6 +91,16 @@ class CookieTokenRefreshView(TokenRefreshView):
     permission_classes = [permissions.AllowAny]
 
     def finalize_response(self, request, response, *args, **kwargs):
+        if response.data.get("access"):
+            cookie_max_age = 900  # 15 minutes
+            response.set_cookie(
+                "access_token",
+                response.data["access"],
+                max_age=cookie_max_age,
+                httponly=False,
+            )
+            del response.data["access"]
+
         if response.data.get("refresh"):
             cookie_max_age = 3600 * 24  # 1 day
             response.set_cookie(
@@ -99,7 +109,20 @@ class CookieTokenRefreshView(TokenRefreshView):
                 max_age=cookie_max_age,
                 httponly=True,
             )
+            refresh = jwt.decode(
+                response.data["refresh"],
+                settings.SIMPLE_JWT["SIGNING_KEY"],
+                algorithms=[settings.SIMPLE_JWT["ALGORITHM"]],
+            )
             del response.data["refresh"]
+
+            admin_info = {
+                "id": refresh["user_id"],
+                "name": refresh["name"],
+                "role": refresh["role"],
+                "exp": refresh["exp"],
+            }
+            response.data = admin_info
         return super().finalize_response(request, response, *args, **kwargs)
 
     serializer_class = CookieTokenRefreshSerializer

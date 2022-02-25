@@ -1,15 +1,16 @@
 import Button from '@/components/Button';
+import { clearStorage } from '@/utils/storageUtils';
 import { Col, Modal, ModalProps, Row, Space, Typography } from 'antd';
 import { useState } from 'react';
 
-interface SessionModalProps extends ModalProps {}
+interface SessionExpModalProps extends ModalProps {}
 
-const SessionModal = ({ visible, ...props }: SessionModalProps) => {
+const SessionExpModal = ({ visible, ...props }: SessionExpModalProps) => {
   const { Text } = Typography;
   const [isModalVisible, setIsModalVisible] = useState(visible);
 
   const handleClose = () => {
-    localStorage.clear();
+    clearStorage();
     setIsModalVisible(false);
   };
 
@@ -36,4 +37,4 @@ const SessionModal = ({ visible, ...props }: SessionModalProps) => {
   );
 };
 
-export default SessionModal;
+export default SessionExpModal;

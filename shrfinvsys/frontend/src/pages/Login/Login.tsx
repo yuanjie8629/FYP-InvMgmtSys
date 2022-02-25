@@ -9,13 +9,13 @@ import Logo from '@assets/logo.webp';
 import { Helmet } from 'react-helmet';
 import { BoldTitle } from '@/components/Title';
 import { loginAPI } from '@/api/services/authAPI';
-import { useNavigate } from 'react-router-dom';
+import SessionExtendModal from '@/components/Modal/AuthModal/SessionExtendModal';
+import { getSessionExpired } from '@/utils/storageUtils';
 
 const Login = () => {
   const { Text } = Typography;
   const [loginErr, setLoginErr] = useState();
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const handleLogin = async (values) => {
     setLoading(true);
     await loginAPI({
@@ -23,11 +23,12 @@ const Login = () => {
       password: values.password,
     })
       .then((res) => {
-        localStorage.setItem('usr', JSON.stringify(res.data));
-        navigate('/');
+        setLoading(false);
       })
-      .catch((e) => setLoginErr(e.response?.status));
-    setLoading(false);
+      .catch((e) => {
+        setLoginErr(e.response?.status);
+        setLoading(false);
+      });
   };
 
   const getErrMsg = loginErr && (
@@ -221,6 +222,7 @@ const Login = () => {
           </Row>
         </Col>
       </Row>
+      <SessionExtendModal visible={getSessionExpired()} />
     </div>
   );
 };
