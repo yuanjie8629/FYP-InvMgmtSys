@@ -33,9 +33,7 @@ const AvatarDropdown = ({
           style={{ fontWeight: 500 }}
           onClick={() => {
             if (menu.label === 'Logout') {
-              logoutAPI()
-                .then((res) => console.log('logout'))
-                .catch((error) => console.log(error));
+              logoutAPI();
             }
           }}
         >

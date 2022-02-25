@@ -22,20 +22,24 @@ export const loginAPI = (loginDetails: LoginDetailsProps) => {
 };
 
 export const logoutAPI = () => {
-  axios.defaults.headers['Authorization'] = null;
+  delete axios.defaults.headers['Authorization'];
   Cookies.remove('access_token');
+  localStorage.setItem('usr', 'expired');
   return axios.post('logout/');
 };
 
+export const verifyTknAPI = () => axios.post('token/verify/');
+
 export const refreshTknAPI = () =>
   axios
-    .post('token/verify/')
-    .then((res) => console.log('valid'))
+    .post('token/refresh/')
+    .then((res) => {
+      axios.defaults.headers['Authorization'] = 'JWT ' + res.data.access;
+      return Promise.resolve(res);
+    })
     .catch((err) => {
-      if (
-        err.response.status === 401 &&
-        err.response.data.code === 'token_not_valid'
-      ) {
-        Cookies.remove('access_token');
-      }
+      delete axios.defaults.headers['Authorization'];
+      Cookies.remove('access_token');
+      localStorage.setItem('usr', 'expired');
+      return Promise.reject(err);
     });

@@ -1,5 +1,6 @@
 import oriAxios from 'axios';
 import Cookies from 'js-cookie';
+import { refreshTknAPI } from './services/authAPI';
 const baseURL = 'http://127.0.0.1:8000/api/';
 
 const axios = oriAxios.create({
@@ -29,6 +30,9 @@ axios.interceptors.response.use(
       error.response.status === 401 &&
       originalRequest.url === 'token/refresh/'
     ) {
+      delete axios.defaults.headers['Authorization'];
+      Cookies.remove('access_token');
+      localStorage.setItem('usr', 'expired');
       return Promise.reject(error);
     }
 
@@ -38,18 +42,12 @@ axios.interceptors.response.use(
       error.response.statusText === 'Unauthorized' &&
       originalRequest.url !== 'token/verify/'
     ) {
-      return axios
-        .post('token/refresh/')
-        .then((response) => {
-          axios.defaults.headers['Authorization'] =
-            'JWT ' + response.data.access;
-
-          originalRequest.headers['Authorization'] =
-            'JWT ' + response.data.access;
-
+      return refreshTknAPI()
+        .then((res) => {
+          originalRequest.headers['Authorization'] = 'JWT ' + res.data.access;
           return axios(originalRequest);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => Promise.reject(err));
     }
 
     return Promise.reject(error);
