@@ -9,7 +9,6 @@ GENDER_CHOICES = (
     ("F", "Female"),
 )
 
-
 class Admin(AbstractUser):
     admin_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, blank=True, null=True)

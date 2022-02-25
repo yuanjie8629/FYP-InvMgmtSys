@@ -1,3 +1,4 @@
+import { clearStorage, setUsr } from '@/utils/storageUtils';
 import Cookies from 'js-cookie';
 import axios from '../axiosInstance';
 
@@ -16,6 +17,8 @@ export const loginAPI = (loginDetails: LoginDetailsProps) => {
       axios.defaults.headers['Authorization'] = `JWT ${Cookies.get(
         'access_token'
       )}`;
+      setUsr(res.data);
+      window.location.href = '';
       return Promise.resolve(res);
     })
     .catch((error) => Promise.reject(error));
@@ -24,7 +27,7 @@ export const loginAPI = (loginDetails: LoginDetailsProps) => {
 export const logoutAPI = () => {
   delete axios.defaults.headers['Authorization'];
   Cookies.remove('access_token');
-  localStorage.setItem('usr', 'expired');
+  clearStorage();
   return axios.post('logout/');
 };
 
@@ -34,12 +37,14 @@ export const refreshTknAPI = () =>
   axios
     .post('token/refresh/')
     .then((res) => {
+      setUsr(res.data);
       axios.defaults.headers['Authorization'] = 'JWT ' + res.data.access;
       return Promise.resolve(res);
     })
     .catch((err) => {
       delete axios.defaults.headers['Authorization'];
       Cookies.remove('access_token');
-      localStorage.setItem('usr', 'expired');
+      clearStorage();
+      window.location.href = '';
       return Promise.reject(err);
     });
