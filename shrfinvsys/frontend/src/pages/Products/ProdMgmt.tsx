@@ -187,7 +187,6 @@ const ProdMgmt = () => {
           statusList={prodStatList}
           dropdownStatus={['active', 'hidden']}
           onDropdownSelect={(selectedStatus) => {
-            console.log(selectedStatus);
             if (selectedStatus === 'hidden') {
               ActionModal.show('hide', {
                 onOk: () =>
