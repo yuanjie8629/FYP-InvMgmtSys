@@ -419,7 +419,6 @@ export const formatDt = (
     return moment(date, inputFormat).format(outputFormat);
   } else {
     let [startDt, endDt] = date.split(' ~ ');
-    console.log(startDt);
     return `${moment(startDt, inputFormat).format(outputFormat)} - ${moment(
       endDt,
       inputFormat

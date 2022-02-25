@@ -9,8 +9,6 @@ import Logo from '@assets/logo.webp';
 import { Helmet } from 'react-helmet';
 import { BoldTitle } from '@/components/Title';
 import { loginAPI } from '@/api/services/authAPI';
-import SessionExtendModal from '@/components/Modal/AuthModal/SessionExtendModal';
-import { getSessionExpired } from '@/utils/storageUtils';
 
 const Login = () => {
   const { Text } = Typography;
@@ -222,7 +220,6 @@ const Login = () => {
           </Row>
         </Col>
       </Row>
-      <SessionExtendModal visible={getSessionExpired()} />
     </div>
   );
 };
