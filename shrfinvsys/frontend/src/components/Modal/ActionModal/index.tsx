@@ -7,7 +7,7 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 import DeleteModal from './DeleteModal';
 import HideModal from './HideModal';
 
-export type Payload = {
+export type ActionModalPayload = {
   onOk?: () => void;
   onCancel?: () => void;
   multiItem?: boolean;
@@ -35,7 +35,10 @@ export type ActionModalProps = Omit<ModalProps, 'onOk' | 'onCancel'> &
   ActionModalContentProps;
 
 type ActionModalReturnProps = React.FC<Partial<ActionModalProps>> & {
-  show?: (type: ActionModalType, payload?: Payload) => void;
+  show?: (
+    type: ActionModalType,
+    ActionModalPayload?: ActionModalPayload
+  ) => void;
 };
 
 const Modal: ActionModalReturnProps = memo(
@@ -54,17 +57,17 @@ const Modal: ActionModalReturnProps = memo(
     const [loading, setLoading] = useState(false);
     const [multiItem, setMultiItem] = useState(false);
     const [modalType, setModalType] = useState<ActionModalType>(null);
-    const payloadRef = useRef<Payload>({});
+    const payloadRef = useRef<ActionModalPayload>({});
 
     useEffect(() => {
       Modal.show = (
         type: ActionModalType,
-        { multiItem = false, ...payload }: Payload
+        { multiItem = false, ...ActionModalPayload }: ActionModalPayload
       ) => {
         setVisible(true);
         setModalType(type);
         multiItem ? setMultiItem(true) : setMultiItem(false);
-        payloadRef.current = payload;
+        payloadRef.current = ActionModalPayload;
       };
     }, []);
 
