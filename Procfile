@@ -1,1 +1,1 @@
-web: gunicorn invsys.wsgi
+web: gunicorn invsys.wsgi --log-file -
