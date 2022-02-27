@@ -23,7 +23,7 @@ const Layout = ({ justify = 'center', ...props }: CustomLayoutProps) => {
         <Header />
         <Suspense
           fallback={
-            <div className='centerFlex height-fill-vp'>
+            <div className='center-flex height-fill-vp'>
               <Spin size='large' />
             </div>
           }

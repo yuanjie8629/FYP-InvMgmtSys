@@ -72,7 +72,7 @@ const SessionExtendModal = ({ visible, ...props }: SessionExtendModalProps) => {
 
   return (
     <Modal
-      visible={showModal}
+      visible={showModal || visible}
       footer={null}
       centered
       onOk={extendPageSession}
@@ -85,7 +85,7 @@ const SessionExtendModal = ({ visible, ...props }: SessionExtendModalProps) => {
           <MdAccessTimeFilled size={25} className='color-error' />
           <Text strong>Your session will be expired in</Text>
         </Space>
-        <Space align='center' className='centerFlex'>
+        <Space align='center' className='center-flex'>
           <Row align='bottom' gutter={5}>
             <Col>
               <Title level={4}>{timer.minutes}</Title>

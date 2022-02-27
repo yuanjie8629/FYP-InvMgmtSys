@@ -6,10 +6,14 @@ type MenuDatePickerProps = DatePickerProps & {
   label: string;
 };
 
-const MenuDatePicker = ({ label,className, ...props }: MenuDatePickerProps) => (
+const MenuDatePicker = ({
+  label,
+  className,
+  ...props
+}: MenuDatePickerProps) => (
   <Row align='middle' justify='space-between'>
     <Col span={20}>{label}</Col>
-    <Col className='centerFlex'>
+    <Col className='center-flex'>
       <MdChevronRight size={20} className='color-grey' />
     </Col>
     <DatePicker
@@ -17,7 +21,9 @@ const MenuDatePicker = ({ label,className, ...props }: MenuDatePickerProps) => (
       allowClear={false}
       inputReadOnly
       style={{ height: 0, width: 0, padding: 0 }}
-      className={`menu-date-picker${className !== undefined ? ` ${className}` : ''}`}
+      className={`menu-date-picker${
+        className !== undefined ? ` ${className}` : ''
+      }`}
       {...props}
     />
   </Row>

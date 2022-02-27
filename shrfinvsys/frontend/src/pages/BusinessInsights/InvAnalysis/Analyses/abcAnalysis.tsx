@@ -143,7 +143,7 @@ const abcColumns: {
     fixed: 'right',
     render: (grade: 'a' | 'b' | 'c') => {
       return (
-        <div className='centerFlex'>
+        <div className='center-flex'>
           {grade === 'a' ? (
             <GradeA {...tableGradeProps} />
           ) : grade === 'b' ? (

@@ -108,23 +108,23 @@ DATABASES = {
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        "NAME": "invsys.administrator.validators.NumberValidator",
+        "NAME": "administrator.validators.MaximumLengthValidator",
+        "OPTIONS": {"max_length": 16},
+    },
+    {"NAME": "administrator.validators.NumberValidator", "OPTIONS": {"min_digits": 1}},
+    {
+        "NAME": "administrator.validators.UppercaseValidator",
     },
     {
-        "NAME": "invsys.administrator.validators.UppercaseValidator",
+        "NAME": "administrator.validators.LowercaseValidator",
     },
     {
-        "NAME": "invsys.administrator.validators.LowercaseValidator",
-    },
-    {
-        "NAME": "invsys.administrator.validators.SymbolValidator",
+        "NAME": "administrator.validators.SymbolValidator",
     },
 ]
 
@@ -197,7 +197,7 @@ SIMPLE_JWT = {
 }
 
 # Axes Configuration
-AXES_COOLOFF_TIME = timedelta(minutes=30)
+AXES_COOLOFF_TIME = timedelta(hours=1)
 AXES_FAILURE_LIMIT = 5
 AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
 

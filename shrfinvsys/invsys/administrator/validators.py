@@ -1,7 +1,27 @@
 import re
-
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
+
+
+class MaximumLengthValidator(object):
+    def __init__(self, max_length=12):
+        self.max_length = max_length
+
+    def validate(self, password, user=None):
+        if len(password) > self.max_length:
+            raise ValidationError(
+                _(
+                    "This password is too long. It must contain at most %(max_length)d characters."
+                ),
+                code="password_max_length",
+                params={"max_length": self.max_length},
+            )
+
+    def get_help_text(self):
+        return _(
+            "This password is too long. It must contain at most %(max_length)d characters."
+            % {"max_length": self.max_length}
+        )
 
 
 class NumberValidator(object):

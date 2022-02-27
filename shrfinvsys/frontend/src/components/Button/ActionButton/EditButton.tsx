@@ -5,7 +5,7 @@ const EditButton = ({ children = 'Edit', ...props }: ButtonProps) => {
   return (
     <Button
       icon={<HiPencilAlt size={16} style={{ marginRight: 3 }} />}
-      className='centerFlex'
+      className='center-flex'
       {...props}
     >
       {children}

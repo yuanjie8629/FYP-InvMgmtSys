@@ -6,7 +6,7 @@ const DeleteButton = ({ children = 'Delete', ...props }: ButtonProps) => {
     <Button
       color='error'
       icon={<HiTrash size={16} style={{ marginRight: 3 }} />}
-      className='centerFlex'
+      className='center-flex'
       {...props}
     >
       {children}

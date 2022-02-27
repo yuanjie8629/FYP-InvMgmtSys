@@ -6,7 +6,7 @@ const HideButton = ({ children = 'Hide', ...props }: ButtonProps) => {
     <Button
       color='grey'
       icon={<HiEyeOff size={16} style={{ marginRight: 4 }} />}
-      className='centerFlex'
+      className='center-flex'
       {...props}
     >
       {children}

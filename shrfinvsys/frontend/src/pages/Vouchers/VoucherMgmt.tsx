@@ -13,7 +13,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { MdAllInclusive, MdSync } from 'react-icons/md';
 import { moneyFormatter, percentFormatter } from '@utils/numUtils';
-import { sortByOrder } from '@utils/sortUtils';
+import { sortByOrder } from '@utils/arrayUtils';
 import {
   ActivateButton,
   DeleteButton,
@@ -55,9 +55,7 @@ const VoucherMgmt = () => {
 
   const hideBtn = (props: any) => <HideButton type='primary' color='grey' />;
 
-  const deleteBtn = (props: any) => (
-    <DeleteButton type='primary' />
-  );
+  const deleteBtn = (props: any) => <DeleteButton type='primary' />;
 
   const onSelectBtn: InformativeTableButtonProps = [
     {
