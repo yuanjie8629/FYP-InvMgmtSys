@@ -72,7 +72,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            os.path.join(BASE_DIR.parent, "frontend/build"),
+            os.path.join(BASE_DIR, "frontend/build"),
             os.path.join(BASE_DIR, "templates"),
         ],
         "APP_DIRS": True,
@@ -153,7 +153,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR.parent, "frontend/build/static")]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "frontend/build/static")]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
