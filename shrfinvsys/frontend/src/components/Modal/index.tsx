@@ -1,3 +1,3 @@
 import ActionModal from './ActionModal';
-
-export { ActionModal };
+import AuthModal from './AuthModal';
+export { ActionModal, AuthModal };

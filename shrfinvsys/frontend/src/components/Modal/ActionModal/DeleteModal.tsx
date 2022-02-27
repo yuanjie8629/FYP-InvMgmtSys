@@ -5,7 +5,7 @@ import { Typography } from 'antd';
 import { ActionModalContentProps } from '.';
 
 const DeleteModal = memo(
-  ({ multi, recordType, ...props }: ActionModalContentProps, ref) => {
+  ({ multi, recordType, ...props }: ActionModalContentProps, _ref) => {
     const { Text } = Typography;
 
     return (

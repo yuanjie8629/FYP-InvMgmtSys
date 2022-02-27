@@ -44,8 +44,10 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
+    "django_rest_passwordreset",
     "django_filters",
     "corsheaders",
+    "axes",
     "administrator",
     "core",
 ]
@@ -60,6 +62,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "axes.middleware.AxesMiddleware",
 ]
 
 ROOT_URLCONF = "invsys.urls"
@@ -67,7 +70,10 @@ ROOT_URLCONF = "invsys.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR.parent, "frontend/build")],
+        "DIRS": [
+            os.path.join(BASE_DIR.parent, "frontend/build"),
+            os.path.join(BASE_DIR, "templates"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -103,19 +109,31 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "invsys.administrator.validators.NumberValidator",
+    },
+    {
+        "NAME": "invsys.administrator.validators.UppercaseValidator",
+    },
+    {
+        "NAME": "invsys.administrator.validators.LowercaseValidator",
+    },
+    {
+        "NAME": "invsys.administrator.validators.SymbolValidator",
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
+    "axes.backends.AxesBackend",
+    # Django ModelBackend is the default authentication backend.
+    "django.contrib.auth.backends.ModelBackend",
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
@@ -148,11 +166,12 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "EXCEPTION_HANDLER": "core.utils.exception_delete_cookie_handler",
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=15),
-    "REFRESH_TOKEN_LIFETIME": timedelta(seconds=60),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(hours=2),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": False,
@@ -177,21 +196,30 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
 
+# Axes Configuration
+AXES_COOLOFF_TIME = timedelta(minutes=30)
+AXES_FAILURE_LIMIT = 5
+AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
+
+
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "http://127.0.0.1:3000"]
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
 
-EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
-
-SENDGRID_API_KEY = (
-    "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"
-)
-
-SENDGRID_SANDBOX_MODE_IN_DEBUG = False
-
 ALLOWED_HOSTS = ["*"]
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = "yuanjie8629@gmail.com"
+EMAIL_HOST_PASSWORD = "iyhugqtqypasckns"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "default from email"
+
+# Password Reset Configuration
+DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())

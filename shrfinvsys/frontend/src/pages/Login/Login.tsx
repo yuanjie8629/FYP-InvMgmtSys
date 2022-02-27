@@ -9,6 +9,7 @@ import Logo from '@assets/logo.webp';
 import { Helmet } from 'react-helmet';
 import { BoldTitle } from '@/components/Title';
 import { loginAPI } from '@/api/services/authAPI';
+import AuthModal from '@/components/Modal/AuthModal';
 
 const Login = () => {
   const { Text } = Typography;
@@ -52,7 +53,6 @@ const Login = () => {
       showIcon
     />
   );
-
   return (
     <div className='login'>
       <Helmet>
@@ -138,6 +138,9 @@ const Login = () => {
                         type='link'
                         color='info'
                         className='login-right-align'
+                        onClick={() => {
+                          AuthModal.show('forgotPass');
+                        }}
                       >
                         Forgot Password
                       </Button>
@@ -220,6 +223,7 @@ const Login = () => {
           </Row>
         </Col>
       </Row>
+      <AuthModal />
     </div>
   );
 };
