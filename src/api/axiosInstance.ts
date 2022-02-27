@@ -2,10 +2,11 @@ import { clearStorage } from '@/utils/storageUtils';
 import oriAxios from 'axios';
 import Cookies from 'js-cookie';
 import { refreshTknAPI } from './services/authAPI';
-const baseURL = 'http://127.0.0.1:8000/api/';
+const localBaseURL = 'http://127.0.0.1:8000/api/';
+const serverBaseURL = 'https://fyp-shrf.herokuapp.com/api/';
 
 const axios = oriAxios.create({
-  baseURL: baseURL,
+  baseURL: process.env.NODE_ENV === 'production' ? localBaseURL : serverBaseURL,
   timeout: 10000,
   headers: {
     Authorization: Cookies.get('access_token')
