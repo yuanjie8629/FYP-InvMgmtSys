@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-gunicorn = "==20.1.0"
 aniso8601 = "==7.0.0"
 asgiref = "==3.5.0"
 astroid = "==2.9.3"
@@ -24,6 +23,7 @@ django-sendgrid-v5 = "==1.2.0"
 djangorestframework = "==3.13.1"
 djangorestframework-simplejwt = "==5.0.0"
 filelock = "==3.4.2"
+gunicorn = "==20.1.0"
 isort = "==5.10.1"
 lazy-object-proxy = "==1.7.1"
 mccabe = "==0.6.1"
@@ -48,11 +48,9 @@ tzdata = "==2021.5"
 virtualenv = "==20.13.1"
 virtualenv-clone = "==0.5.7"
 whitenoise = "==6.0.0"
-wrapt = "==1.13.3"
 Django = "==4.0.2"
 PyJWT = "==2.3.0"
 Rx = "==1.6.1"
-setuptools = "*"
 
 [dev-packages]
 

@@ -45,4 +45,3 @@ tzdata==2021.5
 virtualenv==20.13.1
 virtualenv-clone==0.5.7
 whitenoise==6.0.0
-wrapt==1.13.3
