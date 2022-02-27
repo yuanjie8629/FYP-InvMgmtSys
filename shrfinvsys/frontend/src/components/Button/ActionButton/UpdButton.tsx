@@ -5,7 +5,7 @@ const UpdButton = ({ children = 'Update', ...props }: ButtonProps) => {
   return (
     <Button
       icon={<MdUpdate size={16} style={{ marginRight: 4 }} />}
-      className='centerFlex'
+      className='center-flex'
       {...props}
     >
       {children}

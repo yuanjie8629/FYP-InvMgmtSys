@@ -70,7 +70,7 @@ const Dashboard = () => {
       type='link'
       color='info'
       onClick={() => navigate(findRoutePath(route))}
-      className='dashboard-more-btn centerFlex'
+      className='dashboard-more-btn center-flex'
     >
       More
       <MdChevronRight size={23} style={{ position: 'relative', right: 3 }} />
@@ -273,7 +273,7 @@ const Dashboard = () => {
         <Row style={{ paddingTop: 15 }}>
           <Suspense
             fallback={
-              <div className='centerFlex full-height full-width'>
+              <div className='center-flex full-height full-width'>
                 <Spin
                   indicator={<LoadingOutlined style={{ fontSize: 30 }} spin />}
                 />

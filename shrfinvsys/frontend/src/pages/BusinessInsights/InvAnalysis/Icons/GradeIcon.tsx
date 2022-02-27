@@ -30,7 +30,7 @@ const GradeIcon = ({
         userSelect: 'none',
         ...style,
       }}
-      className={`centerFlex${
+      className={`center-flex${
         className !== undefined ? ` ${className}` : ' bg-primary'
       }`}
       strong

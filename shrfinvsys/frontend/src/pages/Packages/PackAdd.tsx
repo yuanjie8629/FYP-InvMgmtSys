@@ -125,7 +125,7 @@ const PackAdd = () => {
   return (
     <Form name='packForm' layout='vertical' size='small'>
       <Layout>
-        <Col xs={16} xl={19} className='centerFlex'>
+        <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>

@@ -56,7 +56,7 @@ const Content = memo(
               />
             }
             className={classNames(
-              'centerFlex',
+              'center-flex',
               { 'bg-red-200': color === 'error' },
               { 'bg-blue-200': color === 'info' },
               { 'bg-yellow-200': color === 'warning' },

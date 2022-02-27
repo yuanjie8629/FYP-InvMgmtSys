@@ -9,7 +9,7 @@ const BulkEditButton = ({
     <Button
       type='primary'
       icon={<BulkEditIcon style={{ marginRight: 5 }} fill='white' />}
-      className='centerFlex'
+      className='center-flex'
       {...props}
     >
       {children}

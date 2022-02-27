@@ -47,7 +47,7 @@ const ColorCard = ({
             </Col>
             <Col
               style={{ position: 'absolute', right: 10 }}
-              className='centerFlex'
+              className='center-flex'
             >
               {indicator === 'true' ? (
                 <HiCheckCircle size={20} className='color-primary' />

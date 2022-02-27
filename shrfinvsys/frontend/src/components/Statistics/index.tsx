@@ -30,7 +30,7 @@ const Statistics = ({
           <Avatar
             icon={<props.icon size={avatarSize * 0.6} color={props.color} />}
             size={avatarSize}
-            className='centerFlex'
+            className='center-flex'
             style={{ backgroundColor: `${props.color}33` }} //background opacity = 20%
           />
         </Col>

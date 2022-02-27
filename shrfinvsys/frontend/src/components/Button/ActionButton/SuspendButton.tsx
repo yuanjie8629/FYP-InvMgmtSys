@@ -6,7 +6,7 @@ const SuspendButton = ({ children = 'Suspend', ...props }: ButtonProps) => {
     <Button
       color='error'
       icon={<HiPause size={16} style={{ marginRight: 3 }} />}
-      className='centerFlex'
+      className='center-flex'
       {...props}
     >
       {children}

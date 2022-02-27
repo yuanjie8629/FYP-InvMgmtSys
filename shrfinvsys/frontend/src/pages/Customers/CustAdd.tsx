@@ -19,7 +19,7 @@ import {
 import { MaskedInput } from 'antd-mask-input';
 import profilePic from '@assets/avatar.png';
 import { getStates, getCities, getPostcodes } from 'malaysia-postcodes';
-import { sortByOrder } from '@utils/sortUtils';
+import { sortByOrder } from '@utils/arrayUtils';
 import {
   custPositionCat,
   custStatusCat,
@@ -70,7 +70,7 @@ const CustAdd = () => {
   return (
     <Form name='custForm' layout='vertical' size='small' form={custForm}>
       <Layout>
-        <Col xs={16} xl={19} className='centerFlex'>
+        <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>

@@ -123,7 +123,7 @@ const hmlColumns: {
     fixed: 'right',
     render: (grade: 'h' | 'm' | 'l') => {
       return (
-        <div className='centerFlex'>
+        <div className='center-flex'>
           {grade === 'h' ? (
             <GradeH {...tableGradeProps} />
           ) : grade === 'm' ? (

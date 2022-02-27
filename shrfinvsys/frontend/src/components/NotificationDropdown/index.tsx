@@ -80,7 +80,7 @@ const NotificationDropdown = () => {
                       <Avatar
                         icon={<Icon size={24} />}
                         size={42}
-                        className={`centerFlex ${menu.status}Background`}
+                        className={`center-flex ${menu.status}Background`}
                       />
                     </Badge>
                   </Col>

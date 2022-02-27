@@ -340,7 +340,7 @@ const BusinessStatistics = () => {
             <Suspense
               fallback={
                 <div
-                  className='centerFlex'
+                  className='center-flex'
                   style={{ width: 1176, height: 400 }}
                 >
                   <Spin

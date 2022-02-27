@@ -26,7 +26,7 @@ const CollapseCard = ({
           header={
             <Row align='middle' gutter={10}>
               {prefixIcon !== undefined ? (
-                <Col className='centerFlex'>{prefixIcon}</Col>
+                <Col className='center-flex'>{prefixIcon}</Col>
               ) : null}
               <Col>
                 <Text style={{ fontWeight: 500 }} className='text-lg'>
@@ -34,7 +34,7 @@ const CollapseCard = ({
                 </Text>
               </Col>
               {suffixIcon !== undefined ? (
-                <Col className='centerFlex'> {suffixIcon}</Col>
+                <Col className='center-flex'> {suffixIcon}</Col>
               ) : null}
             </Row>
           }

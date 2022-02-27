@@ -364,7 +364,7 @@ const DropdownDate = ({
           <Button
             type='text'
             style={{ background: 'none' }}
-            className='centerFlex'
+            className='center-flex'
             icon={<MdChevronLeft size={25} />}
             onClick={subtractDate}
             hidden={hideNxtPrevBtn}
@@ -380,7 +380,7 @@ const DropdownDate = ({
               type='text'
               icon={<HiOutlineCalendar size={20} style={{ marginRight: 5 }} />}
               style={{ background: 'none' }}
-              className='centerFlex'
+              className='center-flex'
               onBlur={() => {
                 if (dropdownOnBlur === true) {
                   setDropdownVisible(false);
@@ -402,7 +402,7 @@ const DropdownDate = ({
           <Button
             type='text'
             style={{ background: 'none' }}
-            className='centerFlex'
+            className='center-flex'
             icon={<MdChevronRight size={25} />}
             onClick={addDate}
             disabled={disableNext}

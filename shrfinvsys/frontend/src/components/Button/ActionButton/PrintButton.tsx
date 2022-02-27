@@ -5,7 +5,7 @@ const PrintButton = ({ children = 'Invoice', ...props }: ButtonProps) => {
   return (
     <Button
       icon={<HiPrinter size={16} style={{ marginRight: 4 }} />}
-      className='centerFlex'
+      className='center-flex'
       {...props}
     >
       {children}

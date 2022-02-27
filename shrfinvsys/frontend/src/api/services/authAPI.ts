@@ -9,10 +9,7 @@ interface LoginDetailsProps {
 
 export const loginAPI = (loginDetails: LoginDetailsProps) => {
   return axios
-    .post(`login/`, {
-      username: loginDetails.username,
-      password: loginDetails.password,
-    })
+    .post(`login/`, loginDetails)
     .then((res) => {
       axios.defaults.headers['Authorization'] = `JWT ${Cookies.get(
         'access_token'
@@ -55,5 +52,24 @@ export const forgotPassAPI = (email: string) =>
     .post('password_reset/', {
       email: email,
     })
+    .then((res) => Promise.resolve(res))
+    .catch((err) => Promise.reject(err));
+
+export const validateForgotPassTknAPI = (token: string) =>
+  axios
+    .post('password_reset/validate_token/', {
+      token: token,
+    })
+    .then((res) => Promise.resolve(res))
+    .catch((err) => Promise.reject(err));
+
+interface ResetPassProps {
+  token: string;
+  password: string;
+}
+
+export const resetPassAPI = (resetPassDetails: ResetPassProps) =>
+  axios
+    .post('password_reset/confirm/', resetPassDetails)
     .then((res) => Promise.resolve(res))
     .catch((err) => Promise.reject(err));
