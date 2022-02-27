@@ -23,7 +23,6 @@ isort==5.10.1
 lazy-object-proxy==1.7.1
 mccabe==0.6.1
 mypy-extensions==0.4.3
-mysqlclient==2.1.0
 pathspec==0.9.0
 pipenv==2022.1.8
 platformdirs==2.5.0
