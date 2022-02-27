@@ -6,7 +6,7 @@ const localBaseURL = 'http://127.0.0.1:8000/api/';
 const serverBaseURL = 'https://fyp-shrf.herokuapp.com/api/';
 
 const axios = oriAxios.create({
-  baseURL: process.env.NODE_ENV === 'production' ? localBaseURL : serverBaseURL,
+  baseURL: process.env.NODE_ENV === 'production' ? serverBaseURL : localBaseURL,
   timeout: 10000,
   headers: {
     Authorization: Cookies.get('access_token')
