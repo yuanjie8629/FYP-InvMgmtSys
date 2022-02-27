@@ -48,10 +48,10 @@
     "yarn-audit-fix": "^7.1.3"
   },
   "scripts": {
-    "start": "craco --openssl-legacy-provider start",
-    "build": "craco --openssl-legacy-provider build && ncp build/favicon.ico build/static/favicon.ico",
-    "test": "craco --openssl-legacy-provider test",
-    "eject": "craco --openssl-legacy-provider eject"
+    "start": "craco start",
+    "build": "craco build && ncp build/favicon.ico build/static/favicon.ico",
+    "test": "craco test",
+    "eject": "craco eject"
   },
   "eslintConfig": {
     "extends": "react-app"
