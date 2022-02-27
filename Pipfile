@@ -52,6 +52,7 @@ wrapt = "==1.13.3"
 Django = "==4.0.2"
 PyJWT = "==2.3.0"
 Rx = "==1.6.1"
+setuptools = "*"
 
 [dev-packages]
 
