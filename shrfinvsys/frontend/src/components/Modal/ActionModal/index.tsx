@@ -41,7 +41,7 @@ type ActionModalReturnProps = React.FC<Partial<ActionModalProps>> & {
   ) => void;
 };
 
-const Modal: ActionModalReturnProps = memo(
+const ActionModal: ActionModalReturnProps = memo(
   (
     {
       recordType = 'record',
@@ -60,14 +60,14 @@ const Modal: ActionModalReturnProps = memo(
     const payloadRef = useRef<ActionModalPayload>({});
 
     useEffect(() => {
-      Modal.show = (
+      ActionModal.show = (
         type: ActionModalType,
-        { multiItem = false, ...ActionModalPayload }: ActionModalPayload
+        { multiItem = false, ...payload }: ActionModalPayload
       ) => {
         setVisible(true);
         setModalType(type);
         multiItem ? setMultiItem(true) : setMultiItem(false);
-        payloadRef.current = ActionModalPayload;
+        payloadRef.current = payload;
       };
     }, []);
 
@@ -119,4 +119,4 @@ const Modal: ActionModalReturnProps = memo(
   }
 );
 
-export default Modal;
+export default ActionModal;

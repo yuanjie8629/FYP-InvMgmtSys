@@ -18,7 +18,7 @@ from django.urls import include, path, re_path
 from core.views import index
 
 urlpatterns = [
-    re_path("admin_django", admin.site.urls),
+    re_path("admin_django/", admin.site.urls),
     path("api/", include("core.urls")),
     re_path("", index),
 ]

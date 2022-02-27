@@ -1,4 +1,4 @@
-import { clearStorage, setUsr } from '@/utils/storageUtils';
+import { clearStorage, setExp } from '@/utils/storageUtils';
 import Cookies from 'js-cookie';
 import axios from '../axiosInstance';
 
@@ -17,7 +17,7 @@ export const loginAPI = (loginDetails: LoginDetailsProps) => {
       axios.defaults.headers['Authorization'] = `JWT ${Cookies.get(
         'access_token'
       )}`;
-      setUsr(res.data);
+      setExp(res.data.exp);
       window.location.href = '';
       return Promise.resolve(res);
     })
@@ -37,14 +37,23 @@ export const refreshTknAPI = () =>
   axios
     .post('token/refresh/')
     .then((res) => {
-      setUsr(res.data);
-      axios.defaults.headers['Authorization'] = 'JWT ' + res.data.access;
+      setExp(res.data.exp);
+      axios.defaults.headers['Authorization'] = `JWT ${Cookies.get(
+        'access_token'
+      )}`;
       return Promise.resolve(res);
     })
     .catch((err) => {
       delete axios.defaults.headers['Authorization'];
       Cookies.remove('access_token');
       clearStorage();
-      window.location.href = '';
       return Promise.reject(err);
     });
+
+export const forgotPassAPI = (email: string) =>
+  axios
+    .post('password_reset/', {
+      email: email,
+    })
+    .then((res) => Promise.resolve(res))
+    .catch((err) => Promise.reject(err));

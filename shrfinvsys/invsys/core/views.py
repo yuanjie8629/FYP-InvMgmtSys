@@ -1,6 +1,7 @@
 from os import stat
 from django.conf import settings
 from django.shortcuts import render
+from django.middleware import csrf
 from rest_framework import status
 from rest_framework import permissions
 from rest_framework.response import Response
@@ -47,7 +48,6 @@ class CookieTokenObtainPairView(TokenObtainPairView):
                 httponly=False,
             )
             del response.data["access"]
-
         if response.data.get("refresh"):
             cookie_max_age = 3600 * 24  # 1 day
             response.set_cookie(
@@ -63,13 +63,10 @@ class CookieTokenObtainPairView(TokenObtainPairView):
             )
             del response.data["refresh"]
 
-            admin_info = {
-                "id": refresh["user_id"],
-                "name": refresh["name"],
-                "role": refresh["role"],
+            response.data = {
                 "exp": refresh["exp"],
             }
-            response.data = admin_info
+            csrf.get_token(request)
         return super().finalize_response(request, response, *args, **kwargs)
 
     serializer_class = CookieTokenObtainPairSerializer
@@ -136,8 +133,8 @@ class BlacklistToken(APIView):
         token = RefreshToken(refresh_token)
         token.blacklist()
         response = Response(status=status.HTTP_205_RESET_CONTENT)
+        response.delete_cookie("access_token")
         response.delete_cookie("refresh_token")
-
         return response
 
 

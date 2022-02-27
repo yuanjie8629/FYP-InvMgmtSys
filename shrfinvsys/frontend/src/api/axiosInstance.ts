@@ -46,7 +46,10 @@ axios.interceptors.response.use(
     ) {
       return refreshTknAPI()
         .then((res) => {
-          originalRequest.headers['Authorization'] = 'JWT ' + res.data.access;
+          console.log(res.data);
+          originalRequest.headers['Authorization'] = `JWT ${Cookies.get(
+            'access_token'
+          )}`;
           return axios(originalRequest);
         })
         .catch((err) => Promise.reject(err));
