@@ -7,6 +7,11 @@ export const findRoutePath = (label: string) => {
   return route?.path === undefined ? '404' : route.path;
 };
 
+export const findRouteLabel = (path: string) => {
+  let route = routeList.find((route) => route.path === path);
+  return route?.label === undefined ? '404' : route.label;
+};
+
 export const findIcon = (cat: string) => {
   let selected = siderMenuList.map((siderMenuLevel) =>
     siderMenuLevel.items.find((item) => item.key === cat)

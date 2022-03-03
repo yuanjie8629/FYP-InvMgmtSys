@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import DescriptionList, {
   DescriptionListDataProps,
   TitleTextProps,
-} from '@/components/List/DescriptionList';
+} from '@components/List/DescriptionList';
 
 export interface ActionContentProps {
   label: string;

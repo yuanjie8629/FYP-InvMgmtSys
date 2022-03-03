@@ -6,14 +6,14 @@ import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import InformativeTable from '@components/Table/InformativeTable';
 import DescriptionList from '@components/List/DescriptionList';
-import AnalysisCard from '@/components/Card/AnalysisCard';
-import CollapseCard from '@/components/Card/CollapseCard';
-import { getDt } from '@/utils/dateUtils';
+import AnalysisCard from '@components/Card/AnalysisCard';
+import CollapseCard from '@components/Card/CollapseCard';
+import { getDt } from '@utils/dateUtils';
 import FilterInputs from './FilterInputs';
 import { abcAnalysis, eoqAnalysis, hmlAnalysis, ssAnalysis } from './Analyses';
 import './InvAnalysis.less';
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
-import { BoldTitle } from '@/components/Title';
+import { BoldTitle } from '@components/Title';
 
 const InvAnalysis = () => {
   const { Text } = Typography;

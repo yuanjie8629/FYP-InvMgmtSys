@@ -15,11 +15,11 @@ import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
 import orderTabList from './orderTabList';
 import { orderStatList } from '@utils/optionUtils';
-import { BulkEditButton, PrintButton } from '@/components/Button/ActionButton';
-import UpdButton from '@/components/Button/ActionButton/UpdButton';
-import StatusTag from '@/components/Tag/StatusTag';
-import Popover from '@/components/Popover';
-import { BoldTitle } from '@/components/Title';
+import { BulkEditButton, PrintButton } from '@components/Button/ActionButton';
+import UpdButton from '@components/Button/ActionButton/UpdButton';
+import StatusTag from '@components/Tag/StatusTag';
+import Popover from '@components/Popover';
+import { BoldTitle } from '@components/Title';
 
 const OrderMgmt = () => {
   const { Text } = Typography;
@@ -32,8 +32,8 @@ const OrderMgmt = () => {
     () =>
       setOrderListFltr(
         orderList.filter((order) =>
-          searchParams.get('stat') !== null
-            ? order.orderStat === searchParams.get('stat')
+          searchParams.get('status') !== null
+            ? order.orderStat === searchParams.get('status')
             : true
         )
       ),
@@ -188,10 +188,12 @@ const OrderMgmt = () => {
         <MainCard
           tabList={orderTabList}
           activeTabKey={
-            searchParams.get('stat') === null ? 'all' : searchParams.get('stat')
+            searchParams.get('status') === null
+              ? 'all'
+              : searchParams.get('status')
           }
           onTabChange={(key) => {
-            setSearchParams(key !== 'all' ? { stat: key } : {});
+            setSearchParams(key !== 'all' ? { status: key } : {});
           }}
         >
           <FilterInputs />

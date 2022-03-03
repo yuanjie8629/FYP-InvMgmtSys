@@ -20,5 +20,6 @@ from core.views import index
 urlpatterns = [
     re_path("admin_django/", admin.site.urls),
     path("api/", include("core.urls")),
+    path("__debug__/", include("debug_toolbar.urls")),
     re_path("", index),
 ]

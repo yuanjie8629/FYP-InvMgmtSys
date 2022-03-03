@@ -15,9 +15,3 @@ class AdminSerializer(serializers.ModelSerializer):
             "birthdate",
             "gender",
         )
-
-
-class LoginAdminSerializer(serializers.ModelSerializer):
-    class Meta:
-        model: Admin
-        fields = ("username", "password")

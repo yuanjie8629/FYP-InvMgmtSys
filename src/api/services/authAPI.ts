@@ -1,4 +1,4 @@
-import { clearStorage, setExp } from '@/utils/storageUtils';
+import { clearStorage, setExp } from '@utils/storageUtils';
 import Cookies from 'js-cookie';
 import axios from '../axiosInstance';
 

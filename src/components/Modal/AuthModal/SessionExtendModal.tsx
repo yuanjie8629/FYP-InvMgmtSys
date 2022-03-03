@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Modal, ModalProps, Row, Space, Typography } from 'antd';
 import moment from 'moment';
-import { logoutAPI, refreshTknAPI } from '@/api/services/authAPI';
-import Button from '@/components/Button';
+import { logoutAPI, refreshTknAPI } from '@api/services/authAPI';
+import Button from '@components/Button';
 import { useTimer } from 'react-timer-hook';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { findRoutePath } from '@/utils/routingUtils';
-import { getSessionExp } from '@/utils/storageUtils';
+import { findRoutePath } from '@utils/routingUtils';
+import { getSessionExp } from '@utils/storageUtils';
 import { useIdleTimer } from 'react-idle-timer';
 import { MdAccessTimeFilled } from 'react-icons/md';
 
@@ -20,7 +20,7 @@ const SessionExtendModal = ({ visible, ...props }: SessionExtendModalProps) => {
   const [loading, setLoading] = useState(false);
 
   const idleTimer = useIdleTimer({
-    timeout: 30000,
+    timeout: 1000,
   });
 
   const timer = useTimer({

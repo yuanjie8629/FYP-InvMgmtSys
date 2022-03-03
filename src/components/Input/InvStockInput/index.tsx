@@ -8,7 +8,7 @@ import {
   Row,
   Space,
 } from 'antd';
-import { invInputOptions } from '@/utils/optionUtils';
+import { invInputOptions } from '@utils/optionUtils';
 
 export interface InvStockInputProps extends InputNumberProps {
   input: number;

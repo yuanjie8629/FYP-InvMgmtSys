@@ -1,4 +1,4 @@
-import DatePickerWithLabel from '@/components/Input/DatePickerWithLabel';
+import DatePickerWithLabel from '@components/Input/DatePickerWithLabel';
 import FilterInputCol from '@components/Container/FilterInputCol';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';

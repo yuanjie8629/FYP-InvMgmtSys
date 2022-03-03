@@ -1,7 +1,7 @@
 import {
   DescriptionListDataProps,
   TitleTextProps,
-} from '@/components/List/DescriptionList';
+} from '@components/List/DescriptionList';
 import { Modal as AntdModal, ModalProps } from 'antd';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import DeleteModal from './DeleteModal';

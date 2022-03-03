@@ -3,11 +3,11 @@ const siderDefKeyList: {
   key: string;
 }[] = [
   {
-    path: '/order/management?stat=toShip',
+    path: '/order/management?status=toShip',
     key: 'orderPend',
   },
   {
-    path: '/order/management?stat=cancel',
+    path: '/order/management?status=cancel',
     key: 'orderCancel',
   },
 ];

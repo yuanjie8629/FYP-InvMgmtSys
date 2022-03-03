@@ -88,6 +88,16 @@ class CookieTokenRefreshView(TokenRefreshView):
     permission_classes = [permissions.AllowAny]
 
     def finalize_response(self, request, response, *args, **kwargs):
+
+        if response.status_code in [
+            status.HTTP_401_UNAUTHORIZED,
+            status.HTTP_403_FORBIDDEN,
+        ]:
+            response.delete_cookie("refresh_token")
+            response.delete_cookie("access_token")
+            response.delete_cookie("csrftoken")
+            return super().finalize_response(request, response, *args, **kwargs)
+
         if response.data.get("access"):
             cookie_max_age = 900  # 15 minutes
             response.set_cookie(
@@ -96,6 +106,7 @@ class CookieTokenRefreshView(TokenRefreshView):
                 max_age=cookie_max_age,
                 httponly=False,
             )
+
             del response.data["access"]
 
         if response.data.get("refresh"):
@@ -113,13 +124,7 @@ class CookieTokenRefreshView(TokenRefreshView):
             )
             del response.data["refresh"]
 
-            admin_info = {
-                "id": refresh["user_id"],
-                "name": refresh["name"],
-                "role": refresh["role"],
-                "exp": refresh["exp"],
-            }
-            response.data = admin_info
+            response.data = {"exp": refresh["exp"]}
         return super().finalize_response(request, response, *args, **kwargs)
 
     serializer_class = CookieTokenRefreshSerializer
@@ -135,6 +140,7 @@ class BlacklistToken(APIView):
         response = Response(status=status.HTTP_205_RESET_CONTENT)
         response.delete_cookie("access_token")
         response.delete_cookie("refresh_token")
+        response.delete_cookie("csrftoken")
         return response
 
 

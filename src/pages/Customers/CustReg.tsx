@@ -11,8 +11,8 @@ import InformativeTable, {
 import custRegList from './custRegList';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
-import { AcceptButton, RejectButton } from '@/components/Button/ActionButton';
-import { BoldTitle } from '@/components/Title';
+import { AcceptButton, RejectButton } from '@components/Button/ActionButton';
+import { BoldTitle } from '@components/Title';
 
 const CustReg = () => {
   const { Text } = Typography;
@@ -25,8 +25,8 @@ const CustReg = () => {
     () =>
       setCustListFltr(
         custRegList.filter((cust) =>
-          searchParams.get('stat') !== null
-            ? cust.custType === searchParams.get('stat')
+          searchParams.get('status') !== null
+            ? cust.custType === searchParams.get('status')
             : true
         )
       ),
@@ -40,9 +40,7 @@ const CustReg = () => {
 
   const acceptBtn = (props: any) => <AcceptButton type='primary' />;
 
-  const rejectBtn = (props: any) => (
-    <RejectButton type='primary' />
-  );
+  const rejectBtn = (props: any) => <RejectButton type='primary' />;
 
   const onSelectBtn: InformativeTableButtonProps = [
     {
@@ -133,7 +131,7 @@ const CustReg = () => {
       render: () => (
         <Space direction='vertical' size={5}>
           <AcceptButton type='link' />
-          <RejectButton type='link'/>
+          <RejectButton type='link' />
         </Space>
       ),
     },
@@ -145,10 +143,12 @@ const CustReg = () => {
         <MainCard
           tabList={custTabList}
           activeTabKey={
-            searchParams.get('stat') === null ? 'all' : searchParams.get('stat')
+            searchParams.get('status') === null
+              ? 'all'
+              : searchParams.get('status')
           }
           onTabChange={(key) => {
-            setSearchParams(key !== 'all' ? { stat: key } : {});
+            setSearchParams(key !== 'all' ? { status: key } : {});
           }}
         >
           <FilterInputs />

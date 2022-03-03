@@ -16,7 +16,7 @@ import {
   validateDropdownDate,
   getMomentPrevDt,
 } from '@utils/dateUtils';
-import Popover from '@/components/Popover';
+import Popover from '@components/Popover';
 
 export interface DateInfo {
   date: string;

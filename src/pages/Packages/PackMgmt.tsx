@@ -19,9 +19,9 @@ import {
   DeleteButton,
   EditButton,
   HideButton,
-} from '@/components/Button/ActionButton';
-import StatusTag from '@/components/Tag/StatusTag';
-import { BoldTitle } from '@/components/Title';
+} from '@components/Button/ActionButton';
+import StatusTag from '@components/Tag/StatusTag';
+import { BoldTitle } from '@components/Title';
 
 const PackMgmt = () => {
   const { Text } = Typography;
@@ -34,8 +34,8 @@ const PackMgmt = () => {
     () =>
       setPackageListFltr(
         packageList.filter((pack) =>
-          searchParams.get('stat') !== null
-            ? pack.packStat === searchParams.get('stat')
+          searchParams.get('status') !== null
+            ? pack.packStat === searchParams.get('status')
             : true
         )
       ),
@@ -46,9 +46,7 @@ const PackMgmt = () => {
 
   const hideBtn = (props: any) => <HideButton type='primary' color='grey' />;
 
-  const deleteBtn = (props: any) => (
-    <DeleteButton type='primary' />
-  );
+  const deleteBtn = (props: any) => <DeleteButton type='primary' />;
 
   const onSelectBtn: InformativeTableButtonProps = [
     {
@@ -177,10 +175,12 @@ const PackMgmt = () => {
         <MainCard
           tabList={packTabList}
           activeTabKey={
-            searchParams.get('stat') === null ? 'all' : searchParams.get('stat')
+            searchParams.get('status') === null
+              ? 'all'
+              : searchParams.get('status')
           }
           onTabChange={(key) => {
-            setSearchParams(key !== 'all' ? { stat: key } : {});
+            setSearchParams(key !== 'all' ? { status: key } : {});
           }}
         >
           <FilterInputs />

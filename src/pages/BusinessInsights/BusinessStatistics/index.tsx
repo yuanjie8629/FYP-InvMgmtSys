@@ -17,8 +17,8 @@ import { moneyFormatter, percentFormatter } from '@utils/numUtils';
 import RankingList from '@components/List/RankingList';
 import topProduct from './topProducts';
 import { prodCat } from '@utils/optionUtils';
-import Popover from '@/components/Popover';
-import { BoldTitle } from '@/components/Title';
+import Popover from '@components/Popover';
+import { BoldTitle } from '@components/Title';
 
 const LineChart = lazy(() => import('@components/Chart/LineChart'));
 const CarouselArrow = lazy(() => import('@components/Carousel/CarouselArrow'));

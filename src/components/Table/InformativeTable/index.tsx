@@ -3,6 +3,7 @@ import { Col, Row, Typography, Space } from 'antd';
 import './InformativeTable.less';
 import { ButtonType } from '@components/Button';
 import Table, { TableProps } from '@components/Table';
+import { useSearchParams } from 'react-router-dom';
 
 type InformativeTableButtonProps = {
   element: ButtonType;
@@ -31,9 +32,10 @@ const InformativeTable = ({
   ...props
 }: InformativeTableProps) => {
   const { Text } = Typography;
-  let [selectedRowKeys, setSelectedRowKeys] = useState();
-  let [selectedRowCount, setSelectedRowCount] = useState(0);
-  let [btnShow, setBtnShow] = useState<Array<{ key: string; show: boolean }>>(
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedRowKeys, setSelectedRowKeys] = useState();
+  const [selectedRowCount, setSelectedRowCount] = useState(0);
+  const [btnShow, setBtnShow] = useState<Array<{ key: string; show: boolean }>>(
     []
   );
 
@@ -130,6 +132,23 @@ const InformativeTable = ({
             showQuickJumper: true,
             defaultPageSize: defPg,
             pageSizeOptions: ['5', '10', '15', '20'],
+          }}
+          onChange={(_paginate, _filters, sorter) => {
+            if (sorter !== undefined) {
+              let currSearchParams = {};
+              searchParams.forEach((value, key) => {
+                currSearchParams = {
+                  ...currSearchParams,
+                  [key]: value,
+                };
+              });
+              setSearchParams({
+                ...currSearchParams,
+                order: `${sorter['order'] === 'descend' ? '-' : ''}${
+                  sorter['columnKey']
+                }`,
+              });
+            }
           }}
           {...props}
         />

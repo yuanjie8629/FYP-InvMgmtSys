@@ -5,7 +5,7 @@ import MainCardContainer from '@components/Container/MainCardContainer';
 import { Space, Typography, Grid } from 'antd';
 import { MdEmail, MdLock, MdPerson, MdPhone } from 'react-icons/md';
 import DescriptionList from '@components/List/DescriptionList';
-import { BoldTitle } from '@/components/Title';
+import { BoldTitle } from '@components/Title';
 
 const AccSettings = () => {
   const { Text } = Typography;

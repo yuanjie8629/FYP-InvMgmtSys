@@ -2,9 +2,9 @@ import { Col, Row, Image, Typography, Space } from 'antd';
 import { DescIcon } from '../Icons';
 import NasiBriyaniBukhari from '@assets/Product/NasiBukhari.png';
 import hashtag from '@assets/Login/Hashtag.svg';
-import { EditButton } from '@/components/Button/ActionButton';
+import { EditButton } from '@components/Button/ActionButton';
 import { HiExclamation } from 'react-icons/hi';
-import Popover from '@/components/Popover';
+import Popover from '@components/Popover';
 
 const { Text } = Typography;
 
