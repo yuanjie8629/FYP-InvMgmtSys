@@ -41,14 +41,14 @@ const FilterInputs = (props: FilterInputsProps) => {
             selectBefore={prodInputSelect}
             placeholder='Input'
             selectWidth={150}
-            onSelectCat={(selected) =>
-              selected.value !== null
-                ? setFilter({ [selected.type]: selected.value })
+            onSelectCat={(selected) => {
+              selected.value !== ''
+                ? setFilter({ ...filter, [selected.type]: selected.value })
                 : setFilter(() => {
                     delete filter[selected.type];
                     return filter;
-                  })
-            }
+                  });
+            }}
           ></InputSelect>
         </FilterInputCol>
         <FilterInputCol>
@@ -125,11 +125,15 @@ const FilterInputs = (props: FilterInputsProps) => {
             onClick={() =>
               setSearchParams(
                 searchParams.get('status') !== null
-                  ? { status: searchParams.get('status'), ...filter }
+                  ? {
+                      status: searchParams.get('status'),
+                      limit: searchParams.get('limit'),
+                      offset: searchParams.get('offset'),
+                      ...filter,
+                    }
                   : filter
               )
             }
-            loading={props.loading}
           >
             Search
           </Button>
@@ -137,9 +141,12 @@ const FilterInputs = (props: FilterInputsProps) => {
         <Col>
           <Button
             onClick={() =>
-              setSearchParams({ status: searchParams.get('status') })
+              setSearchParams({
+                status: searchParams.get('status'),
+                limit: searchParams.get('limit'),
+                offset: searchParams.get('offset'),
+              })
             }
-            loading={props.loading}
           >
             Reset
           </Button>

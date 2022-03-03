@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Col, Row, Typography, Space } from 'antd';
+import { Col, Row, Typography, Space, TablePaginationConfig } from 'antd';
 import './InformativeTable.less';
 import { ButtonType } from '@components/Button';
 import Table, { TableProps } from '@components/Table';
@@ -15,7 +15,11 @@ type InformativeTableButtonProps = {
   }[];
 }[];
 
-type InformativeTableProps = TableProps & { defPg?: number } & (
+type InformativeTableProps = TableProps & {
+  defPg?: number;
+  totalRecord?: number;
+  onPageChange?: (paginate: TablePaginationConfig) => void;
+} & (
     | {
         buttons: InformativeTableButtonProps;
         rowSelectable?: never | true;
@@ -29,6 +33,8 @@ const InformativeTable = ({
   buttons,
   rowSelectable = true,
   onSelectChange = () => '',
+  totalRecord,
+  onPageChange = () => '',
   ...props
 }: InformativeTableProps) => {
   const { Text } = Typography;
@@ -115,7 +121,7 @@ const InformativeTable = ({
                 return (
                   btnShow.map(
                     (btnToShow) => btnToShow.key === btn.key && btnToShow.show
-                  )[index] && <Button />
+                  )[index] && <Button key={`table-btn-${index}`} />
                 );
               })}
             </Space>
@@ -124,6 +130,7 @@ const InformativeTable = ({
       )}
       <Row>
         <Table
+          rowKey='item_id'
           rowSelection={rowSelectable && rowSelection}
           pagination={{
             size: 'small',
@@ -132,9 +139,11 @@ const InformativeTable = ({
             showQuickJumper: true,
             defaultPageSize: defPg,
             pageSizeOptions: ['5', '10', '15', '20'],
+            total: totalRecord,
           }}
-          onChange={(_paginate, _filters, sorter) => {
-            if (sorter !== undefined) {
+          onChange={(paginate, _filters, sorter) => {
+            onPageChange(paginate);
+            if (sorter['column'] !== undefined) {
               let currSearchParams = {};
               searchParams.forEach((value, key) => {
                 currSearchParams = {
@@ -148,6 +157,16 @@ const InformativeTable = ({
                   sorter['columnKey']
                 }`,
               });
+            } else {
+              let currSearchParams = {};
+              searchParams.forEach((value, key) => {
+                currSearchParams = {
+                  ...currSearchParams,
+                  [key]: value,
+                };
+              });
+              delete currSearchParams['order'];
+              setSearchParams(currSearchParams);
             }
           }}
           {...props}

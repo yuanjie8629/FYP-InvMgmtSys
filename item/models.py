@@ -21,7 +21,7 @@ class Item(models.Model):
     length = models.DecimalField(max_digits=8, decimal_places=2)
     width = models.DecimalField(max_digits=8, decimal_places=2)
     height = models.DecimalField(max_digits=8, decimal_places=2)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = "item"
@@ -31,7 +31,10 @@ class Item(models.Model):
 
 
 class Product(models.Model):
-    item = models.OneToOneField(Item, on_delete=models.CASCADE, primary_key=True)
+    item = models.OneToOneField(
+        Item, on_delete=models.CASCADE, primary_key=True, related_name="i"
+    )
+
     category = models.CharField(max_length=30, choices=PROD_CAT)
     cost_per_unit = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True

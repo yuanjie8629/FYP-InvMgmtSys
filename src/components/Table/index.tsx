@@ -1,10 +1,7 @@
 import { Table as AntdTable, TableProps as AntdTableProps } from 'antd';
+import { DefaultRecordType } from 'rc-table/lib/interface';
 
-interface RecordType {
-  key: string;
-}
-
-export interface TableProps extends AntdTableProps<RecordType> {}
+export interface TableProps extends AntdTableProps<DefaultRecordType> {}
 
 const Table = ({ className, ...props }: TableProps) => {
   return (

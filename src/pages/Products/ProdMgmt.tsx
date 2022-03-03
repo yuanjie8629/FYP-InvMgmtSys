@@ -3,7 +3,15 @@ import Button from '@components/Button';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
-import { Row, Space, Col, Typography, Image, message } from 'antd';
+import {
+  Row,
+  Space,
+  Col,
+  Typography,
+  Image,
+  message,
+  TablePaginationConfig,
+} from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
@@ -24,6 +32,7 @@ import { BoldTitle } from '@components/Title';
 import { ActionModal } from '@components/Modal';
 import { ActionModalContentProps } from '@components/Modal/ActionModal';
 import { productPrevAPI } from '@api/services/productAPI';
+import { addSearchParams } from '@utils/urlUtls';
 
 const ProdMgmt = () => {
   const { Text } = Typography;
@@ -31,31 +40,40 @@ const ProdMgmt = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [messageApi, contextHolder] = message.useMessage();
-  const [prodList, setProdList] = useState([]);
-  const [selectedProds, setSelectedProds] = useState([]);
-  const [prodTableLoading, setProdTableLoading] = useState(false);
+  const [list, setList] = useState([]);
+  const [recordCount, setRecordCount] = useState<number>();
+  const [selected, setSelected] = useState([]);
+  const [tableLoading, setTableLoading] = useState(false);
+  const [pagination, setPagination] = useState<TablePaginationConfig>();
+  const defPg = 5;
+
   useEffect(() => {
-    setProdTableLoading(true);
+    if (pagination !== undefined) {
+    } else
+      setSearchParams(addSearchParams(searchParams, { limit: String(defPg) }));
+
+    setTableLoading(true);
     productPrevAPI(location.search)
       .then((res) => {
-        setProdList(res.data);
+        setList(res.data.results);
+        setRecordCount(res.data.count);
       })
       .then(() => {
-        setProdTableLoading(false);
+        setTableLoading(false);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [searchParams, pagination]);
 
   const actionModalProps: ActionModalContentProps = {
     recordType: 'product',
-    dataSource: selectedProds,
+    dataSource: selected,
   };
 
   const showActionMsg = (action: string, multi: boolean = false) => {
     messageApi.open({
       key: action,
       type: 'success',
-      content: `${multi ? selectedProds.length : 1} Products ${
+      content: `${multi ? selected.length : 1} Products ${
         action === 'delete' ? 'Deleted' : 'Hidden'
       } Successfully`,
     });
@@ -112,6 +130,34 @@ const ProdMgmt = () => {
     },
   ];
 
+  const handleSelectChange = (selectedKeys) => {
+    const selectedProd = list.filter((prod) =>
+      selectedKeys.some((selected) => selected === prod.key)
+    );
+    const selected = [];
+    selectedProd.forEach((prod) =>
+      selected.push({
+        key: prod.key,
+        title: prod.prodNm,
+        icon: (
+          <Image src={prod.prodImg} height={40} width={40} preview={false} />
+        ),
+      })
+    );
+    setSelected(selected);
+  };
+
+  const handleTabChange = (key) => {
+    let currSearchParams = {};
+    searchParams.forEach((value, key) => {
+      key !== 'status' &&
+        (currSearchParams = { ...currSearchParams, [key]: value });
+    });
+    setSearchParams(
+      key !== 'all' ? { status: key, ...currSearchParams } : currSearchParams
+    );
+  };
+
   const prodMgmtColumns: {
     title: string;
     dataIndex?: string | string[];
@@ -166,9 +212,10 @@ const ProdMgmt = () => {
       key: 'price',
       sorter: true,
       width: 150,
-      render: (amount: number) => (
-        <Text type='secondary'>{moneyFormatter(amount)}</Text>
-      ),
+      render: (amount: string) => {
+        let newAmt = parseFloat(amount);
+        return <Text type='secondary'>{moneyFormatter(newAmt)}</Text>;
+      },
     },
     {
       title: 'Stock',
@@ -241,20 +288,9 @@ const ProdMgmt = () => {
               ? 'all'
               : searchParams.get('status')
           }
-          onTabChange={(key) => {
-            let currSearchParams = {};
-            searchParams.forEach((value, key) => {
-              key !== 'status' &&
-                (currSearchParams = { ...currSearchParams, [key]: value });
-            });
-            setSearchParams(
-              key !== 'all'
-                ? { status: key, ...currSearchParams }
-                : currSearchParams
-            );
-          }}
+          onTabChange={handleTabChange}
         >
-          <FilterInputs loading={prodTableLoading} />
+          <FilterInputs loading={tableLoading} />
         </MainCard>
         <MainCard>
           <Space direction='vertical' size={15} className='full-width'>
@@ -272,33 +308,14 @@ const ProdMgmt = () => {
               </Col>
             </Row>
             <InformativeTable
-              dataSource={prodList}
+              dataSource={list}
               columns={prodMgmtColumns}
               buttons={onSelectBtn}
-              loading={prodTableLoading}
-              defPg={5}
-              onSelectChange={(selectedKeys) => {
-                const selectedProd = prodList.filter((prod) =>
-                  selectedKeys.some((selected) => selected === prod.key)
-                );
-                const selectedProds = [];
-                selectedProd.forEach((prod) =>
-                  selectedProds.push({
-                    key: prod.key,
-                    title: prod.prodNm,
-                    icon: (
-                      <Image
-                        src={prod.prodImg}
-                        height={40}
-                        width={40}
-                        preview={false}
-                      />
-                    ),
-                  })
-                );
-                setSelectedProds(selectedProds);
-              }}
-             
+              loading={tableLoading}
+              defPg={defPg}
+              totalRecord={recordCount}
+              onSelectChange={handleSelectChange}
+              onPageChange={(paginate) => setPagination(paginate)}
             />
           </Space>
         </MainCard>

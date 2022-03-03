@@ -50,6 +50,12 @@ wrapt = "==1.13.3"
 Django = "==4.0.2"
 PyJWT = "==2.3.0"
 Rx = "==1.6.1"
+cloudinary = "==1.29.0"
+django-auto-prefetch = "==1.1.0"
+django-debug-toolbar = "==3.2.4"
+django-sendgrid-v5 = "==1.2.0"
+mysqlclient = "==2.1.0"
+urllib3 = "==1.26.8"
 
 [dev-packages]
 
