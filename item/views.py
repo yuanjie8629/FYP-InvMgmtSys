@@ -1,12 +1,13 @@
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
+from django.db.models import FilteredRelation, Q
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
 from item.filters import ProductFilter
-from item.models import Product
+from item.models import Item, Product
 from item.serializers import ProductPrevSerializer, ProductSerializer
 
 
@@ -20,7 +21,8 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 
 class ProductPrevView(generics.ListAPIView):
-    queryset = Product.objects.all().select_related("item")
+    queryset = Product.objects.filter(item__type="prod").select_related("item")
+
     serializer_class = ProductPrevSerializer
     filterset_class = ProductFilter
 

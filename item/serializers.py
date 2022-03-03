@@ -6,18 +6,18 @@ from item.models import PROD_CAT, Item, Product
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields = "__all__"
+        exclude = ["type"]
 
 
 class ItemPrevSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields = ["name", "price", "sku", "status", "stock", "thumbnail"]
+        fields = ["item_id", "name", "price", "sku", "status", "stock", "thumbnail"]
 
 
 class ProductSerializer(serializers.ModelSerializer):
     item = ItemSerializer()
-    type = ChoiceField(choices=("prod",'Product'))
+
     class Meta:
         model = Product
         fields = "__all__"
@@ -25,7 +25,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         item_data = validated_data.pop("item")
-        item = Item.objects.create(**item_data)
+        item = Item.objects.create(**item_data, type="prod")
         product = Product.objects.create(item=item, **validated_data)
         return product
 
