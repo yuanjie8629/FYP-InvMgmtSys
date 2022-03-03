@@ -14,6 +14,9 @@ export interface InputNumberRangeProps
   placeholder?: string[];
   textSpan?: number;
   justify?: 'start' | 'end';
+  disabled?: boolean;
+  onStartRange?: (value: number) => void;
+  onEndRange?: (value: number) => void;
 }
 
 type AdvInputNumberRangeProps = InputNumberRangeProps &
@@ -47,6 +50,9 @@ const InputNumberRange = ({
   suffix,
   prefixWidth = prefix !== undefined ? 80 : 0,
   suffixWidth = suffix !== undefined ? 80 : 0,
+  disabled = false,
+  onStartRange = () => null,
+  onEndRange = () => null,
   className,
   ...props
 }: AdvInputNumberRangeProps) => {
@@ -75,6 +81,8 @@ const InputNumberRange = ({
           )}
           <InputNumber
             placeholder={placeholder[0]}
+            disabled={disabled}
+            onChange={(value: number) => onStartRange(value)}
             style={{
               width: inputNumWidth,
             }}
@@ -86,11 +94,13 @@ const InputNumberRange = ({
           <Input
             style={{ width: 30 }}
             value='-'
-            disabled
+            disabled={disabled}
             className='input-range-splitter'
           />
           <InputNumber
             placeholder={placeholder[1]}
+            disabled={disabled}
+            onChange={(value: number) => onEndRange(value)}
             style={{
               width: inputNumWidth,
             }}

@@ -1,4 +1,4 @@
-import SessionExpModal from '@/components/Modal/AuthModal/SessionExtendModal';
+import SessionExpModal from '@components/Modal/AuthModal/SessionExtendModal';
 import {
   BrowserRouter as Router,
   Routes,

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import { useAppDispatch, useAppSelector } from '@hooks/useRedux';
 import { collapse, expand } from '@state/siderSlice';
 import { Layout, Menu, Image } from 'antd';
 import { SiderProps as AntdSiderProps } from 'antd/lib/layout';
 import menuList from './siderMenuList';
 import Logo from '@assets/logo.webp';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { findRoutePath } from '@utils/routingUtils';
+import { findRouteLabel, findRoutePath } from '@utils/routingUtils';
 import classNames from 'classnames';
 import siderDefKeyList from './siderDefKeyList';
+import { logoutAPI } from '@api/services/authAPI';
 
 export interface SiderProps extends AntdSiderProps {}
 
@@ -26,14 +27,11 @@ const Sider = (props) => {
       (defKey) => defKey.path === location.pathname + location.search
     ) !== undefined
       ? [
-          findRoutePath(
-            siderDefKeyList.find(
-              (defKey) => defKey.path === location.pathname + location.search
-            ).key
-          ),
+          siderDefKeyList.find(
+            (defKey) => defKey.path === location.pathname + location.search
+          ).key,
         ]
-      : [location.pathname];
-
+      : [findRouteLabel(location.pathname)];
   const openKeys = [location.pathname.split('/')[1]];
 
   return (
@@ -59,6 +57,7 @@ const Sider = (props) => {
           }
         }}
         className='sider'
+        {...props}
       >
         <div className='sider-logo-fixed'>
           <div
@@ -85,7 +84,10 @@ const Sider = (props) => {
           defaultOpenKeys={openKeys}
           inlineIndent={15}
           onClick={(item: { key: string }) => {
-            navigate(item.key);
+            if (item.key === 'logout') {
+              logoutAPI();
+            }
+            navigate(findRoutePath(item.key));
           }}
           onMouseOver={() => setCollapsedSiderOpen(true)}
           className='sider-menu'
@@ -99,14 +101,12 @@ const Sider = (props) => {
                   icon={<item.icon size={20} />}
                 >
                   {item.child.map((child) => (
-                    <Menu.Item key={findRoutePath(child.key)}>
-                      {child.label}
-                    </Menu.Item>
+                    <Menu.Item key={child.key}>{child.label}</Menu.Item>
                   ))}
                 </SubMenu>
               ) : (
                 <Menu.Item
-                  key={findRoutePath(item.key)}
+                  key={item.key}
                   icon={<item.icon size={20} />}
                   className='sider-menu-item'
                 >

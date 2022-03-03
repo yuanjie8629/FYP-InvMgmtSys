@@ -15,8 +15,8 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import './RankingList.less';
 import CarouselArrow from '@components/Carousel/CarouselArrow';
 import { splitIntoChunks } from '@utils/arrayUtils';
-import Popover from '@/components/Popover';
-import { BoldTitle } from '@/components/Title';
+import Popover from '@components/Popover';
+import { BoldTitle } from '@components/Title';
 
 export interface RankingListProps extends Omit<ListProps<any>, 'dataSource'> {
   dataSource: {

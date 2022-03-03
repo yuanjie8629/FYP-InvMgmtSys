@@ -19,11 +19,11 @@ import {
   DeleteButton,
   EditButton,
   HideButton,
-} from '@/components/Button/ActionButton';
-import StatusTag from '@/components/Tag/StatusTag';
-import { voucherStatList } from '@/utils/optionUtils';
-import Tooltip from '@/components/Tooltip';
-import { BoldTitle } from '@/components/Title';
+} from '@components/Button/ActionButton';
+import StatusTag from '@components/Tag/StatusTag';
+import { voucherStatList } from '@utils/optionUtils';
+import Tooltip from '@components/Tooltip';
+import { BoldTitle } from '@components/Title';
 
 const VoucherMgmt = () => {
   const { Text } = Typography;
@@ -36,8 +36,8 @@ const VoucherMgmt = () => {
     () =>
       setVoucherListFltr(
         voucherList.filter((voucher) =>
-          searchParams.get('stat') !== null
-            ? voucher.status === searchParams.get('stat')
+          searchParams.get('status') !== null
+            ? voucher.status === searchParams.get('status')
             : true
         )
       ),
@@ -221,10 +221,12 @@ const VoucherMgmt = () => {
         <MainCard
           tabList={voucherTabList}
           activeTabKey={
-            searchParams.get('stat') === null ? 'all' : searchParams.get('stat')
+            searchParams.get('status') === null
+              ? 'all'
+              : searchParams.get('status')
           }
           onTabChange={(key) => {
-            setSearchParams(key !== 'all' ? { stat: key } : {});
+            setSearchParams(key !== 'all' ? { status: key } : {});
           }}
         >
           <FilterInputs />

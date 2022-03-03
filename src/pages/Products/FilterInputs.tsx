@@ -4,8 +4,16 @@ import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
 import { prodCat } from '@utils/optionUtils';
 import { Button, Col, Row, Space } from 'antd';
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-const FilterInputs = () => {
+export interface FilterInputsProps {
+  loading?: boolean;
+}
+
+const FilterInputs = (props: FilterInputsProps) => {
+  const [filter, setFilter] = useState({});
+  const [searchParams, setSearchParams] = useSearchParams();
   const prodInputSelect: {
     defaultVal: string;
     options: {
@@ -13,10 +21,10 @@ const FilterInputs = () => {
       label: string;
     }[];
   } = {
-    defaultVal: 'prodName',
+    defaultVal: 'name',
     options: [
-      { value: 'prodName', label: 'Product Name' },
-      { value: 'prodSKU', label: 'Product SKU' },
+      { value: 'name', label: 'Product Name' },
+      { value: 'sku', label: 'Product SKU' },
     ],
   };
 
@@ -33,10 +41,29 @@ const FilterInputs = () => {
             selectBefore={prodInputSelect}
             placeholder='Input'
             selectWidth={150}
+            onSelectCat={(selected) =>
+              selected.value !== null
+                ? setFilter({ [selected.type]: selected.value })
+                : setFilter(() => {
+                    delete filter[selected.type];
+                    return filter;
+                  })
+            }
           ></InputSelect>
         </FilterInputCol>
         <FilterInputCol>
-          <SelectWithLabel label='Category' select={prodCatSelect} />
+          <SelectWithLabel
+            label='Category'
+            select={prodCatSelect}
+            onSelect={(value) =>
+              value !== null
+                ? setFilter({ ...filter, category: value })
+                : setFilter(() => {
+                    delete filter['category'];
+                    return filter;
+                  })
+            }
+          />
         </FilterInputCol>
         <FilterInputCol>
           <InputNumberRange
@@ -45,6 +72,23 @@ const FilterInputs = () => {
             min={0}
             justify='start'
             textSpan={4}
+            disabled={searchParams.get('status') === 'oos'}
+            onStartRange={(value) =>
+              value !== null
+                ? setFilter({ ...filter, min_stock: value })
+                : setFilter(() => {
+                    delete filter['min_stock'];
+                    return filter;
+                  })
+            }
+            onEndRange={(value) =>
+              value !== null
+                ? setFilter({ ...filter, max_stock: value })
+                : setFilter(() => {
+                    delete filter['max_stock'];
+                    return filter;
+                  })
+            }
           />
         </FilterInputCol>
         <FilterInputCol>
@@ -55,15 +99,50 @@ const FilterInputs = () => {
             prefixWidth={60}
             min={0}
             precision={2}
+            onStartRange={(value) =>
+              value !== null
+                ? setFilter({ ...filter, min_price: value })
+                : setFilter(() => {
+                    delete filter['min_price'];
+                    return filter;
+                  })
+            }
+            onEndRange={(value) =>
+              value !== null
+                ? setFilter({ ...filter, max_price: value })
+                : setFilter(() => {
+                    delete filter['max_price'];
+                    return filter;
+                  })
+            }
           />
         </FilterInputCol>
       </Row>
       <Row gutter={20}>
         <Col>
-          <Button type='primary'>Search</Button>
+          <Button
+            type='primary'
+            onClick={() =>
+              setSearchParams(
+                searchParams.get('status') !== null
+                  ? { status: searchParams.get('status'), ...filter }
+                  : filter
+              )
+            }
+            loading={props.loading}
+          >
+            Search
+          </Button>
         </Col>
         <Col>
-          <Button>Reset</Button>
+          <Button
+            onClick={() =>
+              setSearchParams({ status: searchParams.get('status') })
+            }
+            loading={props.loading}
+          >
+            Reset
+          </Button>
         </Col>
       </Row>
     </Space>

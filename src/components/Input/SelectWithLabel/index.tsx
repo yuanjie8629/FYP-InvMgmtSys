@@ -11,6 +11,7 @@ export interface SelectLabelProps extends SelectProps<any> {
   };
   textSpan?: number;
   justify?: 'start' | 'end';
+  onSelect?: (selected: string) => void;
 }
 
 const SelectWithLabel = ({
@@ -19,6 +20,7 @@ const SelectWithLabel = ({
   textSpan = 5,
   justify = 'end',
   className,
+  onSelect = () => null,
   ...props
 }: SelectLabelProps) => {
   const { Text } = Typography;
@@ -33,7 +35,11 @@ const SelectWithLabel = ({
           placeholder={select.placeholder}
           options={select.options}
           allowClear
-          className={`full-width${className !== undefined ? ` ${className}` : ''}`}
+          className={`full-width${
+            className !== undefined ? ` ${className}` : ''
+          }`}
+          onClear={() => onSelect(null)}
+          onSelect={(selected) => onSelect(selected)}
           {...props}
         />
       </Col>

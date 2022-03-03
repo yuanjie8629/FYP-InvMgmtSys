@@ -7,10 +7,9 @@ import { Row, Space, Col, Typography, Image, message } from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
-import prodList from './prodList';
 import prodTabList from './prodTabList';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
 import { prodStatList } from '@utils/optionUtils';
@@ -19,31 +18,33 @@ import {
   DeleteButton,
   EditButton,
   HideButton,
-} from '@/components/Button/ActionButton';
-import StatusTag from '@/components/Tag/StatusTag';
-import { BoldTitle } from '@/components/Title';
-import { ActionModal } from '@/components/Modal';
-import { ActionModalContentProps } from '@/components/Modal/ActionModal';
+} from '@components/Button/ActionButton';
+import StatusTag from '@components/Tag/StatusTag';
+import { BoldTitle } from '@components/Title';
+import { ActionModal } from '@components/Modal';
+import { ActionModalContentProps } from '@components/Modal/ActionModal';
+import { productPrevAPI } from '@api/services/productAPI';
 
 const ProdMgmt = () => {
   const { Text } = Typography;
-
-  let navigate = useNavigate();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [messageApi, contextHolder] = message.useMessage();
-  const [prodListFltr, setProdListFltr] = useState(prodList);
+  const [prodList, setProdList] = useState([]);
   const [selectedProds, setSelectedProds] = useState([]);
-  let [searchParams, setSearchParams] = useSearchParams();
-  useEffect(
-    () =>
-      setProdListFltr(
-        prodList.filter((prod) =>
-          searchParams.get('stat') !== null
-            ? prod.prodStat === searchParams.get('stat')
-            : true
-        )
-      ),
-    [searchParams]
-  );
+  const [prodTableLoading, setProdTableLoading] = useState(false);
+  useEffect(() => {
+    setProdTableLoading(true);
+    productPrevAPI(location.search)
+      .then((res) => {
+        setProdList(res.data);
+      })
+      .then(() => {
+        setProdTableLoading(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const actionModalProps: ActionModalContentProps = {
     recordType: 'product',
@@ -123,16 +124,16 @@ const ProdMgmt = () => {
   }[] = [
     {
       title: 'Product',
-      dataIndex: ['prodNm', 'prodCat', 'prodImg'],
-      key: 'prod',
+      dataIndex: ['name', 'category', 'thumbnail'],
+      key: 'name',
       sorter: true,
       width: 400,
       render: (_: any, data: { [x: string]: string }) => (
         <Row gutter={5}>
           <Col xs={9} xl={7}>
             <Image
-              alt={data['prodNm']}
-              src={data['prodImg']}
+              alt={data.name}
+              src={data.thumbnail}
               height={100}
               width={100}
             />
@@ -141,11 +142,11 @@ const ProdMgmt = () => {
             <Space direction='vertical' size={5}>
               <div className='text-button-wrapper'>
                 <Text strong className='text-button'>
-                  {data['prodNm']}
+                  {data.name}
                 </Text>
               </div>
               <Text type='secondary' className='text-sm text-break'>
-                {data['prodCat']}
+                {data.category}
               </Text>
             </Space>
           </Col>
@@ -154,15 +155,15 @@ const ProdMgmt = () => {
     },
     {
       title: 'SKU',
-      dataIndex: 'prodSKU',
-      key: 'prodSKU',
+      dataIndex: 'sku',
+      key: 'sku',
       sorter: true,
       width: 160,
     },
     {
       title: 'Price',
-      dataIndex: 'prodPrice',
-      key: 'prodPrice',
+      dataIndex: 'price',
+      key: 'price',
       sorter: true,
       width: 150,
       render: (amount: number) => (
@@ -171,15 +172,15 @@ const ProdMgmt = () => {
     },
     {
       title: 'Stock',
-      dataIndex: 'prodStock',
-      key: 'prodStock',
+      dataIndex: 'stock',
+      key: 'stock',
       sorter: true,
       width: 120,
     },
     {
       title: 'Status',
-      dataIndex: 'prodStat',
-      key: 'prodStat',
+      dataIndex: 'status',
+      key: 'status',
       width: 150,
       render: (status: string) => (
         <StatusTag
@@ -236,13 +237,24 @@ const ProdMgmt = () => {
         <MainCard
           tabList={prodTabList}
           activeTabKey={
-            searchParams.get('stat') === null ? 'all' : searchParams.get('stat')
+            searchParams.get('status') === null
+              ? 'all'
+              : searchParams.get('status')
           }
           onTabChange={(key) => {
-            setSearchParams(key !== 'all' ? { stat: key } : {});
+            let currSearchParams = {};
+            searchParams.forEach((value, key) => {
+              key !== 'status' &&
+                (currSearchParams = { ...currSearchParams, [key]: value });
+            });
+            setSearchParams(
+              key !== 'all'
+                ? { status: key, ...currSearchParams }
+                : currSearchParams
+            );
           }}
         >
-          <FilterInputs />
+          <FilterInputs loading={prodTableLoading} />
         </MainCard>
         <MainCard>
           <Space direction='vertical' size={15} className='full-width'>
@@ -260,12 +272,13 @@ const ProdMgmt = () => {
               </Col>
             </Row>
             <InformativeTable
-              dataSource={prodListFltr}
+              dataSource={prodList}
               columns={prodMgmtColumns}
               buttons={onSelectBtn}
+              loading={prodTableLoading}
               defPg={5}
               onSelectChange={(selectedKeys) => {
-                const selectedProd = prodListFltr.filter((prod) =>
+                const selectedProd = prodList.filter((prod) =>
                   selectedKeys.some((selected) => selected === prod.key)
                 );
                 const selectedProds = [];
@@ -285,6 +298,7 @@ const ProdMgmt = () => {
                 );
                 setSelectedProds(selectedProds);
               }}
+             
             />
           </Space>
         </MainCard>

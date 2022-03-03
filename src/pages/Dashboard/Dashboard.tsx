@@ -26,8 +26,8 @@ import './Dashboard.less';
 import RankingList from '@components/List/RankingList';
 import statisticsList from '@components/Statistics/statisticsList';
 import { dateRangeOptions } from '@utils/optionUtils';
-import { BoldTitle } from '@/components/Title';
-import axios from '@/api/axiosInstance';
+import { BoldTitle } from '@components/Title';
+import axios from '@api/axiosInstance';
 
 const LineChart = lazy(() => import('@components/Chart/LineChart'));
 const MainCard = lazy(() => import('@components/Card/MainCard'));

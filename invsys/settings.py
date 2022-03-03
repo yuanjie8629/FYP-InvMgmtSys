@@ -12,9 +12,11 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from datetime import timedelta
 import os
-from click import secho
-import django_heroku
 from pathlib import Path
+import django_heroku
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -48,8 +50,21 @@ INSTALLED_APPS = [
     "django_filters",
     "corsheaders",
     "axes",
+    "debug_toolbar",
+    "address",
     "administrator",
+    "cart",
     "core",
+    "customer",
+    "image",
+    "item",
+    "order",
+    "payment",
+    "postcode",
+    "review",
+    "shipment",
+    "voucher",
+    "wishlist",
 ]
 
 MIDDLEWARE = [
@@ -62,6 +77,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "axes.middleware.AxesMiddleware",
@@ -90,6 +106,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "invsys.wsgi.application"
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -102,6 +121,7 @@ DATABASES = {
         "PASSWORD": "b1741abc336c71255cf3e093d8c017c3339ff97cb2034497d8d47b172ab1534c",
         "HOST": "ec2-44-194-113-156.compute-1.amazonaws.com",
         "PORT": "5432",
+        "ATOMIC_REQUEST": True,
     }
 }
 
@@ -168,14 +188,31 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    },
+}
+
 AUTH_USER_MODEL = "administrator.Admin"
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    "EXCEPTION_HANDLER": "core.utils.exception_delete_cookie_handler",
+    "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 100,
 }
 
 SIMPLE_JWT = {
@@ -213,12 +250,19 @@ AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "http://127.0.0.1:3000"]
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://fyp-shrf.herokuapp.com",
+]
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://fyp-shrf.herokuapp.com",
+]
 
-ALLOWED_HOSTS = ["*"]
-
+# Email configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_HOST_USER = "yuanjie8629@gmail.com"
@@ -227,8 +271,14 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = "default from email"
 
-# Password Reset Configuration
-DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True
+
+# Cloudinary config
+cloudinary.config(
+    cloud_name="yuanjie",
+    api_key="422626114461787",
+    api_secret="fktAjKxJUug6_2KStXukntdN65Q",
+    secure=True,
+)
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())

@@ -2,8 +2,8 @@ import Layout from '@components/Layout';
 import { Space, SpaceProps, Typography } from 'antd';
 import Button from '@components/Button';
 import { useNavigate } from 'react-router-dom';
-import MainCard from '@/components/Card/MainCard';
-import { BoldTitle } from '@/components/Title';
+import MainCard from '@components/Card/MainCard';
+import { BoldTitle } from '@components/Title';
 
 export interface ComingSoonProps extends SpaceProps {
   img: string;

@@ -7,9 +7,9 @@ import Hashtag from '@assets/Login/Hashtag.svg';
 import Inventory from '@assets/Login/LoginBackground.webp';
 import Logo from '@assets/logo.webp';
 import { Helmet } from 'react-helmet';
-import { BoldTitle } from '@/components/Title';
-import { loginAPI } from '@/api/services/authAPI';
-import AuthModal from '@/components/Modal/AuthModal';
+import { BoldTitle } from '@components/Title';
+import { loginAPI } from '@api/services/authAPI';
+import AuthModal from '@components/Modal/AuthModal';
 
 const Login = () => {
   const { Text } = Typography;

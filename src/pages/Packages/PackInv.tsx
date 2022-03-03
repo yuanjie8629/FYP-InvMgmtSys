@@ -12,9 +12,9 @@ import packTabList from './packTabList';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
-import InvStockInput from '@/components/Input/InvStockInput';
-import { BulkEditButton } from '@/components/Button/ActionButton';
-import { BoldTitle } from '@/components/Title';
+import InvStockInput from '@components/Input/InvStockInput';
+import { BulkEditButton } from '@components/Button/ActionButton';
+import { BoldTitle } from '@components/Title';
 
 const PackInv = () => {
   const { Text } = Typography;
@@ -27,8 +27,8 @@ const PackInv = () => {
     () =>
       setPackageListFltr(
         packageList.filter((pack) =>
-          searchParams.get('stat') !== null
-            ? pack.packStat === searchParams.get('stat')
+          searchParams.get('status') !== null
+            ? pack.packStat === searchParams.get('status')
             : true
         )
       ),
@@ -133,10 +133,12 @@ const PackInv = () => {
         <MainCard
           tabList={packTabList}
           activeTabKey={
-            searchParams.get('stat') === null ? 'all' : searchParams.get('stat')
+            searchParams.get('status') === null
+              ? 'all'
+              : searchParams.get('status')
           }
           onTabChange={(key) => {
-            setSearchParams(key !== 'all' ? { stat: key } : {});
+            setSearchParams(key !== 'all' ? { status: key } : {});
           }}
         >
           <FilterInputs />

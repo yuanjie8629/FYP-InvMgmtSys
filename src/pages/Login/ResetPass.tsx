@@ -1,8 +1,8 @@
 import { Col, Row, Form, Typography, Space, Input, Spin, message } from 'antd';
 import Button from '@components/Button';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import MainCard from '@/components/Card/MainCard';
-import ColorCard from '@/components/Card/ColorCard';
+import MainCard from '@components/Card/MainCard';
+import ColorCard from '@components/Card/ColorCard';
 import { useEffect, useState } from 'react';
 import { MdCancel, MdCheckCircle } from 'react-icons/md';
 import { IconBaseProps } from 'react-icons';
@@ -13,9 +13,9 @@ import {
   hasLowerCaseLetter,
   hasSymbolLetter,
   hasUpperCaseLetter,
-} from '@/utils/strUtils';
-import { resetPassAPI, validateForgotPassTknAPI } from '@/api/services/authAPI';
-import SuccessModal from '@/components/Modal/SuccessModal';
+} from '@utils/strUtils';
+import { resetPassAPI, validateForgotPassTknAPI } from '@api/services/authAPI';
+import SuccessModal from '@components/Modal/SuccessModal';
 
 const ResetPass = () => {
   const { Text, Title } = Typography;
@@ -118,7 +118,6 @@ const ResetPass = () => {
         setSubmitLoading(false);
       });
   };
-  console.log(successModal);
 
   return !pageLoading ? (
     <Form

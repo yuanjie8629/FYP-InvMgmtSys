@@ -5,7 +5,7 @@ import { findRoutePath } from '@utils/routingUtils';
 import Img404 from '@assets/404.svg';
 import Logo from '@assets/logo.webp';
 import './NotFound.less';
-import { BoldTitle } from '@/components/Title';
+import { BoldTitle } from '@components/Title';
 
 const NotFound = () => {
   const { Header } = Layout;

@@ -6,6 +6,7 @@ import ForgotPassModal from './ForgotPassModal';
 export type AuthModalPayload = {
   onOk?: () => void;
   onCancel?: () => void;
+  args?: any;
 };
 
 export const AuthModalComponent = {
@@ -18,6 +19,7 @@ export type AuthModalType = 'forgotPass' | 'checkEmail';
 export interface AuthModalContentProps extends ModalProps {
   onOk?: () => void;
   onCancel?: () => void;
+  args?: any;
 }
 
 export type AuthModalProps = Omit<ModalProps, 'onOk' | 'onCancel'> &
@@ -30,6 +32,7 @@ type AuthModalReturnProps = React.FC<Partial<AuthModalProps>> & {
 const AuthModal: AuthModalReturnProps = memo((props: AuthModalProps, _ref) => {
   const [visible, setVisible] = useState(false);
   const [modalType, setModalType] = useState<AuthModalType>(null);
+  const [args, setArgs] = useState({});
   const payloadRef = useRef<AuthModalPayload>({});
 
   useEffect(() => {
@@ -37,6 +40,7 @@ const AuthModal: AuthModalReturnProps = memo((props: AuthModalProps, _ref) => {
       setVisible(true);
       setModalType(type);
       payloadRef.current = payload;
+      setArgs(payload?.args);
     };
   }, []);
 
@@ -58,6 +62,7 @@ const AuthModal: AuthModalReturnProps = memo((props: AuthModalProps, _ref) => {
       <ModalRender
         onOk={handleOk(payloadRef.current?.onOk)}
         onCancel={handleCancel(payloadRef.current?.onCancel)}
+        args={args}
       />
     );
   };

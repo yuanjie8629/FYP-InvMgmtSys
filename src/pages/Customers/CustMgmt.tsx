@@ -12,13 +12,10 @@ import custList from './custList';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
-import {
-  ActivateButton,
-  SuspendButton,
-} from '@/components/Button/ActionButton';
-import StatusTag from '@/components/Tag/StatusTag';
-import { custStatList } from '@/utils/optionUtils';
-import { BoldTitle } from '@/components/Title';
+import { ActivateButton, SuspendButton } from '@components/Button/ActionButton';
+import StatusTag from '@components/Tag/StatusTag';
+import { custStatList } from '@utils/optionUtils';
+import { BoldTitle } from '@components/Title';
 
 const CustMgmt = () => {
   const { Text } = Typography;
@@ -31,8 +28,8 @@ const CustMgmt = () => {
     () =>
       setCustListFltr(
         custList.filter((cust) =>
-          searchParams.get('stat') !== null
-            ? cust.custType === searchParams.get('stat')
+          searchParams.get('status') !== null
+            ? cust.custType === searchParams.get('status')
             : true
         )
       ),
@@ -173,10 +170,12 @@ const CustMgmt = () => {
         <MainCard
           tabList={custTabList}
           activeTabKey={
-            searchParams.get('stat') === null ? 'all' : searchParams.get('stat')
+            searchParams.get('status') === null
+              ? 'all'
+              : searchParams.get('status')
           }
           onTabChange={(key) => {
-            setSearchParams(key !== 'all' ? { stat: key } : {});
+            setSearchParams(key !== 'all' ? { status: key } : {});
           }}
         >
           <FilterInputs />

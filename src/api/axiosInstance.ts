@@ -1,4 +1,4 @@
-import { clearStorage } from '@/utils/storageUtils';
+import { clearStorage } from '@utils/storageUtils';
 import oriAxios from 'axios';
 import Cookies from 'js-cookie';
 import { refreshTknAPI } from './services/authAPI';
@@ -47,7 +47,6 @@ axios.interceptors.response.use(
     ) {
       return refreshTknAPI()
         .then((res) => {
-          console.log(res.data);
           originalRequest.headers['Authorization'] = `JWT ${Cookies.get(
             'access_token'
           )}`;

@@ -12,7 +12,7 @@ import ShptMgmt from '@pages/Shipments/ShptMgmt';
 import CustMgmt from '@pages/Customers/CustMgmt';
 import CustReg from '@pages/Customers/CustReg';
 import CustAdd from '@pages/Customers/CustAdd';
-import Statistics from '@/pages/BusinessInsights/BusinessStatistics';
+import Statistics from '@pages/BusinessInsights/BusinessStatistics';
 import InvAnalysis from '@pages/BusinessInsights/InvAnalysis';
 import VoucherMgmt from '@pages/Vouchers/VoucherMgmt';
 import VoucherAdd from '@pages/Vouchers/VoucherAdd';
@@ -23,7 +23,7 @@ import AdminAdd from '@pages/Admins/AdminAdd';
 import Help from '@pages/Help/Help';
 import ShpFeeMgmt from '@pages/Shipments/ShptFeeMgmt';
 import NotFound from '@pages/Not Found/NotFound';
-import ResetPass from '@/pages/Login/ResetPass';
+import ResetPass from '@pages/Login/ResetPass';
 
 const routeList: {
   label: string;
@@ -108,12 +108,22 @@ const routeList: {
   },
   {
     label: 'orderPend',
-    path: '/order/management?stat=toShip',
+    path: '/order/management?status=toShip',
     protected: true,
   },
   {
     label: 'orderCancel',
-    path: '/order/management?stat=cancel',
+    path: '/order/management?status=cancel',
+    protected: true,
+  },
+  {
+    label: 'orderUnpaid',
+    path: '/order/management?status=unpaid',
+    protected: true,
+  },
+  {
+    label: 'orderRefund',
+    path: '/order/management?status=refund',
     protected: true,
   },
   {
@@ -122,16 +132,7 @@ const routeList: {
     protected: true,
     component: <OrderAdd />,
   },
-  {
-    label: 'orderUnpaid',
-    path: '/order/management?unpaid',
-    protected: true,
-  },
-  {
-    label: 'orderRefund',
-    path: '/order/management?refund',
-    protected: true,
-  },
+
   {
     label: 'shipment',
     path: '/shipment',

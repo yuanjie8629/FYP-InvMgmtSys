@@ -13,9 +13,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
-import InvStockInput from '@/components/Input/InvStockInput';
-import { BulkEditButton } from '@/components/Button/ActionButton';
-import { BoldTitle } from '@/components/Title';
+import InvStockInput from '@components/Input/InvStockInput';
+import { BulkEditButton } from '@components/Button/ActionButton';
+import { BoldTitle } from '@components/Title';
 
 const ProdInv = () => {
   const { Text } = Typography;

@@ -1,4 +1,4 @@
-import { useAppSelector } from '@/hooks/useRedux';
+import { useAppSelector } from '@hooks/useRedux';
 import { Col, Divider, Layout, Row, Space } from 'antd';
 import Breadcrumb from '@components/BreadCrumb';
 import AvatarDropdown from '@components/AvatarDropdown';

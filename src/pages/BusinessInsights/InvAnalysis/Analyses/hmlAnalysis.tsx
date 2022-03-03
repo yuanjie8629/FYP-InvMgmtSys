@@ -2,7 +2,7 @@ import { GradeIcon } from '../Icons';
 import NasiBriyaniBukhari from '@assets/Product/NasiBukhari.png';
 import hashtag from '@assets/Login/Hashtag.svg';
 import { Col, Row, Image, Space, Typography } from 'antd';
-import { moneyFormatter, percentFormatter } from '@/utils/numUtils';
+import { moneyFormatter, percentFormatter } from '@utils/numUtils';
 import { GradeIconProps } from '../Icons/GradeIcon';
 import { tableGradeProps } from '.';
 

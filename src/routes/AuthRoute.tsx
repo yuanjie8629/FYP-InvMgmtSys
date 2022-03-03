@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { findRoutePath } from '@/utils/routingUtils';
+import { findRoutePath } from '@utils/routingUtils';
 import Cookies from 'js-cookie';
 import routeList from './routeList';
 

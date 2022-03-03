@@ -1,4 +1,10 @@
 import { Input, InputProps as AntdInputProps, Select } from 'antd';
+import { useState } from 'react';
+
+interface OnSelectProps {
+  type: string;
+  value: string;
+}
 
 export interface InputProps extends AntdInputProps {
   width?: number | string;
@@ -17,6 +23,7 @@ export interface InputProps extends AntdInputProps {
     }[];
   };
   selectWidth?: number | string;
+  onSelectCat?: (selected: OnSelectProps) => void;
 }
 
 const InputSelect = ({
@@ -24,13 +31,16 @@ const InputSelect = ({
   selectBefore,
   selectAfter,
   selectWidth = 'fit-content',
+  onSelectCat = () => null,
   ...props
 }: InputProps) => {
+  const [selectType, setSelectType] = useState(selectBefore.defaultVal);
   const inputSelectBefore = selectBefore !== undefined && (
     <Select
       defaultValue={selectBefore?.defaultVal}
       options={selectBefore.options}
       style={{ width: selectWidth }}
+      onSelect={(value) => setSelectType(value)}
     />
   );
 
@@ -38,6 +48,7 @@ const InputSelect = ({
     <Select
       defaultValue={selectAfter?.defaultVal}
       options={selectAfter.options}
+      style={{ width: selectWidth }}
     />
   );
 
@@ -46,6 +57,7 @@ const InputSelect = ({
       addonBefore={inputSelectBefore}
       addonAfter={inputSelectAfter}
       style={{ width: width }}
+      onChange={(e) => onSelectCat({ type: selectType, value: e.target.value })}
       {...props}
     ></Input>
   );
