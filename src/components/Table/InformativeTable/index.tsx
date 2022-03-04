@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Col, Row, Typography, Space, TablePaginationConfig } from 'antd';
 import './InformativeTable.less';
 import { ButtonType } from '@components/Button';
 import Table, { TableProps } from '@components/Table';
 import { useSearchParams } from 'react-router-dom';
+import { addSearchParams, removeSearchparams } from '@utils/urlUtls';
 
 type InformativeTableButtonProps = {
   element: ButtonType;
@@ -18,7 +19,6 @@ type InformativeTableButtonProps = {
 type InformativeTableProps = TableProps & {
   defPg?: number;
   totalRecord?: number;
-  onPageChange?: (paginate: TablePaginationConfig) => void;
 } & (
     | {
         buttons: InformativeTableButtonProps;
@@ -34,16 +34,41 @@ const InformativeTable = ({
   rowSelectable = true,
   onSelectChange = () => '',
   totalRecord,
-  onPageChange = () => '',
   ...props
 }: InformativeTableProps) => {
   const { Text } = Typography;
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedRowKeys, setSelectedRowKeys] = useState();
   const [selectedRowCount, setSelectedRowCount] = useState(0);
+  const [pagination, setPagination] = useState<TablePaginationConfig>();
   const [btnShow, setBtnShow] = useState<Array<{ key: string; show: boolean }>>(
     []
   );
+
+  useEffect(() => {
+    if (pagination !== undefined) {
+      if (pagination.current > 1) {
+        setSearchParams(
+          addSearchParams(searchParams, {
+            limit: String(pagination.pageSize),
+            offset: (pagination.current - 1) * pagination.pageSize,
+          })
+        );
+      } else {
+        setSearchParams(
+          removeSearchparams(
+            new URLSearchParams(
+              addSearchParams(searchParams, {
+                limit: String(pagination.pageSize),
+              })
+            ),
+            'offset'
+          )
+        );
+      }
+    } else
+      setSearchParams(addSearchParams(searchParams, { limit: String(defPg) }));
+  }, [defPg, pagination, searchParams, setSearchParams]);
 
   const handleSelectChange = (selectedRowKeys: any, selectedRows: any) => {
     if (buttons !== undefined) {
@@ -130,7 +155,6 @@ const InformativeTable = ({
       )}
       <Row>
         <Table
-          rowKey='item_id'
           rowSelection={rowSelectable && rowSelection}
           pagination={{
             size: 'small',
@@ -142,7 +166,7 @@ const InformativeTable = ({
             total: totalRecord,
           }}
           onChange={(paginate, _filters, sorter) => {
-            onPageChange(paginate);
+            setPagination(paginate);
             if (sorter['column'] !== undefined) {
               let currSearchParams = {};
               searchParams.forEach((value, key) => {

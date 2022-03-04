@@ -3,8 +3,8 @@ from .models import Product
 
 
 class ProductFilter(filters.FilterSet):
-    name = filters.CharFilter(field_name="item__name")
-    sku = filters.CharFilter(field_name="item__sku")
+    name = filters.CharFilter(field_name="item__name", lookup_expr="icontains")
+    sku = filters.CharFilter(field_name="item__sku", lookup_expr="icontains")
     status = filters.CharFilter(field_name="item__status")
     min_price = filters.NumberFilter(field_name="item__price", lookup_expr="gte")
     max_price = filters.NumberFilter(field_name="item__price", lookup_expr="lte")

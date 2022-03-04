@@ -3,15 +3,7 @@ import Button from '@components/Button';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
-import {
-  Row,
-  Space,
-  Col,
-  Typography,
-  Image,
-  message,
-  TablePaginationConfig,
-} from 'antd';
+import { Row, Space, Col, Typography, Image, message } from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
@@ -31,8 +23,8 @@ import StatusTag from '@components/Tag/StatusTag';
 import { BoldTitle } from '@components/Title';
 import { ActionModal } from '@components/Modal';
 import { ActionModalContentProps } from '@components/Modal/ActionModal';
-import { productPrevAPI } from '@api/services/productAPI';
-import { addSearchParams } from '@utils/urlUtls';
+import { productDelAPI, productPrevAPI } from '@api/services/productAPI';
+import { addSearchParams, parseURL } from '@utils/urlUtls';
 
 const ProdMgmt = () => {
   const { Text } = Typography;
@@ -44,32 +36,32 @@ const ProdMgmt = () => {
   const [recordCount, setRecordCount] = useState<number>();
   const [selected, setSelected] = useState([]);
   const [tableLoading, setTableLoading] = useState(false);
-  const [pagination, setPagination] = useState<TablePaginationConfig>();
   const defPg = 5;
 
   useEffect(() => {
-    if (pagination !== undefined) {
-    } else
-      setSearchParams(addSearchParams(searchParams, { limit: String(defPg) }));
-
     setTableLoading(true);
     productPrevAPI(location.search)
       .then((res) => {
         setList(res.data.results);
         setRecordCount(res.data.count);
-      })
-      .then(() => {
         setTableLoading(false);
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) setTableLoading(false);
+        Promise.resolve();
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, pagination]);
+  }, [searchParams]);
 
   const actionModalProps: ActionModalContentProps = {
     recordType: 'product',
     dataSource: selected,
   };
 
-  const showActionMsg = (action: string, multi: boolean = false) => {
+  const showActionSuccessMsg = (
+    action: 'delete' | 'hide',
+    multi: boolean = false
+  ) => {
     messageApi.open({
       key: action,
       type: 'success',
@@ -77,7 +69,17 @@ const ProdMgmt = () => {
         action === 'delete' ? 'Deleted' : 'Hidden'
       } Successfully`,
     });
-    setTimeout(() => message.destroy(action), 2000);
+    setTimeout(() => message.destroy(action), 3000);
+  };
+
+  const showServerErrMsg = () => {
+    messageApi.open({
+      key: 'serverErr',
+      type: 'error',
+      content:
+        "We're having some difficulties connecting to the server. Please try again later.",
+    });
+    setTimeout(() => message.destroy('serverErr'), 3000);
   };
 
   const activateBtn = (props: any) => <ActivateButton type='primary' />;
@@ -90,7 +92,7 @@ const ProdMgmt = () => {
         ActionModal.show('hide', {
           onOk: () =>
             fetch('http://example.com').then(() => {
-              showActionMsg('hide', true);
+              showActionSuccessMsg('hide', true);
             }),
           multiItem: true,
         });
@@ -105,7 +107,7 @@ const ProdMgmt = () => {
         ActionModal.show('delete', {
           onOk: () =>
             fetch('http://example.com').then(() => {
-              showActionMsg('delete', true);
+              showActionSuccessMsg('delete', true);
             }),
           multiItem: true,
         });
@@ -132,30 +134,29 @@ const ProdMgmt = () => {
 
   const handleSelectChange = (selectedKeys) => {
     const selectedProd = list.filter((prod) =>
-      selectedKeys.some((selected) => selected === prod.key)
+      selectedKeys.some((selected) => selected === prod.item_id)
     );
     const selected = [];
     selectedProd.forEach((prod) =>
       selected.push({
-        key: prod.key,
-        title: prod.prodNm,
+        key: prod.item_id,
+        title: prod.name,
         icon: (
-          <Image src={prod.prodImg} height={40} width={40} preview={false} />
+          <Image src={prod.thumbnail} height={40} width={40} preview={false} />
         ),
       })
     );
     setSelected(selected);
   };
+  console.log(selected);
 
   const handleTabChange = (key) => {
-    let currSearchParams = {};
-    searchParams.forEach((value, key) => {
-      key !== 'status' &&
-        (currSearchParams = { ...currSearchParams, [key]: value });
-    });
-    setSearchParams(
-      key !== 'all' ? { status: key, ...currSearchParams } : currSearchParams
-    );
+    if (key !== 'all') {
+      setSearchParams(addSearchParams(searchParams, { status: key }));
+    } else {
+      searchParams.delete('status');
+      setSearchParams(parseURL(searchParams));
+    }
   };
 
   const prodMgmtColumns: {
@@ -171,7 +172,7 @@ const ProdMgmt = () => {
     {
       title: 'Product',
       dataIndex: ['name', 'category', 'thumbnail'],
-      key: 'name',
+      key: 'prod',
       sorter: true,
       width: 400,
       render: (_: any, data: { [x: string]: string }) => (
@@ -239,7 +240,7 @@ const ProdMgmt = () => {
               ActionModal.show('hide', {
                 onOk: () =>
                   fetch('http://example.com').then(() => {
-                    showActionMsg('hide');
+                    showActionSuccessMsg('hide');
                   }),
               });
             }
@@ -251,29 +252,37 @@ const ProdMgmt = () => {
       title: 'Action',
       key: 'action',
       width: 100,
-      render: () => (
-        <Space direction='vertical' size={5}>
-          <EditButton
-            type='link'
-            color='info'
-            onClick={() => {
-              navigate(findRoutePath('prodAdd'));
-            }}
-          />
-          <DeleteButton
-            type='link'
-            color='info'
-            onClick={() => {
-              ActionModal.show('delete', {
-                onOk: () =>
-                  fetch('http://example.com').then(() => {
-                    showActionMsg('delete');
-                  }),
-              });
-            }}
-          />
-        </Space>
-      ),
+      render: (prod: any) => {
+        return (
+          <Space direction='vertical' size={5}>
+            <EditButton
+              type='link'
+              color='info'
+              onClick={() => {
+                navigate(findRoutePath('prodAdd'));
+              }}
+            />
+            <DeleteButton
+              type='link'
+              color='info'
+              onClick={() => {
+                ActionModal.show('delete', {
+                  onOk: async () => {
+                    await productDelAPI(prod.item_id)
+                      .then((res) => {
+                        showActionSuccessMsg('delete');
+                      })
+                      .catch((err) => {
+                        showServerErrMsg();
+                        Promise.resolve();
+                      });
+                  },
+                });
+              }}
+            />
+          </Space>
+        );
+      },
     },
   ];
 
@@ -308,6 +317,7 @@ const ProdMgmt = () => {
               </Col>
             </Row>
             <InformativeTable
+              rowKey='item_id'
               dataSource={list}
               columns={prodMgmtColumns}
               buttons={onSelectBtn}
@@ -315,7 +325,6 @@ const ProdMgmt = () => {
               defPg={defPg}
               totalRecord={recordCount}
               onSelectChange={handleSelectChange}
-              onPageChange={(paginate) => setPagination(paginate)}
             />
           </Space>
         </MainCard>

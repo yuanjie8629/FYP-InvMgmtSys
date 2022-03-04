@@ -20,7 +20,7 @@ const SessionExtendModal = ({ visible, ...props }: SessionExtendModalProps) => {
   const [loading, setLoading] = useState(false);
 
   const idleTimer = useIdleTimer({
-    timeout: 1000,
+    timeout: 30000,
   });
 
   const timer = useTimer({

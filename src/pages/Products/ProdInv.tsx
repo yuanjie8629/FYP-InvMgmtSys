@@ -7,22 +7,41 @@ import Button from '@components/Button';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import { Col, Image, Row, Space, Typography } from 'antd';
 import FilterInputs from './FilterInputs';
-import prodList from './prodList';
 import prodTabList from './prodTabList';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
 import InvStockInput from '@components/Input/InvStockInput';
 import { BulkEditButton } from '@components/Button/ActionButton';
 import { BoldTitle } from '@components/Title';
+import { productPrevAPI } from '@api/services/productAPI';
+import { addSearchParams, parseURL } from '@utils/urlUtls';
 
 const ProdInv = () => {
   const { Text } = Typography;
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [tableLoading, setTableLoading] = useState(false);
+  const [list, setList] = useState([]);
+  const [recordCount, setRecordCount] = useState<number>();
+  const defPg = 5;
 
-  let navigate = useNavigate();
-
-  const [prodListFltr, setProdListFltr] = useState(prodList);
+  useEffect(() => {
+    setTableLoading(true);
+    productPrevAPI(location.search)
+      .then((res) => {
+        setList(res.data.results);
+        setRecordCount(res.data.count);
+        setTableLoading(false);
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) setTableLoading(false);
+        Promise.resolve();
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const bulkUpdBtn = (props: any) => <BulkEditButton />;
 
@@ -32,6 +51,15 @@ const ProdInv = () => {
       key: 'bulkUpd',
     },
   ];
+
+  const handleTabChange = (key) => {
+    if (key !== 'all') {
+      setSearchParams(addSearchParams(searchParams, { status: key }));
+    } else {
+      searchParams.delete('status');
+      setSearchParams(parseURL(searchParams));
+    }
+  };
 
   const prodInvColumns: {
     title: string;
@@ -44,24 +72,24 @@ const ProdInv = () => {
   }[] = [
     {
       title: 'Product',
-      dataIndex: ['prodNm', 'prodCat', 'prodImg'],
+      dataIndex: ['name', 'category', 'thumbnail'],
       key: 'prod',
       width: 400,
       sorter: true,
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={5}>
           <Col xs={9} xl={7}>
-            <Image src={data['prodImg']} height={100} width={100} />
+            <Image src={data.thumbnail} height={100} width={100} />
           </Col>
           <Col xs={15} xl={17}>
             <Space direction='vertical' size={5}>
               <div className='text-button-wrapper'>
                 <Text strong className='text-button'>
-                  {data['prodNm']}
+                  {data.name}
                 </Text>
               </div>
               <Text type='secondary' className='text-sm text-break'>
-                {data['prodCat']}
+                {data.category}
               </Text>
             </Space>
           </Col>
@@ -70,25 +98,25 @@ const ProdInv = () => {
     },
     {
       title: 'SKU',
-      dataIndex: 'prodSKU',
-      key: 'prodSKU',
+      dataIndex: 'sku',
+      key: 'sku',
       width: 160,
       sorter: true,
     },
     {
       title: 'Price',
-      dataIndex: 'prodPrice',
-      key: 'prodPrice',
+      dataIndex: 'price',
+      key: 'price',
       width: 120,
       sorter: true,
-      render: (amount: number) => (
-        <Text type='secondary'>{moneyFormatter(amount)}</Text>
+      render: (amount: string) => (
+        <Text type='secondary'>{moneyFormatter(parseFloat(amount))}</Text>
       ),
     },
     {
       title: 'Stock',
-      dataIndex: 'prodStock',
-      key: 'prodStock',
+      dataIndex: 'stock',
+      key: 'stock',
       width: 100,
       sorter: true,
     },
@@ -102,16 +130,7 @@ const ProdInv = () => {
   return (
     <Layout>
       <MainCardContainer className='prod-inv'>
-        <MainCard
-          tabList={prodTabList}
-          onTabChange={(key) =>
-            setProdListFltr(
-              prodList.filter((prod) =>
-                key !== 'all' ? prod.prodStat === key : true
-              )
-            )
-          }
-        >
+        <MainCard tabList={prodTabList} onTabChange={handleTabChange}>
           <FilterInputs />
         </MainCard>
 
@@ -132,10 +151,13 @@ const ProdInv = () => {
             </Row>
 
             <InformativeTable
-              dataSource={prodListFltr}
+              rowKey='item_id'
+              dataSource={list}
               columns={prodInvColumns}
               buttons={onSelectBtn}
-              defPg={5}
+              defPg={defPg}
+              totalRecord={recordCount}
+              loading={tableLoading}
             />
           </Space>
         </MainCard>

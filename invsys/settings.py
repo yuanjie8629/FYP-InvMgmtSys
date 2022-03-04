@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "django_rest_passwordreset",
     "django_filters",
+    "simple_history",
     "corsheaders",
     "axes",
     "debug_toolbar",
@@ -79,6 +80,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
     "django.middleware.common.CommonMiddleware",
     "axes.middleware.AxesMiddleware",
 ]
@@ -216,7 +218,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
     "REFRESH_TOKEN_LIFETIME": timedelta(hours=2),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
@@ -227,7 +229,7 @@ SIMPLE_JWT = {
     "AUDIENCE": None,
     "ISSUER": None,
     "JWK_URL": None,
-    "LEEWAY": 0,
+    "LEEWAY": timedelta(minutes=3),
     "AUTH_HEADER_TYPES": ("Bearer", "JWT"),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_ID_FIELD": "admin_id",

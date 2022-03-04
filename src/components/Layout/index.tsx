@@ -1,10 +1,11 @@
 import React, { Suspense } from 'react';
-import { Layout as AntdLayout, Row, RowProps, Spin } from 'antd';
+import { Layout as AntdLayout, Row, RowProps } from 'antd';
 import { Helmet } from 'react-helmet';
 import Header from './Header';
 import Sider from './Sider';
 import Footer from './Footer';
 import './Layout.less';
+import PageLoad from '@components/Loading/PageLoad';
 
 export interface CustomLayoutProps extends RowProps {
   justify?: 'start' | 'end' | 'center' | 'space-around' | 'space-between';
@@ -21,13 +22,7 @@ const Layout = ({ justify = 'center', ...props }: CustomLayoutProps) => {
       <Sider />
       <AntdLayout>
         <Header />
-        <Suspense
-          fallback={
-            <div className='center-flex height-fill-vp'>
-              <Spin size='large' />
-            </div>
-          }
-        >
+        <Suspense fallback={<PageLoad />}>
           <Content className='content' style={{ minWidth: 1280 }}>
             <Row justify={justify} {...props}>
               {props.children}
