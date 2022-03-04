@@ -1,4 +1,3 @@
-from os import stat
 from django.conf import settings
 from django.shortcuts import render
 from django.middleware import csrf
@@ -40,7 +39,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
 
     def finalize_response(self, request, response, *args, **kwargs):
         if response.data.get("access"):
-            cookie_max_age = 900  # 15 minutes
+            cookie_max_age = 3600 * 24  # 1 day
             response.set_cookie(
                 "access_token",
                 response.data["access"],
@@ -99,7 +98,7 @@ class CookieTokenRefreshView(TokenRefreshView):
             return super().finalize_response(request, response, *args, **kwargs)
 
         if response.data.get("access"):
-            cookie_max_age = 900  # 15 minutes
+            cookie_max_age = 3600 * 24  # 1 day
             response.set_cookie(
                 "access_token",
                 response.data["access"],
@@ -137,6 +136,7 @@ class BlacklistToken(APIView):
         refresh_token = request.COOKIES.get("refresh_token")
         token = RefreshToken(refresh_token)
         token.blacklist()
+
         response = Response(status=status.HTTP_205_RESET_CONTENT)
         response.delete_cookie("access_token")
         response.delete_cookie("refresh_token")
@@ -161,7 +161,7 @@ class MyTokenVerifyView(TokenVerifyView):
 
     def finalize_response(self, request, response, *args, **kwargs):
         if response.data.get("access"):
-            cookie_max_age = 900  # 15 minutes
+            cookie_max_age = 3600 * 24  # 1 day
             response.set_cookie(
                 "access_token",
                 response.data["access"],

@@ -41,27 +41,18 @@ export const refreshTknAPI = () =>
       return Promise.resolve(res);
     })
     .catch((err) => {
-      delete axios.defaults.headers['Authorization'];
-      Cookies.remove('access_token');
-      clearStorage();
       return Promise.reject(err);
     });
 
 export const forgotPassAPI = (email: string) =>
-  axios
-    .post('password_reset/', {
-      email: email,
-    })
-    .then((res) => Promise.resolve(res))
-    .catch((err) => Promise.reject(err));
+  axios.post('password_reset/', {
+    email: email,
+  });
 
 export const validateForgotPassTknAPI = (token: string) =>
-  axios
-    .post('password_reset/validate_token/', {
-      token: token,
-    })
-    .then((res) => Promise.resolve(res))
-    .catch((err) => Promise.reject(err));
+  axios.post('password_reset/validate_token/', {
+    token: token,
+  });
 
 interface ResetPassProps {
   token: string;
@@ -69,7 +60,4 @@ interface ResetPassProps {
 }
 
 export const resetPassAPI = (resetPassDetails: ResetPassProps) =>
-  axios
-    .post('password_reset/confirm/', resetPassDetails)
-    .then((res) => Promise.resolve(res))
-    .catch((err) => Promise.reject(err));
+  axios.post('password_reset/confirm/', resetPassDetails);

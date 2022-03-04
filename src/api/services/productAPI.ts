@@ -1,8 +1,9 @@
 import axios from '@api/axiosInstance';
 
-export const productPrevAPI = (searchParam?: string) => {
-  return axios
-    .get(`item/products/prev/${searchParam !== undefined ? searchParam : ''}`)
-    .then((res) => Promise.resolve(res))
-    .catch((err) => Promise.reject(err));
-};
+export const productPrevAPI = (searchParam?: string) =>
+  axios.get(
+    `item/products/prev/${searchParam !== undefined ? searchParam : ''}`
+  );
+
+export const productDelAPI = (pk: number) =>
+  axios.delete(`item/products/${pk}`);

@@ -1,4 +1,4 @@
-import { Col, Row, Form, Typography, Space, Input, Spin, message } from 'antd';
+import { Col, Row, Form, Typography, Space, Input, message } from 'antd';
 import Button from '@components/Button';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import MainCard from '@components/Card/MainCard';
@@ -16,6 +16,7 @@ import {
 } from '@utils/strUtils';
 import { resetPassAPI, validateForgotPassTknAPI } from '@api/services/authAPI';
 import SuccessModal from '@components/Modal/SuccessModal';
+import PageLoad from '@components/Loading/PageLoad';
 
 const ResetPass = () => {
   const { Text, Title } = Typography;
@@ -266,9 +267,7 @@ const ResetPass = () => {
       />
     </Form>
   ) : (
-    <div className='center-flex height-fill-vp'>
-      <Spin size='large' />
-    </div>
+    <PageLoad />
   );
 };
 

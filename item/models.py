@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-
+from simple_history.models import HistoricalRecords
 from item.choices import ITEM_STATUS, ITEM_TYPE, PROD_CAT
 
 
@@ -22,6 +22,7 @@ class Item(models.Model):
     width = models.DecimalField(max_digits=8, decimal_places=2)
     height = models.DecimalField(max_digits=8, decimal_places=2)
     last_update = models.DateTimeField(auto_now=True)
+    history = HistoricalRecords()
 
     class Meta:
         db_table = "item"
@@ -32,7 +33,7 @@ class Item(models.Model):
 
 class Product(models.Model):
     item = models.OneToOneField(
-        Item, on_delete=models.CASCADE, primary_key=True, related_name="i"
+        Item, on_delete=models.CASCADE, primary_key=True, related_name="item"
     )
 
     category = models.CharField(max_length=30, choices=PROD_CAT)
@@ -47,6 +48,7 @@ class Product(models.Model):
     )
     avg_lead_tm = models.IntegerField(blank=True, null=True)
     max_lead_tm = models.IntegerField(blank=True, null=True)
+    history = HistoricalRecords()
 
     class Meta:
         db_table = "product"
@@ -56,6 +58,7 @@ class Package(models.Model):
     item = models.OneToOneField(Item, on_delete=models.CASCADE, primary_key=True)
     avail_start_tm = models.DateTimeField()
     avail_end_tm = models.DateTimeField(blank=True, null=True)
+    history = HistoricalRecords()
 
     class Meta:
         db_table = "package"
@@ -66,6 +69,7 @@ class PackageItem(models.Model):
     quantity = models.IntegerField(blank=True, null=True)
     pack = models.ForeignKey(Package, on_delete=models.CASCADE)
     prod = models.ForeignKey("Product", on_delete=models.CASCADE)
-
+    history = HistoricalRecords()
+    
     class Meta:
         db_table = "package_item"

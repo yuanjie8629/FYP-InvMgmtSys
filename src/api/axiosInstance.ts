@@ -2,6 +2,7 @@ import { clearStorage } from '@utils/storageUtils';
 import oriAxios from 'axios';
 import Cookies from 'js-cookie';
 import { refreshTknAPI } from './services/authAPI';
+
 const localBaseURL = 'http://127.0.0.1:8000/api/';
 const serverBaseURL = 'https://fyp-shrf.herokuapp.com/api/';
 
@@ -17,6 +18,8 @@ const axios = oriAxios.create({
   },
   withCredentials: true,
 });
+
+let refresh = false;
 
 axios.interceptors.response.use(
   (res) => {
@@ -43,16 +46,21 @@ axios.interceptors.response.use(
       error.response.data.code === 'token_not_valid' &&
       error.response.status === 401 &&
       error.response.statusText === 'Unauthorized' &&
-      originalRequest.url !== 'token/verify/'
+      originalRequest.url !== 'token/verify/' &&
+      !refresh
     ) {
-      return refreshTknAPI()
-        .then((res) => {
+      refresh = true;
+      return await refreshTknAPI()
+        .then(async (res) => {
           originalRequest.headers['Authorization'] = `JWT ${Cookies.get(
             'access_token'
           )}`;
-          return axios(originalRequest);
+          return await axios(originalRequest);
         })
-        .catch((err) => Promise.reject(err));
+        .catch((err) => Promise.reject(err))
+        .finally(() => {
+          refresh = false;
+        });
     }
 
     return Promise.reject(error);

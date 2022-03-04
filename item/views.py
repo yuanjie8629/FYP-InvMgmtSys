@@ -1,7 +1,7 @@
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
-from django.db.models import FilteredRelation, Q
+from django.db.models import QuerySet
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
@@ -18,6 +18,11 @@ class ProductViewSet(viewsets.ModelViewSet):
     def list(self, request):
         response = {"message": "List function is not offered in this path."}
         return Response(response, status=status.HTTP_403_FORBIDDEN)
+
+    def destroy(self, request, *args, **kwargs):
+        qs: QuerySet = self.get_queryset(*args, **kwargs)
+        qs.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ProductPrevView(generics.ListAPIView):

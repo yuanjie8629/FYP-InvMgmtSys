@@ -1,3 +1,4 @@
+import PageLoad from '@components/Loading/PageLoad';
 import SessionExpModal from '@components/Modal/AuthModal/SessionExtendModal';
 import {
   BrowserRouter as Router,
@@ -8,7 +9,17 @@ import {
 import AuthRoute from './AuthRoute';
 import routeList from './routeList';
 import routeRedirectList from './routeRedirectList';
+import { useEffect, useState } from 'react';
+import { verifyTknAPI } from '@api/services/authAPI';
+
 export default function AppRoute() {
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    setLoading(true);
+    verifyTknAPI().finally(() => {
+      setLoading(false);
+    });
+  }, []);
   return (
     <Router>
       <Routes>
@@ -26,7 +37,8 @@ export default function AppRoute() {
               path={route.path}
               element={
                 <>
-                  {route.component} <SessionExpModal />
+                  {loading ? <PageLoad /> : route.component}
+                  <SessionExpModal />
                 </>
               }
             />

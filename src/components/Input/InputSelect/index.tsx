@@ -1,4 +1,4 @@
-import { Input, InputProps as AntdInputProps, Select } from 'antd';
+import { Form, FormItemProps, Input, InputProps as AntdInputProps, Select } from 'antd';
 import { useState } from 'react';
 
 interface OnSelectProps {
@@ -6,7 +6,7 @@ interface OnSelectProps {
   value: string;
 }
 
-export interface InputProps extends AntdInputProps {
+export interface InputProps extends Omit<AntdInputProps, 'onChange'> {
   width?: number | string;
   selectBefore?: {
     defaultVal: string;
@@ -23,7 +23,8 @@ export interface InputProps extends AntdInputProps {
     }[];
   };
   selectWidth?: number | string;
-  onSelectCat?: (selected: OnSelectProps) => void;
+  onChange?: (selected: OnSelectProps) => void;
+  formProps?: FormItemProps;
 }
 
 const InputSelect = ({
@@ -31,7 +32,8 @@ const InputSelect = ({
   selectBefore,
   selectAfter,
   selectWidth = 'fit-content',
-  onSelectCat = () => null,
+  onChange = () => null,
+  formProps,
   ...props
 }: InputProps) => {
   const [selectType, setSelectType] = useState(selectBefore.defaultVal);
@@ -53,13 +55,15 @@ const InputSelect = ({
   );
 
   return (
-    <Input
-      addonBefore={inputSelectBefore}
-      addonAfter={inputSelectAfter}
-      style={{ width: width }}
-      onChange={(e) => onSelectCat({ type: selectType, value: e.target.value })}
-      {...props}
-    ></Input>
+    <Form.Item {...formProps}>
+      <Input
+        addonBefore={inputSelectBefore}
+        addonAfter={inputSelectAfter}
+        style={{ width: width }}
+        onChange={(e) => onChange({ type: selectType, value: e.target.value })}
+        {...props}
+      />
+    </Form.Item>
   );
 };
 
