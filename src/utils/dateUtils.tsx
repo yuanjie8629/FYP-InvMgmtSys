@@ -425,3 +425,5 @@ export const formatDt = (
     ).format(outputFormat)}`;
   }
 };
+
+export const getCurUnixTm = () => moment().subtract(15, 'second').unix();

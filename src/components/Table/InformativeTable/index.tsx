@@ -70,6 +70,35 @@ const InformativeTable = ({
       setSearchParams(addSearchParams(searchParams, { limit: String(defPg) }));
   }, [defPg, pagination, searchParams, setSearchParams]);
 
+  const hanldeTableChange = (paginate, _filters, sorter) => {
+    setPagination(paginate);
+    if (sorter['column'] !== undefined) {
+      let currSearchParams = {};
+      searchParams.forEach((value, key) => {
+        currSearchParams = {
+          ...currSearchParams,
+          [key]: value,
+        };
+      });
+      setSearchParams({
+        ...currSearchParams,
+        order: `${sorter['order'] === 'descend' ? '-' : ''}${
+          sorter['columnKey']
+        }`,
+      });
+    } else {
+      let currSearchParams = {};
+      searchParams.forEach((value, key) => {
+        currSearchParams = {
+          ...currSearchParams,
+          [key]: value,
+        };
+      });
+      delete currSearchParams['order'];
+      setSearchParams(currSearchParams);
+    }
+  };
+
   const handleSelectChange = (selectedRowKeys: any, selectedRows: any) => {
     if (buttons !== undefined) {
       let buttonShow: { key: string; show: boolean }[] = [];
@@ -165,34 +194,7 @@ const InformativeTable = ({
             pageSizeOptions: ['5', '10', '15', '20'],
             total: totalRecord,
           }}
-          onChange={(paginate, _filters, sorter) => {
-            setPagination(paginate);
-            if (sorter['column'] !== undefined) {
-              let currSearchParams = {};
-              searchParams.forEach((value, key) => {
-                currSearchParams = {
-                  ...currSearchParams,
-                  [key]: value,
-                };
-              });
-              setSearchParams({
-                ...currSearchParams,
-                order: `${sorter['order'] === 'descend' ? '-' : ''}${
-                  sorter['columnKey']
-                }`,
-              });
-            } else {
-              let currSearchParams = {};
-              searchParams.forEach((value, key) => {
-                currSearchParams = {
-                  ...currSearchParams,
-                  [key]: value,
-                };
-              });
-              delete currSearchParams['order'];
-              setSearchParams(currSearchParams);
-            }
-          }}
+          onChange={hanldeTableChange}
           {...props}
         />
       </Row>

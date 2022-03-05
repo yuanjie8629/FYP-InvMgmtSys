@@ -3,9 +3,8 @@ import { findRoutePath } from '@utils/routingUtils';
 import Cookies from 'js-cookie';
 import routeList from './routeList';
 
-const AuthRoute = ({ children }: { children?: JSX.Element }) => {
+const AuthRoute = (_props) => {
   const location = useLocation();
-
   const notProtectedRoute = routeList
     .filter((route) => route.protected === false)
     .map((filteredRoute) => filteredRoute.path);
