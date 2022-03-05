@@ -12,7 +12,7 @@ export const removeSearchparams = (
   removeKey: string
 ) => {
   currParams.delete(removeKey);
-  return parseURL(currParams)
+  return parseURL(currParams);
 };
 
 export const addFilter = (currFilter, newKey: string, newValue) => {

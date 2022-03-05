@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Col, Form, Input, Image, Row, Space, Alert, Typography } from 'antd';
 import { CaretLeftOutlined } from '@ant-design/icons';
 import Button from '@components/Button';
@@ -10,10 +10,12 @@ import { Helmet } from 'react-helmet';
 import { BoldTitle } from '@components/Title';
 import { loginAPI } from '@api/services/authAPI';
 import AuthModal from '@components/Modal/AuthModal';
+import { getSessionExp } from '@utils/storageUtils';
+import { getCurUnixTm } from '@utils/dateUtils';
 
-const Login = () => {
+const Login = (_props) => {
   const { Text } = Typography;
-  const [loginErr, setLoginErr] = useState();
+  const [loginErr, setLoginErr] = useState<React.ReactNode>();
   const [loading, setLoading] = useState(false);
   const handleLogin = async (values) => {
     setLoading(true);
@@ -21,34 +23,53 @@ const Login = () => {
       username: values.username,
       password: values.password,
     })
-      .then((res) => {
-        setLoading(false);
-      })
       .catch((e) => {
-        setLoginErr(e.response?.status);
-        setLoading(false);
-      });
-  };
-
-  const getErrMsg = loginErr && (
-    <Alert
-      message={
-        <Text type='danger'>
-          {loginErr === 401 ? (
+        if (e.response?.status === 401) {
+          setLoginErr(
             <>
               Invalid username or password.
               <br />
               Please try again.
             </>
-          ) : (
+          );
+        } else if (e.response?.status === 403) {
+          setLoginErr(
             <>
               Your account has been locked.
               <br />
               Please retry after an hour.
             </>
-          )}
-        </Text>
-      }
+          );
+        } else {
+          setLoginErr(
+            <>
+              Something went wrong.
+              <br />
+              Please try again.
+            </>
+          );
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    if (getCurUnixTm() >= getSessionExp()) {
+      setLoginErr(
+        <>
+          Your session has expired.
+          <br />
+          Please login again.
+        </>
+      );
+    }
+  }, []);
+
+  const getErrMsg = loginErr && (
+    <Alert
+      message={<Text type='danger'>{loginErr}</Text>}
       type='error'
       showIcon
     />

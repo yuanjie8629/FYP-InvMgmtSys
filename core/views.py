@@ -160,6 +160,15 @@ class MyTokenVerifyView(TokenVerifyView):
     permission_classes = [permissions.AllowAny]
 
     def finalize_response(self, request, response, *args, **kwargs):
+        if response.status_code in [
+            status.HTTP_401_UNAUTHORIZED,
+            status.HTTP_403_FORBIDDEN,
+        ]:
+            response.delete_cookie("refresh_token")
+            response.delete_cookie("access_token")
+            response.delete_cookie("csrftoken")
+            return super().finalize_response(request, response, *args, **kwargs)
+
         if response.data.get("access"):
             cookie_max_age = 3600 * 24  # 1 day
             response.set_cookie(

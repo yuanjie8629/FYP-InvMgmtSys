@@ -148,7 +148,6 @@ const ProdMgmt = () => {
     );
     setSelected(selected);
   };
-  console.log(selected);
 
   const handleTabChange = (key) => {
     if (key !== 'all') {
@@ -270,11 +269,14 @@ const ProdMgmt = () => {
                   onOk: async () => {
                     await productDelAPI(prod.item_id)
                       .then((res) => {
+                        setList(
+                          list.filter((item) => item.item_id !== prod.item_id)
+                        );
+                        setRecordCount(recordCount - 1);
                         showActionSuccessMsg('delete');
                       })
                       .catch((err) => {
                         showServerErrMsg();
-                        Promise.resolve();
                       });
                   },
                 });

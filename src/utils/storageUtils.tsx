@@ -31,3 +31,11 @@ export const getSessionExp = (): number =>
 export const clearStorage = () => {
   window.localStorage.clear();
 };
+
+export const addStorageItem = (key: string, value: string) => {
+  window.localStorage.setItem(key, value);
+};
+
+export const removeStorageItem = (key: string) => {
+  window.localStorage.removeItem(key);
+};

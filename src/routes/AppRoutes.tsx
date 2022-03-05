@@ -11,18 +11,33 @@ import routeList from './routeList';
 import routeRedirectList from './routeRedirectList';
 import { useEffect, useState } from 'react';
 import { verifyTknAPI } from '@api/services/authAPI';
+import { findRoutePath } from '@utils/routingUtils';
 
 export default function AppRoute() {
   const [loading, setLoading] = useState(false);
+  const [sessionExp, setSessionExp] = useState(false);
   useEffect(() => {
     setLoading(true);
-    verifyTknAPI().finally(() => {
-      setLoading(false);
-    });
+    verifyTknAPI()
+      .then(() => {
+        setSessionExp(false);
+      })
+      .catch((err) => {
+        if (err.response?.status === 401) {
+          setSessionExp(true);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
+
   return (
     <Router>
       <Routes>
+        {sessionExp && (
+          <Route element={<Navigate to={findRoutePath('login')} />} />
+        )}
         <Route element={<AuthRoute />}>
           {routeRedirectList.map((route) => (
             <Route
@@ -36,10 +51,14 @@ export default function AppRoute() {
               key={route.path}
               path={route.path}
               element={
-                <>
-                  {loading ? <PageLoad /> : route.component}
-                  <SessionExpModal />
-                </>
+                loading ? (
+                  <PageLoad />
+                ) : (
+                  <>
+                    <route.component/>
+                    <SessionExpModal />
+                  </>
+                )
               }
             />
           ))}

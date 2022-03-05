@@ -8,7 +8,7 @@ router = CustomRouter()
 router.register(r"products", ProductViewSet)
 
 
-urlpatterns = [path("products/prev/", ProductPrevView.as_view(), name="productPrev")]
+urlpatterns = [path("products/prev", ProductPrevView.as_view(), name="productPrev")]
 
 
 urlpatterns += router.urls

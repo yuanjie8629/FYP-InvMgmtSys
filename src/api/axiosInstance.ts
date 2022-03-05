@@ -19,8 +19,9 @@ const axios = oriAxios.create({
   withCredentials: true,
 });
 
-let refresh = false;
+axios.defaults.headers.common['X-CSRFToken'] = Cookies.get('csrftoken');
 
+let refresh = false;
 axios.interceptors.response.use(
   (res) => {
     return res;
@@ -38,6 +39,7 @@ axios.interceptors.response.use(
       delete axios.defaults.headers['Authorization'];
       Cookies.remove('access_token');
       clearStorage();
+
       window.location.href = '';
       return Promise.reject(error);
     }
