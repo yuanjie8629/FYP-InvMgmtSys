@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     "django_rest_passwordreset",
     "django_filters",
     "simple_history",
-    "cacheops",
     "corsheaders",
     "axes",
     "debug_toolbar",
@@ -127,19 +126,6 @@ DATABASES = {
         "ATOMIC_REQUEST": True,
     }
 }
-
-
-# Redis Cache
-CACHEOPS_REDIS = "rediss://:pcef05bd594953a9d7e8489b06de08e31b90b0b74c29da552e87b75a6f5bba5c9@ec2-18-209-0-144.compute-1.amazonaws.com:7870/?ssl_cert_reqs=none&socket_timeout=10"
-CACHEOPS_DEFAULTS = {"timeout": 60 * 60 * 2}
-CACHEOPS = {
-    "item.*": {
-        "ops": {"get", "fetch", "count", "aggregate", "exists"},
-        "timeout": 60 * 15,
-    },
-    "*.*": {"timeout": 60 * 60},
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
