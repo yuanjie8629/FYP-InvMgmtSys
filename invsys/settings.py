@@ -140,8 +140,7 @@ CACHEOPS = {
 }
 
 DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": lambda request: not request.is_ajax()
-    and request.META.get("REMOTE_ADDR", None) in INTERNAL_IPS
+    "SHOW_TOOLBAR_CALLBACK": "core.utils.show_debug_toolbar_in_staging"
 }
 
 
