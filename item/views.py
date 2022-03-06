@@ -1,3 +1,5 @@
+from asyncio.windows_events import NULL
+from urllib import response
 from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
@@ -21,11 +23,17 @@ class ProductViewSet(viewsets.ModelViewSet):
         response = {"message": "List function is not offered in this path."}
         return Response(response, status=status.HTTP_403_FORBIDDEN)
 
-    def destroy(self, request, pk):
+    def destroy(self, request, *args, **kwargs):
+        pk = self.kwargs.get("pk")
+        if not pk:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response.data = {"detail": "Not found."}
+            return response
+
         ids = [int(pk) for pk in pk.split(",")]
         for i in ids:
             get_object_or_404(Item, pk=i).delete()
-        cache.delete("prodPrev")
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -35,12 +43,12 @@ class ProductPrevView(generics.ListAPIView):
     serializer_class = ProductPrevSerializer
     filterset_class = ProductFilter
 
-    @method_decorator(cache_page(60 * 60 * 1, key_prefix="prodPrev"))  # 1-day cache
-    @method_decorator(cache_control(must_revalidate=True))
-    @method_decorator(
-        vary_on_headers(
-            "Authorization",
-        )
-    )
+    # @method_decorator(cache_page(60 * 60 * 1, key_prefix="prodPrev"))  # 1-day cache
+    # @method_decorator(cache_control(must_revalidate=True))
+    # @method_decorator(
+    #     vary_on_headers(
+    #         "Authorization",
+    #     )
+    # )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
