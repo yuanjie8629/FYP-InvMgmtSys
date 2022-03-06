@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     "django_rest_passwordreset",
     "django_filters",
     "simple_history",
-    "cacheops",
     "cachalot",
     "corsheaders",
     "axes",
@@ -131,11 +130,7 @@ DATABASES = {
 # Redis Cache
 
 # if not DEBUG:
-# CACHEOPS_REDIS = "rediss://:p10bd0c9416edcdcb8946f8143d70d2e19d87f7acb87c5a80e9a002d262e65474@ec2-35-170-220-201.compute-1.amazonaws.com:24870/?ssl_cert_reqs=none"
-# CACHEOPS_DEFAULTS = {"timeout": 60 * 60 * 2}
-# CACHEOPS = {
-#     "*.*": {"timeout": 60 * 60},
-# }
+
 # else:
 #     CACHES = {
 #         "default": {
