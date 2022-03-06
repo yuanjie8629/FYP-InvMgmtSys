@@ -66,6 +66,7 @@ setuptools = "*"
 sendgrid = "==6.9.6"
 wrapt = "==1.13.3"
 django-cachalot = "==2.5.1"
+wheel = "*"
 
 [dev-packages]
 
