@@ -128,16 +128,20 @@ DATABASES = {
     }
 }
 
-
 # Redis Cache
 CACHEOPS_REDIS = "rediss://:p10bd0c9416edcdcb8946f8143d70d2e19d87f7acb87c5a80e9a002d262e65474@ec2-35-170-220-201.compute-1.amazonaws.com:24870/?ssl_cert_reqs=none"
 CACHEOPS_DEFAULTS = {"timeout": 60 * 60 * 2}
 CACHEOPS = {
     "item.*": {
-        "ops": {"get", "fetch", "count", "aggregate", "exists"},
+        "ops": {"get", "fetch", "count", "aggregate"},
         "timeout": 60 * 15,
     },
     "*.*": {"timeout": 60 * 60},
+}
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": lambda request: not request.is_ajax()
+    and request.META.get("REMOTE_ADDR", None) in INTERNAL_IPS
 }
 
 
