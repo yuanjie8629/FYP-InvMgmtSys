@@ -57,3 +57,5 @@ virtualenv==20.13.1
 virtualenv-clone==0.5.7
 whitenoise==6.0.0
 wrapt==1.13.3
+wheel==0.37.1
+setuptools==60.9.3
