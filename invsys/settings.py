@@ -130,7 +130,7 @@ DATABASES = {
 
 
 # Redis Cache
-CACHEOPS_REDIS = "rediss://:pcef05bd594953a9d7e8489b06de08e31b90b0b74c29da552e87b75a6f5bba5c9@ec2-18-209-0-144.compute-1.amazonaws.com:7870/?ssl_cert_reqs=none&socket_timeout=10"
+CACHEOPS_REDIS = "rediss://:p10bd0c9416edcdcb8946f8143d70d2e19d87f7acb87c5a80e9a002d262e65474@ec2-35-170-220-201.compute-1.amazonaws.com:24870/?ssl_cert_reqs=none"
 CACHEOPS_DEFAULTS = {"timeout": 60 * 60 * 2}
 CACHEOPS = {
     "item.*": {
