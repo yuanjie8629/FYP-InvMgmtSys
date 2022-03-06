@@ -44,7 +44,6 @@ python-http-client==3.3.6
 pytz==2021.3
 redis==4.1.4
 Rx==1.6.1
-sendgrid==6.9.6
 singledispatch==3.7.0
 six==1.16.0
 sqlparse==0.4.2
@@ -57,3 +56,4 @@ urllib3==1.26.8
 virtualenv==20.13.1
 virtualenv-clone==0.5.7
 whitenoise==6.0.0
+wrapt==1.13.3

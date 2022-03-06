@@ -64,6 +64,7 @@ redis = "==4.1.4"
 Deprecated = "==1.2.13"
 setuptools = "*"
 sendgrid = "==6.9.6"
+wrapt = "==1.13.3"
 
 [dev-packages]
 
