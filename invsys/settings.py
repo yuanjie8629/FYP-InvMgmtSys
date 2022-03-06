@@ -35,7 +35,6 @@ ALLOWED_HOSTS = ["127.0.0.1", "fyp-shrf.herokuapp.com/", "localhost"]
 
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -50,6 +49,7 @@ INSTALLED_APPS = [
     "django_filters",
     "simple_history",
     "cacheops",
+    "cachalot",
     "corsheaders",
     "axes",
     "debug_toolbar",
@@ -129,20 +129,48 @@ DATABASES = {
 }
 
 # Redis Cache
-CACHEOPS_REDIS = "rediss://:p10bd0c9416edcdcb8946f8143d70d2e19d87f7acb87c5a80e9a002d262e65474@ec2-35-170-220-201.compute-1.amazonaws.com:24870/?ssl_cert_reqs=none"
-CACHEOPS_DEFAULTS = {"timeout": 60 * 60 * 2}
-CACHEOPS = {
-    "item.*": {
-        "ops": {"get", "fetch", "count", "aggregate"},
-        "timeout": 60 * 15,
-    },
-    "*.*": {"timeout": 60 * 60},
+
+# if not DEBUG:
+# CACHEOPS_REDIS = "rediss://:p10bd0c9416edcdcb8946f8143d70d2e19d87f7acb87c5a80e9a002d262e65474@ec2-35-170-220-201.compute-1.amazonaws.com:24870/?ssl_cert_reqs=none"
+# CACHEOPS_DEFAULTS = {"timeout": 60 * 60 * 2}
+# CACHEOPS = {
+#     "*.*": {"timeout": 60 * 60},
+# }
+# else:
+#     CACHES = {
+#         "default": {
+#             "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+#         }
+#     }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "rediss://:p10bd0c9416edcdcb8946f8143d70d2e19d87f7acb87c5a80e9a002d262e65474@ec2-35-170-220-201.compute-1.amazonaws.com:24870",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CONNECTION_POOL_KWARGS": {"ssl_cert_reqs": None},
+        },
+    }
 }
 
-DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": "core.utils.show_debug_toolbar_in_staging"
-}
-
+DEBUG_TOOLBAR_PANELS = [
+    "debug_toolbar.panels.history.HistoryPanel",
+    "debug_toolbar.panels.versions.VersionsPanel",
+    "debug_toolbar.panels.timer.TimerPanel",
+    "debug_toolbar.panels.settings.SettingsPanel",
+    "debug_toolbar.panels.headers.HeadersPanel",
+    "debug_toolbar.panels.request.RequestPanel",
+    "debug_toolbar.panels.sql.SQLPanel",
+    "debug_toolbar.panels.staticfiles.StaticFilesPanel",
+    "debug_toolbar.panels.templates.TemplatesPanel",
+    "debug_toolbar.panels.cache.CachePanel",
+    "cachalot.panels.CachalotPanel",
+    "debug_toolbar.panels.signals.SignalsPanel",
+    "debug_toolbar.panels.logging.LoggingPanel",
+    "debug_toolbar.panels.redirects.RedirectsPanel",
+    "debug_toolbar.panels.profiling.ProfilingPanel",
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

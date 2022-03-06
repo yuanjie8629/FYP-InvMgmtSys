@@ -20,7 +20,3 @@ def enforce_csrf(request):
     reason = check.process_view(request, None, (), {})
     if reason:
         raise exceptions.PermissionDenied("CSRF Failed: %s" % reason)
-
-
-def show_debug_toolbar_in_staging(*a, **kw):
-    return True
