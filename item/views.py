@@ -1,4 +1,3 @@
-from urllib import response
 from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
