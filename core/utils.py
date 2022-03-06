@@ -9,9 +9,6 @@ from rest_framework.authentication import CSRFCheck
 from rest_framework import exceptions
 
 
-
-
-
 @receiver(user_locked_out)
 def raise_permission_denied(*args, **kwargs):
     raise PermissionDenied("Too many failed login attempts")
@@ -23,3 +20,7 @@ def enforce_csrf(request):
     reason = check.process_view(request, None, (), {})
     if reason:
         raise exceptions.PermissionDenied("CSRF Failed: %s" % reason)
+
+
+def show_debug_toolbar_in_staging(*a, **kw):
+    return True
