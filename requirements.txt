@@ -6,12 +6,14 @@ certifi==2021.10.8
 click==8.0.4
 cloudinary==1.29.0
 colorama==0.4.4
+Deprecated==1.2.13
 distlib==0.3.4
 dj-database-url==0.5.0
 Django==4.0.2
 django-auto-prefetch==1.1.0
 django-axes==5.31.0
 django-cachalot==2.5.1
+django-cacheops==6.0
 django-cors-headers==3.11.0
 django-debug-toolbar==3.2.4
 django-filter==21.1
@@ -23,6 +25,7 @@ django-simple-history==3.0.0
 djangorestframework==3.13.1
 djangorestframework-simplejwt==5.0.0
 filelock==3.4.2
+funcy==1.17
 gunicorn==20.1.0
 isort==5.10.1
 lazy-object-proxy==1.7.1
@@ -36,6 +39,7 @@ promise==2.3
 psycopg2==2.9.3
 PyJWT==2.3.0
 pylint==2.12.2
+pyparsing==3.0.7
 python-http-client==3.3.6
 pytz==2021.3
 redis==4.1.4

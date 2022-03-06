@@ -17,10 +17,6 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all().select_related("item")
     serializer_class = ProductSerializer
 
-    def list(self, request):
-        response = {"message": "List function is not offered in this path."}
-        return Response(response, status=status.HTTP_403_FORBIDDEN)
-
     def destroy(self, request, *args, **kwargs):
         pk = self.kwargs.get("pk")
         if not pk:

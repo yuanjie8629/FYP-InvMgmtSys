@@ -8,7 +8,6 @@ const serverBaseURL = 'https://fyp-shrf.herokuapp.com/api/';
 
 const axios = oriAxios.create({
   baseURL: process.env.NODE_ENV === 'production' ? serverBaseURL : localBaseURL,
-  timeout: 10000,
   headers: {
     Authorization: Cookies.get('access_token')
       ? `JWT ${Cookies.get('access_token')}`

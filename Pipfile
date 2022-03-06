@@ -60,6 +60,10 @@ PyJWT = "==2.3.0"
 Rx = "==1.6.1"
 wheel = "*"
 setuptools = "*"
+django-cacheops = "==6.0"
+funcy = "==1.17"
+pyparsing = "==3.0.7"
+Deprecated = "==1.2.13"
 
 [dev-packages]
 

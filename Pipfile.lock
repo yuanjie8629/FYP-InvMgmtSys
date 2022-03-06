@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "aac75dc9dd46e6176fc9c308425f998e87cafd28686c0688537570485a3343b2"
+            "sha256": "1dfeaa17a2127d09ca9232ad646010ec40acd5a90d6864481a8fa3526261ba0f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -105,7 +105,7 @@
                 "sha256:43ac5335da90c31c24ba028af536a91d41d53f9e6901ddb021bcc572ce44e38d",
                 "sha256:64756e3e14c8c5eea9795d93c524551432a0be75629f8f29e67ab8caf076c76d"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "index": "pypi",
             "version": "==1.2.13"
         },
         "distlib": {
@@ -155,6 +155,14 @@
             ],
             "index": "pypi",
             "version": "==2.5.1"
+        },
+        "django-cacheops": {
+            "hashes": [
+                "sha256:78e161ebd96a32e28e19ec7da31f2afed9e62a79726b8b5f0ed12dd16c2e5841",
+                "sha256:ee38b969c9fc68f7c88e769b6c811e19563cca1ae08210d9f553ff758b6c3e17"
+            ],
+            "index": "pypi",
+            "version": "==6.0"
         },
         "django-cors-headers": {
             "hashes": [
@@ -243,6 +251,14 @@
             ],
             "index": "pypi",
             "version": "==3.4.2"
+        },
+        "funcy": {
+            "hashes": [
+                "sha256:40b9b9a88141ae6a174df1a95861f2b82f2fdc17669080788b73a3ed9370e968",
+                "sha256:ba7af5e58bfc69321aaf860a1547f18d35e145706b95d1b3c966abc4f0b60309"
+            ],
+            "index": "pypi",
+            "version": "==1.17"
         },
         "gunicorn": {
             "hashes": [
@@ -404,7 +420,7 @@
                 "sha256:18ee9022775d270c55187733956460083db60b37d0d0fb357445f3094eed3eea",
                 "sha256:a6c06a88f252e6c322f65faf8f418b16213b51bdfaece0524c1c1bc30c63c484"
             ],
-            "markers": "python_version >= '3.6'",
+            "index": "pypi",
             "version": "==3.0.7"
         },
         "python-http-client": {
