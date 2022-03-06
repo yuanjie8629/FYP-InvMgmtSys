@@ -1,5 +1,3 @@
-from asyncio.windows_events import NULL
-from urllib import response
 from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
@@ -43,12 +41,12 @@ class ProductPrevView(generics.ListAPIView):
     serializer_class = ProductPrevSerializer
     filterset_class = ProductFilter
 
-    # @method_decorator(cache_page(60 * 60 * 1, key_prefix="prodPrev"))  # 1-day cache
-    # @method_decorator(cache_control(must_revalidate=True))
-    # @method_decorator(
-    #     vary_on_headers(
-    #         "Authorization",
-    #     )
-    # )
+    @method_decorator(cache_page(60 * 60 * 1, key_prefix="prodPrev"))  # 1-day cache
+    @method_decorator(cache_control(must_revalidate=True))
+    @method_decorator(
+        vary_on_headers(
+            "Authorization",
+        )
+    )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
