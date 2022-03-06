@@ -63,6 +63,7 @@ funcy = "==1.17"
 pyparsing = "==3.0.7"
 redis = "==4.1.4"
 Deprecated = "==1.2.13"
+setuptools = "*"
 
 [dev-packages]
 
