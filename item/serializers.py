@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from core.serializers import ChoiceField
+import item
 from item.models import PROD_CAT, Item, Product
 
 
@@ -29,6 +30,23 @@ class ProductSerializer(serializers.ModelSerializer):
         product = Product.objects.create(item=item, **validated_data)
         return product
 
+    def update(self, instance, validated_data):
+        item_data = validated_data.pop("item")
+        keys = []
+        item_keys = []
+        for key in validated_data:
+            setattr(instance, key, validated_data[key])
+            keys.append(key)
+        instance.save(update_fields=keys)
+
+        item = Item.objects.get(pk=instance.pk)
+        for key in item_data:
+            setattr(item, key, item_data[key])
+            item_keys.append(key)
+        item.save(update_fields=item_keys)
+
+        return instance
+
     def to_representation(self, instance):
         product = super().to_representation(instance)
         item = product.pop("item")
@@ -39,7 +57,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class ProductPrevSerializer(serializers.ModelSerializer):
     item = ItemPrevSerializer()
-    category = ChoiceField(choices=PROD_CAT)
 
     class Meta:
         model = Product

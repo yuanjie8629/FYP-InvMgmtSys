@@ -23,7 +23,11 @@ import StatusTag from '@components/Tag/StatusTag';
 import { BoldTitle } from '@components/Title';
 import { ActionModal } from '@components/Modal';
 import { ActionModalContentProps } from '@components/Modal/ActionModal';
-import { productDelAPI, productPrevAPI } from '@api/services/productAPI';
+import {
+  productBulkDelAPI,
+  productDelAPI,
+  productPrevAPI,
+} from '@api/services/productAPI';
 import { addSearchParams, parseURL } from '@utils/urlUtls';
 
 const ProdMgmt = () => {
@@ -48,7 +52,9 @@ const ProdMgmt = () => {
       })
       .catch((err) => {
         if (err.response?.status !== 401) setTableLoading(false);
-        Promise.resolve();
+        else {
+          showServerErrMsg();
+        }
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
@@ -105,10 +111,25 @@ const ProdMgmt = () => {
       type='primary'
       onClick={() => {
         ActionModal.show('delete', {
-          onOk: () =>
-            fetch('http://example.com').then(() => {
-              showActionSuccessMsg('delete', true);
-            }),
+          onOk: async () => {
+            const selectedKeys = selected.map(
+              (selectedItem) => selectedItem.key
+            );
+            await productBulkDelAPI(selectedKeys)
+              .then(() => {
+                setList(
+                  list.filter((item) => !selectedKeys.includes(item.item_id))
+                );
+                setRecordCount(recordCount - selectedKeys.length);
+                showActionSuccessMsg('delete', true);
+              })
+              .catch((err) => {
+                if (err.response?.status !== 401) setTableLoading(false);
+                else {
+                  showServerErrMsg();
+                }
+              });
+          },
           multiItem: true,
         });
       }}
