@@ -22,5 +22,5 @@ def enforce_csrf(request):
         raise exceptions.PermissionDenied("CSRF Failed: %s" % reason)
 
 
-def show_debug_toolbar_in_staging(*a, **kw):
+def show_debug_toolbar_in_staging(*args, **kwargs):
     return True
