@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     "django_rest_passwordreset",
     "django_filters",
     "simple_history",
-    "cacheops",
     "cachalot",
     "corsheaders",
     "axes",
