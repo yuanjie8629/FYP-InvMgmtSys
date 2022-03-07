@@ -11,7 +11,6 @@ dj-database-url==0.5.0
 Django==4.0.2
 django-auto-prefetch==1.1.0
 django-axes==5.31.0
-django-cachalot==2.5.1
 django-cacheops==6.0
 django-cors-headers==3.11.0
 django-debug-toolbar==3.2.4
@@ -35,8 +34,6 @@ pipenv==2022.1.8
 platformdirs==2.5.0
 promise==2.3
 psycopg2==2.9.3
-PyJWT==2.3.0
-pylint==2.12.2
 pyparsing==3.0.7
 python-http-client==3.3.6
 pytz==2021.3
