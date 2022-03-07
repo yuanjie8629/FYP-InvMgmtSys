@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "django_filters",
     "simple_history",
     "cacheops",
+    "cachalot",
     "corsheaders",
     "axes",
     "debug_toolbar",
@@ -128,7 +129,17 @@ DATABASES = {
 
 # Redis Cache
 
-# if not DEBUG:
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "rediss://:p10bd0c9416edcdcb8946f8143d70d2e19d87f7acb87c5a80e9a002d262e65474@ec2-35-170-220-201.compute-1.amazonaws.com:24870/?ssl_cert_reqs=none",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+
 CACHEOPS_REDIS = "rediss://:p10bd0c9416edcdcb8946f8143d70d2e19d87f7acb87c5a80e9a002d262e65474@ec2-35-170-220-201.compute-1.amazonaws.com:24870/?ssl_cert_reqs=none"
 CACHEOPS_DEFAULTS = {"timeout": 60 * 60 * 2}
 CACHEOPS = {
@@ -138,12 +149,6 @@ CACHEOPS = {
     },
     "*.*": {"timeout": 60 * 60},
 }
-# else:
-#     CACHES = {
-#         "default": {
-#             "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-#         }
-#     }
 
 
 # Password validation
@@ -271,6 +276,24 @@ AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
 
 
 CORS_ALLOW_CREDENTIALS = True
+
+DEBUG_TOOLBAR_PANELS = [
+    "debug_toolbar.panels.history.HistoryPanel",
+    "debug_toolbar.panels.versions.VersionsPanel",
+    "debug_toolbar.panels.timer.TimerPanel",
+    "debug_toolbar.panels.settings.SettingsPanel",
+    "debug_toolbar.panels.headers.HeadersPanel",
+    "debug_toolbar.panels.request.RequestPanel",
+    "debug_toolbar.panels.sql.SQLPanel",
+    "debug_toolbar.panels.staticfiles.StaticFilesPanel",
+    "debug_toolbar.panels.templates.TemplatesPanel",
+    "debug_toolbar.panels.cache.CachePanel",
+    "cachalot.panels.CachalotPanel",
+    "debug_toolbar.panels.signals.SignalsPanel",
+    "debug_toolbar.panels.logging.LoggingPanel",
+    "debug_toolbar.panels.redirects.RedirectsPanel",
+    "debug_toolbar.panels.profiling.ProfilingPanel",
+]
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",

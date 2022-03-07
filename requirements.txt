@@ -12,12 +12,14 @@ dj-database-url==0.5.0
 Django==4.0.2
 django-auto-prefetch==1.1.0
 django-axes==5.31.0
+django-cachalot==2.5.1
 django-cacheops==6.0
 django-cors-headers==3.11.0
 django-debug-toolbar==3.2.4
 django-filter==21.1
 django-heroku==0.3.1
 django-ipware==4.0.2
+django-redis==5.2.0
 django-rest-passwordreset==1.2.1
 django-simple-history==3.0.0
 djangorestframework==3.13.1
