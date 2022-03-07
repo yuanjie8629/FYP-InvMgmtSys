@@ -111,6 +111,8 @@ const ActionModal: ActionModalReturnProps = memo(
         footer={null}
         bodyStyle={{ padding: 30 }}
         destroyOnClose
+        closable={!loading}
+        maskClosable={!loading}
         {...props}
       >
         {renderModal()}

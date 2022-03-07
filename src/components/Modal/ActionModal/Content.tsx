@@ -79,7 +79,7 @@ const Content = memo(
         )}
         <Row gutter={20} justify='end'>
           <Col>
-            <Button color={color} onClick={onCancel}>
+            <Button color={color} disabled={loading} onClick={onCancel}>
               Cancel
             </Button>
           </Col>

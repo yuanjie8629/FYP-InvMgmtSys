@@ -5,10 +5,10 @@ from core.routers import CustomRouter
 from item.views import ProductPrevView, ProductViewSet
 
 router = CustomRouter()
-router.register(r"products", ProductViewSet)
+router.register(r"product", ProductViewSet)
 
 
-urlpatterns = [path("products/prev", ProductPrevView.as_view(), name="productPrev")]
+urlpatterns = [path(r"product/prev", ProductPrevView.as_view(), name="productPrev")]
 
 
 urlpatterns += router.urls

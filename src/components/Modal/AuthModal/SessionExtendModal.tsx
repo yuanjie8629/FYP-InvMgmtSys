@@ -114,7 +114,7 @@ const SessionExtendModal = ({ visible, ...props }: SessionExtendModalProps) => {
           <Text>Do you want to extend your session?</Text>
           <Row gutter={20} justify='end'>
             <Col>
-              <Button color='error' onClick={handleClose}>
+              <Button color='error' disabled={loading} onClick={handleClose}>
                 Log Out
               </Button>
             </Col>
