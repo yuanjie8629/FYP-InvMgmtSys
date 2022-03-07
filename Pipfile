@@ -61,6 +61,8 @@ PyJWT = "==2.3.0"
 Rx = "==1.6.1"
 wheel = "*"
 setuptools = "*"
+django-redis = "*"
+django-cachalot = "*"
 
 [dev-packages]
 
