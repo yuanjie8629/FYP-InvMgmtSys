@@ -27,6 +27,7 @@ import {
   productBulkDelAPI,
   productDelAPI,
   productPrevAPI,
+  productUpdAPI,
 } from '@api/services/productAPI';
 import { addSearchParams, parseURL } from '@utils/urlUtls';
 
@@ -42,7 +43,7 @@ const ProdMgmt = () => {
   const [tableLoading, setTableLoading] = useState(false);
   const defPg = 5;
 
-  useEffect(() => {
+  const getTableData = () => {
     setTableLoading(true);
     productPrevAPI(location.search)
       .then((res) => {
@@ -51,28 +52,34 @@ const ProdMgmt = () => {
         setTableLoading(false);
       })
       .catch((err) => {
-        if (err.response?.status !== 401) setTableLoading(false);
-        else {
+        if (err.response?.status !== 401) {
+          setTableLoading(false);
           showServerErrMsg();
         }
       });
+  };
+
+  useEffect(
+    () => getTableData(),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+    [searchParams]
+  );
 
   const actionModalProps: ActionModalContentProps = {
     recordType: 'product',
     dataSource: selected,
   };
 
-  const showActionSuccessMsg = (
-    action: 'delete' | 'hide',
-    multi: boolean = false
-  ) => {
+  const showActionSuccessMsg = (action: 'activate' | 'delete' | 'hide') => {
     messageApi.open({
       key: action,
       type: 'success',
-      content: `${multi ? selected.length : 1} Products ${
-        action === 'delete' ? 'Deleted' : 'Hidden'
+      content: `${selected.length || 1} Products ${
+        action === 'activate'
+          ? 'Activated'
+          : action === 'delete'
+          ? 'Deleted'
+          : 'Hidden'
       } Successfully`,
     });
     setTimeout(() => message.destroy(action), 3000);
@@ -96,11 +103,22 @@ const ProdMgmt = () => {
       color='grey'
       onClick={() => {
         ActionModal.show('hide', {
-          onOk: () =>
-            fetch('http://example.com').then(() => {
-              showActionSuccessMsg('hide', true);
-            }),
-          multiItem: true,
+          onOk: async () => {
+            const selectedKeys = selected.map(
+              (selectedItem) => selectedItem.key
+            );
+            await productBulkDelAPI(selectedKeys)
+              .then(() => {
+                getTableData();
+                showActionSuccessMsg('delete');
+              })
+              .catch((err) => {
+                if (err.response?.status !== 401) setTableLoading(false);
+                else {
+                  showServerErrMsg();
+                }
+              });
+          },
         });
       }}
     />
@@ -117,11 +135,8 @@ const ProdMgmt = () => {
             );
             await productBulkDelAPI(selectedKeys)
               .then(() => {
-                setList(
-                  list.filter((item) => !selectedKeys.includes(item.item_id))
-                );
-                setRecordCount(recordCount - selectedKeys.length);
-                showActionSuccessMsg('delete', true);
+                getTableData();
+                showActionSuccessMsg('delete');
               })
               .catch((err) => {
                 if (err.response?.status !== 401) setTableLoading(false);
@@ -130,7 +145,6 @@ const ProdMgmt = () => {
                 }
               });
           },
-          multiItem: true,
         });
       }}
     />
@@ -140,12 +154,12 @@ const ProdMgmt = () => {
     {
       element: activateBtn,
       key: 'activate',
-      fltr: [{ fld: 'prodStat', value: 'hidden', rel: 'eq' }],
+      fltr: [{ fld: 'status', value: 'hidden', rel: 'eq' }],
     },
     {
       element: hideBtn,
       key: 'hide',
-      fltr: [{ fld: 'prodStat', value: 'active', rel: 'eq' }],
+      fltr: [{ fld: 'status', value: 'active', rel: 'eq' }],
     },
     {
       element: deleteBtn,
@@ -153,12 +167,9 @@ const ProdMgmt = () => {
     },
   ];
 
-  const handleSelectChange = (selectedKeys) => {
-    const selectedProd = list.filter((prod) =>
-      selectedKeys.some((selected) => selected === prod.item_id)
-    );
+  const getProdDetails = (selectedRecord) => {
     const selected = [];
-    selectedProd.forEach((prod) =>
+    selectedRecord.forEach((prod) =>
       selected.push({
         key: prod.item_id,
         title: prod.name,
@@ -167,7 +178,15 @@ const ProdMgmt = () => {
         ),
       })
     );
-    setSelected(selected);
+    return selected;
+  };
+
+  const handleSelectChange = (selectedKeys) => {
+    const selectedRecord = list.filter((prod) =>
+      selectedKeys.some((selected) => selected === prod.item_id)
+    );
+
+    setSelected(getProdDetails(selectedRecord));
   };
 
   const handleTabChange = (key) => {
@@ -247,23 +266,35 @@ const ProdMgmt = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'status',
+      dataIndex: ['id', 'status', 'name', 'thumbnail'],
       key: 'status',
       width: 150,
-      render: (status: string) => (
+      render: (_: any, data: { [x: string]: any }) => (
         <StatusTag
-          status={status}
+          status={data.status}
           statusList={prodStatList}
           dropdownStatus={['active', 'hidden']}
           onDropdownSelect={(selectedStatus) => {
-            if (selectedStatus === 'hidden') {
-              ActionModal.show('hide', {
-                onOk: () =>
-                  fetch('http://example.com').then(() => {
-                    showActionSuccessMsg('hide');
-                  }),
-              });
-            }
+            setSelected(getProdDetails([data]));
+            ActionModal.show(
+              selectedStatus === 'hidden' ? 'hide' : 'activate',
+              {
+                onOk: async () => {
+                  await productUpdAPI(data.item_id, {
+                    status: selectedStatus === 'hidden' ? 'hidden' : 'active',
+                  })
+                    .then((res) => {
+                      getTableData();
+                      showActionSuccessMsg(
+                        selectedStatus === 'hidden' ? 'hide' : 'activate'
+                      );
+                    })
+                    .catch((err) => {
+                      showServerErrMsg();
+                    });
+                },
+              }
+            );
           }}
         />
       ),
@@ -286,14 +317,12 @@ const ProdMgmt = () => {
               type='link'
               color='info'
               onClick={() => {
+                setSelected(getProdDetails([prod]));
                 ActionModal.show('delete', {
                   onOk: async () => {
                     await productDelAPI(prod.item_id)
                       .then((res) => {
-                        setList(
-                          list.filter((item) => item.item_id !== prod.item_id)
-                        );
-                        setRecordCount(recordCount - 1);
+                        getTableData();
                         showActionSuccessMsg('delete');
                       })
                       .catch((err) => {

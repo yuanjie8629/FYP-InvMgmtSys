@@ -1,11 +1,11 @@
 import Login from '@pages/Login/Login';
 import Dashboard from '@pages/Dashboard/Dashboard';
-import ProdMgmt from '@pages/Products/ProdMgmt';
-import ProdInv from '@pages/Products/ProdInv';
-import ProdAdd from '@pages/Products/ProdAdd';
-import PackMgmt from '@pages/Packages/PackMgmt';
-import PackInv from '@pages/Packages/PackInv';
-import PackAdd from '@pages/Packages/PackAdd';
+import ProdMgmt from '@pages/Items/Products/ProdMgmt';
+import ProdInv from '@pages/Items/Products/ProdInv';
+import ProdAdd from '@pages/Items/Products/ProdAdd';
+import PackMgmt from '@pages/Items/Packages/PackMgmt';
+import PackInv from '@pages/Items/Packages/PackInv';
+import PackAdd from '@pages/Items/Packages/PackAdd';
 import OrderMgmt from '@pages/Orders/OrderMgmt';
 import OrderAdd from '@pages/Orders/OrderAdd';
 import ShptMgmt from '@pages/Shipments/ShptMgmt';
@@ -29,25 +29,25 @@ const routeList: {
   label: string;
   path: string;
   protected?: boolean;
-  component?: (props)=>JSX.Element;
+  component?: JSX.Element;
 }[] = [
   {
     label: 'notFound',
     path: '/404',
     protected: true,
-    component: NotFound ,
+    component: <NotFound />,
   },
   {
     label: 'login',
     path: '/login',
     protected: false,
-    component: Login ,
+    component: <Login />,
   },
   {
     label: 'dashboard',
     path: '/dashboard',
     protected: true,
-    component: Dashboard ,
+    component: <Dashboard />,
   },
   {
     label: 'product',
@@ -58,19 +58,19 @@ const routeList: {
     label: 'prodMgmt',
     path: '/product/management',
     protected: true,
-    component: ProdMgmt ,
+    component: <ProdMgmt />,
   },
   {
     label: 'prodInv',
     path: '/product/inventory',
     protected: true,
-    component: ProdInv ,
+    component: <ProdInv />,
   },
   {
     label: 'prodAdd',
     path: '/product/add',
     protected: true,
-    component: ProdAdd ,
+    component: <ProdAdd />,
   },
   {
     label: 'package',
@@ -81,19 +81,19 @@ const routeList: {
     label: 'packMgmt',
     path: '/package/management',
     protected: true,
-    component: PackMgmt ,
+    component: <PackMgmt />,
   },
   {
     label: 'packInv',
     path: '/package/inventory',
     protected: true,
-    component: PackInv ,
+    component: <PackInv />,
   },
   {
     label: 'packAdd',
     path: '/package/add',
     protected: true,
-    component: PackAdd ,
+    component: <PackAdd />,
   },
   {
     label: 'order',
@@ -104,7 +104,7 @@ const routeList: {
     label: 'orderMgmt',
     path: '/order/management',
     protected: true,
-    component: OrderMgmt ,
+    component: <OrderMgmt />,
   },
   {
     label: 'orderPend',
@@ -130,7 +130,7 @@ const routeList: {
     label: 'orderAdd',
     path: '/order/add',
     protected: true,
-    component: OrderAdd ,
+    component: <OrderAdd />,
   },
 
   {
@@ -142,13 +142,13 @@ const routeList: {
     label: 'shptMgmt',
     path: '/shipment/management',
     protected: true,
-    component: ShptMgmt ,
+    component: <ShptMgmt />,
   },
   {
     label: 'shpFeeMgmt',
     path: '/shipment/shipping-fee',
     protected: true,
-    component: ShpFeeMgmt ,
+    component: <ShpFeeMgmt />,
   },
   {
     label: 'customer',
@@ -159,19 +159,19 @@ const routeList: {
     label: 'custMgmt',
     path: '/customer/management',
     protected: true,
-    component: CustMgmt ,
+    component: <CustMgmt />,
   },
   {
     label: 'custReg',
     path: '/customer/registrations',
     protected: true,
-    component: CustReg ,
+    component: <CustReg />,
   },
   {
     label: 'custAdd',
     path: '/customer/add',
     protected: true,
-    component: CustAdd ,
+    component: <CustAdd />,
   },
   {
     label: 'bizInsights',
@@ -182,13 +182,13 @@ const routeList: {
     label: 'bizStatistics',
     path: '/business-insights/statistics',
     protected: true,
-    component: Statistics ,
+    component: <Statistics />,
   },
   {
     label: 'invAnalysis',
     path: '/business-insights/inventory-analysis',
     protected: true,
-    component: InvAnalysis ,
+    component: <InvAnalysis />,
   },
   {
     label: 'voucher',
@@ -199,13 +199,13 @@ const routeList: {
     label: 'voucherMgmt',
     path: '/voucher/management',
     protected: true,
-    component: VoucherMgmt ,
+    component: <VoucherMgmt />,
   },
   {
     label: 'voucherAdd',
     path: '/voucher/add',
     protected: true,
-    component: VoucherAdd ,
+    component: <VoucherAdd />,
   },
   {
     label: 'myAccount',
@@ -216,13 +216,13 @@ const routeList: {
     label: 'profileMgmt',
     path: '/my-acc/profile-management',
     protected: true,
-    component: ProfileMgmt ,
+    component: <ProfileMgmt />,
   },
   {
     label: 'accSettings',
     path: '/my-acc/acc-settings',
     protected: true,
-    component: AccSettings ,
+    component: <AccSettings />,
   },
   {
     label: 'admin',
@@ -233,25 +233,25 @@ const routeList: {
     label: 'adminMgmt',
     path: '/admin/management',
     protected: true,
-    component: AdminMgmt ,
+    component: <AdminMgmt />,
   },
   {
     label: 'adminAdd',
     path: '/admin/add',
     protected: true,
-    component: AdminAdd ,
+    component: <AdminAdd />,
   },
   {
     label: 'help',
     path: '/help',
     protected: true,
-    component: Help ,
+    component: <Help />,
   },
   {
     label: 'resetPass',
     path: '/pass_reset',
     protected: false,
-    component: ResetPass ,
+    component: <ResetPass />,
   },
   {
     label: 'logout',

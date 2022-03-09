@@ -1,14 +1,22 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from core.routers import CustomRouter
 
-from item.views import ProductPrevView, ProductViewSet
+from item.views import (
+    ProductPrevView,
+    ProductViewSet,
+    prodBulkDeleteView,
+    prodBulkUpdView,
+)
 
-router = CustomRouter()
+router = DefaultRouter()
 router.register(r"product", ProductViewSet)
 
 
-urlpatterns = [path(r"product/prev", ProductPrevView.as_view(), name="productPrev")]
+urlpatterns = [
+    path(r"product/prev/", ProductPrevView.as_view(), name="productPrev"),
+    path(r"product/bulk/update/", prodBulkUpdView, name="productBulkUpd"),
+    path(r"product/bulk/delete/", prodBulkDeleteView, name="productBulkDel"),
+]
 
 
 urlpatterns += router.urls

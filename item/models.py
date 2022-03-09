@@ -1,10 +1,12 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from simple_history.models import HistoricalRecords
+from core.models import SoftDeleteModel
 from item.choices import ITEM_STATUS, ITEM_TYPE, PROD_CAT
 
 
-class Item(models.Model):
+class Item(SoftDeleteModel):
+
     item_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=20, choices=ITEM_TYPE)
@@ -21,8 +23,10 @@ class Item(models.Model):
     length = models.DecimalField(max_digits=8, decimal_places=2)
     width = models.DecimalField(max_digits=8, decimal_places=2)
     height = models.DecimalField(max_digits=8, decimal_places=2)
-    last_update = models.DateTimeField(auto_now=True)
-    history = HistoricalRecords()
+    history = HistoricalRecords(
+        table_name="item_history",
+        excluded_fields=["created_at", "last_update", "is_deleted"],
+    )
 
     class Meta:
         db_table = "item"
@@ -32,8 +36,9 @@ class Item(models.Model):
 
 
 class Product(models.Model):
+
     item = models.OneToOneField(
-        Item, on_delete=models.CASCADE, primary_key=True, related_name="item"
+        Item, on_delete=models.CASCADE, primary_key=True, related_name="product"
     )
 
     category = models.CharField(max_length=30, choices=PROD_CAT)
@@ -48,7 +53,7 @@ class Product(models.Model):
     )
     avg_lead_tm = models.IntegerField(blank=True, null=True)
     max_lead_tm = models.IntegerField(blank=True, null=True)
-    history = HistoricalRecords()
+    history = HistoricalRecords(table_name="product_history")
 
     class Meta:
         db_table = "product"
@@ -58,7 +63,7 @@ class Package(models.Model):
     item = models.OneToOneField(Item, on_delete=models.CASCADE, primary_key=True)
     avail_start_tm = models.DateTimeField()
     avail_end_tm = models.DateTimeField(blank=True, null=True)
-    history = HistoricalRecords()
+    history = HistoricalRecords(table_name="package_history")
 
     class Meta:
         db_table = "package"
@@ -69,7 +74,7 @@ class PackageItem(models.Model):
     quantity = models.IntegerField(blank=True, null=True)
     pack = models.ForeignKey(Package, on_delete=models.CASCADE)
     prod = models.ForeignKey("Product", on_delete=models.CASCADE)
-    history = HistoricalRecords()
-    
+    history = HistoricalRecords(table_name="package_item_history")
+
     class Meta:
         db_table = "package_item"

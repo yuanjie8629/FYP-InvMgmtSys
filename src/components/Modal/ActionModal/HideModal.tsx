@@ -5,7 +5,7 @@ import { Typography } from 'antd';
 import { ActionModalContentProps } from '.';
 
 const HideModal = memo(
-  ({ multi, recordType, ...props }: ActionModalContentProps, _ref) => {
+  ({ recordType, ...props }: ActionModalContentProps, _ref) => {
     const { Text } = Typography;
 
     return (
@@ -14,15 +14,10 @@ const HideModal = memo(
         Icon={HiEyeOff}
         color='grey'
         okText='Hide'
-        multi={multi}
         {...props}
       >
         <Text type='secondary' className='text-lg'>
-          This process cannot be undone.
-          <br />
-          {multi
-            ? `Do you really want to delete the following ${recordType}s?`
-            : `Do you really want to delete the specific ${recordType}?`}
+          Do you really want to hide the following {recordType}s?
         </Text>
       </Content>
     );

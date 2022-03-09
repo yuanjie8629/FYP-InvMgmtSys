@@ -78,15 +78,14 @@ const InputNumberRange = ({
 
   useEffect(() => {
     if (start > end) {
-      setValidateFailed(true);
+      return setValidateFailed(true);
     } else {
-      setValidateFailed(false);
+      return setValidateFailed(false);
     }
   }, [end, start]);
 
   return (
     <Form.Item
-      {...formPropsSpread}
       validateStatus={validateFailed && 'error'}
       help={
         validateFailed && (
@@ -101,6 +100,7 @@ const InputNumberRange = ({
           </Row>
         )
       }
+      {...formPropsSpread}
     >
       <Row
         align='middle'
