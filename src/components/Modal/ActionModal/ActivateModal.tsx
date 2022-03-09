@@ -1,26 +1,26 @@
 import React, { memo } from 'react';
-import { HiEyeOff } from 'react-icons/hi';
+import { HiCheck } from 'react-icons/hi';
 import Content from './Content';
 import { Typography } from 'antd';
 import { ActionModalContentProps } from '.';
 
-const HideModal = memo(
+const ActivateModal = memo(
   ({ recordType, ...props }: ActionModalContentProps, _ref) => {
     const { Text } = Typography;
 
     return (
       <Content
-        label='Hide'
-        Icon={HiEyeOff}
-        color='grey'
-        okText='Hide'
+        label='Activate'
+        Icon={HiCheck}
+        color='success'
+        okText='Activate'
         {...props}
       >
         <Text type='secondary' className='text-lg'>
-          Do you really want to hide the following {recordType}s?
+          Do you really want to activate the following {recordType}s?
         </Text>
       </Content>
     );
   }
 );
-export default HideModal;
+export default ActivateModal;

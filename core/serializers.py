@@ -2,17 +2,16 @@ from rest_framework import serializers
 
 
 class ChoiceField(serializers.ChoiceField):
-    def to_representation(self, obj):
-        if obj == "" and self.allow_blank:
-            return obj
-        return self._choices[obj]
+    def __init__(self, **kwargs):
+        self.html_cutoff = kwargs.pop("html_cutoff", self.html_cutoff)
+        self.html_cutoff_text = kwargs.pop("html_cutoff_text", self.html_cutoff_text)
 
-    def to_internal_value(self, data):
-        # To support inserts with the value
-        if data == "" and self.allow_blank:
-            return ""
+        self.allow_blank = kwargs.pop("allow_blank", False)
+        super(ChoiceField, self).__init__(**kwargs)
 
-        for key, val in self._choices.items():
-            if val == data:
-                return key
-        self.fail("invalid_choice", input=data)
+    def to_representation(self, value):
+        return self.choices.get(value, value)
+
+    def bind(self, field_name, parent):
+        super().bind(field_name, parent)
+        self.choices = parent.Meta.model._meta.get_field(field_name).choices

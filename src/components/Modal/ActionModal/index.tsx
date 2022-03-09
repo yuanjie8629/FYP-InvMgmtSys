@@ -4,21 +4,22 @@ import {
 } from '@components/List/DescriptionList';
 import { Modal as AntdModal, ModalProps } from 'antd';
 import React, { memo, useEffect, useRef, useState } from 'react';
+import ActivateModal from './ActivateModal';
 import DeleteModal from './DeleteModal';
 import HideModal from './HideModal';
 
 export type ActionModalPayload = {
   onOk?: () => void;
   onCancel?: () => void;
-  multiItem?: boolean;
 };
 
 export const ActionModalComponent = {
   delete: DeleteModal,
   hide: HideModal,
+  activate: ActivateModal,
 };
 
-export type ActionModalType = 'delete' | 'hide';
+export type ActionModalType = 'activate' | 'delete' | 'hide';
 
 export interface ActionModalContentProps {
   recordType?: string;
@@ -26,7 +27,6 @@ export interface ActionModalContentProps {
   dataSource?: DescriptionListDataProps[];
   titleProps?: TitleTextProps;
   descProps?: TitleTextProps;
-  multi?: boolean;
   onOk?: () => void;
   onCancel?: () => void;
 }
@@ -48,25 +48,22 @@ const ActionModal: ActionModalReturnProps = memo(
       dataSource,
       titleProps,
       descProps,
-      multi,
       ...props
     }: ActionModalProps,
     _ref
   ) => {
     const [visible, setVisible] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [multiItem, setMultiItem] = useState(false);
     const [modalType, setModalType] = useState<ActionModalType>(null);
     const payloadRef = useRef<ActionModalPayload>({});
 
     useEffect(() => {
       ActionModal.show = (
         type: ActionModalType,
-        { multiItem = false, ...payload }: ActionModalPayload
+        { ...payload }: ActionModalPayload
       ) => {
         setVisible(true);
         setModalType(type);
-        multiItem ? setMultiItem(true) : setMultiItem(false);
         payloadRef.current = payload;
       };
     }, []);
@@ -95,7 +92,6 @@ const ActionModal: ActionModalReturnProps = memo(
           dataSource={dataSource}
           titleProps={titleProps}
           descProps={descProps}
-          multi={multiItem}
           onOk={handleOk(payloadRef.current?.onOk)}
           onCancel={handleCancel(payloadRef.current?.onCancel)}
         />
@@ -113,6 +109,7 @@ const ActionModal: ActionModalReturnProps = memo(
         destroyOnClose
         closable={!loading}
         maskClosable={!loading}
+        centered
         {...props}
       >
         {renderModal()}

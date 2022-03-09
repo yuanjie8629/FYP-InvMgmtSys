@@ -20,7 +20,6 @@ export interface ActionContentProps {
   dataSource?: DescriptionListDataProps[];
   titleProps?: TitleTextProps;
   descProps?: TitleTextProps;
-  multi?: boolean;
 }
 
 const Content = memo(
@@ -38,7 +37,6 @@ const Content = memo(
       recordType,
       titleProps,
       descProps,
-      multi,
       ...props
     }: ActionContentProps,
     ref
@@ -69,14 +67,12 @@ const Content = memo(
           <Title level={4}>{label}</Title>
         </Space>
         {children}
-        {multi && (
-          <DescriptionList
-            dataSource={dataSource}
-            bordered
-            titleProps={{ style: { fontSize: 14 }, ...titleProps }}
-            descProps={descProps}
-          />
-        )}
+        <DescriptionList
+          dataSource={dataSource}
+          bordered
+          titleProps={{ style: { fontSize: 14 }, ...titleProps }}
+          descProps={descProps}
+        />
         <Row gutter={20} justify='end'>
           <Col>
             <Button color={color} disabled={loading} onClick={onCancel}>

@@ -100,6 +100,7 @@ const InformativeTable = ({
   };
 
   const handleSelectChange = (selectedRowKeys: any, selectedRows: any) => {
+    console.log(selectedRows);
     if (buttons !== undefined) {
       let buttonShow: { key: string; show: boolean }[] = [];
 

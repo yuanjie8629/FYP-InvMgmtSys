@@ -1,13 +1,13 @@
 from rest_framework import serializers
 from core.serializers import ChoiceField
-import item
-from item.models import PROD_CAT, Item, Product
+from item.choices import PROD_CAT
+from item.models import Item, Product
 
 
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        exclude = ["type"]
+        exclude = ["type","created_at","last_update", "is_deleted"]
 
 
 class ItemPrevSerializer(serializers.ModelSerializer):
@@ -18,6 +18,7 @@ class ItemPrevSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     item = ItemSerializer()
+    category = ChoiceField(choices=PROD_CAT)
 
     class Meta:
         model = Product
@@ -57,6 +58,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class ProductPrevSerializer(serializers.ModelSerializer):
     item = ItemPrevSerializer()
+    category = ChoiceField(choices=PROD_CAT)
 
     class Meta:
         model = Product

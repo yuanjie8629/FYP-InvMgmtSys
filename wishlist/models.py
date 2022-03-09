@@ -1,13 +1,13 @@
 from django.db import models
+from core.models import BaseModel
 from customer.models import CustAcc
 
 from item.models import Item
 
 # Create your models here.
-class Wishlist(models.Model):
+class Wishlist(BaseModel):
     wishlist_id = models.IntegerField(primary_key=True)
     created_tms = models.DateTimeField()
-    last_update = models.DateTimeField()
     cust = models.ForeignKey(CustAcc, on_delete=models.CASCADE)
 
     class Meta:

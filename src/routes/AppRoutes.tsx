@@ -55,7 +55,7 @@ export default function AppRoute() {
                   <PageLoad />
                 ) : (
                   <>
-                    <route.component/>
+                    {route.component}
                     <SessionExpModal />
                   </>
                 )
