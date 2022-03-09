@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     "django_filters",
     "django_pickling",
     "simple_history",
-    "cacheops",
+    "cachalot",
     "corsheaders",
     "axes",
     "debug_toolbar",
@@ -262,6 +262,29 @@ AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
 
 
 CORS_ALLOW_CREDENTIALS = True
+
+DEBUG_TOOLBAR_PANELS = [
+    "debug_toolbar.panels.history.HistoryPanel",
+    "debug_toolbar.panels.versions.VersionsPanel",
+    "debug_toolbar.panels.timer.TimerPanel",
+    "debug_toolbar.panels.settings.SettingsPanel",
+    "debug_toolbar.panels.headers.HeadersPanel",
+    "debug_toolbar.panels.request.RequestPanel",
+    "debug_toolbar.panels.sql.SQLPanel",
+    "debug_toolbar.panels.staticfiles.StaticFilesPanel",
+    "debug_toolbar.panels.templates.TemplatesPanel",
+    "debug_toolbar.panels.cache.CachePanel",
+    "cachalot.panels.CachalotPanel",
+    "debug_toolbar.panels.signals.SignalsPanel",
+    "debug_toolbar.panels.logging.LoggingPanel",
+    "debug_toolbar.panels.redirects.RedirectsPanel",
+    "debug_toolbar.panels.profiling.ProfilingPanel",
+]
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": "core.utils.show_debug_toolbar_in_staging",
+}
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
