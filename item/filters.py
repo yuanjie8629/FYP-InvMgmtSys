@@ -11,7 +11,7 @@ class ProductFilter(filters.FilterSet):
     min_stock = filters.NumberFilter(field_name="item__stock", lookup_expr="gte")
     max_stock = filters.NumberFilter(field_name="item__stock", lookup_expr="lte")
 
-    order = filters.OrderingFilter(
+    ordering = filters.OrderingFilter(
         fields=(
             ("item__name", "name"),
             ("item__sku", "sku"),

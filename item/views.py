@@ -126,14 +126,14 @@ def prodBulkUpdView(request):
 
 class ProductPrevView(generics.ListAPIView):
     queryset = (
-        Product.objects.select_related("item")
+        Product.objects.select_related()
         .filter(item__is_deleted=False)
         .filter(item__type="prod")
+        .order_by(("-item__last_update"))
     )
 
     serializer_class = ProductPrevSerializer
     filterset_class = ProductFilter
-    ordering = ["-last_update"]
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)

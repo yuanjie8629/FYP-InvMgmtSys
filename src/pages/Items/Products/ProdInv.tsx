@@ -80,30 +80,23 @@ const ProdInv = () => {
     setTimeout(() => message.destroy('serverErr'), 3000);
   };
 
-  const updateBulkData = async (data) => {
-    console.log(data);
-    await productBulkUpdAPI(data)
-      .then(() => {
-        getTableData();
-        showUpdSuccessMsg(data.length);
-      })
-      .catch((err) => {
-        if (err.response?.status !== 401) setTableLoading(false);
-        else {
-          showServerErrMsg();
-        }
-      });
-  };
-
   const bulkUpdBtn = (props: any) => (
     <BulkEditButton
       disabled={tableLoading}
       onClick={() => {
         ActionModal.show('bulkUpd', {
-          onUpdate: async (data) => {
-            console.log(data);
-
-            await updateBulkData(data);
+          onOk: async (data) => {
+            await productBulkUpdAPI(data)
+              .then(() => {
+                getTableData();
+                showUpdSuccessMsg(data.length);
+              })
+              .catch((err) => {
+                if (err.response?.status !== 401) setTableLoading(false);
+                else {
+                  showServerErrMsg();
+                }
+              });
           },
         });
       }}
@@ -267,14 +260,7 @@ const ProdInv = () => {
           </Space>
         </MainCard>
       </MainCardContainer>
-      <ActionModal
-        recordType='product inventory'
-        dataSource={selected}
-        onUpdate={async (data) => {
-          console.log(data);
-          await updateBulkData(data);
-        }}
-      />
+      <ActionModal recordType='product inventory' dataSource={selected} />
     </Layout>
   );
 };
