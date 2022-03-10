@@ -22,9 +22,9 @@ const BulkUpdateModal = memo(
         }}
       />
     );
-    console.log(updateData);
-    const handleOk = () => () => {
-      updateData !== [] && props.onUpdate(updateData);
+
+    const handleOk = () => {
+      updateData.length > 0 && props.onUpdate(updateData);
     };
 
     return (
@@ -36,7 +36,7 @@ const BulkUpdateModal = memo(
         listProps={{ bordered: false }}
         contentSpace={false}
         listContent={ListContent}
-        onOk={handleOk()}
+        onOk={handleOk}
       >
         <Row justify='end'>
           <Col pull={4}>

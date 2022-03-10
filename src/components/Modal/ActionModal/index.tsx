@@ -7,9 +7,8 @@ import HideModal from '../ActionModal/HideModal';
 import BulkUpdateModal from './BulkUpdateModal';
 
 export type ActionModalPayload = {
-  onOk?: () => void;
+  onOk?: (data?) => void;
   onCancel?: () => void;
-  onUpdate?: (data) => void;
 };
 
 export const ActionModalComponent = {
@@ -25,9 +24,9 @@ export interface ActionModalContentProps {
   recordType?: string;
   loading?: boolean;
   dataSource?: DescriptionListDataProps[];
-  onOk?: () => void;
+  onOk?: (data?: any) => void;
   onCancel?: () => void;
-  onUpdate?: (data) => void;
+  onUpdate?: (data: any) => void;
 }
 
 export type ActionModalProps = Omit<ModalProps, 'onOk' | 'onCancel'> &
@@ -62,7 +61,6 @@ const ActionModal: ActionModalReturnProps = memo(
     }, []);
 
     const loadParentFunc = (method?) => {
-      console.log(method);
       let load = async () => {
         setLoading(true);
         return method;
@@ -78,8 +76,6 @@ const ActionModal: ActionModalReturnProps = memo(
       setVisible(false);
     };
 
-    
-
     const renderModal = () => {
       const ModalRender = ActionModalComponent[modalType]
         ? ActionModalComponent[modalType]
@@ -92,7 +88,7 @@ const ActionModal: ActionModalReturnProps = memo(
           onOk={handleOk(payloadRef.current?.onOk)}
           onCancel={handleCancel(payloadRef.current?.onCancel)}
           onUpdate={(data) => {
-            loadParentFunc(onUpdate(data));
+            loadParentFunc(payloadRef.current?.onOk(data));
           }}
         />
       );

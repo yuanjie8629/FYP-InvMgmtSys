@@ -75,30 +75,16 @@ const InformativeTable = ({
 
   const hanldeTableChange = (paginate, _filters, sorter) => {
     setPagination(paginate);
-    if (sorter['column'] !== undefined) {
-      let currSearchParams = {};
-      searchParams.forEach((value, key) => {
-        currSearchParams = {
-          ...currSearchParams,
-          [key]: value,
-        };
-      });
-      setSearchParams({
-        ...currSearchParams,
-        order: `${sorter['order'] === 'descend' ? '-' : ''}${
-          sorter['columnKey']
-        }`,
-      });
+    if (sorter['order'] !== undefined) {
+      setSearchParams(
+        addSearchParams(searchParams, {
+          ordering: `${sorter['order'] === 'descend' ? '-' : ''}${
+            sorter['columnKey']
+          }`,
+        })
+      );
     } else {
-      let currSearchParams = {};
-      searchParams.forEach((value, key) => {
-        currSearchParams = {
-          ...currSearchParams,
-          [key]: value,
-        };
-      });
-      delete currSearchParams['order'];
-      setSearchParams(currSearchParams);
+      searchParams.delete('ordering');
     }
   };
 
