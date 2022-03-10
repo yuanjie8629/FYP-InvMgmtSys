@@ -1,34 +1,33 @@
-import {
-  DescriptionListDataProps,
-  TitleTextProps,
-} from '@components/List/DescriptionList';
+import { DescriptionListDataProps } from '@components/List/DescriptionList';
 import { Modal as AntdModal, ModalProps } from 'antd';
 import React, { memo, useEffect, useRef, useState } from 'react';
-import ActivateModal from './ActivateModal';
-import DeleteModal from './DeleteModal';
-import HideModal from './HideModal';
+import ActivateModal from '../ActionModal/ActivateModal';
+import DeleteModal from '../ActionModal/DeleteModal';
+import HideModal from '../ActionModal/HideModal';
+import BulkUpdateModal from './BulkUpdateModal';
 
 export type ActionModalPayload = {
   onOk?: () => void;
   onCancel?: () => void;
+  onUpdate?: (data) => void;
 };
 
 export const ActionModalComponent = {
   delete: DeleteModal,
   hide: HideModal,
   activate: ActivateModal,
+  bulkUpd: BulkUpdateModal,
 };
 
-export type ActionModalType = 'activate' | 'delete' | 'hide';
+export type ActionModalType = 'activate' | 'delete' | 'hide' | 'bulkUpd';
 
 export interface ActionModalContentProps {
   recordType?: string;
   loading?: boolean;
   dataSource?: DescriptionListDataProps[];
-  titleProps?: TitleTextProps;
-  descProps?: TitleTextProps;
   onOk?: () => void;
   onCancel?: () => void;
+  onUpdate?: (data) => void;
 }
 
 export type ActionModalProps = Omit<ModalProps, 'onOk' | 'onCancel'> &
@@ -43,13 +42,7 @@ type ActionModalReturnProps = React.FC<Partial<ActionModalProps>> & {
 
 const ActionModal: ActionModalReturnProps = memo(
   (
-    {
-      recordType = 'record',
-      dataSource,
-      titleProps,
-      descProps,
-      ...props
-    }: ActionModalProps,
+    { recordType = 'record', dataSource, onUpdate, ...props }: ActionModalProps,
     _ref
   ) => {
     const [visible, setVisible] = useState(false);
@@ -60,7 +53,7 @@ const ActionModal: ActionModalReturnProps = memo(
     useEffect(() => {
       ActionModal.show = (
         type: ActionModalType,
-        { ...payload }: ActionModalPayload
+        payload: ActionModalPayload
       ) => {
         setVisible(true);
         setModalType(type);
@@ -68,18 +61,24 @@ const ActionModal: ActionModalReturnProps = memo(
       };
     }, []);
 
-    const handleOk = (method?: () => void) => () => {
-      let loadParentFunc = async () => {
+    const loadParentFunc = (method?) => {
+      console.log(method);
+      let load = async () => {
         setLoading(true);
-        return method && method();
+        return method;
       };
-      loadParentFunc().then(() => setVisible(false));
+      load().then(() => setVisible(false));
     };
 
+    const handleOk = (method?: () => void) => () => {
+      loadParentFunc(method());
+    };
     const handleCancel = (method?: () => void) => () => {
       method && method();
       setVisible(false);
     };
+
+    
 
     const renderModal = () => {
       const ModalRender = ActionModalComponent[modalType]
@@ -90,10 +89,11 @@ const ActionModal: ActionModalReturnProps = memo(
           recordType={recordType}
           loading={loading}
           dataSource={dataSource}
-          titleProps={titleProps}
-          descProps={descProps}
           onOk={handleOk(payloadRef.current?.onOk)}
           onCancel={handleCancel(payloadRef.current?.onCancel)}
+          onUpdate={(data) => {
+            loadParentFunc(onUpdate(data));
+          }}
         />
       );
     };

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Col,
+  Form,
   InputNumber,
   InputNumberProps,
   Radio,
@@ -10,18 +11,25 @@ import {
 } from 'antd';
 import { invInputOptions } from '@utils/optionUtils';
 
-export interface InvStockInputProps extends InputNumberProps {
-  input: number;
-  onSave?: (data: { operation: string; value: number }) => void;
-}
+export type InvStockInputProps = InputNumberProps & {
+  loading?: boolean;
+} & (
+    | { initialValue: number; onSave?: (value: number) => void }
+    | { initialValue?: never; onSave?: never }
+  );
 
 const InvStockInput = ({
-  input,
   onSave = () => '',
+  loading = false,
+  initialValue,
   ...props
 }: InvStockInputProps) => {
   const [operation, setOperation] = useState(invInputOptions[0].value);
-  const [value, setValue] = useState(input);
+  const [value, setValue] = useState(0 | initialValue);
+
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
 
   return (
     <Space size={10} direction='vertical'>
@@ -39,24 +47,38 @@ const InvStockInput = ({
       </Row>
       <Row gutter={[10, 10]}>
         <Col>
-          <InputNumber
-            value={value}
-            min={0}
-            size={'small'}
-            style={{ width: 150 }}
-            onChange={(value: number) => {
-              setValue(value);
-            }}
-            {...props}
-          />
+          <Form.Item>
+            <InputNumber
+              value={value}
+              min={0}
+              size={'small'}
+              style={{ width: 150 }}
+              onChange={(value: number) => {
+                setValue(value);
+              }}
+              {...props}
+            />
+          </Form.Item>
         </Col>
         <Col>
           <Button
             type='primary'
             size={'small'}
             onClick={() => {
-              onSave({ operation: operation, value: value });
+              if (initialValue) {
+                let newValue = initialValue;
+                if (operation === '+') {
+                  newValue += value;
+                } else if (operation === '-') {
+                  newValue -= value;
+                } else if (operation === 'set') {
+                  newValue = value;
+                }
+                onSave(newValue);
+                setValue(0);
+              }
             }}
+            loading={loading}
           >
             Save
           </Button>

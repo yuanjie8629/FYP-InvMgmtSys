@@ -7,7 +7,7 @@ export const addSearchParams = (
   return { ...parseURL(currParams), ...newParams };
 };
 
-export const removeSearchparams = (
+export const removeSearchParams = (
   currParams: URLSearchParams,
   removeKey: string
 ) => {
@@ -22,4 +22,13 @@ export const addFilter = (currFilter, newKey: string, newValue) => {
     delete currFilter[newKey];
     return currFilter;
   }
+};
+
+export const getSortOrder = (column: string) => {
+  let url = new URLSearchParams(window.location.search);
+  return url.get('order') === column
+    ? 'ascend'
+    : url.get('order') === `-${column}`
+    ? 'descend'
+    : undefined;
 };
