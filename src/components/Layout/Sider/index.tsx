@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@hooks/useRedux';
-import { collapse, expand } from '@state/siderSlice';
+import React, { useEffect, useState } from 'react';
 import { Layout, Menu, Image } from 'antd';
 import { SiderProps as AntdSiderProps } from 'antd/lib/layout';
 import menuList from './siderMenuList';
@@ -11,16 +9,21 @@ import classNames from 'classnames';
 import siderDefKeyList from './siderDefKeyList';
 import { logoutAPI } from '@api/services/authAPI';
 
-export interface SiderProps extends AntdSiderProps {}
+export interface SiderProps extends AntdSiderProps {
+  onCollapsed?: (boolean) => void;
+}
 
-const Sider = (props) => {
+const Sider = ({ onCollapsed = () => null, ...props }: SiderProps) => {
   const { Sider } = Layout;
   const { SubMenu } = Menu;
   const navigate = useNavigate();
   const location = useLocation();
   const [collapsedSiderOpen, setCollapsedSiderOpen] = useState(true);
-  const isSiderCollapsed = useAppSelector((state) => state.sider.collapsed);
-  const dispatch = useAppDispatch();
+  const [isSiderCollapsed, setIsSiderCollapsed] = useState(false);
+
+  useEffect(() => {
+    onCollapsed(isSiderCollapsed);
+  }, [isSiderCollapsed, onCollapsed]);
 
   const selectedKeys =
     siderDefKeyList.find(
@@ -49,10 +52,10 @@ const Sider = (props) => {
         onMouseLeave={() => isSiderCollapsed && setCollapsedSiderOpen(false)}
         onBreakpoint={(breakpoint) => {
           if (breakpoint) {
-            dispatch(collapse());
+            setIsSiderCollapsed(true);
             setCollapsedSiderOpen(false);
           } else {
-            dispatch(expand());
+            setIsSiderCollapsed(false);
             setCollapsedSiderOpen(true);
           }
         }}

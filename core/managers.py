@@ -1,4 +1,6 @@
+from typing import Iterable
 from django.db import models, transaction
+from cacheops import invalidate_obj
 
 
 class SoftDeleteQuerySet(models.QuerySet):
@@ -17,3 +19,8 @@ class SoftDeleteManager(models.Manager):
         if self.with_deleted:
             return qs
         return qs.filter(is_deleted=False)
+
+    def bulk_update(self, objs, *args, **kwags) -> int:
+        for obj in objs:
+            invalidate_obj(obj)
+        return super().bulk_update(objs, *args, **kwags)

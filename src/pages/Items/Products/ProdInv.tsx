@@ -1,34 +1,46 @@
 import MainCard from '@components/Card/MainCard';
+import Button from '@components/Button';
 import Layout from '@components/Layout';
+import MainCardContainer from '@components/Container/MainCardContainer';
+import FilterInputs from './FilterInputs';
+import { Row, Space, Col, Typography, Image, message } from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
-import Button from '@components/Button';
-import MainCardContainer from '@components/Container/MainCardContainer';
-import { Col, Image, Row, Space, Typography } from 'antd';
-import FilterInputs from './FilterInputs';
 import prodTabList from './prodTabList';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
-import InvStockInput from '@components/Input/InvStockInput';
 import { BulkEditButton } from '@components/Button/ActionButton';
 import { BoldTitle } from '@components/Title';
-import { productPrevAPI } from '@api/services/productAPI';
+import { ActionModal } from '@components/Modal';
+import {
+  productBulkUpdAPI,
+  productPrevAPI,
+  productUpdAPI,
+} from '@api/services/productAPI';
 import { addSearchParams, parseURL } from '@utils/urlUtls';
+import { getItemInvDetails } from '../itemUtils';
+import InvStockInput from '@components/Input/InvStockInput';
 
 const ProdInv = () => {
   const { Text } = Typography;
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [tableLoading, setTableLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
   const [list, setList] = useState([]);
   const [recordCount, setRecordCount] = useState<number>();
+  const [selected, setSelected] = useState([]);
+  const [actionLoading, setActionLoading] = useState<{
+    [key: string]: any;
+  }>({ loading: false, index: undefined });
+  const [tableLoading, setTableLoading] = useState(false);
   const defPg = 5;
 
-  useEffect(() => {
+  const getTableData = () => {
+    setSelected([]);
     setTableLoading(true);
     productPrevAPI(location.search)
       .then((res) => {
@@ -37,13 +49,66 @@ const ProdInv = () => {
         setTableLoading(false);
       })
       .catch((err) => {
-        if (err.response?.status !== 401) setTableLoading(false);
-        Promise.resolve();
+        if (err.response?.status !== 401) {
+          setTableLoading(false);
+          showServerErrMsg();
+        }
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  };
 
-  const bulkUpdBtn = (props: any) => <BulkEditButton />;
+  useEffect(
+    () => getTableData(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searchParams]
+  );
+
+  const showUpdSuccessMsg = (updCount?: number) => {
+    messageApi.open({
+      key: 'updSuccess',
+      type: 'success',
+      content: `${updCount} Products Updated Successfully`,
+    });
+    setTimeout(() => message.destroy('updSuccess'), 3000);
+  };
+
+  const showServerErrMsg = () => {
+    messageApi.open({
+      key: 'serverErr',
+      type: 'error',
+      content: 'Something went wrong. Please try again later.',
+    });
+    setTimeout(() => message.destroy('serverErr'), 3000);
+  };
+
+  const updateBulkData = async (data) => {
+    console.log(data);
+    await productBulkUpdAPI(data)
+      .then(() => {
+        getTableData();
+        showUpdSuccessMsg(data.length);
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) setTableLoading(false);
+        else {
+          showServerErrMsg();
+        }
+      });
+  };
+
+  const bulkUpdBtn = (props: any) => (
+    <BulkEditButton
+      disabled={tableLoading}
+      onClick={() => {
+        ActionModal.show('bulkUpd', {
+          onUpdate: async (data) => {
+            console.log(data);
+
+            await updateBulkData(data);
+          },
+        });
+      }}
+    />
+  );
 
   const onSelectBtn: InformativeTableButtonProps = [
     {
@@ -51,6 +116,14 @@ const ProdInv = () => {
       key: 'bulkUpd',
     },
   ];
+
+  const handleSelectChange = (selectedKeys) => {
+    const selectedRecord = list.filter((prod) =>
+      selectedKeys.some((selected) => selected === prod.item_id)
+    );
+
+    setSelected(getItemInvDetails(selectedRecord));
+  };
 
   const handleTabChange = (key) => {
     if (key !== 'all') {
@@ -73,13 +146,18 @@ const ProdInv = () => {
     {
       title: 'Product',
       dataIndex: ['name', 'category', 'thumbnail'],
-      key: 'prod',
+      key: 'name',
       width: 400,
       sorter: true,
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={5}>
           <Col xs={9} xl={7}>
-            <Image src={data.thumbnail} height={100} width={100} />
+            <Image
+              alt={data.name}
+              src={data.thumbnail}
+              height={100}
+              width={100}
+            />
           </Col>
           <Col xs={15} xl={17}>
             <Space direction='vertical' size={5}>
@@ -124,13 +202,39 @@ const ProdInv = () => {
       title: 'Action',
       key: 'action',
       width: 280,
-      render: () => <InvStockInput input={0} />,
+      render: (prod: any, _, index: number) => (
+        <InvStockInput
+          loading={index === actionLoading.index && actionLoading.loading}
+          initialValue={prod.stock}
+          onSave={(value) => {
+            setActionLoading({ loading: true, index: index });
+            productUpdAPI(prod.item_id, { stock: value })
+              .then(() => {
+                setActionLoading({ loading: false, index: index });
+                getTableData();
+              })
+              .catch((err) => {
+                if (err.response?.status !== 401)
+                  setActionLoading({ loading: false, index: index });
+              });
+          }}
+        />
+      ),
     },
   ];
   return (
     <Layout>
+      {contextHolder}
       <MainCardContainer className='prod-inv'>
-        <MainCard tabList={prodTabList} onTabChange={handleTabChange}>
+        <MainCard
+          tabList={prodTabList}
+          activeTabKey={
+            searchParams.get('status') === null
+              ? 'all'
+              : searchParams.get('status')
+          }
+          onTabChange={handleTabChange}
+        >
           <FilterInputs />
         </MainCard>
 
@@ -158,10 +262,19 @@ const ProdInv = () => {
               defPg={defPg}
               totalRecord={recordCount}
               loading={tableLoading}
+              onSelectChange={handleSelectChange}
             />
           </Space>
         </MainCard>
       </MainCardContainer>
+      <ActionModal
+        recordType='product inventory'
+        dataSource={selected}
+        onUpdate={async (data) => {
+          console.log(data);
+          await updateBulkData(data);
+        }}
+      />
     </Layout>
   );
 };

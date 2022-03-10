@@ -1,9 +1,10 @@
+import FilterSubmitButton from '@components/Button/ActionButton/FilterSubmitButton';
 import FilterInputCol from '@components/Container/FilterInputCol';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
 import { prodCat } from '@utils/optionUtils';
-import { Button, Col, Form, Row, Space } from 'antd';
+import { Form, Row, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -39,8 +40,13 @@ const FilterInputs = (props: FilterInputsProps) => {
   );
 
   const handleSearch = (values) => {
+    console.log(values);
     Object.keys(values).forEach(
-      (key) => values[key] === undefined && delete values[key]
+      (key) =>
+        (values[key] === undefined ||
+          values[key] === null ||
+          values[key] === '') &&
+        delete values[key]
     );
 
     setSearchParams(
@@ -52,6 +58,7 @@ const FilterInputs = (props: FilterInputsProps) => {
         : values
     );
   };
+
   const handleReset = () => {
     setSearchParams(
       searchParams.get('status') !== null
@@ -60,11 +67,15 @@ const FilterInputs = (props: FilterInputsProps) => {
           }
         : {}
     );
-    prodFilter.resetFields();
   };
 
   return (
-    <Form name='prodFilter' form={prodFilter} onFinish={handleSearch}>
+    <Form
+      name='prodFilter'
+      form={prodFilter}
+      onFinish={handleSearch}
+      layout='inline'
+    >
       <Space direction='vertical' size={20} className='full-width'>
         <Row gutter={[30, 30]}>
           <FilterInputCol>
@@ -118,16 +129,7 @@ const FilterInputs = (props: FilterInputsProps) => {
             />
           </FilterInputCol>
         </Row>
-        <Row gutter={20}>
-          <Col>
-            <Button type='primary' htmlType='submit'>
-              Search
-            </Button>
-          </Col>
-          <Col>
-            <Button onClick={handleReset}>Reset</Button>
-          </Col>
-        </Row>
+        <FilterSubmitButton onReset={handleReset} />
       </Space>
     </Form>
   );

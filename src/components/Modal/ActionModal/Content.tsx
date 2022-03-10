@@ -1,11 +1,10 @@
 import React, { memo } from 'react';
-import { Avatar, Col, Row, Space, Typography } from 'antd';
+import { Avatar, Col, List, ListProps, Row, Space, Typography } from 'antd';
 import Button from '@components/Button';
 import classNames from 'classnames';
-import DescriptionList, {
-  DescriptionListDataProps,
-  TitleTextProps,
-} from '@components/List/DescriptionList';
+import { DescriptionListDataProps } from '@components/List/DescriptionList';
+import VirtualList from 'rc-virtual-list';
+import { ListItemProps } from 'antd/lib/list';
 
 export interface ActionContentProps {
   label: string;
@@ -18,8 +17,11 @@ export interface ActionContentProps {
   children?: React.ReactNode;
   recordType?: string;
   dataSource?: DescriptionListDataProps[];
-  titleProps?: TitleTextProps;
-  descProps?: TitleTextProps;
+  listProps?: Omit<ListProps<any>, 'dataSource'>;
+  listItemProps?: ListItemProps;
+  listContent?: (item: DescriptionListDataProps) => React.ReactNode;
+  contentSpace?: boolean;
+  data?: any;
 }
 
 const Content = memo(
@@ -35,13 +37,40 @@ const Content = memo(
       children,
       dataSource,
       recordType,
-      titleProps,
-      descProps,
+      listProps,
+      listItemProps,
+      listContent,
+      contentSpace = true,
+      data,
       ...props
     }: ActionContentProps,
     ref
   ) => {
-    const { Title } = Typography;
+    const { Text, Title } = Typography;
+
+    const RecordList = (
+      <List bordered {...listProps}>
+        <VirtualList
+          data={dataSource}
+          height={360}
+          itemHeight={47}
+          itemKey='key'
+        >
+          {(item) => (
+            <List.Item {...listItemProps}>
+              <Row className='full-width' align='middle'>
+                <List.Item.Meta
+                  avatar={item.icon}
+                  title={<Text className='text-lg'>{item.title}</Text>}
+                  description={<Text type='secondary'>{item.desc}</Text>}
+                />
+              </Row>
+              {listContent && listContent(item)}
+            </List.Item>
+          )}
+        </VirtualList>
+      </List>
+    );
 
     return (
       <Space direction='vertical' size={20} className='full-width'>
@@ -66,13 +95,17 @@ const Content = memo(
           />
           <Title level={4}>{label}</Title>
         </Space>
-        {children}
-        <DescriptionList
-          dataSource={dataSource}
-          bordered
-          titleProps={{ style: { fontSize: 14 }, ...titleProps }}
-          descProps={descProps}
-        />
+        {contentSpace ? (
+          <>
+            {children}
+            {RecordList}
+          </>
+        ) : (
+          <div>
+            {children}
+            {RecordList}
+          </div>
+        )}
         <Row gutter={20} justify='end'>
           <Col>
             <Button color={color} disabled={loading} onClick={onCancel}>

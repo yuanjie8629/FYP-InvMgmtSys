@@ -57,8 +57,11 @@ PyJWT = "==2.3.0"
 Rx = "==1.6.1"
 wheel = "*"
 setuptools = "*"
-django-redis = "*"
-django-cachalot = "*"
+django-cacheops = "==6.0"
+django-pickling = "==1.0"
+funcy = "==1.17"
+wrapt = "==1.13.3"
+Deprecated = "==1.2.13"
 
 [dev-packages]
 

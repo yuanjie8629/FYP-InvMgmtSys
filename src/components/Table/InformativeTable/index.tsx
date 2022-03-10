@@ -4,7 +4,7 @@ import './InformativeTable.less';
 import { ButtonType } from '@components/Button';
 import Table, { TableProps } from '@components/Table';
 import { useSearchParams } from 'react-router-dom';
-import { addSearchParams, removeSearchparams } from '@utils/urlUtls';
+import { addSearchParams, removeSearchParams } from '@utils/urlUtls';
 
 type InformativeTableButtonProps = {
   element: ButtonType;
@@ -46,6 +46,9 @@ const InformativeTable = ({
   );
 
   useEffect(() => {
+    setSelectedRowCount(0);
+    setSelectedRowKeys(undefined);
+    setBtnShow([]);
     if (pagination !== undefined) {
       if (pagination.current > 1) {
         setSearchParams(
@@ -56,7 +59,7 @@ const InformativeTable = ({
         );
       } else {
         setSearchParams(
-          removeSearchparams(
+          removeSearchParams(
             new URLSearchParams(
               addSearchParams(searchParams, {
                 limit: String(pagination.pageSize),
@@ -68,7 +71,7 @@ const InformativeTable = ({
       }
     } else
       setSearchParams(addSearchParams(searchParams, { limit: String(defPg) }));
-  }, [defPg, pagination, searchParams, setSearchParams]);
+  }, [defPg, pagination, searchParams, setSearchParams, props.dataSource]);
 
   const hanldeTableChange = (paginate, _filters, sorter) => {
     setPagination(paginate);
@@ -100,7 +103,6 @@ const InformativeTable = ({
   };
 
   const handleSelectChange = (selectedRowKeys: any, selectedRows: any) => {
-    console.log(selectedRows);
     if (buttons !== undefined) {
       let buttonShow: { key: string; show: boolean }[] = [];
 

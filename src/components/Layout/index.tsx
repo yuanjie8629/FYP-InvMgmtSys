@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { Layout as AntdLayout, Row, RowProps } from 'antd';
 import { Helmet } from 'react-helmet';
 import Header from './Header';
@@ -13,15 +13,20 @@ export interface CustomLayoutProps extends RowProps {
 }
 
 const Layout = ({ justify = 'center', ...props }: CustomLayoutProps) => {
+  const [isSiderCollapsed, setIsSiderCollapsed] = useState(false);
   const { Content } = AntdLayout;
   return (
     <AntdLayout hasSider>
       <Helmet>
         <meta name='viewport' content='width=1600' />
       </Helmet>
-      <Sider />
+      <Sider
+        onCollapse={(collapsed) => {
+          setIsSiderCollapsed(collapsed);
+        }}
+      />
       <AntdLayout>
-        <Header />
+        <Header collapsed={isSiderCollapsed} />
         <Suspense fallback={<PageLoad />}>
           <Content className='content' style={{ minWidth: 1280 }}>
             <Row justify={justify} {...props}>

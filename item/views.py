@@ -10,9 +10,7 @@ from item.serializers import ProductPrevSerializer, ProductSerializer
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = (
-        Product.objects.all().select_related("item").filter(item__is_deleted=False)
-    )
+    queryset = Product.objects.select_related("item").filter(item__is_deleted=False)
     serializer_class = ProductSerializer
 
     def destroy(self, request, *args, **kwargs):
@@ -72,7 +70,7 @@ def prodBulkDeleteView(request):
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(["POST"])
+@api_view(["PATCH"])
 def prodBulkUpdView(request):
     try:
         dataList = request.data.get("list")
@@ -120,7 +118,9 @@ def prodBulkUpdView(request):
 
     except KeyError:
         response = Response(status=status.HTTP_404_NOT_FOUND)
-        response.data = {"detail": "Please provide the product id as 'id' for each data."}
+        response.data = {
+            "detail": "Please provide the product id as 'id' for each data."
+        }
         return response
 
 
@@ -133,6 +133,7 @@ class ProductPrevView(generics.ListAPIView):
 
     serializer_class = ProductPrevSerializer
     filterset_class = ProductFilter
+    ordering = ["-last_update"]
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)

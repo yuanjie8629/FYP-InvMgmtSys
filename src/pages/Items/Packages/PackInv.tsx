@@ -124,7 +124,7 @@ const PackInv = () => {
       key: 'action',
       width: 250,
 
-      render: () => <InvStockInput input={0} />,
+      render: () => <InvStockInput />,
     },
   ];
   return (

@@ -22,14 +22,15 @@ import {
 import StatusTag from '@components/Tag/StatusTag';
 import { BoldTitle } from '@components/Title';
 import { ActionModal } from '@components/Modal';
-import { ActionModalContentProps } from '@components/Modal/ActionModal';
 import {
   productBulkDelAPI,
+  productBulkUpdAPI,
   productDelAPI,
   productPrevAPI,
   productUpdAPI,
 } from '@api/services/productAPI';
-import { addSearchParams, parseURL } from '@utils/urlUtls';
+import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
+import { getItemDetails } from '../itemUtils';
 
 const ProdMgmt = () => {
   const { Text } = Typography;
@@ -44,6 +45,7 @@ const ProdMgmt = () => {
   const defPg = 5;
 
   const getTableData = () => {
+    setSelected([]);
     setTableLoading(true);
     productPrevAPI(location.search)
       .then((res) => {
@@ -65,16 +67,14 @@ const ProdMgmt = () => {
     [searchParams]
   );
 
-  const actionModalProps: ActionModalContentProps = {
-    recordType: 'product',
-    dataSource: selected,
-  };
-
-  const showActionSuccessMsg = (action: 'activate' | 'delete' | 'hide') => {
+  const showActionSuccessMsg = (
+    action: 'activate' | 'delete' | 'hide',
+    isMulti: boolean = true
+  ) => {
     messageApi.open({
       key: action,
       type: 'success',
-      content: `${selected.length || 1} Products ${
+      content: `${isMulti ? selected.length : 1} Products ${
         action === 'activate'
           ? 'Activated'
           : action === 'delete'
@@ -89,13 +89,41 @@ const ProdMgmt = () => {
     messageApi.open({
       key: 'serverErr',
       type: 'error',
-      content:
-        "We're having some difficulties connecting to the server. Please try again later.",
+      content: 'Something went wrong. Please try again later.',
     });
     setTimeout(() => message.destroy('serverErr'), 3000);
   };
 
-  const activateBtn = (props: any) => <ActivateButton type='primary' />;
+  const activateBtn = (props: any) => (
+    <ActivateButton
+      type='primary'
+      onClick={() => {
+        ActionModal.show('activate', {
+          onOk: async () => {
+            const selectedKeys = selected.map(
+              (selectedItem) => selectedItem.key
+            );
+
+            await productBulkUpdAPI(
+              selectedKeys.map((key) => {
+                return { id: key, status: 'active' };
+              })
+            )
+              .then(() => {
+                getTableData();
+                showActionSuccessMsg('activate');
+              })
+              .catch((err) => {
+                if (err.response?.status !== 401) setTableLoading(false);
+                else {
+                  showServerErrMsg();
+                }
+              });
+          },
+        });
+      }}
+    />
+  );
 
   const hideBtn = (props: any) => (
     <HideButton
@@ -107,10 +135,15 @@ const ProdMgmt = () => {
             const selectedKeys = selected.map(
               (selectedItem) => selectedItem.key
             );
-            await productBulkDelAPI(selectedKeys)
+
+            await productBulkUpdAPI(
+              selectedKeys.map((key) => {
+                return { id: key, status: 'hidden' };
+              })
+            )
               .then(() => {
                 getTableData();
-                showActionSuccessMsg('delete');
+                showActionSuccessMsg('hide');
               })
               .catch((err) => {
                 if (err.response?.status !== 401) setTableLoading(false);
@@ -167,26 +200,12 @@ const ProdMgmt = () => {
     },
   ];
 
-  const getProdDetails = (selectedRecord) => {
-    const selected = [];
-    selectedRecord.forEach((prod) =>
-      selected.push({
-        key: prod.item_id,
-        title: prod.name,
-        icon: (
-          <Image src={prod.thumbnail} height={40} width={40} preview={false} />
-        ),
-      })
-    );
-    return selected;
-  };
-
   const handleSelectChange = (selectedKeys) => {
     const selectedRecord = list.filter((prod) =>
       selectedKeys.some((selected) => selected === prod.item_id)
     );
 
-    setSelected(getProdDetails(selectedRecord));
+    setSelected(getItemDetails(selectedRecord));
   };
 
   const handleTabChange = (key) => {
@@ -206,13 +225,15 @@ const ProdMgmt = () => {
     align?: 'left' | 'center' | 'right';
     width?: number | string;
     fixed?: 'left' | 'right';
+    defaultSortOrder?: 'ascend' | 'descend';
     render?: any;
   }[] = [
     {
       title: 'Product',
       dataIndex: ['name', 'category', 'thumbnail'],
-      key: 'prod',
+      key: 'name',
       sorter: true,
+      defaultSortOrder: getSortOrder('name'),
       width: 400,
       render: (_: any, data: { [x: string]: string }) => (
         <Row gutter={5}>
@@ -244,6 +265,7 @@ const ProdMgmt = () => {
       dataIndex: 'sku',
       key: 'sku',
       sorter: true,
+      defaultSortOrder: getSortOrder('sku'),
       width: 160,
     },
     {
@@ -251,6 +273,7 @@ const ProdMgmt = () => {
       dataIndex: 'price',
       key: 'price',
       sorter: true,
+      defaultSortOrder: getSortOrder('price'),
       width: 150,
       render: (amount: string) => {
         let newAmt = parseFloat(amount);
@@ -262,6 +285,7 @@ const ProdMgmt = () => {
       dataIndex: 'stock',
       key: 'stock',
       sorter: true,
+      defaultSortOrder: getSortOrder('stock'),
       width: 120,
     },
     {
@@ -269,35 +293,38 @@ const ProdMgmt = () => {
       dataIndex: ['id', 'status', 'name', 'thumbnail'],
       key: 'status',
       width: 150,
-      render: (_: any, data: { [x: string]: any }) => (
-        <StatusTag
-          status={data.status}
-          statusList={prodStatList}
-          dropdownStatus={['active', 'hidden']}
-          onDropdownSelect={(selectedStatus) => {
-            setSelected(getProdDetails([data]));
-            ActionModal.show(
-              selectedStatus === 'hidden' ? 'hide' : 'activate',
-              {
-                onOk: async () => {
-                  await productUpdAPI(data.item_id, {
-                    status: selectedStatus === 'hidden' ? 'hidden' : 'active',
-                  })
-                    .then((res) => {
-                      getTableData();
-                      showActionSuccessMsg(
-                        selectedStatus === 'hidden' ? 'hide' : 'activate'
-                      );
+      render: (_: any, data: { [x: string]: any }) => {
+        return (
+          <StatusTag
+            status={data.status}
+            statusList={prodStatList}
+            dropdownStatus={['active', 'hidden']}
+            onDropdownSelect={(selectedStatus) => {
+              setSelected(getItemDetails([data]));
+              ActionModal.show(
+                selectedStatus === 'hidden' ? 'hide' : 'activate',
+                {
+                  onOk: async () => {
+                    await productUpdAPI(data.item_id, {
+                      status: selectedStatus === 'hidden' ? 'hidden' : 'active',
                     })
-                    .catch((err) => {
-                      showServerErrMsg();
-                    });
-                },
-              }
-            );
-          }}
-        />
-      ),
+                      .then((res) => {
+                        getTableData();
+                        showActionSuccessMsg(
+                          selectedStatus === 'hidden' ? 'hide' : 'activate',
+                          false
+                        );
+                      })
+                      .catch((err) => {
+                        showServerErrMsg();
+                      });
+                  },
+                }
+              );
+            }}
+          />
+        );
+      },
     },
     {
       title: 'Action',
@@ -317,13 +344,13 @@ const ProdMgmt = () => {
               type='link'
               color='info'
               onClick={() => {
-                setSelected(getProdDetails([prod]));
+                setSelected(getItemDetails([prod]));
                 ActionModal.show('delete', {
                   onOk: async () => {
                     await productDelAPI(prod.item_id)
                       .then((res) => {
                         getTableData();
-                        showActionSuccessMsg('delete');
+                        showActionSuccessMsg('delete', false);
                       })
                       .catch((err) => {
                         showServerErrMsg();
@@ -382,7 +409,7 @@ const ProdMgmt = () => {
         </MainCard>
       </MainCardContainer>
 
-      <ActionModal {...actionModalProps} />
+      <ActionModal recordType='product' dataSource={selected} />
     </Layout>
   );
 };

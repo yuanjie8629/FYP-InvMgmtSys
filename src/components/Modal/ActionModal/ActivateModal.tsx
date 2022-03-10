@@ -9,13 +9,7 @@ const ActivateModal = memo(
     const { Text } = Typography;
 
     return (
-      <Content
-        label='Activate'
-        Icon={HiCheck}
-        color='success'
-        okText='Activate'
-        {...props}
-      >
+      <Content label='Activate' Icon={HiCheck} okText='Activate' {...props}>
         <Text type='secondary' className='text-lg'>
           Do you really want to activate the following {recordType}s?
         </Text>

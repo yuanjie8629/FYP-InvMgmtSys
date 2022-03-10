@@ -10,7 +10,7 @@ export interface StatusTagProps extends TagProps {
 }
 
 const StatusTag = ({
-  status,
+  status = null,
   statusList,
   dropdownStatus,
   onDropdownSelect = () => '',
@@ -30,7 +30,7 @@ const StatusTag = ({
 
   const matchedStatus = statusList.find(
     (statusItem) => status === statusItem.status
-  );
+  ) || { status: null, label: 'Unknown', color: 'grey' };
 
   return dropdownStatus?.includes(matchedStatus.status) ? (
     <Row align='middle'>
