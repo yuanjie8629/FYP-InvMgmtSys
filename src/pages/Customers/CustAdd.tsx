@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout';
 import UploadPicWall from '@components/Upload/UploadPicWall/UploadPicWall';
-import AffixAdd from '@components/Affix/AffixAdd';
+import AffixAction from '@components/Affix/AffixAction';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import {
   Anchor,
@@ -530,7 +530,7 @@ const CustAdd = () => {
                 </Form.Item>
               </Space>
             </MainCard>
-            <AffixAdd offsetBottom={0} label='Customer' />
+            <AffixAction offsetBottom={0} label='Customer' />
           </MainCardContainer>
         </Col>
         <Col xs={8} xl={5}>

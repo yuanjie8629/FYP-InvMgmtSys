@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout';
 import UploadPicWall from '@components/Upload/UploadPicWall/UploadPicWall';
-import AffixAdd from '@components/Affix/AffixAdd';
+import AffixAction from '@components/Affix/AffixAction';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import {
   Anchor,
@@ -392,7 +392,7 @@ const PackAdd = () => {
                 </Space>
               </MainCard>
             </Row>
-            <AffixAdd offsetBottom={0} label='Package' />
+            <AffixAction offsetBottom={0} label='Package' />
           </MainCardContainer>
         </Col>
         <Col xs={8} xl={5}>

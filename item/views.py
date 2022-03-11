@@ -1,17 +1,71 @@
-from django.db import transaction
+
+
+from tkinter import Image
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework import generics
+from core.utils import dict_to_querydict
 from item.filters import ProductFilter
 from item.models import Item, Product
 from item.serializers import ProductPrevSerializer, ProductSerializer
 
 
+def getRequestData(request,type):
+    data = request.data
+    item_data = {}
+    type_data = {}
+    image_data = {}
+    for key in data:
+        if hasattr(Item, key):
+            item_data[key] = data[key]
+
+        if hasattr(Image, key):
+            image_data[key] = data[key]
+
+        if hasattr(type, key):
+            type_data[key] = data[key]
+
+
+    request.data.clear()
+    request.data.update({"item": item_data, **type_data, "image": image_data})
+    print(request.data)
+    return request
+
+def getMultiFormData(request,type):
+    data = request.data
+    new_data = {}
+    image_data = {}
+    print(request.data)
+    num = 0
+    for key in data:
+        if hasattr(Item, key):
+            new_data['item.'+key] = data[key]
+        elif hasattr(type, key):
+            new_data[key] = data[key]
+        else:
+            new_data["item.image[{}]".format(str(num))] = ({"image": data[key]})
+            num+=1
+
+    print(image_data)
+
+    print(dict_to_querydict(new_data))
+    request.data._mutable = True
+    request.data.clear()
+    request.data.update(dict_to_querydict(new_data))
+    request.data._mutable = False
+    return request
+
+
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.select_related("item").filter(item__is_deleted=False)
     serializer_class = ProductSerializer
+    parser_classes = [MultiPartParser, FormParser]
+
+    def create(self, request, *args, **kwargs):
+        return super().create(getMultiFormData(request,Product), *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -20,22 +74,9 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def partial_update(self, request, *args, **kwargs):
         product = self.get_object()
-        data = request.data
-        itemData = {}
-        productData = {}
-        for key in data:
-            if hasattr(product.item, key):
-                itemData[key] = data[key]
-
-            if hasattr(product, key):
-                productData[key] = data[key]
-
-        request.data.clear()
-        request.data.update({"item": itemData, **productData})
-
+        request = getRequestData(request,Product)
         serializer = self.get_serializer(product, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        print(serializer.validated_data)
         (serializer.save()).refresh_from_db()
         return Response(serializer.data)
 
@@ -80,17 +121,14 @@ def prodBulkUpdView(request):
         itemFields = []
 
         for data in dataList:
-
             product = Product.objects.get(pk=data.pop("id"))
-
+            
             for key in data:
                 if hasattr(product.item, key):
-                    print("item ", key)
                     setattr(product.item, key, data[key])
                     itemFields.append(key)
 
                 if hasattr(product, key):
-                    print("product  ", key)
                     setattr(product, key, data[key])
                     prodFields.append(key)
 

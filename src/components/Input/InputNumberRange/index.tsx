@@ -77,11 +77,15 @@ const InputNumberRange = ({
   const { name, ...formPropsSpread } = formProps !== undefined && formProps;
 
   useEffect(() => {
-    if (start > end) {
-      return setValidateFailed(true);
+    let isMounted = true;
+    if (isMounted && start > end) {
+      setValidateFailed(true);
     } else {
-      return setValidateFailed(false);
+      setValidateFailed(false);
     }
+    return () => {
+      isMounted = false;
+    };
   }, [end, start]);
 
   return (
@@ -130,7 +134,7 @@ const InputNumberRange = ({
               noStyle
               getValueProps={(value) => {
                 setStart(value);
-                return null;
+                return value;
               }}
             >
               <InputNumber
@@ -158,7 +162,7 @@ const InputNumberRange = ({
               noStyle
               getValueProps={(value) => {
                 setEnd(value);
-                return null;
+                return value;
               }}
             >
               <InputNumber

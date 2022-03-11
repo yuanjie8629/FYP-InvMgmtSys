@@ -10,6 +10,10 @@ const siderDefKeyList: {
     path: '/order/management?status=cancel',
     key: 'orderCancel',
   },
+  {
+    path: '/product/:id',
+    key: 'prodEdit',
+  },
 ];
 
 export default siderDefKeyList;

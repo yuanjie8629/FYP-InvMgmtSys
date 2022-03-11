@@ -1,5 +1,4 @@
 import { GradeIcon } from '../Icons';
-import NasiBriyaniBukhari from '@assets/Product/NasiBukhari.png';
 import hashtag from '@assets/Login/Hashtag.svg';
 import { Col, Row, Image, Space, Typography } from 'antd';
 import { moneyFormatter, percentFormatter } from '@utils/numUtils';
@@ -143,7 +142,7 @@ const hmlData = [
     prodNm: 'Nasi Briyani Bukhari',
     prodCat: 'Ready-To-Cook',
     prodSKU: 'SHRF-RTC-NBB',
-    prodImg: NasiBriyaniBukhari,
+    prodImg: null,
     prodStock: 47,
     costPerUnit: 17.6,
     costPerUnitPct: 0.3333,
@@ -165,7 +164,7 @@ const hmlData = [
     prodNm: 'Nasi Bukhari',
     prodCat: 'Ready-To-Cook',
     prodSKU: 'SHRF-RTC-NBB',
-    prodImg: NasiBriyaniBukhari,
+    prodImg: null,
     prodStock: 25,
     costPerUnit: 20.8,
     costPerUnitPct: 0.3333,

@@ -24,3 +24,15 @@ def enforce_csrf(request):
 
 def show_debug_toolbar_in_staging(*args, **kwargs):
     return True
+
+def dict_to_querydict(dictionary):
+    from django.http import QueryDict
+    from django.utils.datastructures import MultiValueDict
+
+    qdict = QueryDict('', mutable=True)
+
+    for key, value in dictionary.items():
+        d = {key: value}
+        qdict.update(MultiValueDict(d) if isinstance(value, list) else d)
+
+    return qdict

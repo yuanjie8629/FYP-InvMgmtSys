@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout';
-import AffixAdd from '@components/Affix/AffixAdd';
+import AffixAction from '@components/Affix/AffixAction';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import {
   Anchor,
@@ -306,7 +306,7 @@ const VoucherAdd = () => {
               </Space>
             </MainCard>
 
-            <AffixAdd offsetBottom={0} label='Package' />
+            <AffixAction offsetBottom={0} label='Package' />
           </MainCardContainer>
         </Col>
         <Col xs={8} xl={5}>

@@ -1,7 +1,6 @@
 import { moneyFormatter } from '@utils/numUtils';
 import { Col, Row, Image, Typography, Space } from 'antd';
 import { DescIcon } from '../Icons';
-import NasiBriyaniBukhari from '@assets/Product/NasiBukhari.png';
 import hashtag from '@assets/Login/Hashtag.svg';
 import { EditButton } from '@components/Button/ActionButton';
 import { HiExclamation } from 'react-icons/hi';
@@ -182,7 +181,6 @@ const eoqData = [
     prodNm: 'Nasi Briyani Bukhari',
     prodCat: 'Ready-To-Cook',
     prodSKU: 'SHRF-RTC-NBB',
-    prodImg: NasiBriyaniBukhari,
     demand: 30,
     orderCost: 550,
   },
@@ -201,7 +199,6 @@ const eoqData = [
     prodNm: 'Nasi Bukhari',
     prodCat: 'Ready-To-Cook',
     prodSKU: 'SHRF-RTC-NBB',
-    prodImg: NasiBriyaniBukhari,
     costPerUnit: 20.8,
     demand: 20,
     orderCost: 666,

@@ -4,6 +4,8 @@ import AvatarDropdown from '@components/AvatarDropdown';
 import NotificationDropdown from '@components/NotificationDropdown';
 import classNames from 'classnames';
 import React from 'react';
+import jwtDecode from 'jwt-decode';
+import Cookies from 'js-cookie';
 
 interface HeaderProps {
   collapsed: boolean;
@@ -12,6 +14,9 @@ interface HeaderProps {
 
 const Header = ({ collapsed, ...props }: HeaderProps) => {
   const { Header } = Layout;
+  const tkn: { name: string; role: string } = jwtDecode(
+    Cookies.get('access_token')
+  );
 
   return (
     <div className='header-fixed'>
@@ -33,7 +38,7 @@ const Header = ({ collapsed, ...props }: HeaderProps) => {
               split={<Divider type='vertical' style={{ height: 42 }} />}
             >
               <NotificationDropdown />
-              <AvatarDropdown name='Tan Yuan Jie' role='Super Admin' />
+              <AvatarDropdown name={tkn.name} role={tkn.role} />
             </Space>
           </Col>
         </Row>

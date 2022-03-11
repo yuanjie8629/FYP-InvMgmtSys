@@ -7,6 +7,8 @@ from .views import (
 )
 
 
+
+
 urlpatterns = [
     path("admin/", include("administrator.urls")),
     path("login/", CookieTokenObtainPairView.as_view(), name="login"),
@@ -17,5 +19,8 @@ urlpatterns = [
         "password_reset/",
         include("django_rest_passwordreset.urls", namespace="password_reset"),
     ),
+     path("", include("image.urls")),
     path("item/", include("item.urls")),
 ]
+
+

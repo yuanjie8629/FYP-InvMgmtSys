@@ -123,7 +123,7 @@ DATABASES = {
         "PASSWORD": "b1741abc336c71255cf3e093d8c017c3339ff97cb2034497d8d47b172ab1534c",
         "HOST": "ec2-44-194-113-156.compute-1.amazonaws.com",
         "PORT": "5432",
-        "ATOMIC_REQUEST": True,
+        "ATOMIC_REQUESTS": True,
     }
 }
 
@@ -228,7 +228,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=10),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
     "REFRESH_TOKEN_LIFETIME": timedelta(hours=2),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": False,
@@ -295,6 +295,10 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:3000",
     "https://fyp-shrf.herokuapp.com",
 ]
+
+# Media configuration
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
 
 # Email configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

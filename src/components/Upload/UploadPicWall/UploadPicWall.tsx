@@ -6,8 +6,11 @@ import {
   Modal,
 } from 'antd';
 import './UploadPicWall.less';
+import ImgCrop from 'antd-img-crop';
 
-const UploadPicWall = (props: AntdUploadProps) => {
+interface UploadPicWallProps extends AntdUploadProps {}
+
+const UploadPicWall = (props: UploadPicWallProps) => {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -38,17 +41,22 @@ const UploadPicWall = (props: AntdUploadProps) => {
 
   return (
     <span className='upload-pic-wall'>
-      <AntdUpload
-        action='https://run.mocky.io/v3/74b79e58-0491-4fe0-ae9c-738eab6c90ba'
-        listType='picture-card'
-        onPreview={handlePreview}
-        multiple
-        {...props}
-      >
-        {props.fileList !== undefined && props.fileList.length >= 8
-          ? null
-          : uploadButton}
-      </AntdUpload>
+      <ImgCrop quality={0.8} aspect={1 / 1}>
+        <AntdUpload
+          accept='image/*'
+          listType='picture-card'
+          onPreview={handlePreview}
+          multiple
+          customRequest={(req) => {
+            req.onSuccess('uploaded');
+          }}
+          {...props}
+        >
+          {props.fileList !== undefined && props.fileList.length >= 8
+            ? null
+            : uploadButton}
+        </AntdUpload>
+      </ImgCrop>
       <Modal
         visible={previewVisible}
         title={previewTitle}

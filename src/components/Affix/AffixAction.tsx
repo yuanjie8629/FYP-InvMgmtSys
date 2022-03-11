@@ -3,10 +3,19 @@ import { Affix, AffixProps, Card, Col, Row } from 'antd';
 import Button from '@components/Button';
 
 export interface AffixAddProps extends AffixProps {
+  type?: 'add' | 'edit';
   label?: string;
+  loading?: boolean;
+  disabled?: boolean;
 }
 
-const AffixAdd = ({ label, ...props }: Omit<AffixAddProps, 'children'>) => {
+const AffixAction = ({
+  type = 'add',
+  label,
+  loading = false,
+  disabled = false,
+  ...props
+}: Omit<AffixAddProps, 'children'>) => {
   const [showCard, setShowCard] = useState(false);
   return (
     <Affix
@@ -31,11 +40,19 @@ const AffixAdd = ({ label, ...props }: Omit<AffixAddProps, 'children'>) => {
       >
         <Row justify='end' gutter={20}>
           <Col>
-            <Button size='middle'>Cancel</Button>
+            <Button size='middle' disabled={loading || disabled}>
+              Cancel
+            </Button>
           </Col>
           <Col>
-            <Button size='middle' type='primary' htmlType='submit'>
-              Add {label}
+            <Button
+              size='middle'
+              type='primary'
+              htmlType='submit'
+              loading={loading}
+              disabled={disabled}
+            >
+              {type === 'add' ? 'Add' : 'Edit'} {label}
             </Button>
           </Col>
         </Row>
@@ -44,4 +61,4 @@ const AffixAdd = ({ label, ...props }: Omit<AffixAddProps, 'children'>) => {
   );
 };
 
-export default AffixAdd;
+export default AffixAction;

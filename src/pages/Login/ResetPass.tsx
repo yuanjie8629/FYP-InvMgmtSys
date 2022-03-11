@@ -260,7 +260,7 @@ const ResetPass = () => {
         title='Reset Password Successful'
         subTitle='You can now use the new password to login your account.'
         extra={[
-          <Button type='primary' onClick={() => navigate('/')}>
+          <Button type='primary' onClick={() => navigate('')}>
             Go to Login
           </Button>,
         ]}

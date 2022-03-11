@@ -4,7 +4,7 @@ import { SiderProps as AntdSiderProps } from 'antd/lib/layout';
 import menuList from './siderMenuList';
 import Logo from '@assets/logo.webp';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { findRouteLabel, findRoutePath } from '@utils/routingUtils';
+import { checkURL, findRouteLabel, findRoutePath } from '@utils/routingUtils';
 import classNames from 'classnames';
 import siderDefKeyList from './siderDefKeyList';
 import { logoutAPI } from '@api/services/authAPI';
@@ -34,7 +34,8 @@ const Sider = ({ onCollapsed = () => null, ...props }: SiderProps) => {
             (defKey) => defKey.path === location.pathname + location.search
           ).key,
         ]
-      : [findRouteLabel(location.pathname)];
+      : [findRouteLabel(checkURL(location.pathname))];
+
   const openKeys = [location.pathname.split('/')[1]];
 
   return (

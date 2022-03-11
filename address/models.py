@@ -6,7 +6,7 @@ from postcode.models import Postcode
 
 
 class ShippingAddress(models.Model):
-    address_id = models.IntegerField(primary_key=True)
+    address_id = models.AutoField(primary_key=True)
     address = models.CharField(max_length=200)
     contact_name = models.CharField(max_length=100)
     contact_num = models.CharField(max_length=15)

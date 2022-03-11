@@ -39,7 +39,7 @@ const ComingSoon = ({ img, ...props }: ComingSoonProps) => {
           <Text type='secondary' className='text-lg'>
             We Are Working Hard to Give You a Better Experience.
           </Text>
-          <Button type='primary' onClick={() => navigate('/')}>
+          <Button type='primary' onClick={() => navigate('')}>
             Go Back to Dashboard
           </Button>
         </Space>
