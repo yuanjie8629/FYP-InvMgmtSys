@@ -56,7 +56,7 @@ def password_reset_token_created(
         # message:
         email_plaintext_message,
         # from:
-        "chewyyoda0817@gmail.com",
+        "yuanjie8629@gmail.com",
         # to:
         [reset_password_token.user.email],
     )

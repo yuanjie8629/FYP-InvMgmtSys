@@ -12,9 +12,7 @@ class BaseModel(models.Model):
 
 
 class SoftDeleteModel(BaseModel):
-
     is_deleted = models.BooleanField(null=False, default=False)
-
     objects = SoftDeleteManager()
     objects_with_deleted = SoftDeleteManager(deleted=True)
 

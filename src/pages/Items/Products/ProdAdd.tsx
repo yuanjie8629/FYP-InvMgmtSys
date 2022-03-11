@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout';
 import UploadPicWall from '@components/Upload/UploadPicWall/UploadPicWall';
-import AffixAdd from '@components/Affix/AffixAdd';
+import AffixAction from '@components/Affix/AffixAction';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import {
   Anchor,
@@ -12,6 +12,7 @@ import {
   Form,
   Input,
   InputNumber,
+  message,
   Radio,
   Row,
   Space,
@@ -19,37 +20,106 @@ import {
 } from 'antd';
 import TextEditor from '@components/Input/TextEditor';
 import { prodCat } from '@utils/optionUtils';
+import { productCreateAPI } from '@api/services/productAPI';
+import { removeInvalidData } from '@utils/arrayUtils';
+import { useNavigate } from 'react-router-dom';
+import { findRoutePath } from '@utils/routingUtils';
+import { serverErrMsg } from '@utils/messageUtils';
 
 const ProdAdd = () => {
   const { Text, Title } = Typography;
   const [prodForm] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
   const { Link } = Anchor;
-  const [fileList, setFileList]: any = useState([
-    {
-      uid: '-1',
-      name: 'image.png',
-      status: 'done',
-      url: 'https://www.sharifahfood.com/wp-content/uploads/2020/10/BG-3.png',
-    },
-  ]);
-
+  const [price, setPrice] = useState<number>();
+  const [costPerUnit, setCostPerUnit] = useState<number>();
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
   );
-
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const anchorList = [
     { link: 'basicInfo', title: 'Basic Information' },
     { link: 'pricing', title: 'Pricing' },
     { link: 'inv', title: 'Inventory' },
     { link: 'shipping', title: 'Shipping' },
   ];
+  const [dimensionValid, setDimensionValid] = useState({
+    length: true,
+    width: true,
+    height: true,
+  });
 
   useEffect(() => {
     setTargetOffset(window.innerHeight / 1.65);
   }, []);
 
+  const checkDimension = !(
+    dimensionValid.length &&
+    dimensionValid.width &&
+    dimensionValid.height
+  );
+
+  const [errMsg, setErrMsg] = useState({ type: undefined, message: undefined });
+
+  const showServerErrMsg = () => {
+    messageApi.open(serverErrMsg);
+    setTimeout(() => message.destroy('serverErr'), 3000);
+  };
+
+  const showErrMsg = (errMsg?: string) => {
+    messageApi.open({ key: 'err', type: 'error', content: errMsg });
+    setTimeout(() => message.destroy('err'), 3000);
+  };
+
+  const handleAddProduct = (values) => {
+    let { profit, description, ...data } = values;
+    if (data.status === undefined) data.status = 'active';
+    data.description = description.toHTML();
+    data = removeInvalidData(data);
+
+    let formData = new FormData();
+    Object.keys(data).forEach((item) => {
+      if (item === 'image') {
+        data[item].forEach((image, index) => {
+          formData.append(`${item}[${index}]`, image);
+        });
+      } else if (item === 'thumbnail') {
+        formData.append(item, data[item], `${data.name.trim()}-thumbnail.jpg`);
+      } else {
+        formData.append(item, data[item]);
+      }
+    });
+
+    setLoading(true);
+    productCreateAPI(formData)
+      .then((res) => {
+        setLoading(false);
+        navigate(findRoutePath('prodAddSuccess'));
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setLoading(false);
+          if (err.response.data?.item) {
+            setErrMsg({ type: 'sku', message: err.response.data?.item?.sku });
+            showErrMsg(err.response.data?.item?.sku);
+          } else {
+            showServerErrMsg();
+          }
+        }
+      });
+  };
+
   return (
-    <Form name='prodForm' form={prodForm} layout='vertical' size='small'>
+    <Form
+      name='prodForm'
+      form={prodForm}
+      layout='vertical'
+      size='small'
+            scrollToFirstError={{ behavior: 'smooth', block: 'center' }}
+      onFinish={handleAddProduct}
+    >
+      {contextHolder}
       <Layout>
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
@@ -60,7 +130,7 @@ const ProdAdd = () => {
                 </Title>
                 <Form.Item
                   label='Product Name'
-                  name='prodNm'
+                  name='name'
                   rules={[
                     {
                       required: true,
@@ -75,7 +145,7 @@ const ProdAdd = () => {
                 </Form.Item>
                 <Form.Item
                   label='Product Category'
-                  name='prodCat'
+                  name='category'
                   rules={[
                     {
                       required: true,
@@ -86,25 +156,49 @@ const ProdAdd = () => {
                   <Radio.Group options={prodCat} />
                 </Form.Item>
                 <Form.Item
-                  label='Product Image'
-                  name='prodImg'
+                  label='Product Thumbnail'
+                  name='thumbnail'
                   rules={[
                     {
                       required: true,
-                      message: 'Please upload at least ONE product image.',
+                      message: 'Please upload ONE product thumbnail.',
                     },
                   ]}
                 >
                   <UploadPicWall
-                    fileList={fileList}
+                    maxCount={1}
                     onChange={(info) => {
-                      setFileList([...info.fileList]);
+                      info.fileList[0]
+                        ? prodForm.setFieldsValue({
+                            thumbnail: info.fileList[0].originFileObj,
+                          })
+                        : prodForm.resetFields(['thumbnail']);
+                    }}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label={
+                    <Space size={10}>
+                      <Text>Product Image</Text>
+                      <Text type='secondary' className='text-sm'>
+                        (Max 8)
+                      </Text>
+                    </Space>
+                  }
+                  name='image'
+                >
+                  <UploadPicWall
+                    maxCount={8}
+                    onChange={(info) => {
+                      prodForm.setFieldsValue({
+                        image: info.fileList.map((file) => file.originFileObj),
+                      });
                     }}
                   />
                 </Form.Item>
                 <Form.Item
                   label='Product Description'
-                  name='prodDesc'
+                  name='description'
                   rules={[
                     {
                       required: true,
@@ -123,7 +217,7 @@ const ProdAdd = () => {
                   {/* <Input.TextArea style={{ height: 200 }} /> */}
                   <TextEditor placeholder='Please add the product description here.' />
                 </Form.Item>
-                <Form.Item label='Product Status' name='prodStat'>
+                <Form.Item label='Product Status' name='status'>
                   <Checkbox>Hidden</Checkbox>
                 </Form.Item>
               </Space>
@@ -139,7 +233,7 @@ const ProdAdd = () => {
                     <Col>
                       <Form.Item
                         label='Price'
-                        name='prodPrice'
+                        name='price'
                         rules={[
                           {
                             required: true,
@@ -152,13 +246,21 @@ const ProdAdd = () => {
                           precision={2}
                           min={0}
                           placeholder='Input'
+                          onChange={(value) => {
+                            setPrice(value);
+                            if (costPerUnit) {
+                              prodForm.setFieldsValue({
+                                profit: (value - costPerUnit).toFixed(2),
+                              });
+                            }
+                          }}
                         />
                       </Form.Item>
                     </Col>
                     <Col>
                       <Form.Item
                         label='Special Price'
-                        name='prodSPrice'
+                        name='special_price'
                         tooltip={{
                           title: 'Discounted Price',
                         }}
@@ -177,7 +279,7 @@ const ProdAdd = () => {
                     <Col>
                       <Form.Item
                         label='Cost per Unit'
-                        name='prodCPU'
+                        name='cost_per_unit'
                         tooltip={{
                           title: 'Unit Price',
                         }}
@@ -194,16 +296,27 @@ const ProdAdd = () => {
                           precision={2}
                           min={0}
                           placeholder='Input'
+                          onChange={(value) => {
+                            setCostPerUnit(value);
+                            if (price) {
+                              prodForm.setFieldsValue({
+                                profit: (price - value).toFixed(2),
+                              });
+                            }
+                          }}
                         />
                       </Form.Item>
                     </Col>
                     <Col>
-                      <Form.Item label='Profit' name='prodProfit'>
+                      <Form.Item
+                        label='Profit'
+                        name='profit'
+                        dependencies={['price, cost_per_unit']}
+                      >
                         <Input
                           disabled
                           bordered={false}
                           defaultValue='-'
-                          placeholder='Input'
                           style={{
                             fontWeight: 'bold',
                             cursor: 'default',
@@ -216,7 +329,7 @@ const ProdAdd = () => {
                     <Col>
                       <Form.Item
                         label='Ordering/Reorder Cost'
-                        name='prodOrderCost'
+                        name='ordering_cost'
                         tooltip={{
                           title: 'Cost when reordering the product',
                         }}
@@ -232,7 +345,7 @@ const ProdAdd = () => {
                     <Col>
                       <Form.Item
                         label='Carrying/Holding Cost'
-                        name='prodCarryCost'
+                        name='holding_cost'
                         tooltip={{
                           title: 'Cost for holding inventory in stock',
                         }}
@@ -258,7 +371,9 @@ const ProdAdd = () => {
                 <div>
                   <Form.Item
                     label='Stock Keeping Unit (SKU)'
-                    name='prodSKU'
+                    name='sku'
+                    validateStatus={errMsg.type === 'sku' && 'error'}
+                    help={errMsg.type === 'sku' && errMsg.message}
                     rules={[
                       {
                         required: true,
@@ -272,7 +387,7 @@ const ProdAdd = () => {
 
                   <Form.Item
                     label='Stock Quantity'
-                    name='prodQuantity'
+                    name='stock'
                     rules={[
                       {
                         required: true,
@@ -288,7 +403,7 @@ const ProdAdd = () => {
                     <Col>
                       <Form.Item
                         label='Average Lead Time'
-                        name='avgLeadTime'
+                        name='avg_lead_tm'
                         tooltip={{
                           title: 'Average Lead Time',
                         }}
@@ -303,7 +418,7 @@ const ProdAdd = () => {
                     <Col>
                       <Form.Item
                         label='Maximum Lead Time'
-                        name='maxLeadTime'
+                        name='max_lead_tm'
                         tooltip={{
                           title: 'Maximum Lead Time',
                         }}
@@ -327,7 +442,7 @@ const ProdAdd = () => {
                 </Title>
                 <Form.Item
                   label='Weight (kg)'
-                  name='prodWeight'
+                  name='weight'
                   rules={[
                     {
                       required: true,
@@ -335,35 +450,111 @@ const ProdAdd = () => {
                     },
                   ]}
                 >
-                  <InputNumber
-                    min={0}
-                    defaultValue={0}
-                    style={{ width: '10%' }}
-                  />
+                  <InputNumber min={0} style={{ width: '10%' }} />
                 </Form.Item>
 
                 <Form.Item
                   label='Dimension (cm)'
-                  name='prodDimension'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please enter the product dimension in cm.',
-                    },
-                  ]}
+                  required
+                  help={
+                    checkDimension &&
+                    'Please ensure that THREE diemensions are filled (Length x Width x Height).'
+                  }
+                  validateStatus={checkDimension && 'error'}
                 >
                   <Space size={10}>
-                    <InputNumber min={0} placeholder='Length' addonAfter='cm' />
+                    <Form.Item
+                      name='length'
+                      noStyle
+                      rules={[
+                        ({ getFieldValue }) => ({
+                          validator(_, value) {
+                            if (!value) {
+                              setDimensionValid({
+                                ...dimensionValid,
+                                width: false,
+                              });
+                              return Promise.reject();
+                            }
+                            setDimensionValid({
+                              ...dimensionValid,
+                              width: true,
+                            });
+                            return Promise.resolve();
+                          },
+                        }),
+                      ]}
+                    >
+                      <InputNumber
+                        min={0}
+                        placeholder='Length'
+                        addonAfter='cm'
+                      />
+                    </Form.Item>
                     <Text type='secondary'>x</Text>
-                    <InputNumber min={0} placeholder='Width' addonAfter='cm' />
+                    <Form.Item
+                      name='width'
+                      noStyle
+                      rules={[
+                        ({ getFieldValue }) => ({
+                          validator(_, value) {
+                            if (!value) {
+                              setDimensionValid({
+                                ...dimensionValid,
+                                width: false,
+                              });
+                              return Promise.reject();
+                            }
+                            setDimensionValid({
+                              ...dimensionValid,
+                              width: true,
+                            });
+                            return Promise.resolve();
+                          },
+                        }),
+                      ]}
+                    >
+                      <InputNumber
+                        min={0}
+                        placeholder='Width'
+                        addonAfter='cm'
+                      />
+                    </Form.Item>
                     <Text type='secondary'>x</Text>
-                    <InputNumber min={0} placeholder='Height' addonAfter='cm' />
+                    <Form.Item
+                      name='height'
+                      noStyle
+                      rules={[
+                        ({ getFieldValue }) => ({
+                          validator(_, value) {
+                            if (!value) {
+                              setDimensionValid({
+                                ...dimensionValid,
+                                height: false,
+                              });
+                              return Promise.reject();
+                            }
+                            setDimensionValid({
+                              ...dimensionValid,
+                              height: true,
+                            });
+                            return Promise.resolve();
+                          },
+                        }),
+                      ]}
+                    >
+                      <InputNumber
+                        min={0}
+                        placeholder='Height'
+                        addonAfter='cm'
+                      />
+                    </Form.Item>
                   </Space>
                 </Form.Item>
               </Space>
             </MainCard>
 
-            <AffixAdd offsetBottom={0} label='Product' />
+            <AffixAction offsetBottom={0} label='Product' loading={loading} />
           </MainCardContainer>
         </Col>
         <Col xs={8} xl={5} push={1}>

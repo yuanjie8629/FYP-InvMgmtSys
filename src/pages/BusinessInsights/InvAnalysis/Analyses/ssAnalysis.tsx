@@ -1,6 +1,5 @@
 import { Col, Row, Image, Typography, Space } from 'antd';
 import { DescIcon } from '../Icons';
-import NasiBriyaniBukhari from '@assets/Product/NasiBukhari.png';
 import hashtag from '@assets/Login/Hashtag.svg';
 import { EditButton } from '@components/Button/ActionButton';
 import { HiExclamation } from 'react-icons/hi';
@@ -216,7 +215,6 @@ const ssData = [
     prodNm: 'Nasi Briyani Bukhari',
     prodCat: 'Ready-To-Cook',
     prodSKU: 'SHRF-RTC-NBB',
-    prodImg: NasiBriyaniBukhari,
     maxDemand: 20,
     avgDemand: 15,
     maxLeadTm: 10,
@@ -242,7 +240,6 @@ const ssData = [
     prodNm: 'Nasi Bukhari',
     prodCat: 'Ready-To-Cook',
     prodSKU: 'SHRF-RTC-NBB',
-    prodImg: NasiBriyaniBukhari,
     maxDemand: 6,
     avgDemand: 5,
     maxLeadTm: 10,

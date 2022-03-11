@@ -1,4 +1,3 @@
-import PromoRayaQurban from '@assets/Product/PromoRayaQurban.png';
 import hashtag from '@assets/Login/Hashtag.svg';
 const packageList: {
   key: string;
@@ -21,7 +20,7 @@ const packageList: {
       { prodNm: 'test', quantity: 6 },
     ],
     packSKU: 'SHRF-RTC-NBB',
-    packImg: PromoRayaQurban,
+    packImg: null,
     packPrice: 50,
     packStock: 50,
     packStat: 'active',

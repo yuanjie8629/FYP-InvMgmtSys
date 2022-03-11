@@ -7,9 +7,9 @@ from item.models import Item
 # Create your models here.
 class Wishlist(BaseModel):
     wishlist_id = models.IntegerField(primary_key=True)
-    created_tms = models.DateTimeField()
+    created_at = models.DateTimeField(auto_created=True)
     cust = models.ForeignKey(CustAcc, on_delete=models.CASCADE)
-
+    item = models.ManyToManyField(Item, through='WishlistItem')
     class Meta:
         db_table = "wishlist"
 

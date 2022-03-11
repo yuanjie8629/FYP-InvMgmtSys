@@ -6,8 +6,18 @@ import breadcrumbNameMap from './breadCrumpList';
 const BreadCrumb = () => {
   const location = useLocation();
   const pathSnippets = location.pathname.split('/').filter((i: any) => i);
+
   const extraBreadcrumbItems = pathSnippets.map((_: any, index: number) => {
     const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
+    let splitURL = url.split('/');
+    if (new RegExp(/^[0-9]*$/).test(splitURL[splitURL.length - 1])) {
+      let newURL = url.replace(/\d/g, '') + ':id';
+      return (
+        <AntdBreadcrumb.Item key={url}>
+          <Link to={url}>{breadcrumbNameMap[newURL]}</Link>
+        </AntdBreadcrumb.Item>
+      );
+    }
     return breadcrumbNameMap.hasOwnProperty(url) && url !== '/dashboard' ? (
       <AntdBreadcrumb.Item key={url}>
         <Link to={url}>{breadcrumbNameMap[url]}</Link>
@@ -18,9 +28,7 @@ const BreadCrumb = () => {
   });
   const breadcrumbItems = [
     <AntdBreadcrumb.Item key='/dashboard'>
-      <Link to='/dashboard'>
-        Dashboard
-      </Link>
+      <Link to='/dashboard'>Dashboard</Link>
     </AntdBreadcrumb.Item>,
   ].concat(extraBreadcrumbItems);
   return (

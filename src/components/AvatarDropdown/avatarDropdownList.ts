@@ -11,7 +11,7 @@ const menuList = [
     label: 'Account Settings',
     icon: MdOutlineSettings,
   },
-  { key: '/', label: 'Logout', icon: MdLogout },
+  { key: '', label: 'Logout', icon: MdLogout },
 ];
 
 export default menuList;

@@ -24,6 +24,8 @@ import Help from '@pages/Help/Help';
 import ShpFeeMgmt from '@pages/Shipments/ShptFeeMgmt';
 import NotFound from '@pages/Not Found/NotFound';
 import ResetPass from '@pages/Login/ResetPass';
+import { SuccessResult } from '@pages/ResultFeedback';
+import ProdEdit from '@pages/Items/Products/ProdEdit';
 
 const routeList: {
   label: string;
@@ -73,6 +75,24 @@ const routeList: {
     component: <ProdAdd />,
   },
   {
+    label: 'prodAdd',
+    path: '/product/:id',
+    protected: true,
+    component: <ProdEdit />,
+  },
+  {
+    label: 'prodAddSuccess',
+    path: '/product/add/success',
+    protected: true,
+    component: <SuccessResult record='prod' type='add' />,
+  },
+  {
+    label: 'prodEditSuccess',
+    path: '/product/edit/success',
+    protected: true,
+    component: <SuccessResult record='prod' type='edit' />,
+  },
+  {
     label: 'package',
     path: '/package',
     protected: true,
@@ -92,6 +112,12 @@ const routeList: {
   {
     label: 'packAdd',
     path: '/package/add',
+    protected: true,
+    component: <PackAdd />,
+  },
+  {
+    label: 'packAdd',
+    path: '/package/:id',
     protected: true,
     component: <PackAdd />,
   },
@@ -174,6 +200,12 @@ const routeList: {
     component: <CustAdd />,
   },
   {
+    label: 'custAdd',
+    path: '/customer/:id',
+    protected: true,
+    component: <CustAdd />,
+  },
+  {
     label: 'bizInsights',
     path: '/business-insights',
     protected: true,
@@ -204,6 +236,12 @@ const routeList: {
   {
     label: 'voucherAdd',
     path: '/voucher/add',
+    protected: true,
+    component: <VoucherAdd />,
+  },
+  {
+    label: 'voucherAdd',
+    path: '/voucher/:id',
     protected: true,
     component: <VoucherAdd />,
   },

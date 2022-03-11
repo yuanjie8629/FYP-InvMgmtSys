@@ -31,6 +31,7 @@ import {
 } from '@api/services/productAPI';
 import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
 import { getItemDetails } from '../itemUtils';
+import { serverErrMsg } from '@utils/messageUtils';
 
 const ProdMgmt = () => {
   const { Text } = Typography;
@@ -62,7 +63,9 @@ const ProdMgmt = () => {
   };
 
   useEffect(
-    () => getTableData(),
+    () => {
+      getTableData();
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [searchParams]
   );
@@ -86,11 +89,7 @@ const ProdMgmt = () => {
   };
 
   const showServerErrMsg = () => {
-    messageApi.open({
-      key: 'serverErr',
-      type: 'error',
-      content: 'Something went wrong. Please try again later.',
-    });
+    messageApi.open(serverErrMsg);
     setTimeout(() => message.destroy('serverErr'), 3000);
   };
 
@@ -230,7 +229,7 @@ const ProdMgmt = () => {
   }[] = [
     {
       title: 'Product',
-      dataIndex: ['name', 'category', 'thumbnail'],
+      dataIndex: ['item_id', 'name', 'category', 'thumbnail'],
       key: 'name',
       sorter: true,
       defaultSortOrder: getSortOrder('name'),
@@ -248,7 +247,13 @@ const ProdMgmt = () => {
           <Col xs={15} xl={17}>
             <Space direction='vertical' size={5}>
               <div className='text-button-wrapper'>
-                <Text strong className='text-button'>
+                <Text
+                  strong
+                  className='text-button'
+                  onClick={() => {
+                    navigate(`/product/${data['item_id']}`);
+                  }}
+                >
                   {data.name}
                 </Text>
               </div>
@@ -337,7 +342,7 @@ const ProdMgmt = () => {
               type='link'
               color='info'
               onClick={() => {
-                navigate(findRoutePath('prodAdd'));
+                navigate(`/product/${prod['item_id']}`);
               }}
             />
             <DeleteButton

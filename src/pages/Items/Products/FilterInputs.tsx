@@ -3,6 +3,7 @@ import FilterInputCol from '@components/Container/FilterInputCol';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
+import { removeInvalidData } from '@utils/arrayUtils';
 import { prodCat } from '@utils/optionUtils';
 import { Form, Row, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
@@ -41,13 +42,7 @@ const FilterInputs = (props: FilterInputsProps) => {
 
   const handleSearch = (values) => {
     console.log(values);
-    Object.keys(values).forEach(
-      (key) =>
-        (values[key] === undefined ||
-          values[key] === null ||
-          values[key] === '') &&
-        delete values[key]
-    );
+    values = removeInvalidData(values);
 
     setSearchParams(
       searchParams.get('status') !== null

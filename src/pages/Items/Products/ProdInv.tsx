@@ -23,6 +23,7 @@ import {
 import { addSearchParams, parseURL } from '@utils/urlUtls';
 import { getItemInvDetails } from '../itemUtils';
 import InvStockInput from '@components/Input/InvStockInput';
+import { serverErrMsg } from '@utils/messageUtils';
 
 const ProdInv = () => {
   const { Text } = Typography;
@@ -57,7 +58,9 @@ const ProdInv = () => {
   };
 
   useEffect(
-    () => getTableData(),
+    () => {
+      getTableData();
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [searchParams]
   );
@@ -72,11 +75,7 @@ const ProdInv = () => {
   };
 
   const showServerErrMsg = () => {
-    messageApi.open({
-      key: 'serverErr',
-      type: 'error',
-      content: 'Something went wrong. Please try again later.',
-    });
+    messageApi.open(serverErrMsg);
     setTimeout(() => message.destroy('serverErr'), 3000);
   };
 
@@ -204,6 +203,7 @@ const ProdInv = () => {
             productUpdAPI(prod.item_id, { stock: value })
               .then(() => {
                 setActionLoading({ loading: false, index: index });
+                showUpdSuccessMsg(1);
                 getTableData();
               })
               .catch((err) => {
@@ -260,7 +260,7 @@ const ProdInv = () => {
           </Space>
         </MainCard>
       </MainCardContainer>
-      <ActionModal recordType='product inventory' dataSource={selected} />
+      <ActionModal recordType='product' dataSource={selected} />
     </Layout>
   );
 };

@@ -6,8 +6,11 @@ import { refreshTknAPI } from './services/authAPI';
 const localBaseURL = 'http://127.0.0.1:8000/api/';
 const serverBaseURL = 'https://fyp-shrf.herokuapp.com/api/';
 
+export const baseURL =
+  process.env.NODE_ENV === 'production' ? serverBaseURL : localBaseURL;
+
 const axios = oriAxios.create({
-  baseURL: process.env.NODE_ENV === 'production' ? serverBaseURL : localBaseURL,
+  baseURL: baseURL,
   headers: {
     Authorization: Cookies.get('access_token')
       ? `JWT ${Cookies.get('access_token')}`
@@ -51,14 +54,18 @@ axios.interceptors.response.use(
       !refresh
     ) {
       refresh = true;
+      console.log('Requesting new session.');
       return await refreshTknAPI()
         .then(async (res) => {
           originalRequest.headers['Authorization'] = `JWT ${Cookies.get(
             'access_token'
           )}`;
+          console.log('New session obtained.');
           return await axios(originalRequest);
         })
-        .catch((err) => Promise.reject(err))
+        .catch((err) => {
+          return Promise.reject(err);
+        })
         .finally(() => {
           refresh = false;
         });

@@ -5,6 +5,23 @@ export const productPrevAPI = (searchParam?: string) =>
     `item/product/prev/${searchParam !== undefined ? searchParam : ''}`
   );
 
+export const productDetailsAPI = (id: string) =>
+  axios.get(`item/product/${id}/`);
+
+export const productCreateAPI = (data) =>
+  axios.post(`item/product/`, data, {
+    headers: {
+      'content-type': 'multipart/form-data',
+    },
+  });
+
+export const productUpdateAPI = (id, data) =>
+  axios.put(`item/product/${id}/`, data, {
+    headers: {
+      'content-type': 'multipart/form-data',
+    },
+  });
+
 export const productDelAPI = (id: number) =>
   axios.delete(`item/product/${id}/`);
 
