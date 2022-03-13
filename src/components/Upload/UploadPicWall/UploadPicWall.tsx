@@ -41,7 +41,10 @@ const UploadPicWall = (props: UploadPicWallProps) => {
 
   return (
     <span className='upload-pic-wall'>
-      <ImgCrop quality={0.8} aspect={1 / 1}>
+      <ImgCrop
+        quality={0.8}
+        aspect={1 / 1}
+      >
         <AntdUpload
           accept='image/*'
           listType='picture-card'

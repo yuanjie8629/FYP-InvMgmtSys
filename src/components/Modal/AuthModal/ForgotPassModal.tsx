@@ -18,8 +18,8 @@ const ForgotPassModal = memo(
           AuthModal.show('checkEmail', { args: { email: values.email } });
         })
         .catch((err) => {
-          if (err.response.status === 400)
-            setErrMsg(err.response.data.email[0]);
+          if (err.response?.status === 400)
+            setErrMsg(err.response?.data.email[0]);
         })
         .finally(() => {
           setLoading(false);

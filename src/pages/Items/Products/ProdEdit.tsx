@@ -21,7 +21,7 @@ import {
 } from 'antd';
 import TextEditor from '@components/Input/TextEditor';
 import { prodCat } from '@utils/optionUtils';
-import { productCreateAPI, productDetailsAPI } from '@api/services/productAPI';
+import { productDetailsAPI, productUpdateAPI } from '@api/services/productAPI';
 import { removeInvalidData } from '@utils/arrayUtils';
 import { useNavigate, useParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
@@ -55,6 +55,7 @@ const ProdEdit = () => {
   const [errMsg, setErrMsg] = useState({ type: undefined, message: undefined });
   const [dataLoading, setDataLoading] = useState(false);
   const [thumbnail, setThumbnail] = useState([]);
+
   const [imageList, setImageList] = useState([]);
 
   const checkDimension = !(
@@ -90,7 +91,7 @@ const ProdEdit = () => {
             let imageList = [];
             res.data?.image.forEach((img) => {
               imageList.push({
-                url: img.image,
+                url: img,
               });
             });
             prodForm.setFieldsValue({
@@ -117,39 +118,45 @@ const ProdEdit = () => {
   const handleEditProduct = (values) => {
     let { profit, description, image, ...data } = values;
     if (data.status === undefined) data.status = 'active';
+    console.log(data.status)
     data.description = description.toHTML();
     let newImageList = imageList.map((img) =>
       'originFileObj' in img ? img.originFileObj : img.url
     );
     data.image = newImageList;
-    data = removeInvalidData(data);
+    console.log(data.thumbnail);
+    data.thumbnail = data.thumbnail[0].originFileObj
+      ? data.thumbnail[0].originFileObj
+      : data.thumbnail[0].url;
+    console.log(data.thumbnail);
 
+    data = removeInvalidData(data);
     let formData = new FormData();
     Object.keys(data).forEach((item) => {
       if (item === 'image') {
         data[item].forEach((image, index) => {
           formData.append(`${item}[${index}]`, image);
         });
-      } else if (item === 'thumbnail') {
-        formData.append(item, data[item]);
       } else {
         formData.append(item, data[item]);
       }
     });
 
     setLoading(true);
-    productCreateAPI(formData)
+    productUpdateAPI(id, formData)
       .then((res) => {
         setLoading(false);
-        navigate(findRoutePath('ProdEditSuccess'));
+        navigate(findRoutePath('prodEditSuccess'));
       })
       .catch((err) => {
         if (err.response?.status !== 401) {
           setLoading(false);
-          console.log(err.response.data);
-          if (err.response.data?.item) {
-            setErrMsg({ type: 'sku', message: err.response.data?.item?.sku });
-            showErrMsg(err.response.data?.item?.sku);
+          if (err.response?.data?.error?.code === 'invalid_sku') {
+            setErrMsg({
+              type: 'invalid_sku',
+              message: err.response?.data?.error?.message,
+            });
+            showErrMsg(err.response?.data?.error?.message);
           } else {
             showServerErrMsg();
           }
@@ -225,8 +232,15 @@ const ProdEdit = () => {
                   <UploadPicWall
                     maxCount={1}
                     onChange={(info) => {
-                      console.log(info);
-                      setThumbnail(info.fileList.map((file) => file));
+                      if (info.fileList.length > 0) {
+                        setThumbnail(info.fileList.map((file) => file));
+                        prodForm.setFieldsValue({
+                          thumbnail: info.fileList.map((file) => file),
+                        });
+                      } else {
+                        setThumbnail([]);
+                        prodForm.setFieldsValue({ thumbnail: undefined });
+                      }
                     }}
                     fileList={thumbnail}
                   />
@@ -426,8 +440,8 @@ const ProdEdit = () => {
                   <Form.Item
                     label='Stock Keeping Unit (SKU)'
                     name='sku'
-                    validateStatus={errMsg.type === 'sku' && 'error'}
-                    help={errMsg.type === 'sku' && errMsg.message}
+                    validateStatus={errMsg.type === 'invalid_sku' && 'error'}
+                    help={errMsg.type === 'invalid_sku' && errMsg.message}
                     rules={[
                       {
                         required: true,
@@ -436,7 +450,12 @@ const ProdEdit = () => {
                     ]}
                     style={{ width: '40%' }}
                   >
-                    <Input placeholder='e.g. SHRF-RTC-NBB' />
+                    <Input
+                      placeholder='e.g. SHRF-RTC-NBB'
+                      onChange={(e) => {
+                        setErrMsg({ type: undefined, message: undefined });
+                      }}
+                    />
                   </Form.Item>
 
                   <Form.Item

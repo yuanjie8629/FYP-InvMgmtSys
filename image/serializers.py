@@ -5,5 +5,11 @@ from image.models import Image
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields='__all__'
-
+        fields = ["image"]
+    
+    def to_representation(self, instance):
+        request = self.context.get('request', None)
+        if request is not None:
+            return request.build_absolute_uri(instance.image.url)
+        return instance.image.url
+    

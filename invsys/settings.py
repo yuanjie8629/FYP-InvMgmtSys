@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "shipment",
     "voucher",
     "wishlist",
+    "django_cleanup.apps.CleanupConfig",
 ]
 
 MIDDLEWARE = [
