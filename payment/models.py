@@ -4,7 +4,7 @@ from order.models import Order
 
 # Create your models here.
 class Payment(models.Model):
-    payment_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     method = models.CharField(max_length=20)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     paid = models.IntegerField()

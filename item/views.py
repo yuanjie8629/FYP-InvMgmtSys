@@ -5,12 +5,10 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework import generics
-from rest_framework.decorators import parser_classes
-from core.utils import dict_to_querydict
+from core.utils import update_request_data
 from item.filters import ProductFilter
 from item.models import Item, Product
 from item.serializers import ProductPrevSerializer, ProductSerializer
-from image.models import Image
 from urllib.parse import urlparse
 
 
@@ -22,51 +20,59 @@ class ProductViewSet(viewsets.ModelViewSet):
     )
     serializer_class = ProductSerializer
 
-    def update(self, request, *args, **kwargs):
+    def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
         item = instance.item
-        request.data._mutable = True
 
-        thumbnail = request.data.get("thumbnail")
-        print(isinstance(thumbnail, InMemoryUploadedFile))
+        data = request.data.copy()
+
+        thumbnail = data.get("thumbnail")
         if not isinstance(thumbnail, InMemoryUploadedFile):
-            print("hehehe")
-            request.data.pop("thumbnail", None)
-        print("thumbnail: ")
-        print(request.data)
+            data.pop("thumbnail", None)
 
         ori_images = item.image.all()
-        image_list = []
-        removed_images = []
-        to_be_deleted = []
+        new_images = []
+        old_images = []
+        to_be_deleted = set()
 
-        for key, value in list(request.data.items()):
+        for key, value in list(data.items()):
             if re.search("image\[\d\]", key):
+                print(key)
+
                 if isinstance(value, InMemoryUploadedFile):
-                    image_list.append(value)
+                    print("add new image")
+                    new_images.append(value)
+
                 else:
-                    request.data.pop(key)
-                    path = urlparse(value).path
-                    for ori in ori_images:
-                        ori_path = ori.image.url
-                        if ori_path != path:
-                            print("ori: " + ori_path)
-                            print("path: " + path)
-                            to_be_deleted.append(ori.img_id)
-                        else:
-                            print("not same: " + ori_path)
-                            print("not same path: " + path)
-                            removed_images.append(ori)
-        ori_images.filter(img_id__in=to_be_deleted).delete()
+                    old_images.append(value)
+                data.pop(key, None)
 
-        for index, value in enumerate(image_list):
-            setattr(request.data, "image[{}]".format(index), value)
+        for ori in ori_images:
+            ori_path = ori.image.url
+            match = False
+            for old in old_images:
+                path = urlparse(old).path
 
-        print("final: ")
-        print(request.data)
-        request.data._mutable = False
+                if ori_path == path:
+                    match = True
+                    break
 
-        return super().update(request, partial=True, *args, **kwargs)
+            if not match:
+                to_be_deleted.add(ori.id)
+
+        if to_be_deleted:
+            ori_images.filter(id__in=(to_be_deleted)).delete()
+            print("Deleted Images")
+            print(to_be_deleted)
+
+        for index, value in enumerate(new_images):
+            data.update({"image[{}]".format(index): value})
+            print("Adding new Images")
+            print(new_images)
+
+        return super().partial_update(
+            update_request_data(request, data), *args, **kwargs
+        )
 
 
 @api_view(["POST"])
@@ -123,13 +129,13 @@ def prodBulkUpdView(request):
             return response
 
     product_list = list(
-        Product.objects.select_related().filter(item__is_deleted=False, item_id__in=ids)
+        Product.objects.select_related().filter(item__is_deleted=False, id__in=ids)
     )
 
     for data in dataList:
         for product in product_list:
             if product.pk == data.get("id"):
-                new_data = {"item_id": data.pop("id")}
+                new_data = {"id": data.pop("id")}
                 for key in data:
                     if hasattr(product.item, key):
                         new_data.update({key: data[key]})

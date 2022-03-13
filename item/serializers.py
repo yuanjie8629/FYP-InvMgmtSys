@@ -96,7 +96,7 @@ class ItemSerializer(serializers.ModelSerializer):
 class ItemPrevSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields = ["item_id", "name", "price", "sku", "status", "stock", "thumbnail"]
+        fields = ["id", "name", "price", "sku", "status", "stock", "thumbnail"]
 
 
 class ProductListSerializer(serializers.ListSerializer):
@@ -161,8 +161,6 @@ class ProductSerializer(serializers.ModelSerializer):
         return product
 
     def update(self, instance, validated_data):
-        print("validated")
-        print(validated_data)
         item_data = validated_data.pop("item", None)
         image_data = item_data.pop("image",None)
         keys = []
@@ -177,9 +175,6 @@ class ProductSerializer(serializers.ModelSerializer):
             setattr(item, key, item_data[key])
             item_keys.append(key)
         item.save(update_fields=item_keys)
-        print("item")
-        print(item_data)
-      
 
         if image_data:
             for image_datum in image_data:

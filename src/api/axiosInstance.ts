@@ -18,6 +18,7 @@ const axios = oriAxios.create({
     'Content-Type': 'application/json',
     accept: 'application/json',
   },
+  timeout: 60000,
   withCredentials: true,
 });
 

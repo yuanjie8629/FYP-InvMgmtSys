@@ -17,7 +17,7 @@ class AdminList(generics.ListCreateAPIView):
 class AdminDetails(generics.RetrieveDestroyAPIView):
     queryset = Admin.objects.all()
     serializer_class = AdminSerializer
-    lookup_field = "admin_id"
+    lookup_field = "id"
 
 
 @receiver(reset_password_token_created)

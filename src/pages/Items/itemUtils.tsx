@@ -4,7 +4,7 @@ export const getItemDetails = (selectedRecord) => {
   const selected = [];
   selectedRecord.forEach((prod) =>
     selected.push({
-      key: prod.item_id,
+      key: prod.id,
       title: prod.name,
       desc: prod.sku,
       icon: (
@@ -19,7 +19,7 @@ export const getItemInvDetails = (selectedRecord) => {
   const selected = [];
   selectedRecord.forEach((prod) =>
     selected.push({
-      key: prod.item_id,
+      key: prod.id,
       title: prod.name,
       desc: prod.sku,
       content: prod.stock,

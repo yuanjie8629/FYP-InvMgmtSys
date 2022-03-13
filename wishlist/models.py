@@ -6,7 +6,7 @@ from item.models import Item
 
 # Create your models here.
 class Wishlist(BaseModel):
-    wishlist_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     created_at = models.DateTimeField(auto_created=True)
     cust = models.ForeignKey(CustAcc, on_delete=models.CASCADE)
     item = models.ManyToManyField(Item, through='WishlistItem')
@@ -15,7 +15,7 @@ class Wishlist(BaseModel):
 
 
 class WishlistItem(models.Model):
-    wishlist_item_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     wishlist = models.ForeignKey(Wishlist, models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
 

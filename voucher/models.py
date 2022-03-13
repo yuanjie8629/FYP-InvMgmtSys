@@ -4,7 +4,7 @@ from core.models import SoftDeleteModel
 from customer.models import CustType
 
 class Voucher(SoftDeleteModel):
-    voucher_id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     code = models.CharField(max_length=20)
     status = models.CharField(max_length=20)
     type = models.CharField(max_length=20)
@@ -25,7 +25,7 @@ class Voucher(SoftDeleteModel):
 
 
 class VoucherLine(models.Model):
-    voucher_line_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     voucher = models.ForeignKey(Voucher, on_delete=models.CASCADE)
     cust_type = models.ForeignKey(CustType, on_delete=models.CASCADE)
 

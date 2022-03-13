@@ -50,7 +50,7 @@ const AffixAction = ({
               type='primary'
               htmlType='submit'
               loading={loading}
-              disabled={disabled}
+              disabled={disabled && !loading}
             >
               {type === 'add' ? 'Add' : 'Edit'} {label}
             </Button>
