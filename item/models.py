@@ -4,14 +4,15 @@ from simple_history.models import HistoricalRecords
 from core.models import SoftDeleteModel
 from image.models import Image
 from item.choices import ITEM_STATUS, ITEM_TYPE, PROD_CAT
+from uuid import uuid4
 
 
 def upload_to(instance, filename):
-    return "products/{filename}".format(filename=filename)
+    # upload_to = "{}/{}".format(instance.type, instance.name)
+    return "thumbnails/{}.{}".format(uuid4().hex, filename.split(".")[-1])
 
 
 class Item(SoftDeleteModel):
-
     item_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, null=False)
     type = models.CharField(max_length=20, choices=ITEM_TYPE)
@@ -19,7 +20,11 @@ class Item(SoftDeleteModel):
     status = models.CharField(max_length=20, choices=ITEM_STATUS)
     thumbnail = models.ImageField(upload_to=upload_to)
     image = models.ManyToManyField(
-        Image, through="ImageItemLine", related_name="item", blank=True
+        Image,
+        through="ImageItemLine",
+        related_name="item",
+        blank=True,
+        max_length=8,
     )
     price = models.DecimalField(
         max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
@@ -58,7 +63,6 @@ class Item(SoftDeleteModel):
 
 
 class Product(models.Model):
-
     item = models.OneToOneField(
         Item, on_delete=models.CASCADE, primary_key=True, related_name="product"
     )

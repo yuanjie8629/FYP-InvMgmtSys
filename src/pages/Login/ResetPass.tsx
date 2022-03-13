@@ -109,8 +109,8 @@ const ResetPass = () => {
     })
       .then(() => setSuccessModal(true))
       .catch((err) => {
-        if (err.response.status === 400)
-          setResetErrMsg(err.response.data.password);
+        if (err.response?.status === 400)
+          setResetErrMsg(err.response?.data.password);
         else {
           message.error('Error encountered. Please try again.');
         }

@@ -1,84 +1,72 @@
-
-
-from tkinter import Image
+import re
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from rest_framework import viewsets
 from rest_framework.response import Response
-from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework import generics
+from rest_framework.decorators import parser_classes
 from core.utils import dict_to_querydict
 from item.filters import ProductFilter
 from item.models import Item, Product
 from item.serializers import ProductPrevSerializer, ProductSerializer
-
-
-def getRequestData(request,type):
-    data = request.data
-    item_data = {}
-    type_data = {}
-    image_data = {}
-    for key in data:
-        if hasattr(Item, key):
-            item_data[key] = data[key]
-
-        if hasattr(Image, key):
-            image_data[key] = data[key]
-
-        if hasattr(type, key):
-            type_data[key] = data[key]
-
-
-    request.data.clear()
-    request.data.update({"item": item_data, **type_data, "image": image_data})
-    print(request.data)
-    return request
-
-def getMultiFormData(request,type):
-    data = request.data
-    new_data = {}
-    image_data = {}
-    print(request.data)
-    num = 0
-    for key in data:
-        if hasattr(Item, key):
-            new_data['item.'+key] = data[key]
-        elif hasattr(type, key):
-            new_data[key] = data[key]
-        else:
-            new_data["item.image[{}]".format(str(num))] = ({"image": data[key]})
-            num+=1
-
-    print(image_data)
-
-    print(dict_to_querydict(new_data))
-    request.data._mutable = True
-    request.data.clear()
-    request.data.update(dict_to_querydict(new_data))
-    request.data._mutable = False
-    return request
+from image.models import Image
+from urllib.parse import urlparse
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.select_related("item").filter(item__is_deleted=False)
+    queryset = (
+        Product.objects.select_related()
+        .filter(item__is_deleted=False, item__type="prod")
+        .prefetch_related("item__image")
+    )
     serializer_class = ProductSerializer
-    parser_classes = [MultiPartParser, FormParser]
 
-    def create(self, request, *args, **kwargs):
-        return super().create(getMultiFormData(request,Product), *args, **kwargs)
-
-    def destroy(self, request, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        self.perform_destroy(instance.item)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        item = instance.item
+        request.data._mutable = True
 
-    def partial_update(self, request, *args, **kwargs):
-        product = self.get_object()
-        request = getRequestData(request,Product)
-        serializer = self.get_serializer(product, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        (serializer.save()).refresh_from_db()
-        return Response(serializer.data)
+        thumbnail = request.data.get("thumbnail")
+        print(isinstance(thumbnail, InMemoryUploadedFile))
+        if not isinstance(thumbnail, InMemoryUploadedFile):
+            print("hehehe")
+            request.data.pop("thumbnail", None)
+        print("thumbnail: ")
+        print(request.data)
+
+        ori_images = item.image.all()
+        image_list = []
+        removed_images = []
+        to_be_deleted = []
+
+        for key, value in list(request.data.items()):
+            if re.search("image\[\d\]", key):
+                if isinstance(value, InMemoryUploadedFile):
+                    image_list.append(value)
+                else:
+                    request.data.pop(key)
+                    path = urlparse(value).path
+                    for ori in ori_images:
+                        ori_path = ori.image.url
+                        if ori_path != path:
+                            print("ori: " + ori_path)
+                            print("path: " + path)
+                            to_be_deleted.append(ori.img_id)
+                        else:
+                            print("not same: " + ori_path)
+                            print("not same path: " + path)
+                            removed_images.append(ori)
+        ori_images.filter(img_id__in=to_be_deleted).delete()
+
+        for index, value in enumerate(image_list):
+            setattr(request.data, "image[{}]".format(index), value)
+
+        print("final: ")
+        print(request.data)
+        request.data._mutable = False
+
+        return super().update(request, partial=True, *args, **kwargs)
 
 
 @api_view(["POST"])
@@ -113,53 +101,49 @@ def prodBulkDeleteView(request):
 
 @api_view(["PATCH"])
 def prodBulkUpdView(request):
-    try:
+    if "list" in request.data:
         dataList = request.data.get("list")
-        products = []
-        prodFields = []
-        items = []
-        itemFields = []
-
-        for data in dataList:
-            product = Product.objects.get(pk=data.pop("id"))
-            
-            for key in data:
-                if hasattr(product.item, key):
-                    setattr(product.item, key, data[key])
-                    itemFields.append(key)
-
-                if hasattr(product, key):
-                    setattr(product, key, data[key])
-                    prodFields.append(key)
-
-            products.append(product)
-            items.append(product.item)
-
-        if not (prodFields or itemFields):
-            response = Response(status=status.HTTP_404_NOT_FOUND)
-            response.data = {"detail": "No valid data to update."}
-            return response
-
-        if prodFields:
-            Product.objects.bulk_update(products, prodFields)
-        if itemFields:
-            Item.objects.bulk_update(items, itemFields)
-
-        return Response(status=status.HTTP_200_OK)
-
-    except (TypeError, AttributeError):
+    else:
         response = Response(status=status.HTTP_404_NOT_FOUND)
         response.data = {
             "detail": "Please make sure to put the data with a 'list' key as {list: [data]}"
         }
         return response
 
-    except KeyError:
-        response = Response(status=status.HTTP_404_NOT_FOUND)
-        response.data = {
-            "detail": "Please provide the product id as 'id' for each data."
-        }
-        return response
+    products = []
+    ids = []
+    for data in dataList:
+        if "id" in data:
+            ids.append(data.get("id"))
+        else:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response.data = {
+                "detail": "Please provide the product id as 'id' for each data."
+            }
+            return response
+
+    product_list = list(
+        Product.objects.select_related().filter(item__is_deleted=False, item_id__in=ids)
+    )
+
+    for data in dataList:
+        for product in product_list:
+            if product.pk == data.get("id"):
+                new_data = {"item_id": data.pop("id")}
+                for key in data:
+                    if hasattr(product.item, key):
+                        new_data.update({key: data[key]})
+
+                    if hasattr(product, key):
+                        new_data.update({key: data[key]})
+
+                products.append(new_data)
+
+    serializer = ProductSerializer(product_list, data=products, many=True, partial=True)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+
+    return Response(status=status.HTTP_200_OK, data=serializer.validated_data)
 
 
 class ProductPrevView(generics.ListAPIView):

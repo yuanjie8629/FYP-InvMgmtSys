@@ -100,9 +100,12 @@ const ProdAdd = () => {
       .catch((err) => {
         if (err.response?.status !== 401) {
           setLoading(false);
-          if (err.response.data?.item) {
-            setErrMsg({ type: 'sku', message: err.response.data?.item?.sku });
-            showErrMsg(err.response.data?.item?.sku);
+          if (err.response?.data?.error?.code === 'invalid_sku') {
+            setErrMsg({
+              type: 'invalid_sku',
+              message: err.response?.data?.error?.message,
+            });
+            showErrMsg(err.response?.data?.error?.message);
           } else {
             showServerErrMsg();
           }
@@ -116,7 +119,7 @@ const ProdAdd = () => {
       form={prodForm}
       layout='vertical'
       size='small'
-            scrollToFirstError={{ behavior: 'smooth', block: 'center' }}
+      scrollToFirstError={{ behavior: 'smooth', block: 'center' }}
       onFinish={handleAddProduct}
     >
       {contextHolder}
@@ -372,17 +375,32 @@ const ProdAdd = () => {
                   <Form.Item
                     label='Stock Keeping Unit (SKU)'
                     name='sku'
-                    validateStatus={errMsg.type === 'sku' && 'error'}
-                    help={errMsg.type === 'sku' && errMsg.message}
+                    validateStatus={errMsg.type === 'invalid_sku' && 'error'}
+                    help={errMsg.type === 'invalid_sku' && errMsg.message}
                     rules={[
                       {
                         required: true,
                         message: 'Please enter the SKU for the product.',
                       },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (!value) {
+                            return Promise.reject(
+                              'Please enter the SKU for the product.'
+                            );
+                          }
+                          return Promise.resolve();
+                        },
+                      }),
                     ]}
                     style={{ width: '40%' }}
                   >
-                    <Input placeholder='e.g. SHRF-RTC-NBB' />
+                    <Input
+                      placeholder='e.g. SHRF-RTC-NBB'
+                      onChange={(e) => {
+                        setErrMsg({ type: undefined, message: undefined });
+                      }}
+                    />
                   </Form.Item>
 
                   <Form.Item
