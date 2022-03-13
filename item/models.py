@@ -13,7 +13,7 @@ def upload_to(instance, filename):
 
 
 class Item(SoftDeleteModel):
-    item_id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, null=False)
     type = models.CharField(max_length=20, choices=ITEM_TYPE)
     description = models.TextField()
@@ -97,7 +97,7 @@ class Package(models.Model):
 
 
 class PackageItem(models.Model):
-    pack_item_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     quantity = models.IntegerField(blank=True, null=True)
     pack = models.ForeignKey(Package, on_delete=models.CASCADE)
     prod = models.ForeignKey("Product", on_delete=models.CASCADE)
@@ -108,9 +108,10 @@ class PackageItem(models.Model):
 
 
 class ImageItemLine(models.Model):
-    img_line_id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     image = models.ForeignKey(Image, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    history = HistoricalRecords(table_name="item_item_history")
 
     class Meta:
         db_table = "image_item_line"

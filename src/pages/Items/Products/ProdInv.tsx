@@ -111,7 +111,7 @@ const ProdInv = () => {
 
   const handleSelectChange = (selectedKeys) => {
     const selectedRecord = list.filter((prod) =>
-      selectedKeys.some((selected) => selected === prod.item_id)
+      selectedKeys.some((selected) => selected === prod.id)
     );
 
     setSelected(getItemInvDetails(selectedRecord));
@@ -154,7 +154,13 @@ const ProdInv = () => {
           <Col xs={15} xl={17}>
             <Space direction='vertical' size={5}>
               <div className='text-button-wrapper'>
-                <Text strong className='text-button'>
+                <Text
+                  strong
+                  className='text-button'
+                  onClick={() => {
+                    navigate(`/product/${data['id']}`);
+                  }}
+                >
                   {data.name}
                 </Text>
               </div>
@@ -200,7 +206,7 @@ const ProdInv = () => {
           initialValue={prod.stock}
           onSave={(value) => {
             setActionLoading({ loading: true, index: index });
-            productUpdAPI(prod.item_id, { stock: value })
+            productUpdAPI(prod.id, { stock: value })
               .then(() => {
                 setActionLoading({ loading: false, index: index });
                 showUpdSuccessMsg(1);
@@ -248,7 +254,7 @@ const ProdInv = () => {
             </Row>
 
             <InformativeTable
-              rowKey='item_id'
+              rowKey='id'
               dataSource={list}
               columns={prodInvColumns}
               buttons={onSelectBtn}

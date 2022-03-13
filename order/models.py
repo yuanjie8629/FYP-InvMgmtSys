@@ -6,7 +6,7 @@ from voucher.models import Voucher
 
 # Create your models here.
 class Order(models.Model):
-    order_id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_created=True)
     total_amt = models.DecimalField(max_digits=10, decimal_places=2)
     ship_type = models.CharField(max_length=20)
@@ -22,7 +22,7 @@ class Order(models.Model):
 
 
 class OrderLine(models.Model):
-    order_line_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     quantity = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     special_price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -35,7 +35,7 @@ class OrderLine(models.Model):
 
 
 class OrderShipment(models.Model):
-    order_ship_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     type = models.CharField(max_length=20)
     order = models.ForeignKey(Order, on_delete=models.DO_NOTHING)
 

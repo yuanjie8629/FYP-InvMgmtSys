@@ -15,8 +15,8 @@ export const productCreateAPI = (data) =>
     },
   });
 
-export const productUpdateAPI = (id, data) =>
-  axios.put(`item/product/${id}/`, data, {
+export const productUpdFileAPI = (id, data) =>
+  axios.patch(`item/product/${id}/`, data, {
     headers: {
       'content-type': 'multipart/form-data',
     },

@@ -6,7 +6,7 @@ from order.models import Order
 
 # Create your models here.
 class Review(models.Model):
-    review_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     rating = models.IntegerField(blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_created=True)

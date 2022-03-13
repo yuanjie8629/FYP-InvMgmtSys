@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Postcode(models.Model):
-    postal_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     code = models.CharField(max_length=5)
     city = models.ForeignKey("City", on_delete=models.DO_NOTHING)
 
@@ -11,7 +11,7 @@ class Postcode(models.Model):
 
 
 class City(models.Model):
-    city_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=45)
     state = models.ForeignKey("State", on_delete=models.DO_NOTHING)
 
@@ -20,7 +20,7 @@ class City(models.Model):
 
 
 class State(models.Model):
-    state_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=45)
 
     class Meta:

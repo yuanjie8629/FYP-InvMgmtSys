@@ -29,7 +29,7 @@ class Pickup(models.Model):
 
 
 class PickupLoc(models.Model):
-    pickup_loc_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     location = models.CharField(max_length=50)
 
     class Meta:
@@ -37,7 +37,7 @@ class PickupLoc(models.Model):
 
 
 class ShippingFee(models.Model):
-    ship_fee_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     location = models.CharField(max_length=45)
     weight_start = models.DecimalField(max_digits=8, decimal_places=2)
     weight_end = models.DecimalField(max_digits=8, decimal_places=2)
@@ -49,7 +49,7 @@ class ShippingFee(models.Model):
 
 
 class Courier(models.Model):
-    courier_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
 
     class Meta:

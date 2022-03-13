@@ -201,7 +201,7 @@ const ProdMgmt = () => {
 
   const handleSelectChange = (selectedKeys) => {
     const selectedRecord = list.filter((prod) =>
-      selectedKeys.some((selected) => selected === prod.item_id)
+      selectedKeys.some((selected) => selected === prod.id)
     );
 
     setSelected(getItemDetails(selectedRecord));
@@ -229,7 +229,7 @@ const ProdMgmt = () => {
   }[] = [
     {
       title: 'Product',
-      dataIndex: ['item_id', 'name', 'category', 'thumbnail'],
+      dataIndex: ['id', 'name', 'category', 'thumbnail'],
       key: 'name',
       sorter: true,
       defaultSortOrder: getSortOrder('name'),
@@ -251,7 +251,7 @@ const ProdMgmt = () => {
                   strong
                   className='text-button'
                   onClick={() => {
-                    navigate(`/product/${data['item_id']}`);
+                    navigate(`/product/${data['id']}`);
                   }}
                 >
                   {data.name}
@@ -310,7 +310,7 @@ const ProdMgmt = () => {
                 selectedStatus === 'hidden' ? 'hide' : 'activate',
                 {
                   onOk: async () => {
-                    await productUpdAPI(data.item_id, {
+                    await productUpdAPI(data.id, {
                       status: selectedStatus === 'hidden' ? 'hidden' : 'active',
                     })
                       .then((res) => {
@@ -342,7 +342,7 @@ const ProdMgmt = () => {
               type='link'
               color='info'
               onClick={() => {
-                navigate(`/product/${prod['item_id']}`);
+                navigate(`/product/${prod['id']}`);
               }}
             />
             <DeleteButton
@@ -352,7 +352,7 @@ const ProdMgmt = () => {
                 setSelected(getItemDetails([prod]));
                 ActionModal.show('delete', {
                   onOk: async () => {
-                    await productDelAPI(prod.item_id)
+                    await productDelAPI(prod.id)
                       .then((res) => {
                         getTableData();
                         showActionSuccessMsg('delete', false);
@@ -401,7 +401,7 @@ const ProdMgmt = () => {
               </Col>
             </Row>
             <InformativeTable
-              rowKey='item_id'
+              rowKey='id'
               dataSource={list}
               columns={prodMgmtColumns}
               buttons={onSelectBtn}

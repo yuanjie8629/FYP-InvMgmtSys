@@ -21,7 +21,7 @@ import {
 } from 'antd';
 import TextEditor from '@components/Input/TextEditor';
 import { prodCat } from '@utils/optionUtils';
-import { productDetailsAPI, productUpdateAPI } from '@api/services/productAPI';
+import { productDetailsAPI, productUpdFileAPI } from '@api/services/productAPI';
 import { removeInvalidData } from '@utils/arrayUtils';
 import { useNavigate, useParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
@@ -55,8 +55,8 @@ const ProdEdit = () => {
   const [errMsg, setErrMsg] = useState({ type: undefined, message: undefined });
   const [dataLoading, setDataLoading] = useState(false);
   const [thumbnail, setThumbnail] = useState([]);
-
   const [imageList, setImageList] = useState([]);
+  const [prodStatus, setProdStatus] = useState('');
 
   const checkDimension = !(
     dimensionValid.length &&
@@ -85,7 +85,7 @@ const ProdEdit = () => {
             console.log(res.data);
             prodForm.setFieldsValue(res.data);
             let thumbnail = {
-              url: res.data.thumbnail,
+              url: res.data?.thumbnail,
             };
 
             let imageList = [];
@@ -99,6 +99,7 @@ const ProdEdit = () => {
             });
             setThumbnail([thumbnail]);
             setImageList(imageList);
+            setProdStatus(res.data?.status);
             setDataLoading(false);
           }
         })
@@ -116,9 +117,9 @@ const ProdEdit = () => {
   }, [id]);
 
   const handleEditProduct = (values) => {
+    console.log(values);
     let { profit, description, image, ...data } = values;
-    if (data.status === undefined) data.status = 'active';
-    console.log(data.status)
+    console.log(data.status);
     data.description = description.toHTML();
     let newImageList = imageList.map((img) =>
       'originFileObj' in img ? img.originFileObj : img.url
@@ -128,7 +129,7 @@ const ProdEdit = () => {
     data.thumbnail = data.thumbnail[0].originFileObj
       ? data.thumbnail[0].originFileObj
       : data.thumbnail[0].url;
-    console.log(data.thumbnail);
+    console.log(data.image);
 
     data = removeInvalidData(data);
     let formData = new FormData();
@@ -143,7 +144,7 @@ const ProdEdit = () => {
     });
 
     setLoading(true);
-    productUpdateAPI(id, formData)
+    productUpdFileAPI(id, formData)
       .then((res) => {
         setLoading(false);
         navigate(findRoutePath('prodEditSuccess'));
@@ -176,7 +177,7 @@ const ProdEdit = () => {
       <Layout>
         {contextHolder}
         <Spin
-          spinning={dataLoading}
+          spinning={dataLoading || loading}
           style={{
             position: 'fixed',
             top: '50%',
@@ -286,7 +287,20 @@ const ProdEdit = () => {
                   <TextEditor placeholder='Please add the product description here.' />
                 </Form.Item>
                 <Form.Item label='Product Status' name='status'>
-                  <Checkbox>Hidden</Checkbox>
+                  <Checkbox
+                    checked={prodStatus === 'hidden'}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        prodForm.setFieldsValue({ status: 'hidden' });
+                        setProdStatus('hidden')
+                      } else {
+                        prodForm.setFieldsValue({ status: 'active' });
+                        setProdStatus('active')
+                      }
+                    }}
+                  >
+                    Hidden
+                  </Checkbox>
                 </Form.Item>
               </Space>
             </MainCard>
@@ -632,7 +646,7 @@ const ProdEdit = () => {
               label='Product'
               type='edit'
               loading={loading}
-              disabled={dataLoading}
+              disabled={dataLoading || loading}
             />
           </MainCardContainer>
         </Col>
