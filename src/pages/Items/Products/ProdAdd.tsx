@@ -38,17 +38,18 @@ const ProdAdd = () => {
   );
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [dimensionValid, setDimensionValid] = useState({
+    length: true,
+    width: true,
+    height: true,
+  });
+  
   const anchorList = [
     { link: 'basicInfo', title: 'Basic Information' },
     { link: 'pricing', title: 'Pricing' },
     { link: 'inv', title: 'Inventory' },
     { link: 'shipping', title: 'Shipping' },
   ];
-  const [dimensionValid, setDimensionValid] = useState({
-    length: true,
-    width: true,
-    height: true,
-  });
 
   useEffect(() => {
     setTargetOffset(window.innerHeight / 1.65);

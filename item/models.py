@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-from simple_history.models import HistoricalRecords
+from polymorphic.models import PolymorphicModel
 from core.models import SoftDeleteModel
 from image.models import Image
 from item.choices import ITEM_STATUS, ITEM_TYPE, PROD_CAT
@@ -12,7 +12,7 @@ def upload_to(instance, filename):
     return "thumbnails/{}.{}".format(uuid4().hex, filename.split(".")[-1])
 
 
-class Item(SoftDeleteModel):
+class Item(SoftDeleteModel, PolymorphicModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, null=False)
     type = models.CharField(max_length=20, choices=ITEM_TYPE)
@@ -50,10 +50,6 @@ class Item(SoftDeleteModel):
     height = models.DecimalField(
         max_digits=8, decimal_places=2, validators=[MinValueValidator(0)]
     )
-    history = HistoricalRecords(
-        table_name="item_history",
-        excluded_fields=["created_at", "last_update", "is_deleted"],
-    )
 
     class Meta:
         db_table = "item"
@@ -74,11 +70,7 @@ class Item(SoftDeleteModel):
         return self
 
 
-class Product(models.Model):
-    item = models.OneToOneField(
-        Item, on_delete=models.CASCADE, primary_key=True, related_name="product"
-    )
-
+class Product(Item):
     category = models.CharField(max_length=30, choices=PROD_CAT)
     cost_per_unit = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True
@@ -91,20 +83,25 @@ class Product(models.Model):
     )
     avg_lead_tm = models.IntegerField(blank=True, null=True)
     max_lead_tm = models.IntegerField(blank=True, null=True)
-    history = HistoricalRecords(table_name="product_history")
+
+    def __init__(self, *args, **kwargs):
+        super(Product, self).__init__(*args, **kwargs)
+        self.type = "prod"
 
     class Meta:
         db_table = "product"
 
 
-class Package(models.Model):
-    item = models.OneToOneField(Item, on_delete=models.CASCADE, primary_key=True)
+class Package(Item):
     avail_start_tm = models.DateTimeField()
     avail_end_tm = models.DateTimeField(blank=True, null=True)
     product = models.ManyToManyField(
         Product, through="PackageItem", related_name="package"
     )
-    history = HistoricalRecords(table_name="package_history")
+
+    def __init__(self, *args, **kwargs):
+        super(Product, self).__init__(*args, **kwargs)
+        self.type = "pack"
 
     class Meta:
         db_table = "package"
@@ -119,7 +116,6 @@ class PackageItem(models.Model):
     prod = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="pack_item"
     )
-    history = HistoricalRecords(table_name="package_item_history")
 
     class Meta:
         db_table = "package_item"
@@ -129,7 +125,6 @@ class ImageItemLine(models.Model):
     id = models.AutoField(primary_key=True)
     image = models.ForeignKey(Image, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    history = HistoricalRecords(table_name="item_item_history")
 
     class Meta:
         db_table = "image_item_line"

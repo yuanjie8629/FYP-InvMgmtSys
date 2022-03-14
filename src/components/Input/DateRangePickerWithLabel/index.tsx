@@ -22,7 +22,9 @@ const DatePickerWithLabel = ({
         <Text type='secondary'>{label}</Text>
       </Col>
       <Col span={24 - textSpan}>
-        <RangePicker className='full-width' {...props} />
+        <RangePicker className='full-width' {...props} onChange={(dates, dateString) => {
+          console.log(dateString)
+        }}/>
       </Col>
     </Row>
   );

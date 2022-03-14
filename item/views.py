@@ -1,32 +1,33 @@
+from ast import For
 import re
+from django import views
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework import status
 from rest_framework import generics
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from core.utils import update_request_data
-from item.filters import PackageFilter, ProductFilter
+from item.filters import ProductFilter
 from item.models import Item, Package, Product
 from item.serializers import (
+    ItemSerializer,
     PackagePrevSerializer,
     PackageSerializer,
     ProductPrevSerializer,
     ProductSerializer,
 )
 from urllib.parse import urlparse
+from collections import OrderedDict
 
 
 def validate_image(instance, request):
-    item = instance.item
-
     data = request.data.copy()
-
     thumbnail = data.get("thumbnail")
     if not isinstance(thumbnail, InMemoryUploadedFile):
         data.pop("thumbnail", None)
 
-    ori_images = item.image.all()
+    ori_images = instance.image.all()
     new_images = []
     old_images = []
     to_be_deleted = set()
@@ -69,12 +70,13 @@ def validate_image(instance, request):
     return data
 
 
+class ItemListView(generics.ListAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+
+
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = (
-        Product.objects.select_related()
-        .filter(item__is_deleted=False, item__type="prod")
-        .prefetch_related("item__image")
-    )
+    queryset = Product.objects.all().prefetch_related("image")
     serializer_class = ProductSerializer
 
     def partial_update(self, request, *args, **kwargs):
@@ -88,6 +90,14 @@ class ProductViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         super().perform_destroy(instance.item)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ProductPrevView(generics.ListAPIView):
+    queryset = (
+        Product.objects.all().prefetch_related("image").order_by(("-last_update"))
+    )
+    serializer_class = ProductPrevSerializer
+    filterset_class = ProductFilter
 
 
 @api_view(["POST"])
@@ -131,7 +141,6 @@ def prodBulkUpdView(request):
         }
         return response
 
-    products = []
     ids = []
     for data in dataList:
         if "id" in data:
@@ -143,50 +152,16 @@ def prodBulkUpdView(request):
             }
             return response
 
-    product_list = list(
-        Product.objects.select_related().filter(item__is_deleted=False, id__in=ids)
-    )
-
-    for data in dataList:
-        for product in product_list:
-            if product.pk == data.get("id"):
-                new_data = {"id": data.pop("id")}
-                for key in data:
-                    if hasattr(product.item, key):
-                        new_data.update({key: data[key]})
-
-                    if hasattr(product, key):
-                        new_data.update({key: data[key]})
-
-                products.append(new_data)
-
-    serializer = ProductSerializer(product_list, data=products, many=True, partial=True)
+    product_list = list(Product.objects.select_related().filter(id__in=ids))
+    serializer = ProductSerializer(product_list, data=dataList, many=True, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
 
     return Response(status=status.HTTP_200_OK, data=serializer.validated_data)
 
 
-class ProductPrevView(generics.ListAPIView):
-    queryset = (
-        Product.objects.select_related()
-        .filter(item__is_deleted=False, item__type="prod")
-        .order_by(("-item__last_update"))
-    )
-
-    serializer_class = ProductPrevSerializer
-    filterset_class = ProductFilter
-
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-
-
 class PackageViewSet(viewsets.ModelViewSet):
-    queryset = (
-        Package.objects.select_related()
-        .filter(item__is_deleted=False, item__type="pack")
-        .prefetch_related("item__image")
-    )
+    queryset = Package.objects.all()
     serializer_class = PackageSerializer
 
     def partial_update(self, request, *args, **kwargs):
@@ -203,14 +178,11 @@ class PackageViewSet(viewsets.ModelViewSet):
 
 
 class PackagePrevView(generics.ListAPIView):
-    queryset = (
-        Package.objects.select_related()
-        .filter(item__is_deleted=False, item__type="pack")
-        .order_by(("-item__last_update"))
-    )
-
+    queryset = Package.objects.all().prefetch_related("image")
     serializer_class = PackagePrevSerializer
-    filterset_class = PackageFilter
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+
+class ProdPrevAllView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductPrevSerializer
+    pagination_class = None

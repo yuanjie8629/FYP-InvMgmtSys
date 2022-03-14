@@ -5,6 +5,8 @@ export const productPrevAPI = (searchParam?: string) =>
     `item/product/prev/${searchParam !== undefined ? searchParam : ''}`
   );
 
+export const productPrevAllAPI = () => axios.get(`item/product/prev/all/`);
+
 export const productDetailsAPI = (id: string) =>
   axios.get(`item/product/${id}/`);
 
