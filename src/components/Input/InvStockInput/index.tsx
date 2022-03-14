@@ -56,6 +56,7 @@ const InvStockInput = ({
               onChange={(value: number) => {
                 setValue(value);
               }}
+              disabled={loading}
               {...props}
             />
           </Form.Item>
@@ -65,17 +66,20 @@ const InvStockInput = ({
             type='primary'
             size={'small'}
             onClick={() => {
-              if (initialValue) {
+              if (initialValue !== undefined) {
                 let newValue = initialValue;
                 if (operation === '+') {
                   newValue += value;
                 } else if (operation === '-') {
-                  newValue -= value;
+                  if (newValue >= value) {
+                    newValue -= value;
+                  } else {
+                    newValue = 0;
+                  }
                 } else if (operation === 'set') {
                   newValue = value;
                 }
                 onSave(newValue);
-                setValue(0);
               }
             }}
             loading={loading}
