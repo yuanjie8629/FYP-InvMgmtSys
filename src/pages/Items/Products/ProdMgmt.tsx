@@ -4,9 +4,7 @@ import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
 import { Row, Space, Col, Typography, Image, message } from 'antd';
-import InformativeTable, {
-  InformativeTableButtonProps,
-} from '@components/Table/InformativeTable';
+import InformativeTable from '@components/Table/InformativeTable';
 import prodTabList from './prodTabList';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
@@ -30,8 +28,8 @@ import {
   productUpdAPI,
 } from '@api/services/productAPI';
 import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
-import { getItemDetails } from '../itemUtils';
-import { serverErrMsg } from '@utils/messageUtils';
+import { getItemDetails, onItemSelectBtn, selectButtonsProps } from '../itemUtils';
+import { actionSuccessMsg, serverErrMsg } from '@utils/messageUtils';
 
 const ProdMgmt = () => {
   const { Text } = Typography;
@@ -45,14 +43,16 @@ const ProdMgmt = () => {
   const [tableLoading, setTableLoading] = useState(false);
   const defPg = 5;
 
-  const getTableData = () => {
+  const getTableData = (isMounted: boolean = true) => {
     setSelected([]);
     setTableLoading(true);
     productPrevAPI(location.search)
       .then((res) => {
-        setList(res.data.results);
-        setRecordCount(res.data.count);
-        setTableLoading(false);
+        if (isMounted) {
+          setList(res.data.results);
+          setRecordCount(res.data.count);
+          setTableLoading(false);
+        }
       })
       .catch((err) => {
         if (err.response?.status !== 401) {
@@ -64,7 +64,11 @@ const ProdMgmt = () => {
 
   useEffect(
     () => {
-      getTableData();
+      let isMounted = true;
+      getTableData(isMounted);
+      return () => {
+        isMounted = false;
+      };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [searchParams]
@@ -74,17 +78,9 @@ const ProdMgmt = () => {
     action: 'activate' | 'delete' | 'hide',
     isMulti: boolean = true
   ) => {
-    messageApi.open({
-      key: action,
-      type: 'success',
-      content: `${isMulti ? selected.length : 1} Products ${
-        action === 'activate'
-          ? 'Activated'
-          : action === 'delete'
-          ? 'Deleted'
-          : 'Hidden'
-      } Successfully`,
-    });
+    messageApi.open(
+      actionSuccessMsg('Product', action, isMulti ? selected.length : 1)
+    );
     setTimeout(() => message.destroy(action), 3000);
   };
 
@@ -182,21 +178,10 @@ const ProdMgmt = () => {
     />
   );
 
-  const onSelectBtn: InformativeTableButtonProps = [
-    {
-      element: activateBtn,
-      key: 'activate',
-      fltr: [{ fld: 'status', value: 'hidden', rel: 'eq' }],
-    },
-    {
-      element: hideBtn,
-      key: 'hide',
-      fltr: [{ fld: 'status', value: 'active', rel: 'eq' }],
-    },
-    {
-      element: deleteBtn,
-      key: 'delete',
-    },
+  const selectButtons: selectButtonsProps[] = [
+    { label: 'activate', element: activateBtn },
+    { label: 'hide', element: hideBtn },
+    { label: 'delete', element: deleteBtn },
   ];
 
   const handleSelectChange = (selectedKeys) => {
@@ -281,8 +266,7 @@ const ProdMgmt = () => {
       defaultSortOrder: getSortOrder('price'),
       width: 150,
       render: (amount: string) => {
-        let newAmt = parseFloat(amount);
-        return <Text type='secondary'>{moneyFormatter(newAmt)}</Text>;
+        return <Text type='secondary'>{moneyFormatter(parseFloat(amount))}</Text>;
       },
     },
     {
@@ -335,24 +319,24 @@ const ProdMgmt = () => {
       title: 'Action',
       key: 'action',
       width: 100,
-      render: (prod: any) => {
+      render: (data: any) => {
         return (
           <Space direction='vertical' size={5}>
             <EditButton
               type='link'
               color='info'
               onClick={() => {
-                navigate(`/product/${prod['id']}`);
+                navigate(`/product/${data.id}`);
               }}
             />
             <DeleteButton
               type='link'
               color='info'
               onClick={() => {
-                setSelected(getItemDetails([prod]));
+                setSelected(getItemDetails([data]));
                 ActionModal.show('delete', {
                   onOk: async () => {
-                    await productDelAPI(prod.id)
+                    await productDelAPI(data.id)
                       .then((res) => {
                         getTableData();
                         showActionSuccessMsg('delete', false);
@@ -404,7 +388,7 @@ const ProdMgmt = () => {
               rowKey='id'
               dataSource={list}
               columns={prodMgmtColumns}
-              buttons={onSelectBtn}
+              buttons={onItemSelectBtn(selectButtons)}
               loading={tableLoading}
               defPg={defPg}
               totalRecord={recordCount}
@@ -413,7 +397,6 @@ const ProdMgmt = () => {
           </Space>
         </MainCard>
       </MainCardContainer>
-
       <ActionModal recordType='product' dataSource={selected} />
     </Layout>
   );

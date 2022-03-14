@@ -459,7 +459,7 @@ const ProdAdd = () => {
                   Shipping
                 </Title>
                 <Form.Item
-                  label='Weight (kg)'
+                  label='Weight (g)'
                   name='weight'
                   rules={[
                     {

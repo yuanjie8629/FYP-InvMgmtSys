@@ -3,15 +3,12 @@ import Button from '@components/Button';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
-import { Row, Space, Col, Typography, Image } from 'antd';
-import InformativeTable, {
-  InformativeTableButtonProps,
-} from '@components/Table/InformativeTable';
-import packageList from './packageList';
+import { Row, Space, Col, Typography, Image, message } from 'antd';
+import InformativeTable from '@components/Table/InformativeTable';
 
 import packTabList from './packTabList';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { packStatList } from '@utils/optionUtils';
 import {
@@ -22,48 +19,188 @@ import {
 } from '@components/Button/ActionButton';
 import StatusTag from '@components/Tag/StatusTag';
 import { BoldTitle } from '@components/Title';
+import {
+  packageBulkDelAPI,
+  packageBulkUpdAPI,
+  packageDelAPI,
+  packagePrevAPI,
+  packageUpdAPI,
+} from '@api/services/packageAPI';
+import { actionSuccessMsg, serverErrMsg } from '@utils/messageUtils';
+import { ActionModal } from '@components/Modal';
+import { getItemDetails, onItemSelectBtn, selectButtonsProps } from '../itemUtils';
+import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
+import { moneyFormatter } from '@utils/numUtils';
 
 const PackMgmt = () => {
   const { Text } = Typography;
-  const [packageListFltr, setPackageListFltr] = useState(packageList);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [messageApi, contextHolder] = message.useMessage();
+  const [list, setList] = useState([]);
+  const [recordCount, setRecordCount] = useState<number>();
+  const [selected, setSelected] = useState([]);
+  const [tableLoading, setTableLoading] = useState(false);
+  const defPg = 5;
 
-  let navigate = useNavigate();
-  let [searchParams, setSearchParams] = useSearchParams();
+  const getTableData = (isMounted: boolean = true) => {
+    setSelected([]);
+    setTableLoading(true);
+    packagePrevAPI(location.search)
+      .then((res) => {
+        if (isMounted) {
+          setList(res.data.results);
+          setRecordCount(res.data.count);
+          setTableLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setTableLoading(false);
+          // showServerErrMsg();
+        }
+      });
+  };
 
   useEffect(
-    () =>
-      setPackageListFltr(
-        packageList.filter((pack) =>
-          searchParams.get('status') !== null
-            ? pack.packStat === searchParams.get('status')
-            : true
-        )
-      ),
+    () => {
+      let isMounted = true;
+      getTableData(isMounted);
+      return () => {
+        isMounted = false;
+      };
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [searchParams]
   );
 
-  const activateBtn = (props: any) => <ActivateButton type='primary' />;
+  const showActionSuccessMsg = (
+    action: 'activate' | 'delete' | 'hide',
+    isMulti: boolean = true
+  ) => {
+    messageApi.open(
+      actionSuccessMsg('Package', action, isMulti ? selected.length : 1)
+    );
+    setTimeout(() => message.destroy(action), 3000);
+  };
 
-  const hideBtn = (props: any) => <HideButton type='primary' color='grey' />;
+  const showServerErrMsg = () => {
+    messageApi.open(serverErrMsg);
+    setTimeout(() => message.destroy('serverErr'), 3000);
+  };
 
-  const deleteBtn = (props: any) => <DeleteButton type='primary' />;
+  const activateBtn = (props: any) => (
+    <ActivateButton
+      type='primary'
+      onClick={() => {
+        ActionModal.show('activate', {
+          onOk: async () => {
+            const selectedKeys = selected.map(
+              (selectedItem) => selectedItem.key
+            );
 
-  const onSelectBtn: InformativeTableButtonProps = [
-    {
-      element: activateBtn,
-      key: 'activate',
-      fltr: [{ fld: 'packStat', value: 'hidden', rel: 'eq' }],
-    },
-    {
-      element: hideBtn,
-      key: 'hide',
-      fltr: [{ fld: 'packStat', value: 'active', rel: 'eq' }],
-    },
-    {
-      element: deleteBtn,
-      key: 'delete',
-    },
+            await packageBulkUpdAPI(
+              selectedKeys.map((key) => {
+                return { id: key, status: 'active' };
+              })
+            )
+              .then(() => {
+                getTableData();
+                showActionSuccessMsg('activate');
+              })
+              .catch((err) => {
+                if (err.response?.status !== 401) setTableLoading(false);
+                else {
+                  showServerErrMsg();
+                }
+              });
+          },
+        });
+      }}
+    />
+  );
+
+  const hideBtn = (props: any) => (
+    <HideButton
+      type='primary'
+      color='grey'
+      onClick={() => {
+        ActionModal.show('hide', {
+          onOk: async () => {
+            const selectedKeys = selected.map(
+              (selectedItem) => selectedItem.key
+            );
+
+            await packageBulkUpdAPI(
+              selectedKeys.map((key) => {
+                return { id: key, status: 'hidden' };
+              })
+            )
+              .then(() => {
+                getTableData();
+                showActionSuccessMsg('hide');
+              })
+              .catch((err) => {
+                if (err.response?.status !== 401) setTableLoading(false);
+                else {
+                  showServerErrMsg();
+                }
+              });
+          },
+        });
+      }}
+    />
+  );
+
+  const deleteBtn = (props: any) => (
+    <DeleteButton
+      type='primary'
+      onClick={() => {
+        ActionModal.show('delete', {
+          onOk: async () => {
+            const selectedKeys = selected.map(
+              (selectedItem) => selectedItem.key
+            );
+            await packageBulkDelAPI(selectedKeys)
+              .then(() => {
+                getTableData();
+                showActionSuccessMsg('delete');
+              })
+              .catch((err) => {
+                if (err.response?.status !== 401) setTableLoading(false);
+                else {
+                  showServerErrMsg();
+                }
+              });
+          },
+        });
+      }}
+    />
+  );
+
+  const selectButtons: selectButtonsProps[] = [
+    { label: 'activate', element: activateBtn },
+    { label: 'hide', element: hideBtn },
+    { label: 'delete', element: deleteBtn },
   ];
+
+  const handleSelectChange = (selectedKeys) => {
+    const selectedRecord = list.filter((prod) =>
+      selectedKeys.some((selected) => selected === prod.id)
+    );
+
+    setSelected(getItemDetails(selectedRecord));
+  };
+
+  const handleTabChange = (key) => {
+    if (key !== 'all') {
+      setSearchParams(addSearchParams(searchParams, { status: key }));
+    } else {
+      searchParams.delete('status');
+      setSearchParams(parseURL(searchParams));
+    }
+  };
 
   const packMgmtColumns: {
     title: string;
@@ -72,28 +209,37 @@ const PackMgmt = () => {
     sorter?: boolean;
     align?: 'left' | 'center' | 'right';
     width?: number | string;
+    fixed?: 'left' | 'right';
+    defaultSortOrder?: 'ascend' | 'descend';
     render?: any;
   }[] = [
     {
       title: 'Package',
-      dataIndex: ['packNm', 'packSKU', 'packImg'],
-      key: 'pack',
+      dataIndex: ['name', 'sku', 'thumbnail'],
+      key: 'name',
       sorter: true,
+      defaultSortOrder: getSortOrder('name'),
       width: 280,
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={20}>
           <Col xs={9} xl={7}>
-            <Image src={data['packImg']} height={80} width={80} />
+            <Image src={data.thumbnail} height={80} width={80} />
           </Col>
           <Col xs={15} xl={17}>
             <Space direction='vertical' size={5}>
               <div className='text-button-wrapper'>
                 <Text strong className='text-button'>
-                  {data['packNm']}
+                  {data.name}
                 </Text>
               </div>
-              <Text type='secondary' className='text-sm text-break'>
-                {data['packSKU']}
+              <Text
+                type='secondary'
+                className='text-sm text-break'
+                onClick={() => {
+                  navigate(`/package/${data['id']}`);
+                }}
+              >
+                {data.sku}
               </Text>
             </Space>
           </Col>
@@ -102,20 +248,20 @@ const PackMgmt = () => {
     },
     {
       title: 'Products Included',
-      dataIndex: 'packProds',
-      key: 'packProds.prodNm',
+      dataIndex: 'product',
+      key: 'product.id',
       width: 280,
       render: (products: []) => (
         <Space direction='vertical' size={10} className='full-width'>
           {products.map((product: any) => (
             <Row
-              key={`prodIncluded-${product}`}
+              key={`prodIncluded-${product.id}`}
               justify='space-between'
               gutter={20}
             >
               <Col span={20}>
                 <Text type='secondary' className='text-break'>
-                  {product.prodNm}
+                  {product.name}
                 </Text>
               </Col>
               <Col span={4} className='justify-end'>
@@ -128,31 +274,56 @@ const PackMgmt = () => {
     },
     {
       title: 'Price',
-      dataIndex: 'packPrice',
-      key: 'packPrice',
+      dataIndex: 'price',
+      key: 'price',
       sorter: true,
+      defaultSortOrder: getSortOrder('price'),
       width: 100,
       render: (amount: string) => (
-        <Text type='secondary'>RM {parseFloat(amount).toFixed(2)}</Text>
+        <Text type='secondary'>{moneyFormatter(parseFloat(amount))}</Text>
       ),
     },
     {
       title: 'Stock',
-      dataIndex: 'packStock',
-      key: 'paclStock',
+      dataIndex: 'stock',
+      key: 'stock',
       sorter: true,
+      defaultSortOrder: getSortOrder('sku'),
       width: 100,
     },
     {
       title: 'Status',
-      dataIndex: 'packStat',
-      key: 'packStat',
+      dataIndex: ['id', 'status', 'name', 'thumbnail'],
+      key: 'status',
       width: 150,
-      render: (status: string) => (
+      render: (_: any, data: { [x: string]: any }) => (
         <StatusTag
-          status={status}
+          status={data.status}
           statusList={packStatList}
           dropdownStatus={['active', 'hidden']}
+          onDropdownSelect={(selectedStatus) => {
+            setSelected(getItemDetails([data]));
+            ActionModal.show(
+              selectedStatus === 'hidden' ? 'hide' : 'activate',
+              {
+                onOk: async () => {
+                  await packageUpdAPI(data.id, {
+                    status: selectedStatus === 'hidden' ? 'hidden' : 'active',
+                  })
+                    .then((res) => {
+                      getTableData();
+                      showActionSuccessMsg(
+                        selectedStatus === 'hidden' ? 'hide' : 'activate',
+                        false
+                      );
+                    })
+                    .catch((err) => {
+                      showServerErrMsg();
+                    });
+                },
+              }
+            );
+          }}
         />
       ),
     },
@@ -160,17 +331,44 @@ const PackMgmt = () => {
       title: 'Action',
       key: 'action',
       width: 100,
-      render: () => (
-        <Space direction='vertical' size={5}>
-          <EditButton type='link' color='info' />
-          <DeleteButton type='link' color='info' />
-        </Space>
-      ),
+      render: (data: any) => {
+        return (
+          <Space direction='vertical' size={5}>
+            <EditButton
+              type='link'
+              color='info'
+              onClick={() => {
+                navigate(`/product/${data.id}`);
+              }}
+            />
+            <DeleteButton
+              type='link'
+              color='info'
+              onClick={() => {
+                setSelected(getItemDetails([data]));
+                ActionModal.show('delete', {
+                  onOk: async () => {
+                    await packageDelAPI(data.id)
+                      .then((res) => {
+                        getTableData();
+                        showActionSuccessMsg('delete', false);
+                      })
+                      .catch((err) => {
+                        showServerErrMsg();
+                      });
+                  },
+                });
+              }}
+            />
+          </Space>
+        );
+      },
     },
   ];
 
   return (
     <Layout>
+      {contextHolder}
       <MainCardContainer className='pack-mgmt'>
         <MainCard
           tabList={packTabList}
@@ -179,11 +377,9 @@ const PackMgmt = () => {
               ? 'all'
               : searchParams.get('status')
           }
-          onTabChange={(key) => {
-            setSearchParams(key !== 'all' ? { status: key } : {});
-          }}
+          onTabChange={handleTabChange}
         >
-          <FilterInputs />
+          <FilterInputs loading={tableLoading} />
         </MainCard>
         <MainCard>
           <Space direction='vertical' size={15} className='full-width'>
@@ -201,14 +397,19 @@ const PackMgmt = () => {
               </Col>
             </Row>
             <InformativeTable
-              dataSource={packageListFltr}
+              rowKey='id'
+              dataSource={list}
               columns={packMgmtColumns}
-              buttons={onSelectBtn}
-              defPg={5}
+              buttons={onItemSelectBtn(selectButtons)}
+              loading={tableLoading}
+              defPg={defPg}
+              totalRecord={recordCount}
+              onSelectChange={handleSelectChange}
             />
           </Space>
         </MainCard>
       </MainCardContainer>
+      <ActionModal recordType='package' dataSource={selected} />
     </Layout>
   );
 };

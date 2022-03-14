@@ -7,7 +7,8 @@ def restore_model(modeladmin, request, queryset):
     Restore a softdeletd model set
     """
     for obj in queryset:
-        obj.restore(user=request.user)
+        print(request)
+        obj.restore()
 
 
 class SoftDeleteAdmin(SimpleHistoryAdmin):

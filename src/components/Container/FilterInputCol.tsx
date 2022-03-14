@@ -11,3 +11,7 @@ const FilterInputCol = (props: FilterInputColProps) => (
 );
 
 export default FilterInputCol;
+
+export interface FilterInputsProps {
+  loading?: boolean;
+}

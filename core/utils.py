@@ -42,7 +42,9 @@ def dict_to_querydict(dictionary):
 def update_request_data(request, data):
     if hasattr(request.data, "_mutable"):
         request.data._mutable = True
-        request.data.clear()
-        request.data.update(data)
+    request.data.clear()
+    request.data.update(data)
+    if hasattr(request.data, "_mutable"):
         request.data._mutable = False
-        return request
+
+    return request

@@ -37,7 +37,7 @@ class Item(SoftDeleteModel):
         validators=[MinValueValidator(0)],
     )
     sku = models.CharField(max_length=45, unique=True)
-    stock = models.IntegerField(validators=[MinValueValidator(0)])
+    stock = models.PositiveIntegerField()
     weight = models.DecimalField(
         max_digits=8, decimal_places=2, validators=[MinValueValidator(0)]
     )
@@ -60,6 +60,18 @@ class Item(SoftDeleteModel):
 
     def __str__(self):
         return "{}: {}".format(self.type, self.name)
+
+    def save(self, *args, **kwargs):
+        print(self.stock)
+        print(self.status)
+        if self.stock <= 0 and self.status == "active":
+            self.status = "oos"
+        if self.stock > 0 and self.status == "oos":
+            self.status = "active"
+        print(self.status)
+
+        super(Item, self).save(*args, **kwargs)
+        return self
 
 
 class Product(models.Model):
@@ -89,7 +101,9 @@ class Package(models.Model):
     item = models.OneToOneField(Item, on_delete=models.CASCADE, primary_key=True)
     avail_start_tm = models.DateTimeField()
     avail_end_tm = models.DateTimeField(blank=True, null=True)
-    product = models.ManyToManyField(Product, through="PackageItem")
+    product = models.ManyToManyField(
+        Product, through="PackageItem", related_name="package"
+    )
     history = HistoricalRecords(table_name="package_history")
 
     class Meta:
@@ -99,8 +113,12 @@ class Package(models.Model):
 class PackageItem(models.Model):
     id = models.IntegerField(primary_key=True)
     quantity = models.IntegerField(blank=True, null=True)
-    pack = models.ForeignKey(Package, on_delete=models.CASCADE)
-    prod = models.ForeignKey("Product", on_delete=models.CASCADE)
+    pack = models.ForeignKey(
+        Package, on_delete=models.CASCADE, related_name="pack_item"
+    )
+    prod = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="pack_item"
+    )
     history = HistoricalRecords(table_name="package_item_history")
 
     class Meta:

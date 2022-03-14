@@ -1,5 +1,5 @@
 import FilterSubmitButton from '@components/Button/ActionButton/FilterSubmitButton';
-import FilterInputCol from '@components/Container/FilterInputCol';
+import FilterInputCol, { FilterInputsProps } from '@components/Container/FilterInputCol';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
@@ -9,10 +9,6 @@ import { Form, Row, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-
-export interface FilterInputsProps {
-  loading?: boolean;
-}
 
 const FilterInputs = (props: FilterInputsProps) => {
   const [prodFilter] = useForm();
@@ -41,7 +37,6 @@ const FilterInputs = (props: FilterInputsProps) => {
   );
 
   const handleSearch = (values) => {
-    console.log(values);
     values = removeInvalidData(values);
 
     setSearchParams(

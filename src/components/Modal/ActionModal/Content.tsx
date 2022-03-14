@@ -52,9 +52,9 @@ const Content = memo(
       <List bordered {...listProps}>
         <VirtualList
           data={dataSource}
-          height={360}
           itemHeight={47}
           itemKey='key'
+          style={{ maxHeight: 360 }}
         >
           {(item) => (
             <List.Item {...listItemProps}>

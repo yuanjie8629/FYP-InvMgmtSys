@@ -292,10 +292,10 @@ const ProdEdit = () => {
                     onChange={(e) => {
                       if (e.target.checked) {
                         prodForm.setFieldsValue({ status: 'hidden' });
-                        setProdStatus('hidden')
+                        setProdStatus('hidden');
                       } else {
                         prodForm.setFieldsValue({ status: 'active' });
-                        setProdStatus('active')
+                        setProdStatus('active');
                       }
                     }}
                   >
@@ -528,7 +528,7 @@ const ProdEdit = () => {
                   Shipping
                 </Title>
                 <Form.Item
-                  label='Weight (kg)'
+                  label='Weight (g)'
                   name='weight'
                   rules={[
                     {
