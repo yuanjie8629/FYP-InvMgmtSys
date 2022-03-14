@@ -2,7 +2,6 @@ from uuid import uuid4
 from django.db import models
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
-from simple_history.models import HistoricalRecords
 
 def upload_to(instance, filename):
     # upload_to = "{}/{}".format(instance.type, instance.name)
@@ -18,7 +17,6 @@ class Image(models.Model):
         format="JPEG",
         options={"quality": 80},
     )
-    history = HistoricalRecords(table_name="image_history")
 
     class Meta:
         db_table = "image"

@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     "django_rest_passwordreset",
     "django_filters",
     "django_pickling",
-    "simple_history",
+    "polymorphic",
+    'reversion',
     "cacheops",
     "corsheaders",
     "axes",
@@ -81,7 +82,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "corsheaders.middleware.CorsMiddleware",
-    "simple_history.middleware.HistoryRequestMiddleware",
     "axes.middleware.AxesMiddleware",
 ]
 

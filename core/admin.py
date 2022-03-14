@@ -1,5 +1,4 @@
 from django.contrib import admin
-from simple_history.admin import SimpleHistoryAdmin
 
 
 def restore_model(modeladmin, request, queryset):
@@ -11,7 +10,7 @@ def restore_model(modeladmin, request, queryset):
         obj.restore()
 
 
-class SoftDeleteAdmin(SimpleHistoryAdmin):
+class SoftDeleteAdmin():
     list_display = (
         "pk",
         "is_deleted",
