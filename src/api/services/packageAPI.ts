@@ -25,8 +25,8 @@ export const packageUpdFileAPI = (id, data) =>
 export const packageDelAPI = (id: number) =>
   axios.delete(`item/package/${id}/`);
 
-export const packageBulkDelAPI = (ids: number[]) =>
-  axios.post(`item/package/bulk/delete/`, { ids: ids });
+export const itemBulkDelAPI = (ids: number[]) =>
+  axios.post(`item/bulk/delete/`, { ids: ids });
 
 export const packageUpdAPI = (
   id: number,

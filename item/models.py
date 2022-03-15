@@ -100,7 +100,7 @@ class Package(Item):
     )
 
     def __init__(self, *args, **kwargs):
-        super(Product, self).__init__(*args, **kwargs)
+        super(Package, self).__init__(*args, **kwargs)
         self.type = "pack"
 
     class Meta:
@@ -108,7 +108,7 @@ class Package(Item):
 
 
 class PackageItem(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     quantity = models.IntegerField(blank=True, null=True)
     pack = models.ForeignKey(
         Package, on_delete=models.CASCADE, related_name="pack_item"

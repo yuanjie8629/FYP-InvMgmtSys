@@ -47,7 +47,7 @@ const AvatarDropdown = ({
     <Dropdown
       overlay={menuAvatarDropdown}
       arrow
-      placement='bottomCenter'
+      placement='bottom'
       className='avatar-dropdown'
     >
       <Row align='middle' gutter={10}>

@@ -1,14 +1,17 @@
 from ast import For
+import json
 import re
 from django import views
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.forms import ValidationError
+from django.http import QueryDict
 from rest_framework import viewsets
 from rest_framework import generics
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from core.utils import update_request_data
-from item.filters import ProductFilter
+from item.filters import PackageFilter, ProductFilter
 from item.models import Item, Package, Product
 from item.serializers import (
     ItemSerializer,
@@ -86,11 +89,6 @@ class ProductViewSet(viewsets.ModelViewSet):
             update_request_data(request, data), *args, **kwargs
         )
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        super().perform_destroy(instance.item)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 class ProductPrevView(generics.ListAPIView):
     queryset = (
@@ -100,8 +98,14 @@ class ProductPrevView(generics.ListAPIView):
     filterset_class = ProductFilter
 
 
+class ProdPrevAllView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductPrevSerializer
+    pagination_class = None
+
+
 @api_view(["POST"])
-def prodBulkDeleteView(request):
+def itemBulkDeleteView(request):
     ids = request.data.get("ids")
     if not ids:
         response = Response(status=status.HTTP_400_BAD_REQUEST)
@@ -164,25 +168,67 @@ class PackageViewSet(viewsets.ModelViewSet):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
 
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy()
+
+        product_list = []
+        for key, value in list(data.items()):
+            if re.search("product\[\d\]", key):
+                product_list.append(QueryDict(value))
+                data.pop(key)
+        data.update({"product": [prod.dict() for prod in product_list]})
+        print(data)
+
+        return super().create(update_request_data(request, data), *args, **kwargs)
+
     def partial_update(self, request, *args, **kwargs):
         data = validate_image(self.get_object(), request)
+
+        product_list = []
+        for key, value in list(data.items()):
+            if re.search("product\[\d\]", key):
+                product_list.append(QueryDict(value))
+                data.pop(key)
+        if product_list:
+            data.update({"product": [prod.dict() for prod in product_list]})
+            print(data)
 
         return super().partial_update(
             update_request_data(request, data), *args, **kwargs
         )
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        super().perform_destroy(instance.item)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 class PackagePrevView(generics.ListAPIView):
-    queryset = Package.objects.all().prefetch_related("image")
+    queryset = Package.objects.all().prefetch_related("image", "pack_item")
     serializer_class = PackagePrevSerializer
+    filterset_class = PackageFilter
 
 
-class ProdPrevAllView(generics.ListAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductPrevSerializer
-    pagination_class = None
+@api_view(["PATCH"])
+def packBulkUpdView(request):
+    if "list" in request.data:
+        dataList = request.data.get("list")
+    else:
+        response = Response(status=status.HTTP_404_NOT_FOUND)
+        response.data = {
+            "detail": "Please make sure to put the data with a 'list' key as {list: [data]}"
+        }
+        return response
+
+    ids = []
+    for data in dataList:
+        if "id" in data:
+            ids.append(data.get("id"))
+        else:
+            response = Response(status=status.HTTP_404_NOT_FOUND)
+            response.data = {
+                "detail": "Please provide the product id as 'id' for each data."
+            }
+            return response
+
+    package_list = list(Package.objects.select_related().filter(id__in=ids))
+    serializer = PackageSerializer(package_list, data=dataList, many=True, partial=True)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+
+    return Response(status=status.HTTP_200_OK, data=serializer.validated_data)
