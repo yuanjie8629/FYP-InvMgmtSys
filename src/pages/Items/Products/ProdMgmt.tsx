@@ -21,14 +21,18 @@ import StatusTag from '@components/Tag/StatusTag';
 import { BoldTitle } from '@components/Title';
 import { ActionModal } from '@components/Modal';
 import {
-  productBulkDelAPI,
+  itemBulkDelAPI,
   productBulkUpdAPI,
   productDelAPI,
   productPrevAPI,
   productUpdAPI,
 } from '@api/services/productAPI';
 import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
-import { getItemDetails, onItemSelectBtn, selectButtonsProps } from '../itemUtils';
+import {
+  getItemDetails,
+  onItemSelectBtn,
+  selectButtonsProps,
+} from '../itemUtils';
 import { actionSuccessMsg, serverErrMsg } from '@utils/messageUtils';
 
 const ProdMgmt = () => {
@@ -161,7 +165,7 @@ const ProdMgmt = () => {
             const selectedKeys = selected.map(
               (selectedItem) => selectedItem.key
             );
-            await productBulkDelAPI(selectedKeys)
+            await itemBulkDelAPI(selectedKeys)
               .then(() => {
                 getTableData();
                 showActionSuccessMsg('delete');
@@ -266,7 +270,9 @@ const ProdMgmt = () => {
       defaultSortOrder: getSortOrder('price'),
       width: 150,
       render: (amount: string) => {
-        return <Text type='secondary'>{moneyFormatter(parseFloat(amount))}</Text>;
+        return (
+          <Text type='secondary'>{moneyFormatter(parseFloat(amount))}</Text>
+        );
       },
     },
     {

@@ -374,7 +374,7 @@ const DropdownDate = ({
           <Dropdown
             visible={dropdownVisible}
             overlay={DateMenu}
-            placement='bottomCenter'
+            placement='bottom'
           >
             <Button
               type='text'

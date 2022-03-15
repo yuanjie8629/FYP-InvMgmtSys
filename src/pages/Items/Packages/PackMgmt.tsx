@@ -20,7 +20,7 @@ import {
 import StatusTag from '@components/Tag/StatusTag';
 import { BoldTitle } from '@components/Title';
 import {
-  packageBulkDelAPI,
+  itemBulkDelAPI,
   packageBulkUpdAPI,
   packageDelAPI,
   packagePrevAPI,
@@ -162,7 +162,7 @@ const PackMgmt = () => {
             const selectedKeys = selected.map(
               (selectedItem) => selectedItem.key
             );
-            await packageBulkDelAPI(selectedKeys)
+            await itemBulkDelAPI(selectedKeys)
               .then(() => {
                 getTableData();
                 showActionSuccessMsg('delete');

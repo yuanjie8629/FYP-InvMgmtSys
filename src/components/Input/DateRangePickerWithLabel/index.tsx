@@ -1,16 +1,18 @@
-import { Col, DatePicker, Row, Typography } from 'antd';
+import { Col, DatePicker, Form, FormItemProps, Row, Typography } from 'antd';
 import { RangePickerProps } from 'antd/es/date-picker';
 
 type DatePickerWithLabelProps = RangePickerProps & {
   label: string;
   textSpan?: number;
   justify?: 'start' | 'end';
+  formProps?: FormItemProps;
 };
 
 const DatePickerWithLabel = ({
   label,
   textSpan = 5,
   justify = 'end',
+  formProps,
   ...props
 }: DatePickerWithLabelProps) => {
   const { Text } = Typography;
@@ -22,9 +24,15 @@ const DatePickerWithLabel = ({
         <Text type='secondary'>{label}</Text>
       </Col>
       <Col span={24 - textSpan}>
-        <RangePicker className='full-width' {...props} onChange={(dates, dateString) => {
-          console.log(dateString)
-        }}/>
+        <Form.Item {...formProps}>
+          <RangePicker
+            className='full-width'
+            {...props}
+            onChange={(dates, dateString) => {
+              console.log(dateString);
+            }}
+          />
+        </Form.Item>
       </Col>
     </Row>
   );

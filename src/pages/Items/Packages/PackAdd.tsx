@@ -6,7 +6,6 @@ import AffixAction from '@components/Affix/AffixAction';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import {
   Anchor,
-  AutoComplete,
   Checkbox,
   Col,
   DatePicker,
@@ -30,7 +29,8 @@ import { packageCreateAPI } from '@api/services/packageAPI';
 import { findRoutePath } from '@utils/routingUtils';
 import { productPrevAllAPI } from '@api/services/productAPI';
 import { DeleteButton } from '@components/Button/ActionButton';
-import { getDt } from '@utils/dateUtils';
+import { getDtTm } from '@utils/dateUtils';
+import ProductSelect from './ProductSelect';
 
 const PackAdd = () => {
   const { Text, Title, Paragraph } = Typography;
@@ -49,8 +49,7 @@ const PackAdd = () => {
     width: true,
     height: true,
   });
-  const [selectedProds, setSelectedProd] = useState([]);
-  const [searchProd, setSearchProd] = useState('');
+  const [selectedProds, setSelectedProds] = useState([]);
 
   const anchorList = [
     { link: 'basicInfo', title: 'Basic Information' },
@@ -69,7 +68,6 @@ const PackAdd = () => {
 
   const [errMsg, setErrMsg] = useState({ type: undefined, message: undefined });
   const [dataLoading, setDataLoading] = useState(false);
-
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
     setTimeout(() => message.destroy('serverErr'), 3000);
@@ -81,15 +79,22 @@ const PackAdd = () => {
   };
 
   const handleAddPackage = (values) => {
+    if (selectedProds.length < 1) {
+      setErrMsg({
+        type: 'require_product',
+        message: 'Please add at least one Product',
+      });
+      showErrMsg('Please add at least one Product');
+      return;
+    }
     let { profit, description, ...data } = values;
     console.log(values);
     if (data.status === undefined) data.status = 'active';
     data.description = description.toHTML();
-    data.avail_start_tm = getDt(data.avail_start_tm);
-    if (data.avail_end_tm) data.avail_end_tm = getDt(data.avail_end_tm);
+    data.avail_start_tm = getDtTm(data.avail_start_tm);
+    if (data.avail_end_tm) data.avail_end_tm = getDtTm(data.avail_end_tm);
     data = removeInvalidData(data);
     console.log(data);
-
     let formData = new FormData();
     Object.keys(data).forEach((item) => {
       if (item === 'image') {
@@ -103,15 +108,21 @@ const PackAdd = () => {
       }
     });
     selectedProds.forEach((prod, index) => {
-      formData.append(`product[${index}]`, prod.id);
+      formData.append(
+        `product[${index}]`,
+        `id=${prod.id}&quantity=${prod.quantity}`
+      );
+      // formData.append(`product[${index}]['id']`, prod.id);
+      // formData.append(`product[${index}]['quantity']`, prod.quantity);
     });
     setLoading(true);
     packageCreateAPI(formData)
       .then((res) => {
         setLoading(false);
-        navigate(findRoutePath('prodAddSuccess'));
+        navigate(findRoutePath('packAddSuccess'));
       })
       .catch((err) => {
+        console.log(err.response?.data.hasOwnProperty('thumbnail'));
         if (err.response?.status !== 401) {
           setLoading(false);
           if (err.response?.data?.error?.code === 'invalid_sku') {
@@ -119,19 +130,22 @@ const PackAdd = () => {
               type: 'invalid_sku',
               message: err.response?.data?.error?.message,
             });
+
             showErrMsg(err.response?.data?.error?.message);
+          } else if (err.response?.data.hasOwnProperty('thumbnail')) {
+            showErrMsg(err.response?.data.thumbnail[0]);
           } else {
             showServerErrMsg();
           }
         }
       });
   };
-
   const getProducts = (isMounted: boolean = true) => {
     setDataLoading(true);
     productPrevAllAPI()
       .then((res) => {
         if (isMounted) {
+          console.log(res);
           setDataLoading(false);
           setProducts(res.data);
         }
@@ -143,19 +157,7 @@ const PackAdd = () => {
         }
       });
   };
-
-  const onProductSelect = () => {
-    if (
-      searchProd !== '' &&
-      !selectedProds.find((prod) => prod.name === searchProd)
-    ) {
-      let selected = products.find((prod) => (prod.name = searchProd));
-      setProducts(products.filter((prod) => prod.name !== searchProd));
-      setSelectedProd([...selectedProds, selected]);
-      setSearchProd('');
-    }
-  };
-
+  console.log(selectedProds);
   useEffect(() => {
     let isMounted = true;
     setTargetOffset(window.innerHeight / 1.5);
@@ -171,7 +173,7 @@ const PackAdd = () => {
       ...products,
       selectedProds.find((prod) => prod.name === data),
     ]);
-    setSelectedProd(selectedProds.filter((prod) => prod.name !== data));
+    setSelectedProds(selectedProds.filter((prod) => prod.name !== data));
   };
 
   const prodColumns: {
@@ -190,7 +192,7 @@ const PackAdd = () => {
       key: 'name',
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={10}>
-          <Col span={4}>
+          <Col span={8}>
             <Image src={data.thumbnail} height={80} width={80} />
           </Col>
           <Col>
@@ -217,6 +219,24 @@ const PackAdd = () => {
       key: 'price',
     },
     {
+      title: 'Quantity',
+      key: 'quantity',
+      render: (data: any) => {
+        return (
+          <InputNumber
+            value={data.quantity}
+            onChange={(value) => {
+              let selected = selectedProds.find((prod) => prod.id === data.id);
+              setSelectedProds([
+                ...selectedProds.filter((prod) => prod.id !== data.id),
+                { ...selected, quantity: value },
+              ]);
+            }}
+          />
+        );
+      },
+    },
+    {
       title: 'Action',
       dataIndex: 'name',
       width: 100,
@@ -234,6 +254,7 @@ const PackAdd = () => {
       },
     },
   ];
+
   return (
     <Form
       name='packForm'
@@ -352,29 +373,26 @@ const PackAdd = () => {
                   Products
                 </Title>
 
-                <Form.Item label='Products To Be Included' name='product'>
-                  <Input.Group compact>
-                    <AutoComplete
-                      placeholder='Product Name'
-                      options={products.map((prod) => {
-                        return { label: prod?.name, value: prod?.name };
-                      })}
-                      filterOption
-                      notFoundContent='Not Found'
-                      style={{ width: '40%' }}
-                      onChange={(value) => {
-                        setSearchProd(value);
-                      }}
-                    />
-                    <Button
-                      type='primary'
-                      style={{ padding: '0 15px' }}
-                      onClick={onProductSelect}
-                    >
-                      Add
-                    </Button>
-                  </Input.Group>
-
+                <Form.Item
+                  label='Products To Be Included'
+                  name='product'
+                  validateStatus={errMsg.type === 'require_product' && 'error'}
+                  help={errMsg.type === 'require_product' && errMsg.message}
+                >
+                  <ProductSelect
+                    products={products}
+                    onChange={(data) => {
+                      setSelectedProds([
+                        ...selectedProds,
+                        {
+                          ...products.find((prod) => prod.id === data),
+                          quantity: 1,
+                        },
+                      ]);
+                      setProducts(products.filter((prod) => prod.id !== data));
+                      setErrMsg({ type: undefined, message: undefined });
+                    }}
+                  />
                   <Paragraph type='secondary'>
                     Note: Selected products will be displayed below.
                   </Paragraph>

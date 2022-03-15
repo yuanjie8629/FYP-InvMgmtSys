@@ -10,7 +10,7 @@ interface SuccessResultProps {
 
 const SuccessResult = ({ type, record }: SuccessResultProps) => {
   const navigate = useNavigate();
-  const getRecord = 'prod' ? 'Product' : 'pack' ? 'Package' : null;
+  const getRecord = record === 'prod' ? 'Product' : record === 'pack' ? 'Package' : null;
 
   const button = [
     <Button

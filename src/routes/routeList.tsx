@@ -122,6 +122,18 @@ const routeList: {
     component: <PackAdd />,
   },
   {
+    label: 'packAddSuccess',
+    path: '/package/add/success',
+    protected: true,
+    component: <SuccessResult record='pack' type='add' />,
+  },
+  {
+    label: 'packEditSuccess',
+    path: '/package/edit/success',
+    protected: true,
+    component: <SuccessResult record='pack' type='edit' />,
+  },
+  {
     label: 'order',
     path: '/order',
     protected: true,

@@ -46,5 +46,4 @@ def update_request_data(request, data):
     request.data.update(data)
     if hasattr(request.data, "_mutable"):
         request.data._mutable = False
-
     return request

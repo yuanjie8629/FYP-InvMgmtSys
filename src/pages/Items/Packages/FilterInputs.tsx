@@ -6,6 +6,7 @@ import DateRangePickerWithLabel from '@components/Input/DateRangePickerWithLabel
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import { removeInvalidData } from '@utils/arrayUtils';
+import { getDt } from '@utils/dateUtils';
 import { Form, Row, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useState } from 'react';
@@ -34,15 +35,22 @@ const FilterInputs = (props: FilterInputsProps) => {
   );
 
   const handleSearch = (values) => {
+    console.log(values);
     values = removeInvalidData(values);
+    let { avail, ...value } = values;
+    let availTm = {
+      avail_start_tm: getDt(avail[0]),
+      avail_end_tm: getDt(avail[1]),
+    };
 
     setSearchParams(
       searchParams.get('status') !== null
         ? {
             status: searchParams.get('status'),
-            ...values,
+            ...value,
+            ...availTm,
           }
-        : values
+        : { ...value, ...availTm }
     );
   };
 
@@ -107,7 +115,11 @@ const FilterInputs = (props: FilterInputsProps) => {
             />
           </FilterInputCol>
           <FilterInputCol>
-            <DateRangePickerWithLabel label='Available Period' textSpan={7} />
+            <DateRangePickerWithLabel
+              formProps={{ name: 'avail' }}
+              label='Available Period'
+              textSpan={7}
+            />
           </FilterInputCol>
         </Row>
         <FilterSubmitButton onReset={handleReset} />
