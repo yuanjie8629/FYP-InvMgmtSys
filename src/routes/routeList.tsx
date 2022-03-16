@@ -26,6 +26,7 @@ import NotFound from '@pages/Not Found/NotFound';
 import ResetPass from '@pages/Login/ResetPass';
 import { SuccessResult } from '@pages/ResultFeedback';
 import ProdEdit from '@pages/Items/Products/ProdEdit';
+import PackEdit from '@pages/Items/Packages/PackEdit';
 
 const routeList: {
   label: string;
@@ -116,10 +117,10 @@ const routeList: {
     component: <PackAdd />,
   },
   {
-    label: 'packAdd',
+    label: 'packEdit',
     path: '/package/:id',
     protected: true,
-    component: <PackAdd />,
+    component: <PackEdit />,
   },
   {
     label: 'packAddSuccess',
@@ -143,26 +144,6 @@ const routeList: {
     path: '/order/management',
     protected: true,
     component: <OrderMgmt />,
-  },
-  {
-    label: 'orderPend',
-    path: '/order/management?status=toShip',
-    protected: true,
-  },
-  {
-    label: 'orderCancel',
-    path: '/order/management?status=cancel',
-    protected: true,
-  },
-  {
-    label: 'orderUnpaid',
-    path: '/order/management?status=unpaid',
-    protected: true,
-  },
-  {
-    label: 'orderRefund',
-    path: '/order/management?status=refund',
-    protected: true,
   },
   {
     label: 'orderAdd',

@@ -117,19 +117,16 @@ const ProdEdit = () => {
   }, [id]);
 
   const handleEditProduct = (values) => {
-    console.log(values);
     let { profit, description, image, ...data } = values;
-    console.log(data.status);
     data.description = description.toHTML();
     let newImageList = imageList.map((img) =>
       'originFileObj' in img ? img.originFileObj : img.url
     );
     data.image = newImageList;
-    console.log(data.thumbnail);
+
     data.thumbnail = data.thumbnail[0].originFileObj
       ? data.thumbnail[0].originFileObj
       : data.thumbnail[0].url;
-    console.log(data.image);
 
     data = removeInvalidData(data);
     let formData = new FormData();

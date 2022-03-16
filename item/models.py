@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from polymorphic.models import PolymorphicModel
+from django.utils import timezone
 from core.models import SoftDeleteModel
 from image.models import Image
 from item.choices import ITEM_STATUS, ITEM_TYPE, PROD_CAT
@@ -58,13 +59,10 @@ class Item(SoftDeleteModel, PolymorphicModel):
         return "{}: {}".format(self.type, self.name)
 
     def save(self, *args, **kwargs):
-        print(self.stock)
-        print(self.status)
         if self.stock <= 0 and self.status == "active":
             self.status = "oos"
         if self.stock > 0 and self.status == "oos":
             self.status = "active"
-        print(self.status)
 
         super(Item, self).save(*args, **kwargs)
         return self
@@ -105,6 +103,23 @@ class Package(Item):
 
     class Meta:
         db_table = "package"
+
+    def save(self, *args, **kwargs):
+        if (
+            self.avail_start_tm is not None
+            and self.avail_start_tm > timezone.now()
+            and self.status != "hidden"
+        ):
+            self.status = "scheduled"
+        if (
+            self.avail_end_tm is not None
+            and self.avail_end_tm < timezone.now()
+            and self.status != "hidden"
+        ):
+            self.status = "expired"
+
+        super(Package, self).save(*args, **kwargs)
+        return self
 
 
 class PackageItem(models.Model):

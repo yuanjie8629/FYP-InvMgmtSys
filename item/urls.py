@@ -9,6 +9,7 @@ from item.views import (
     ProductPrevView,
     ProductViewSet,
     itemBulkDeleteView,
+    packBulkUpdView,
     prodBulkUpdView,
 )
 
@@ -23,7 +24,8 @@ urlpatterns = [
     path(r"product/bulk/update/", prodBulkUpdView, name="productBulkUpd"),
     path(r"bulk/delete/", itemBulkDeleteView, name="productBulkDel"),
     path(r"package/prev/", PackagePrevView.as_view(), name="packagePrev"),
-    path(r"product/prev/all/", ProdPrevAllView.as_view(), name="prodPrevAll"),
+    path(r"product/prev/all/", ProdPrevAllView.as_view(), name="productPrevAll"),
+    path(r"package/bulk/update/", packBulkUpdView, name="packageBulkUpd"),
 ]
 
 
