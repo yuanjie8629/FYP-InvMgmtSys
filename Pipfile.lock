@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "303a8e3bfb85d58e2649183100efe679f0a4d7e7c15152f280829a27c616311a"
+            "sha256": "978a41e5c4a1e50b1c8c64d2c3e68bac85d51e47b1938af732e2ff747e3b4607"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -251,14 +251,6 @@
             "index": "pypi",
             "version": "==5.0.0"
         },
-        "django-simple-history": {
-            "hashes": [
-                "sha256:66fe76c560054be393c52b1799661e104fbe372918d37d151e5d41c676158118",
-                "sha256:a312adfe8fbec4c450b08e641b11249a8a589a7e7d1ba2404764b8b5bed53552"
-            ],
-            "index": "pypi",
-            "version": "==3.0.0"
-        },
         "djangorestframework": {
             "hashes": [
                 "sha256:0c33407ce23acc68eca2a6e46424b008c9c02eceb8cf18581921d0092bc1f2ee",
@@ -274,13 +266,6 @@
             ],
             "index": "pypi",
             "version": "==5.0.0"
-        },
-        "face-recognition-models": {
-            "hashes": [
-                "sha256:b79bd200a88c87c9a9d446c990ae71c5a626d1f3730174e6d570157ff1d896cf"
-            ],
-            "index": "pypi",
-            "version": "==0.3.0"
         },
         "filelock": {
             "hashes": [
