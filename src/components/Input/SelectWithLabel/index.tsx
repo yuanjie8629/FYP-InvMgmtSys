@@ -36,15 +36,12 @@ const SelectWithLabel = ({
   const { Text } = Typography;
 
   return (
-    <Form.Item {...formProps}>
-      <Row align='middle' gutter={30} className='input-select-label'>
-        <Col
-          span={textSpan}
-          className={justify === 'start' ? '' : 'justify-end'}
-        >
-          <Text type='secondary'>{label}</Text>
-        </Col>
-        <Col span={24 - textSpan}>
+    <Row align='middle' gutter={30} className='input-select-label'>
+      <Col span={textSpan} className={justify === 'start' ? '' : 'justify-end'}>
+        <Text type='secondary'>{label}</Text>
+      </Col>
+      <Col span={24 - textSpan}>
+        <Form.Item {...formProps}>
           <Select
             placeholder={select.placeholder}
             options={select.options}
@@ -56,9 +53,9 @@ const SelectWithLabel = ({
             onSelect={(selected) => onSelect(selected)}
             {...props}
           />
-        </Col>
-      </Row>
-    </Form.Item>
+        </Form.Item>
+      </Col>
+    </Row>
   );
 };
 

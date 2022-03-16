@@ -25,6 +25,7 @@ import { removeInvalidData } from '@utils/arrayUtils';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { serverErrMsg } from '@utils/messageUtils';
+import FormSpin from '@components/Spin';
 
 const ProdAdd = () => {
   const { Text, Title } = Typography;
@@ -43,7 +44,7 @@ const ProdAdd = () => {
     width: true,
     height: true,
   });
-  
+
   const anchorList = [
     { link: 'basicInfo', title: 'Basic Information' },
     { link: 'pricing', title: 'Pricing' },
@@ -125,6 +126,14 @@ const ProdAdd = () => {
     >
       {contextHolder}
       <Layout>
+        <FormSpin
+          spinning={loading}
+          style={{
+            position: 'fixed',
+            top: '50%',
+            transform: 'translate(0,-50%)',
+          }}
+        />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>

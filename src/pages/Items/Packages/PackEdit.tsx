@@ -17,7 +17,6 @@ import {
   message,
   Row,
   Space,
-  Spin,
   Typography,
 } from 'antd';
 import Button from '@components/Button';
@@ -29,12 +28,13 @@ import { removeInvalidData } from '@utils/arrayUtils';
 import { packageDetailsAPI, packageUpdFileAPI } from '@api/services/packageAPI';
 import { findRoutePath } from '@utils/routingUtils';
 import { DeleteButton } from '@components/Button/ActionButton';
-import { getDtTm } from '@utils/dateUtils';
+import { getDt } from '@utils/dateUtils';
 import ProductSelect from './ProductSelect';
 import BraftEditor from 'braft-editor';
 import { prodCat } from '@utils/optionUtils';
 import moment from 'moment';
 import { productPrevAllAPI } from '@api/services/productAPI';
+import FormSpin from '@components/Spin';
 
 const PackEdit = () => {
   const { Text, Title, Paragraph } = Typography;
@@ -98,7 +98,7 @@ const PackEdit = () => {
       return;
     }
 
-    if (startTime.isAfter(endTime)) {
+    if (endTime && startTime.isAfter(endTime)) {
       setErrMsg({
         type: 'invalid_avail_tm',
         message: 'Start time cannot after end time.',
@@ -109,9 +109,9 @@ const PackEdit = () => {
 
     let { profit, description, product, ...data } = values;
     data.description = description.toHTML();
-    data.avail_start_tm = getDtTm(data.avail_start_tm);
-    if (data.avail_end_tm) {
-      data.avail_end_tm = getDtTm(data.avail_end_tm);
+    data.avail_start_dt = getDt(data.avail_start_dt);
+    if (data.avail_end_dt) {
+      data.avail_end_dt = getDt(data.avail_end_dt);
     }
 
     data = removeInvalidData(data);
@@ -179,17 +179,17 @@ const PackEdit = () => {
       packageDetailsAPI(id)
         .then((res) => {
           if (isMounted) {
-            let { avail_start_tm, avail_end_tm, product, ...data } = res.data;
+            let { avail_start_dt, avail_end_dt, product, ...data } = res.data;
             packForm.setFieldsValue(data);
             packForm.setFieldsValue({
-              avail_start_tm: moment(avail_start_tm, 'DD-MM-YYYY HH:mm:ss'),
+              avail_start_dt: moment(avail_start_dt, 'DD-MM-YYYY'),
             });
-            setStartTime(moment(avail_start_tm, 'DD-MM-YYYY HH:mm:ss'));
-            if (avail_end_tm) {
+            setStartTime(moment(avail_start_dt, 'DD-MM-YYYY'));
+            if (avail_end_dt) {
               packForm.setFieldsValue({
-                avail_end_tm: moment(avail_end_tm, 'DD-MM-YYYY HH:mm:ss'),
+                avail_end_dt: moment(avail_end_dt, 'DD-MM-YYYY'),
               });
-              setEndTime(moment(avail_end_tm, 'DD-MM-YYYY HH:mm:ss'));
+              setEndTime(moment(avail_end_dt, 'DD-MM-YYYY'));
               setHideEndTime(false);
             }
             let thumbnail = {
@@ -336,16 +336,7 @@ const PackEdit = () => {
     >
       <Layout>
         {contextHolder}
-        <Spin
-          spinning={dataLoading || loading}
-          style={{
-            position: 'fixed',
-            top: '50%',
-            transform: 'translate(0,-50%)',
-          }}
-        >
-          {' '}
-        </Spin>
+        <FormSpin spinning={dataLoading || loading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>
@@ -732,7 +723,7 @@ const PackEdit = () => {
                   )}
                   <Form.Item
                     label='Start Time'
-                    name='avail_start_tm'
+                    name='avail_start_dt'
                     rules={[
                       {
                         required: true,
@@ -742,8 +733,7 @@ const PackEdit = () => {
                     ]}
                   >
                     <DatePicker
-                      showTime
-                      placeholder='Select Date and Time'
+                      placeholder='Select Date'
                       onChange={(value) => {
                         setStartTime(value);
                       }}
@@ -760,12 +750,11 @@ const PackEdit = () => {
 
                   <Form.Item
                     label='End Time'
-                    name='avail_end_tm'
+                    name='avail_end_dt'
                     hidden={hideEndTime}
                   >
                     <DatePicker
-                      showTime
-                      placeholder='Select Date and Time'
+                      placeholder='Select Date'
                       onChange={(value) => {
                         setEndTime(value);
                       }}

@@ -4,13 +4,20 @@ import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 
 interface SuccessResultProps {
-  record: 'prod' | 'pack';
+  record: 'prod' | 'pack' | 'voucher';
   type: 'add' | 'edit';
 }
 
 const SuccessResult = ({ type, record }: SuccessResultProps) => {
   const navigate = useNavigate();
-  const getRecord = record === 'prod' ? 'Product' : record === 'pack' ? 'Package' : null;
+  const getRecord =
+    record === 'prod'
+      ? 'Product'
+      : record === 'pack'
+      ? 'Package'
+      : record === 'voucher'
+      ? 'Voucher'
+      : null;
 
   const button = [
     <Button

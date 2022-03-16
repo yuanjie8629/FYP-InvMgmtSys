@@ -14,4 +14,5 @@ class AdminSerializer(serializers.ModelSerializer):
             "phone_num",
             "birthdate",
             "gender",
+            "is_superuser",
         )

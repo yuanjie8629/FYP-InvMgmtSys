@@ -19,4 +19,5 @@ urlpatterns = [
     ),
     path("", include("image.urls")),
     path("item/", include("item.urls")),
+    path("voucher/", include("voucher.urls")),
 ]

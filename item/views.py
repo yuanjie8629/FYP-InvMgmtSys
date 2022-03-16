@@ -102,7 +102,7 @@ class ProdPrevAllView(generics.ListAPIView):
 
 
 @api_view(["POST"])
-def itemBulkDeleteView(request):
+def ItemBulkDeleteView(request):
     ids = request.data.get("ids")
     if not ids:
         response = Response(status=status.HTTP_400_BAD_REQUEST)
@@ -132,7 +132,7 @@ def itemBulkDeleteView(request):
 
 
 @api_view(["PATCH"])
-def prodBulkUpdView(request):
+def ProdBulkUpdView(request):
     if "list" in request.data:
         dataList = request.data.get("list")
     else:
@@ -216,7 +216,7 @@ class PackagePrevView(generics.ListAPIView):
 
 
 @api_view(["PATCH"])
-def packBulkUpdView(request):
+def PackBulkUpdView(request):
     if "list" in request.data:
         dataList = request.data.get("list")
     else:

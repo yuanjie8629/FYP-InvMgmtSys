@@ -8,9 +8,9 @@ from item.views import (
     ProdPrevAllView,
     ProductPrevView,
     ProductViewSet,
-    itemBulkDeleteView,
-    packBulkUpdView,
-    prodBulkUpdView,
+    ItemBulkDeleteView,
+    PackBulkUpdView,
+    ProdBulkUpdView,
 )
 
 router = DefaultRouter()
@@ -21,11 +21,11 @@ router.register(r"package", PackageViewSet)
 urlpatterns = [
     path("", ItemListView.as_view(), name="itemList"),
     path(r"product/prev/", ProductPrevView.as_view(), name="productPrev"),
-    path(r"product/bulk/update/", prodBulkUpdView, name="productBulkUpd"),
-    path(r"bulk/delete/", itemBulkDeleteView, name="productBulkDel"),
+    path(r"product/bulk/update/", ProdBulkUpdView, name="productBulkUpd"),
+    path(r"bulk/delete/", ItemBulkDeleteView, name="productBulkDel"),
     path(r"package/prev/", PackagePrevView.as_view(), name="packagePrev"),
     path(r"product/prev/all/", ProdPrevAllView.as_view(), name="productPrevAll"),
-    path(r"package/bulk/update/", packBulkUpdView, name="packageBulkUpd"),
+    path(r"package/bulk/update/", PackBulkUpdView, name="packageBulkUpd"),
 ]
 
 

@@ -35,12 +35,11 @@ const FilterInputs = (props: FilterInputsProps) => {
   );
 
   const handleSearch = (values) => {
-    console.log(values);
     values = removeInvalidData(values);
     let { avail, ...value } = values;
     let availTm = {
-      avail_start_tm: getDt(avail[0]),
-      avail_end_tm: getDt(avail[1]),
+      avail_start_dt: getDt(avail[0]),
+      avail_end_dt: getDt(avail[1]),
     };
 
     setSearchParams(

@@ -47,3 +47,7 @@ def update_request_data(request, data):
     if hasattr(request.data, "_mutable"):
         request.data._mutable = False
     return request
+
+
+def split_date(date):
+    return date.split("-")

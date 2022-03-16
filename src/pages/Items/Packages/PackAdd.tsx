@@ -17,7 +17,6 @@ import {
   message,
   Row,
   Space,
-  Spin,
   Typography,
 } from 'antd';
 import Button from '@components/Button';
@@ -30,8 +29,9 @@ import { packageCreateAPI } from '@api/services/packageAPI';
 import { findRoutePath } from '@utils/routingUtils';
 import { productPrevAllAPI } from '@api/services/productAPI';
 import { DeleteButton } from '@components/Button/ActionButton';
-import { getDtTm } from '@utils/dateUtils';
+import { getDt } from '@utils/dateUtils';
 import ProductSelect from './ProductSelect';
+import FormSpin from '@components/Spin';
 
 const PackAdd = () => {
   const { Text, Title, Paragraph } = Typography;
@@ -90,7 +90,7 @@ const PackAdd = () => {
       return;
     }
 
-    if (startTime.isAfter(endTime)) {
+    if (endTime && startTime.isAfter(endTime)) {
       setErrMsg({
         type: 'invalid_avail_tm',
         message: 'Start time cannot after end time.',
@@ -102,8 +102,8 @@ const PackAdd = () => {
     console.log(values);
     if (data.status === undefined) data.status = 'active';
     data.description = description.toHTML();
-    data.avail_start_tm = getDtTm(data.avail_start_tm);
-    if (data.avail_end_tm) data.avail_end_tm = getDtTm(data.avail_end_tm);
+    data.avail_start_dt = getDt(data.avail_start_dt);
+    if (data.avail_end_tm) data.avail_end_tm = getDt(data.avail_end_tm);
     data = removeInvalidData(data);
     console.log(data);
     let formData = new FormData();
@@ -274,16 +274,7 @@ const PackAdd = () => {
     >
       <Layout>
         {contextHolder}
-        <Spin
-          spinning={dataLoading || loading}
-          style={{
-            position: 'fixed',
-            top: '50%',
-            transform: 'translate(0,-50%)',
-          }}
-        >
-          {' '}
-        </Spin>
+        <FormSpin spinning={dataLoading || loading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>
@@ -653,7 +644,7 @@ const PackAdd = () => {
                   )}
                   <Form.Item
                     label='Start Time'
-                    name='avail_start_tm'
+                    name='avail_start_dt'
                     rules={[
                       {
                         required: true,
@@ -663,8 +654,7 @@ const PackAdd = () => {
                     ]}
                   >
                     <DatePicker
-                      showTime
-                      placeholder='Select Date and Time'
+                      placeholder='Select Date'
                       onChange={(value) => {
                         setStartTime(value);
                       }}
@@ -683,8 +673,7 @@ const PackAdd = () => {
                     hidden={hideEndTime}
                   >
                     <DatePicker
-                      showTime
-                      placeholder='Select Date and Time'
+                      placeholder='Select Date'
                       onChange={(value) => {
                         setEndTime(value);
                       }}

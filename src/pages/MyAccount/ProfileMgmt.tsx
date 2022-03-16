@@ -16,12 +16,57 @@ import AvatarImg from '@assets/avatar.png';
 import Button from '@components/Button';
 import moment from 'moment';
 import { genderCat } from '@utils/optionUtils';
+import { useNavigate } from 'react-router-dom';
+import { findRoutePath } from '@utils/routingUtils';
+import { useEffect, useState } from 'react';
+import { adminDetailsAPI } from '@api/services/adminAPI';
+import { useForm } from 'antd/lib/form/Form';
 
 const ProfileMgmt = () => {
   const { Text, Title } = Typography;
+  const navigate = useNavigate();
+  const [profileForm] = useForm();
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+
+  useEffect(
+    () => {
+      let isMounted = true;
+      setLoading(true);
+      adminDetailsAPI()
+        .then((res) => {
+          if (isMounted) {
+            setData(res.data);
+            profileForm.setFieldsValue(res.data);
+            profileForm.setFieldsValue({
+              birthdate: moment(res.data.birthdate, 'DD-MM-YYYY'),
+            });
+            setLoading(false);
+          }
+        })
+        .catch((err) => {
+          if (err.response?.status !== 401) {
+            setLoading(false);
+            // showServerErrMsg();
+          }
+        });
+      return () => {
+        isMounted = false;
+      };
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   const ChangeBtn = (props) => (
     <Button type='link' color='info' {...props}>
-      <Text underline className='color-info'>
+      <Text
+        underline
+        className='color-info'
+        onClick={() => {
+          navigate(findRoutePath('accSettings'));
+        }}
+      >
         Change
       </Text>
     </Button>
@@ -34,7 +79,7 @@ const ProfileMgmt = () => {
   return (
     <Layout>
       <MainCardContainer className='profile-mgmt'>
-        <MainCard>
+        <MainCard loading={loading}>
           <Space direction='vertical' size={50} className='full-width'>
             <Row justify='center' align='middle' gutter={50}>
               <Col pull={1}>
@@ -50,9 +95,9 @@ const ProfileMgmt = () => {
               </Col>
               <Col pull={1}>
                 <Space direction='vertical'>
-                  <Title level={4}>Tan Yuan Jie</Title>
+                  <Title level={4}>{data['name']}</Title>
                   <Title type='secondary' level={5}>
-                    Super Admin
+                    {data['is_superuser'] ? 'Super Admin' : 'Admin'}
                   </Title>
                 </Space>
               </Col>
@@ -60,37 +105,34 @@ const ProfileMgmt = () => {
             <Row justify='center'>
               <Form
                 name='profileForm'
+                form={profileForm}
                 size='small'
                 labelCol={{ span: 6 }}
                 wrapperCol={{ offset: 2 }}
                 style={{ width: '50%' }}
               >
                 <Form.Item label='Username' name='username'>
-                  <InputText>yuanjie</InputText>
+                  <InputText>{data['username']}</InputText>
                   <ChangeBtn />
                 </Form.Item>
 
-                <Form.Item label='Name' name='name' initialValue='Tan Yuan Jie'>
+                <Form.Item label='Name' name='name'>
                   <Input />
                 </Form.Item>
 
                 <Form.Item label='Email Address' name='email'>
-                  <InputText>yuanjie@sharifahfood.com</InputText>
+                  <InputText>{data['email']}</InputText>
                   <ChangeBtn />
                 </Form.Item>
 
-                <Form.Item label='Phone Number' name='phoneNum'>
-                  <InputText>+60 123456789</InputText>
+                <Form.Item label='Phone Number' name='phone_num'>
+                  <InputText>{data['phone_num']}</InputText>
                   <ChangeBtn />
                 </Form.Item>
-                <Form.Item label='Gender' name='gender' initialValue='m'>
+                <Form.Item label='Gender' name='gender'>
                   <Radio.Group options={genderCat} />
                 </Form.Item>
-                <Form.Item
-                  label='Birthdate'
-                  name='birthdate'
-                  initialValue={moment('2000-08-17')}
-                >
+                <Form.Item label='Birthdate' name='birthdate'>
                   <DatePicker className='full-width' />
                 </Form.Item>
                 <Row justify='end' style={{ marginTop: 20 }}>

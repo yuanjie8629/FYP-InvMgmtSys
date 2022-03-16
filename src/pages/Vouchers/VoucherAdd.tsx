@@ -4,6 +4,7 @@ import Layout from '@components/Layout';
 import AffixAction from '@components/Affix/AffixAction';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import {
+  Alert,
   Anchor,
   Checkbox,
   Col,
@@ -11,16 +12,26 @@ import {
   Form,
   Input,
   InputNumber,
+  message,
   Radio,
   Row,
   Space,
   Typography,
 } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { removeInvalidData } from '@utils/arrayUtils';
+import { voucherCreateAPI } from '@api/services/voucherAPI';
+import { findRoutePath } from '@utils/routingUtils';
+import { serverErrMsg } from '@utils/messageUtils';
+import { custCat } from '@utils/optionUtils';
+import { getDt } from '@utils/dateUtils';
+import FormSpin from '@components/Spin';
 
 const VoucherAdd = () => {
-  const { Title } = Typography;
+  const { Text, Title } = Typography;
   const { Link } = Anchor;
   const [voucherForm] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
   const [discType, setDiscType] = useState('amount');
   const [usageLimitUltd, setUsageLimitUltd] = useState(false);
   const [availabilityUltd, setAvailabilityUltd] = useState(false);
@@ -28,7 +39,8 @@ const VoucherAdd = () => {
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
   );
-
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const anchorList = [
     { link: 'basicInfo', title: 'Basic Information' },
     { link: 'discSettings', title: 'Discount Settings' },
@@ -36,15 +48,68 @@ const VoucherAdd = () => {
     { link: 'availPeriod', title: 'Available Period' },
   ];
 
+  const [errMsg, setErrMsg] = useState({ type: undefined, message: undefined });
+  const [startTime, setStartTime] = useState<moment.Moment>();
+  const [endTime, setEndTime] = useState<moment.Moment>();
+  const showServerErrMsg = () => {
+    messageApi.open(serverErrMsg);
+    setTimeout(() => message.destroy('serverErr'), 3000);
+  };
+
+  const showErrMsg = (errMsg?: string) => {
+    messageApi.open({ key: 'err', type: 'error', content: errMsg });
+    setTimeout(() => message.destroy('err'), 3000);
+  };
+
+  const handleAddVoucher = (values) => {
+    if (endTime && startTime.isAfter(endTime)) {
+      setErrMsg({
+        type: 'invalid_avail_tm',
+        message: 'Start time cannot after end time.',
+      });
+      showErrMsg('Start time cannot after end time.');
+      return;
+    }
+
+    if (values.status === undefined) values.status = 'active';
+    if (discType === 'percentage') {
+      values.discount = values.discount / 100;
+    }
+    if (availabilityUltd) {
+      values.total_amt = -1;
+    }
+    if (usageLimitUltd) {
+      values.usage_limit = -1;
+    }
+    values.avail_start_dt = getDt(values.avail_start_dt);
+    if (values.avail_end_dt) values.avail_end_dt = getDt(values.avail_end_dt);
+    values = removeInvalidData(values);
+
+    setLoading(true);
+    voucherCreateAPI(values)
+      .then((res) => {
+        setLoading(false);
+        navigate(findRoutePath('voucherAddSuccess'));
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setLoading(false);
+          if (err.response?.data?.error?.code === 'invalid_code') {
+            setErrMsg({
+              type: 'invalid_code',
+              message: err.response?.data?.error?.message,
+            });
+            showErrMsg(err.response?.data?.error?.message);
+          } else {
+            showServerErrMsg();
+          }
+        }
+      });
+  };
+
   const discCat = [
     { value: 'amount', label: 'Fixed Amount' },
     { value: 'percentage', label: 'Percentage' },
-  ];
-
-  const custCat = [
-    { label: 'Direct Customer', value: 'cust' },
-    { label: 'Agent', value: 'agent' },
-    { label: 'Dropshipper', value: 'drpshpr' },
   ];
 
   useEffect(() => {
@@ -52,8 +117,17 @@ const VoucherAdd = () => {
   }, []);
 
   return (
-    <Form name='voucherForm' layout='vertical' size='small' form={voucherForm}>
+    <Form
+      name='voucherForm'
+      layout='vertical'
+      size='small'
+      form={voucherForm}
+      scrollToFirstError={{ behavior: 'smooth', block: 'center' }}
+      onFinish={handleAddVoucher}
+    >
       <Layout>
+        {contextHolder}
+        <FormSpin spinning={loading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>
@@ -63,20 +137,37 @@ const VoucherAdd = () => {
                 </Title>
                 <Form.Item
                   label='Discount Code'
-                  name='voucherCde'
+                  name='code'
+                  validateStatus={errMsg.type === 'invalid_code' && 'error'}
+                  help={errMsg.type === 'invalid_code' && errMsg.message}
                   rules={[
                     {
                       required: true,
                       message: 'Please enter the discount code.',
                     },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value) {
+                          return Promise.reject(
+                            'Please enter the discount code.'
+                          );
+                        }
+                        return Promise.resolve();
+                      },
+                    }),
                   ]}
                 >
                   <Input
                     placeholder='e.g. shrfagent'
                     style={{ width: '40%' }}
+                    onChange={() => {
+                      if (errMsg.type === 'invalid_code') {
+                        setErrMsg({ type: undefined, message: undefined });
+                      }
+                    }}
                   />
                 </Form.Item>
-                <Form.Item label='Discount Status' name='discStat'>
+                <Form.Item label='Discount Status' name='status'>
                   <Checkbox>Hidden</Checkbox>
                 </Form.Item>
               </Space>
@@ -89,7 +180,7 @@ const VoucherAdd = () => {
                 </Title>
                 <Form.Item
                   label='Discount Type'
-                  name='discType'
+                  name='type'
                   rules={[
                     {
                       required: true,
@@ -103,12 +194,12 @@ const VoucherAdd = () => {
                     onChange={(e) => setDiscType(e.target.value)}
                   />
                 </Form.Item>
-                <Form.Item label='Discount Details' name='discDtls' required>
+                <Form.Item label='Discount Details' required>
                   <Row gutter={30} style={{ paddingLeft: 25 }}>
                     <Col>
                       <Form.Item
                         label='If Order Amount reaches'
-                        name='minSpend'
+                        name='min_spend'
                       >
                         <InputNumber
                           addonBefore='RM'
@@ -121,7 +212,7 @@ const VoucherAdd = () => {
                     <Col>
                       <Form.Item
                         label='Discount would be'
-                        name='discAmt'
+                        name='discount'
                         rules={[
                           {
                             required: true,
@@ -148,7 +239,7 @@ const VoucherAdd = () => {
                     </Col>
                     {discType === 'percentage' && (
                       <Col>
-                        <Form.Item label='Capped At' name='maxDisc'>
+                        <Form.Item label='Capped At' name='max_discount'>
                           <InputNumber
                             addonBefore='RM'
                             precision={2}
@@ -162,15 +253,20 @@ const VoucherAdd = () => {
                 </Form.Item>
                 <Form.Item
                   label='Total Voucher to be Issued'
-                  name='availability'
+                  name='total_amt'
+                  required
                   rules={[
-                    {
-                      required: true,
-                      message:
-                        'Please enter the availability number for the discount.',
-                    },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value && !availabilityUltd) {
+                          return Promise.reject(
+                            'Please enter the availability number for the discount.'
+                          );
+                        }
+                        return Promise.resolve();
+                      },
+                    }),
                   ]}
-                  initialValue={0}
                 >
                   <Space size={20}>
                     <InputNumber
@@ -180,14 +276,13 @@ const VoucherAdd = () => {
                           availability: value,
                         })
                       }
-                      defaultValue={0}
                       disabled={availabilityUltd}
                     />
                     <Checkbox
                       onChange={(e) => {
                         if (e.target.checked) {
                           voucherForm.setFieldsValue({
-                            availability: 'unlimited',
+                            total_amt: -1,
                           });
                           setAvailabilityUltd(true);
                         } else {
@@ -201,31 +296,36 @@ const VoucherAdd = () => {
                 </Form.Item>
                 <Form.Item
                   label='Usage Limit per User'
-                  name='usageLimit'
+                  name='usage_limit'
+                  required
                   rules={[
-                    {
-                      required: true,
-                      message: 'Please enter the usage limit for each user.',
-                    },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value && !usageLimitUltd) {
+                          return Promise.reject(
+                            'Please enter the usage limit for the discount.'
+                          );
+                        }
+                        return Promise.resolve();
+                      },
+                    }),
                   ]}
-                  initialValue={0}
                 >
                   <Space size={20}>
                     <InputNumber
                       min={0}
-                      onChange={(value) =>
+                      onChange={(value) => {
                         voucherForm.setFieldsValue({
                           usageLimit: value,
-                        })
-                      }
-                      defaultValue={0}
+                        });
+                      }}
                       disabled={usageLimitUltd}
                     />
                     <Checkbox
                       onChange={(e) => {
                         if (e.target.checked) {
                           voucherForm.setFieldsValue({
-                            usageLimit: 'unlimited',
+                            usage_limit: -1,
                           });
                           setUsageLimitUltd(true);
                         } else {
@@ -236,6 +336,19 @@ const VoucherAdd = () => {
                       Unlimited
                     </Checkbox>
                   </Space>
+                </Form.Item>
+                <Form.Item name='auto_apply'>
+                  <Checkbox
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        voucherForm.setFieldsValue({ auto_apply: true });
+                      } else {
+                        voucherForm.setFieldsValue({ auto_apply: false });
+                      }
+                    }}
+                  >
+                    Auto Apply
+                  </Checkbox>
                 </Form.Item>
               </Space>
             </MainCard>
@@ -248,7 +361,7 @@ const VoucherAdd = () => {
 
                 <Form.Item
                   label='Applicable to'
-                  name='custType'
+                  name='cust_type'
                   rules={[
                     {
                       required: true,
@@ -275,38 +388,55 @@ const VoucherAdd = () => {
                 <Title level={4} id='availPeriod'>
                   Available Period
                 </Title>
+                {errMsg.type === 'invalid_avail_tm' && (
+                  <Alert
+                    type='error'
+                    style={{ width: '40%' }}
+                    showIcon
+                    message={<Text type='danger'>{errMsg.message}</Text>}
+                  />
+                )}
                 <Form.Item
                   label='Start Time'
-                  name='packStartTime'
+                  name='avail_start_dt'
                   rules={[
                     {
                       required: true,
                       message:
-                        'Please select the start time to launch the package.',
+                        'Please select the start time to launch the voucher.',
                     },
                   ]}
                 >
-                  <DatePicker showTime placeholder='Select Date and Time' />
+                  <DatePicker
+                    placeholder='Select Date'
+                    onChange={(value) => {
+                      setStartTime(value);
+                    }}
+                  />
                 </Form.Item>
                 <Checkbox
-                  onChange={() =>
-                    hideEndTime ? setHideEndTime(false) : setHideEndTime(true)
-                  }
+                  checked={!hideEndTime}
+                  onChange={(e) => setHideEndTime(!e.target.checked)}
                 >
                   Set End Time
                 </Checkbox>
 
                 <Form.Item
                   label='End Time'
-                  name='packEndTime'
+                  name='avail_end_dt'
                   hidden={hideEndTime}
                 >
-                  <DatePicker showTime placeholder='Select Date and Time' />
+                  <DatePicker
+                    placeholder='Select Date'
+                    onChange={(value) => {
+                      setEndTime(value);
+                    }}
+                  />
                 </Form.Item>
               </Space>
             </MainCard>
 
-            <AffixAction offsetBottom={0} label='Package' />
+            <AffixAction offsetBottom={0} label='Voucher' loading={loading} />
           </MainCardContainer>
         </Col>
         <Col xs={8} xl={5}>

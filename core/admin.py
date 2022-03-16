@@ -6,7 +6,6 @@ def restore_model(modeladmin, request, queryset):
     Restore a softdeletd model set
     """
     for obj in queryset:
-        print(request)
         obj.restore()
 
 

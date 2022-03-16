@@ -6,6 +6,14 @@ const siderDefKeyList: {
     path: '/product/:id',
     key: 'prodEdit',
   },
+  {
+    path: '/package/:id',
+    key: 'packEdit',
+  },
+  {
+    path: '/voucher/:id',
+    key: 'voucherEdit',
+  },
 ];
 
 export default siderDefKeyList;

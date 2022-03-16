@@ -27,11 +27,11 @@ const Sider = ({ onCollapsed = () => null, ...props }: SiderProps) => {
 
   const selectedKeys =
     siderDefKeyList.find(
-      (defKey) => defKey.path === location.pathname
+      (defKey) => defKey.path === location.pathname + location.search
     ) !== undefined
       ? [
           siderDefKeyList.find(
-            (defKey) => defKey.path === location.pathname
+            (defKey) => defKey.path === location.pathname + location.search
           ).key,
         ]
       : [findRouteLabel(checkURL(location.pathname))];

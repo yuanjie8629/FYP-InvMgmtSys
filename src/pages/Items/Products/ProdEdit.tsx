@@ -16,7 +16,6 @@ import {
   Radio,
   Row,
   Space,
-  Spin,
   Typography,
 } from 'antd';
 import TextEditor from '@components/Input/TextEditor';
@@ -27,6 +26,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { serverErrMsg } from '@utils/messageUtils';
 import BraftEditor from 'braft-editor';
+import FormSpin from '@components/Spin';
 
 const ProdEdit = () => {
   const { Text, Title } = Typography;
@@ -173,16 +173,7 @@ const ProdEdit = () => {
     >
       <Layout>
         {contextHolder}
-        <Spin
-          spinning={dataLoading || loading}
-          style={{
-            position: 'fixed',
-            top: '50%',
-            transform: 'translate(0,-50%)',
-          }}
-        >
-          {' '}
-        </Spin>
+        <FormSpin spinning={dataLoading || loading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>
