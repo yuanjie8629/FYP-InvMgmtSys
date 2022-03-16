@@ -1,8 +1,8 @@
+from datetime import date
 from django.db import models
 from django.core.validators import MinValueValidator
 from polymorphic.models import PolymorphicModel
-from django.utils import timezone
-from core.models import SoftDeleteModel
+from core.models import PolySoftDeleteModel
 from image.models import Image
 from item.choices import ITEM_STATUS, ITEM_TYPE, PROD_CAT
 from uuid import uuid4
@@ -13,7 +13,7 @@ def upload_to(instance, filename):
     return "thumbnails/{}.{}".format(uuid4().hex, filename.split(".")[-1])
 
 
-class Item(SoftDeleteModel, PolymorphicModel):
+class Item(PolySoftDeleteModel, PolymorphicModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, null=False)
     type = models.CharField(max_length=20, choices=ITEM_TYPE)
@@ -91,8 +91,8 @@ class Product(Item):
 
 
 class Package(Item):
-    avail_start_tm = models.DateTimeField()
-    avail_end_tm = models.DateTimeField(blank=True, null=True)
+    avail_start_dt = models.DateField()
+    avail_end_dt = models.DateField(blank=True, null=True, default=date.max)
     product = models.ManyToManyField(
         Product, through="PackageItem", related_name="package"
     )
@@ -106,14 +106,14 @@ class Package(Item):
 
     def save(self, *args, **kwargs):
         if (
-            self.avail_start_tm is not None
-            and self.avail_start_tm > timezone.now()
+            self.avail_start_dt is not None
+            and self.avail_start_dt > date.today()
             and self.status != "hidden"
         ):
             self.status = "scheduled"
         if (
-            self.avail_end_tm is not None
-            and self.avail_end_tm < timezone.now()
+            self.avail_end_dt is not None
+            and self.avail_end_dt < date.today()
             and self.status != "hidden"
         ):
             self.status = "expired"

@@ -7,7 +7,7 @@ from administrator.models import Admin
 
 # Create your models here.
 class CustAcc(models.Model):
-    cust_id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     username = models.CharField(unique=True, max_length=45)
     password = models.CharField(max_length=255)
     status = models.CharField(max_length=20)
@@ -21,7 +21,7 @@ class CustAcc(models.Model):
 
 
 class CustPosDeclar(models.Model):
-    pos_decl_id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     answer = models.CharField(max_length=300)
     pos_reg = models.ForeignKey("CustPosReg", on_delete=models.CASCADE)
     pos_declar_ques = models.ForeignKey("CustPosDeclarQues", on_delete=models.CASCADE)
@@ -31,7 +31,7 @@ class CustPosDeclar(models.Model):
 
 
 class CustPosDeclarQues(models.Model):
-    pos_declar_ques_id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     ques = models.CharField(max_length=300)
 
     class Meta:
@@ -39,7 +39,7 @@ class CustPosDeclarQues(models.Model):
 
 
 class CustPosReg(models.Model):
-    pos_reg_id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     ic_num = models.CharField(max_length=15)
     name = models.CharField(max_length=100)
     email = models.CharField(max_length=255)
@@ -75,7 +75,7 @@ class CustProfile(models.Model):
 
 
 class CustType(models.Model):
-    cust_type_id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=20)
 
     class Meta:

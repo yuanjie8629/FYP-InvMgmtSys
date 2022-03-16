@@ -18,23 +18,26 @@ import {
   Space,
   Typography,
 } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { removeInvalidData } from '@utils/arrayUtils';
-import { voucherCreateAPI } from '@api/services/voucherAPI';
+import { voucherDetailsAPI, voucherUpdAPI } from '@api/services/voucherAPI';
 import { findRoutePath } from '@utils/routingUtils';
 import { serverErrMsg } from '@utils/messageUtils';
 import { custCat } from '@utils/optionUtils';
 import { getDt } from '@utils/dateUtils';
 import FormSpin from '@components/Spin';
+import moment from 'moment';
 
-const VoucherAdd = () => {
+const VoucherEdit = () => {
   const { Text, Title } = Typography;
   const { Link } = Anchor;
   const [voucherForm] = Form.useForm();
+  const { id } = useParams();
   const [messageApi, contextHolder] = message.useMessage();
   const [discType, setDiscType] = useState('amount');
   const [usageLimitUltd, setUsageLimitUltd] = useState(false);
   const [availabilityUltd, setAvailabilityUltd] = useState(false);
+  const [autoApply, setAutoApply] = useState(false);
   const [hideEndTime, setHideEndTime] = useState(true);
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
@@ -51,6 +54,7 @@ const VoucherAdd = () => {
   const [errMsg, setErrMsg] = useState({ type: undefined, message: undefined });
   const [startTime, setStartTime] = useState<moment.Moment>();
   const [endTime, setEndTime] = useState<moment.Moment>();
+  const [dataLoading, setDataLoading] = useState(false);
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
     setTimeout(() => message.destroy('serverErr'), 3000);
@@ -61,7 +65,8 @@ const VoucherAdd = () => {
     setTimeout(() => message.destroy('err'), 3000);
   };
 
-  const handleAddVoucher = (values) => {
+  const handleEditVoucher = (values) => {
+    console.log(values);
     if (endTime && startTime.isAfter(endTime)) {
       setErrMsg({
         type: 'invalid_avail_tm',
@@ -81,15 +86,16 @@ const VoucherAdd = () => {
     if (usageLimitUltd) {
       values.usage_limit = -1;
     }
+
     values.avail_start_dt = getDt(values.avail_start_dt);
     if (values.avail_end_dt) values.avail_end_dt = getDt(values.avail_end_dt);
     values = removeInvalidData(values);
 
     setLoading(true);
-    voucherCreateAPI(values)
+    voucherUpdAPI(id, values)
       .then((res) => {
         setLoading(false);
-        navigate(findRoutePath('voucherAddSuccess'));
+        navigate(findRoutePath('voucherEditSuccess'));
       })
       .catch((err) => {
         if (err.response?.status !== 401) {
@@ -113,8 +119,42 @@ const VoucherAdd = () => {
   ];
 
   useEffect(() => {
+    let isMounted = true;
     setTargetOffset(window.innerHeight / 1.5);
-  }, []);
+    if (id) {
+      setDataLoading(true);
+      voucherDetailsAPI(id)
+        .then((res) => {
+          if (isMounted) {
+            let { avail_start_dt, avail_end_dt, product, ...data } = res.data;
+            console.log(res.data);
+
+            voucherForm.setFieldsValue(data);
+            voucherForm.setFieldsValue({
+              avail_start_dt: moment(avail_start_dt, 'DD-MM-YYYY'),
+            });
+            voucherForm.setFieldsValue({
+              avail_end_dt:
+                avail_end_dt !== '31-12-9999'
+                  ? moment(avail_end_dt, 'DD-MM-YYYY')
+                  : undefined,
+            });
+            setAutoApply(res.data.auto_apply);
+            setDataLoading(false);
+          }
+        })
+        .catch((err) => {
+          if (err.response?.status !== 401) {
+            setDataLoading(false);
+            showServerErrMsg();
+          }
+        });
+    }
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   return (
     <Form
@@ -123,11 +163,11 @@ const VoucherAdd = () => {
       size='small'
       form={voucherForm}
       scrollToFirstError={{ behavior: 'smooth', block: 'center' }}
-      onFinish={handleAddVoucher}
+      onFinish={handleEditVoucher}
     >
       <Layout>
         {contextHolder}
-        <FormSpin spinning={loading} />
+        <FormSpin spinning={dataLoading || loading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>
@@ -271,6 +311,7 @@ const VoucherAdd = () => {
                   <Space size={20}>
                     <InputNumber
                       min={0}
+                      value={voucherForm.getFieldValue('total_amt')}
                       onChange={(value) =>
                         voucherForm.setFieldsValue({
                           availability: value,
@@ -282,10 +323,11 @@ const VoucherAdd = () => {
                       onChange={(e) => {
                         if (e.target.checked) {
                           voucherForm.setFieldsValue({
-                            total_amt: -1,
+                            total_amt: '-1',
                           });
                           setAvailabilityUltd(true);
                         } else {
+                          voucherForm.resetFields(['total_amt']);
                           setAvailabilityUltd(false);
                         }
                       }}
@@ -314,6 +356,7 @@ const VoucherAdd = () => {
                   <Space size={20}>
                     <InputNumber
                       min={0}
+                      value={voucherForm.getFieldValue('usage_limit')}
                       onChange={(value) => {
                         voucherForm.setFieldsValue({
                           usageLimit: value,
@@ -325,10 +368,11 @@ const VoucherAdd = () => {
                       onChange={(e) => {
                         if (e.target.checked) {
                           voucherForm.setFieldsValue({
-                            usage_limit: -1,
+                            usage_limit: '-1',
                           });
                           setUsageLimitUltd(true);
                         } else {
+                          voucherForm.resetFields(['usage_limit']);
                           setUsageLimitUltd(false);
                         }
                       }}
@@ -339,11 +383,14 @@ const VoucherAdd = () => {
                 </Form.Item>
                 <Form.Item name='auto_apply'>
                   <Checkbox
+                    checked={autoApply}
                     onChange={(e) => {
                       if (e.target.checked) {
                         voucherForm.setFieldsValue({ auto_apply: true });
+                        setAutoApply(true);
                       } else {
                         voucherForm.setFieldsValue({ auto_apply: false });
+                        setAutoApply(false);
                       }
                     }}
                   >
@@ -436,7 +483,13 @@ const VoucherAdd = () => {
               </Space>
             </MainCard>
 
-            <AffixAction offsetBottom={0} label='Voucher' loading={loading} />
+            <AffixAction
+              offsetBottom={0}
+              label='Voucher'
+              type='edit'
+              loading={loading}
+              disabled={dataLoading || loading}
+            />
           </MainCardContainer>
         </Col>
         <Col xs={8} xl={5}>
@@ -455,4 +508,4 @@ const VoucherAdd = () => {
   );
 };
 
-export default VoucherAdd;
+export default VoucherEdit;

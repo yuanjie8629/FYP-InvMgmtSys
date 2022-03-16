@@ -27,6 +27,7 @@ import ResetPass from '@pages/Login/ResetPass';
 import { SuccessResult } from '@pages/ResultFeedback';
 import ProdEdit from '@pages/Items/Products/ProdEdit';
 import PackEdit from '@pages/Items/Packages/PackEdit';
+import VoucherEdit from '@pages/Vouchers/VoucherEdit';
 
 const routeList: {
   label: string;
@@ -117,7 +118,7 @@ const routeList: {
     component: <PackAdd />,
   },
   {
-    label: 'packEdit',
+    label: 'packAdd',
     path: '/package/:id',
     protected: true,
     component: <PackEdit />,
@@ -193,7 +194,7 @@ const routeList: {
     component: <CustAdd />,
   },
   {
-    label: 'custAdd',
+    label: 'custEdit',
     path: '/customer/:id',
     protected: true,
     component: <CustAdd />,
@@ -221,6 +222,18 @@ const routeList: {
     protected: true,
   },
   {
+    label: 'voucherAddSuccess',
+    path: '/voucher/add/success',
+    protected: true,
+    component: <SuccessResult record='voucher' type='add' />,
+  },
+  {
+    label: 'voucherEditSuccess',
+    path: '/voucher/edit/success',
+    protected: true,
+    component: <SuccessResult record='voucher' type='edit' />,
+  },
+  {
     label: 'voucherMgmt',
     path: '/voucher/management',
     protected: true,
@@ -236,7 +249,7 @@ const routeList: {
     label: 'voucherAdd',
     path: '/voucher/:id',
     protected: true,
-    component: <VoucherAdd />,
+    component: <VoucherEdit />,
   },
   {
     label: 'myAccount',

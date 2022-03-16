@@ -1,24 +1,14 @@
-from dataclasses import fields
-from math import prod
-from unicodedata import category
-from uuid import uuid4
-from django.conf import settings
-from django.forms import ValidationError
-from django.http import QueryDict
-from django.dispatch import receiver
-from django.db.models.signals import post_save
-from rest_framework.decorators import parser_classes
 from rest_framework import serializers
 from core.serializers import ChoiceField
 from image.models import Image
 from image.serializers import ImageSerializer
 from item.choices import PROD_CAT
-from item.models import ImageItemLine, Item, Package, PackageItem, Product
+from item.models import Item, Package, PackageItem, Product
 
 
 def check_sku(value, *args, **kwargs):
     compare = kwargs.get("compare")
-    check_query = Item.objects.filter(sku=value)
+    check_query = Item.objects_with_deleted.filter(sku=value)
     if check_query.exists():
         if not compare or compare != value:
             raise serializers.ValidationError(
@@ -92,8 +82,7 @@ class ProductSerializer(serializers.ModelSerializer):
         list_serializer_class = ProductListSerializer
 
     def create(self, validated_data):
-        if "sku" in validated_data:
-            check_sku(validated_data.get("sku"))
+        check_sku(validated_data.get("sku"))
         images = validated_data.pop("image", None)
         product = Product.objects.create(**validated_data)
         if images:
@@ -159,11 +148,11 @@ class PackageItemSerializer(serializers.ModelSerializer):
 class PackageSerializer(serializers.ModelSerializer):
     image = ImageSerializer(many=True, required=False)
     product = PackageItemSerializer(many=True, source="pack_item", read_only=True)
-    avail_start_tm = serializers.DateTimeField(
-        input_formats=["%d-%m-%Y %H:%M:%S"], format="%d-%m-%Y %H:%M:%S"
+    avail_start_dt = serializers.DateField(
+        input_formats=["%d-%m-%Y"], format="%d-%m-%Y"
     )
-    avail_end_tm = serializers.DateTimeField(
-        input_formats=["%d-%m-%Y %H:%M:%S"], format="%d-%m-%Y %H:%M:%S", required=False
+    avail_end_dt = serializers.DateField(
+        input_formats=["%d-%m-%Y"], format="%d-%m-%Y", required=False
     )
 
     class Meta:
@@ -198,11 +187,11 @@ class PackageWriteSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     image = ImageSerializer(many=True, required=False)
     product = serializers.ListField(child=serializers.ListField(), write_only=True)
-    avail_start_tm = serializers.DateTimeField(
-        input_formats=["%d-%m-%Y %H:%M:%S"], format="%d-%m-%Y %H:%M:%S"
+    avail_start_dt = serializers.DateField(
+        input_formats=["%d-%m-%Y"], format="%d-%m-%Y"
     )
-    avail_end_tm = serializers.DateTimeField(
-        input_formats=["%d-%m-%Y %H:%M:%S"], format="%d-%m-%Y %H:%M:%S", required=False
+    avail_end_dt = serializers.DateField(
+        input_formats=["%d-%m-%Y"], format="%d-%m-%Y", required=False
     )
 
     class Meta:
@@ -300,11 +289,6 @@ class PackageWriteSerializer(serializers.ModelSerializer):
         PackageItem.objects.filter(pack=instance).delete()
         for prod_data in final_products:
             PackageItem.objects.create(**prod_data, pack=instance)
-
-        for key in validated_data:
-            setattr(instance, key, validated_data[key])
-
-        instance.save()
 
         if images:
             for image_data in images:

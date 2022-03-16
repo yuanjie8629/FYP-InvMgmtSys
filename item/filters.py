@@ -33,11 +33,11 @@ class PackageFilter(filters.FilterSet):
     max_price = filters.NumberFilter(field_name="price", lookup_expr="lte")
     min_stock = filters.NumberFilter(field_name="stock", lookup_expr="gte")
     max_stock = filters.NumberFilter(field_name="stock", lookup_expr="lte")
-    avail_start_tm = filters.DateTimeFilter(
-        field_name="avail_start_tm", lookup_expr="gte", input_formats=["%d-%m-%Y"]
+    avail_start_dt = filters.DateFilter(
+        field_name="avail_start_dt", lookup_expr="gte", input_formats=["%d-%m-%Y"]
     )
-    avail_end_tm = filters.DateTimeFilter(
-        field_name="avail_end_tm", lookup_expr="lte", input_formats=["%d-%m-%Y"]
+    avail_end_dt = filters.DateFilter(
+        field_name="avail_end_dt", lookup_expr="lte", input_formats=["%d-%m-%Y"]
     )
 
     ordering = filters.OrderingFilter(
@@ -57,6 +57,6 @@ class PackageFilter(filters.FilterSet):
             "status",
             "price",
             "stock",
-            "avail_start_tm",
-            "avail_end_tm",
+            "avail_start_dt",
+            "avail_end_dt",
         ]

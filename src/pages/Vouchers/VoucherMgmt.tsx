@@ -4,12 +4,11 @@ import Button from '@components/Button';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
-import { Row, Space, Col, Typography } from 'antd';
+import { Row, Space, Col, Typography, message } from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
-import voucherList from './voucherList';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { MdAllInclusive, MdSync } from 'react-icons/md';
 import { moneyFormatter, percentFormatter } from '@utils/numUtils';
@@ -24,38 +23,165 @@ import StatusTag from '@components/Tag/StatusTag';
 import { voucherStatList } from '@utils/optionUtils';
 import Tooltip from '@components/Tooltip';
 import { BoldTitle } from '@components/Title';
+import {
+  voucherBulkDelAPI,
+  voucherBulkUpdAPI,
+  voucherDelAPI,
+  voucherUpdAPI,
+  voucherViewAPI,
+} from '@api/services/voucherAPI';
+import voucherTabList from './voucherTabList';
+import { actionSuccessMsg, serverErrMsg } from '@utils/messageUtils';
+import { ActionModal } from '@components/Modal';
+import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
 
 const VoucherMgmt = () => {
   const { Text } = Typography;
-  const [voucherListFltr, setVoucherListFltr] = useState(voucherList);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [messageApi, contextHolder] = message.useMessage();
+  const [list, setList] = useState([]);
+  const [recordCount, setRecordCount] = useState<number>();
+  const [selected, setSelected] = useState([]);
+  const [tableLoading, setTableLoading] = useState(false);
+  const defPg = 10;
 
-  let navigate = useNavigate();
-  let [searchParams, setSearchParams] = useSearchParams();
+  const getTableData = (isMounted: boolean = true) => {
+    setSelected([]);
+    setTableLoading(true);
+    voucherViewAPI(location.search)
+      .then((res) => {
+        if (isMounted) {
+          setList(res.data.results);
+          setRecordCount(res.data.count);
+          setTableLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setTableLoading(false);
+          // showServerErrMsg();
+        }
+      });
+  };
 
   useEffect(
-    () =>
-      setVoucherListFltr(
-        voucherList.filter((voucher) =>
-          searchParams.get('status') !== null
-            ? voucher.status === searchParams.get('status')
-            : true
-        )
-      ),
+    () => {
+      let isMounted = true;
+      getTableData(isMounted);
+
+      return () => {
+        isMounted = false;
+      };
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [searchParams]
   );
-  const voucherTabList = [
-    { key: 'all', tab: 'All' },
-    { key: 'active', tab: 'Active' },
-    { key: 'hidden', tab: 'Hidden' },
-    { key: 'scheduled', tab: 'Scheduled' },
-    { key: 'expired', tab: 'Expired' },
-  ];
 
-  const activateBtn = (props: any) => <ActivateButton type='primary' />;
+  const showActionSuccessMsg = (
+    action: 'activate' | 'delete' | 'hide',
+    isMulti: boolean = true
+  ) => {
+    messageApi.open(
+      actionSuccessMsg('Product', action, isMulti ? selected.length : 1)
+    );
+    setTimeout(() => message.destroy(action), 3000);
+  };
 
-  const hideBtn = (props: any) => <HideButton type='primary' color='grey' />;
+  const showServerErrMsg = () => {
+    messageApi.open(serverErrMsg);
+    setTimeout(() => message.destroy('serverErr'), 3000);
+  };
 
-  const deleteBtn = (props: any) => <DeleteButton type='primary' />;
+  const activateBtn = (props: any) => (
+    <ActivateButton
+      type='primary'
+      onClick={() => {
+        ActionModal.show('activate', {
+          onOk: async () => {
+            const selectedKeys = selected.map(
+              (selectedItem) => selectedItem.key
+            );
+
+            await voucherBulkUpdAPI(
+              selectedKeys.map((key) => {
+                return { id: key, status: 'active' };
+              })
+            )
+              .then(() => {
+                getTableData();
+                showActionSuccessMsg('activate');
+              })
+              .catch((err) => {
+                if (err.response?.status !== 401) setTableLoading(false);
+                else {
+                  showServerErrMsg();
+                }
+              });
+          },
+        });
+      }}
+    />
+  );
+
+  const hideBtn = (props: any) => (
+    <HideButton
+      type='primary'
+      color='grey'
+      onClick={() => {
+        ActionModal.show('hide', {
+          onOk: async () => {
+            const selectedKeys = selected.map(
+              (selectedItem) => selectedItem.key
+            );
+
+            await voucherBulkUpdAPI(
+              selectedKeys.map((key) => {
+                return { id: key, status: 'hidden' };
+              })
+            )
+              .then(() => {
+                getTableData();
+                showActionSuccessMsg('hide');
+              })
+              .catch((err) => {
+                if (err.response?.status !== 401) setTableLoading(false);
+                else {
+                  showServerErrMsg();
+                }
+              });
+          },
+        });
+      }}
+    />
+  );
+
+  const deleteBtn = (props: any) => (
+    <DeleteButton
+      type='primary'
+      onClick={() => {
+        ActionModal.show('delete', {
+          onOk: async () => {
+            const selectedKeys = selected.map(
+              (selectedItem) => selectedItem.key
+            );
+            await voucherBulkDelAPI(selectedKeys)
+              .then(() => {
+                getTableData();
+                showActionSuccessMsg('delete');
+              })
+              .catch((err) => {
+                if (err.response?.status !== 401) setTableLoading(false);
+                else {
+                  showServerErrMsg();
+                }
+              });
+          },
+        });
+      }}
+    />
+  );
 
   const onSelectBtn: InformativeTableButtonProps = [
     {
@@ -74,11 +200,40 @@ const VoucherMgmt = () => {
     },
   ];
 
+  const getVoucherDetails = (selectedRecord) => {
+    const selected = [];
+    selectedRecord.forEach((record) =>
+      selected.push({
+        key: record.id,
+        title: record.code,
+      })
+    );
+    return selected;
+  };
+
+  const handleSelectChange = (selectedKeys) => {
+    const selectedRecord = list.filter((prod) =>
+      selectedKeys.some((selected) => selected === prod.id)
+    );
+
+    setSelected(getVoucherDetails(selectedRecord));
+  };
+
+  const handleTabChange = (key) => {
+    if (key !== 'all') {
+      setSearchParams(addSearchParams(searchParams, { status: key }));
+    } else {
+      searchParams.delete('status');
+      setSearchParams(parseURL(searchParams));
+    }
+  };
+
   const voucherMgmtColumns: {
     title: string;
     dataIndex?: string | string[];
     key: string;
     sorter?: boolean;
+    defaultSortOrder?: 'ascend' | 'descend';
     align?: 'left' | 'center' | 'right';
     fixed?: 'left' | 'right';
     width?: number | string;
@@ -86,20 +241,27 @@ const VoucherMgmt = () => {
   }[] = [
     {
       title: 'Voucher Code',
-      dataIndex: ['voucherCde', 'autoApply'],
-      key: 'voucherCde',
+      dataIndex: ['code', 'auto_apply'],
+      key: 'code',
       sorter: true,
+      defaultSortOrder: getSortOrder('code'),
       fixed: 'left',
       width: 150,
       render: (_: any, data: { [x: string]: boolean }) => (
         <Row>
           <Col span={20} className='text-button-wrapper'>
-            <Text strong className='text-button'>
-              {data['voucherCde']}
+            <Text
+              strong
+              className='text-button'
+              onClick={() => {
+                navigate(`/voucher/${data.id}`);
+              }}
+            >
+              {data.code}
             </Text>
           </Col>
           <Col span={4} className='justify-end'>
-            {data['autoApply'] === true && (
+            {data.auto_apply === true && (
               <Tooltip title='Automatically applied'>
                 <MdSync />
               </Tooltip>
@@ -110,37 +272,45 @@ const VoucherMgmt = () => {
     },
     {
       title: 'Discount Details',
-      dataIndex: ['discType', 'discAmt', 'minSpend', 'maxDisc', 'usageLimit'],
-      key: 'discDetl',
-      sorter: true,
+      dataIndex: [
+        'type',
+        'discount',
+        'min_spend',
+        'max_discount',
+        'usage_limit',
+      ],
+      key: 'type',
       width: 280,
-      render: (_: any, data) => (
-        <>
-          <Text strong type='secondary'>
-            {data['discType'] === 'amount'
-              ? moneyFormatter(data['discAmt'])
-              : percentFormatter(data['discAmt'])}{' '}
-            off
-          </Text>
-          <ul>
-            {data['minSpend'] !== undefined && (
-              <li>Min spend of {moneyFormatter(data['minSpend'])}</li>
-            )}
-            {data['maxDisc'] !== undefined && (
-              <li>Capped at {moneyFormatter(data['maxDisc'])}</li>
-            )}
-            {data['usageLimit'] !== undefined && (
-              <li>Limit for {data['usageLimit']} transactions per user</li>
-            )}
-          </ul>
-        </>
-      ),
+      render: (_: any, data) => {
+        return (
+          <>
+            <Text strong type='secondary'>
+              {data.type === 'amount'
+                ? moneyFormatter(parseFloat(data.discount))
+                : percentFormatter(parseFloat(data.discount))}{' '}
+              off
+            </Text>
+            <ul>
+              {!(data.min_spend === null || data.min_spend === undefined) && (
+                <li>
+                  Min spend of {moneyFormatter(parseFloat(data.min_spend))}
+                </li>
+              )}
+              {!(data.max_disc === null || data.max_disc === undefined) && (
+                <li>Capped at {moneyFormatter(parseFloat(data.max_disc))}</li>
+              )}
+              {!(
+                data.usage_limit === null || data.usage_limit === undefined
+              ) && <li>Limit for {data.usage_limit} transactions per user</li>}
+            </ul>
+          </>
+        );
+      },
     },
     {
       title: 'Customer Type',
-      dataIndex: 'custType',
-      key: 'custType',
-      sorter: true,
+      dataIndex: 'cust_type',
+      key: 'cust_type',
       width: 150,
       render: (types: []) => (
         <Space direction='vertical'>
@@ -160,12 +330,13 @@ const VoucherMgmt = () => {
     },
     {
       title: 'Availability',
-      dataIndex: 'availability',
-      key: 'availability',
+      dataIndex: 'total_amt',
+      key: 'total_amt',
       sorter: true,
+      defaultSortOrder: getSortOrder('total_amt'),
       width: 100,
       render: (availability: string) =>
-        availability === 'unlimited' ? (
+        availability === '-1' ? (
           <Tooltip title='Unlimited'>
             <MdAllInclusive />
           </Tooltip>
@@ -175,29 +346,55 @@ const VoucherMgmt = () => {
     },
     {
       title: 'Start Time',
-      dataIndex: 'startTm',
-      key: 'startTm',
+      dataIndex: 'avail_start_dt',
+      key: 'avail_start_dt',
       sorter: true,
+      defaultSortOrder: getSortOrder('avail_start_dt'),
       width: 150,
     },
     {
       title: 'End Time',
-      dataIndex: 'endTm',
-      key: 'endTm',
+      dataIndex: 'avail_end_dt',
+      key: 'avail_end_dt',
       sorter: true,
+      defaultSortOrder: getSortOrder('avail_end_dt'),
       width: 150,
-      render: (endTm: string) => (endTm !== undefined ? endTm : '-'),
+      render: (endTm: string) =>
+        !(endTm === null || endTm === '31-12-9999') ? endTm : '-',
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
       width: 150,
-      render: (status: string) => (
+      render: (_: any, data: { [x: string]: any }) => (
         <StatusTag
-          status={status}
+          status={data.status}
           statusList={voucherStatList}
           dropdownStatus={['active', 'hidden']}
+          onDropdownSelect={(selectedStatus) => {
+            setSelected(getVoucherDetails([data]));
+            ActionModal.show(
+              selectedStatus === 'hidden' ? 'hide' : 'activate',
+              {
+                onOk: async () => {
+                  await voucherUpdAPI(data.id, {
+                    status: selectedStatus === 'hidden' ? 'hidden' : 'active',
+                  })
+                    .then((res) => {
+                      getTableData();
+                      showActionSuccessMsg(
+                        selectedStatus === 'hidden' ? 'hide' : 'activate',
+                        false
+                      );
+                    })
+                    .catch((err) => {
+                      showServerErrMsg();
+                    });
+                },
+              }
+            );
+          }}
         />
       ),
     },
@@ -208,8 +405,32 @@ const VoucherMgmt = () => {
       fixed: 'right',
       render: (_: any, data: { [x: string]: string }) => (
         <Space direction='vertical' size={5}>
-          <EditButton type='link' color='info' />
-          <DeleteButton type='link' color='info' />
+          <EditButton
+            type='link'
+            color='info'
+            onClick={() => {
+              navigate(`/voucher/${data.id}`);
+            }}
+          />
+          <DeleteButton
+            type='link'
+            color='info'
+            onClick={() => {
+              setSelected(getVoucherDetails([data]));
+              ActionModal.show('delete', {
+                onOk: async () => {
+                  await voucherDelAPI(data.id)
+                    .then((res) => {
+                      getTableData();
+                      showActionSuccessMsg('delete', false);
+                    })
+                    .catch((err) => {
+                      showServerErrMsg();
+                    });
+                },
+              });
+            }}
+          />
         </Space>
       ),
     },
@@ -217,6 +438,7 @@ const VoucherMgmt = () => {
 
   return (
     <Layout>
+      {contextHolder}
       <MainCardContainer className='voucher-mgmt'>
         <MainCard
           tabList={voucherTabList}
@@ -225,9 +447,7 @@ const VoucherMgmt = () => {
               ? 'all'
               : searchParams.get('status')
           }
-          onTabChange={(key) => {
-            setSearchParams(key !== 'all' ? { status: key } : {});
-          }}
+          onTabChange={handleTabChange}
         >
           <FilterInputs />
         </MainCard>
@@ -247,14 +467,19 @@ const VoucherMgmt = () => {
               </Col>
             </Row>
             <InformativeTable
-              dataSource={voucherListFltr}
+              rowKey='id'
+              dataSource={list}
               columns={voucherMgmtColumns}
               buttons={onSelectBtn}
-              scroll={{ x: 1200 }}
+              loading={tableLoading}
+              defPg={defPg}
+              totalRecord={recordCount}
+              onSelectChange={handleSelectChange}
             />
           </Space>
         </MainCard>
       </MainCardContainer>
+      <ActionModal recordType='voucher' dataSource={selected} />
     </Layout>
   );
 };
