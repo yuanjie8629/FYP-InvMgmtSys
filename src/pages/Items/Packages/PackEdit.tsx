@@ -23,20 +23,24 @@ import {
 import Button from '@components/Button';
 import Table from '@components/Table';
 import TextEditor from '@components/Input/TextEditor';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { serverErrMsg } from '@utils/messageUtils';
 import { removeInvalidData } from '@utils/arrayUtils';
-import { packageCreateAPI } from '@api/services/packageAPI';
+import { packageDetailsAPI, packageUpdFileAPI } from '@api/services/packageAPI';
 import { findRoutePath } from '@utils/routingUtils';
-import { productPrevAllAPI } from '@api/services/productAPI';
 import { DeleteButton } from '@components/Button/ActionButton';
 import { getDtTm } from '@utils/dateUtils';
 import ProductSelect from './ProductSelect';
+import BraftEditor from 'braft-editor';
+import { prodCat } from '@utils/optionUtils';
+import moment from 'moment';
+import { productPrevAllAPI } from '@api/services/productAPI';
 
-const PackAdd = () => {
+const PackEdit = () => {
   const { Text, Title, Paragraph } = Typography;
   const [packForm] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+  const { id } = useParams();
   const { Link } = Anchor;
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
@@ -69,18 +73,22 @@ const PackAdd = () => {
 
   const [errMsg, setErrMsg] = useState({ type: undefined, message: undefined });
   const [dataLoading, setDataLoading] = useState(false);
+  const [thumbnail, setThumbnail] = useState([]);
+  const [imageList, setImageList] = useState([]);
+  const [packStatus, setPackStatus] = useState('');
+  const [startTime, setStartTime] = useState<moment.Moment>();
+  const [endTime, setEndTime] = useState<moment.Moment>();
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
     setTimeout(() => message.destroy('serverErr'), 3000);
   };
-  const [startTime, setStartTime] = useState<moment.Moment>();
-  const [endTime, setEndTime] = useState<moment.Moment>();
+
   const showErrMsg = (errMsg?: string) => {
     messageApi.open({ key: 'err', type: 'error', content: errMsg });
     setTimeout(() => message.destroy('err'), 3000);
   };
 
-  const handleAddPackage = (values) => {
+  const handleEditPackage = (values) => {
     if (selectedProds.length < 1) {
       setErrMsg({
         type: 'require_product',
@@ -98,22 +106,21 @@ const PackAdd = () => {
       showErrMsg('Start time cannot after end time.');
       return;
     }
-    let { profit, description, ...data } = values;
-    console.log(values);
-    if (data.status === undefined) data.status = 'active';
+
+    let { profit, description, product, ...data } = values;
     data.description = description.toHTML();
     data.avail_start_tm = getDtTm(data.avail_start_tm);
-    if (data.avail_end_tm) data.avail_end_tm = getDtTm(data.avail_end_tm);
+    if (data.avail_end_tm) {
+      data.avail_end_tm = getDtTm(data.avail_end_tm);
+    }
+
     data = removeInvalidData(data);
-    console.log(data);
     let formData = new FormData();
     Object.keys(data).forEach((item) => {
       if (item === 'image') {
         data[item].forEach((image, index) => {
           formData.append(`${item}[${index}]`, image);
         });
-      } else if (item === 'thumbnail') {
-        formData.append(item, data[item], `${data.name.trim()}-thumbnail.jpg`);
       } else {
         formData.append(item, data[item]);
       }
@@ -127,13 +134,12 @@ const PackAdd = () => {
       // formData.append(`product[${index}]['quantity']`, prod.quantity);
     });
     setLoading(true);
-    packageCreateAPI(formData)
+    packageUpdFileAPI(id, formData)
       .then((res) => {
         setLoading(false);
-        navigate(findRoutePath('packAddSuccess'));
+        navigate(findRoutePath('packEditSuccess'));
       })
       .catch((err) => {
-        console.log(err.response?.data.hasOwnProperty('thumbnail'));
         if (err.response?.status !== 401) {
           setLoading(false);
           if (err.response?.data?.error?.code === 'invalid_sku') {
@@ -141,7 +147,6 @@ const PackAdd = () => {
               type: 'invalid_sku',
               message: err.response?.data?.error?.message,
             });
-
             showErrMsg(err.response?.data?.error?.message);
           } else if (err.response?.data.hasOwnProperty('thumbnail')) {
             showErrMsg(err.response?.data.thumbnail[0]);
@@ -151,33 +156,86 @@ const PackAdd = () => {
         }
       });
   };
-  const getProducts = (isMounted: boolean = true) => {
-    setDataLoading(true);
-    productPrevAllAPI()
-      .then((res) => {
-        if (isMounted) {
-          console.log(res);
-          setDataLoading(false);
-          setProducts(res.data);
-        }
-      })
-      .catch((err) => {
-        if (err.response?.status !== 401) {
-          setDataLoading(false);
-          showServerErrMsg();
-        }
-      });
-  };
-  console.log(selectedProds);
+
   useEffect(() => {
     let isMounted = true;
-    setTargetOffset(window.innerHeight / 1.5);
-    getProducts(isMounted);
-    return () => {
-      isMounted = false;
-    };
+    setTargetOffset(window.innerHeight / 1.65);
+    if (id) {
+      setDataLoading(true);
+      let newProducts = [];
+      productPrevAllAPI()
+        .then((res) => {
+          if (isMounted) {
+            newProducts = res.data;
+          }
+        })
+        .catch((err) => {
+          if (err.response?.status !== 401) {
+            setDataLoading(false);
+            showServerErrMsg();
+          }
+        });
+
+      packageDetailsAPI(id)
+        .then((res) => {
+          if (isMounted) {
+            let { avail_start_tm, avail_end_tm, product, ...data } = res.data;
+            packForm.setFieldsValue(data);
+            packForm.setFieldsValue({
+              avail_start_tm: moment(avail_start_tm, 'DD-MM-YYYY HH:mm:ss'),
+            });
+            setStartTime(moment(avail_start_tm, 'DD-MM-YYYY HH:mm:ss'));
+            if (avail_end_tm) {
+              packForm.setFieldsValue({
+                avail_end_tm: moment(avail_end_tm, 'DD-MM-YYYY HH:mm:ss'),
+              });
+              setEndTime(moment(avail_end_tm, 'DD-MM-YYYY HH:mm:ss'));
+              setHideEndTime(false);
+            }
+            let thumbnail = {
+              url: res.data?.thumbnail,
+            };
+
+            let imageList = [];
+            res.data?.image.forEach((img) => {
+              imageList.push({
+                url: img,
+              });
+            });
+            packForm.setFieldsValue({
+              description: BraftEditor.createEditorState(data.description),
+            });
+
+            setSelectedProds(product);
+            setThumbnail([thumbnail]);
+            setImageList(imageList);
+            setPackStatus(res.data?.status);
+            if (product.length > 0) {
+              product.forEach((selected) => {
+                setProducts([
+                  ...products,
+                  ...newProducts.filter((prod) => prod.id !== selected.id),
+                ]);
+              });
+            } else {
+              setProducts(newProducts);
+            }
+
+            setDataLoading(false);
+          }
+        })
+        .catch((err) => {
+          if (err.response?.status !== 401) {
+            setDataLoading(false);
+            showServerErrMsg();
+          }
+        });
+      return () => {
+        isMounted = false;
+      };
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
 
   const handleDeleteProd = (data) => {
     setProducts([...products, selectedProds.find((prod) => prod.id === data)]);
@@ -198,23 +256,27 @@ const PackAdd = () => {
       title: 'Product',
       dataIndex: ['name', 'category', 'thumbnail'],
       key: 'name',
-      render: (_: any, data: { [x: string]: string | undefined }) => (
-        <Row gutter={10}>
-          <Col span={8}>
-            <Image src={data.thumbnail} height={80} width={80} />
-          </Col>
-          <Col>
-            <Space direction='vertical' size={5}>
-              <Button type='link' color='info'>
-                {data.name}
-              </Button>
-              <Text type='secondary' className='text-sm'>
-                {data.category}
-              </Text>
-            </Space>
-          </Col>
-        </Row>
-      ),
+      render: (_: any, data: { [x: string]: string | undefined }) => {
+        return (
+          <Row gutter={10}>
+            <Col span={8}>
+              <Image src={data.thumbnail} height={80} width={80} />
+            </Col>
+            <Col>
+              <Space direction='vertical' size={5}>
+                <Button type='link' color='info'>
+                  {data.name}
+                </Button>
+                <Text type='secondary' className='text-sm'>
+                  {prodCat.find((cat) => cat.value === data.category)?.label
+                    ? prodCat.find((cat) => cat.value === data.category)?.label
+                    : data.category}
+                </Text>
+              </Space>
+            </Col>
+          </Row>
+        );
+      },
     },
     {
       title: 'SKU',
@@ -270,7 +332,7 @@ const PackAdd = () => {
       layout='vertical'
       size='small'
       scrollToFirstError={{ behavior: 'smooth', block: 'center' }}
-      onFinish={handleAddPackage}
+      onFinish={handleEditPackage}
     >
       <Layout>
         {contextHolder}
@@ -320,12 +382,17 @@ const PackAdd = () => {
                   <UploadPicWall
                     maxCount={1}
                     onChange={(info) => {
-                      info.fileList[0]
-                        ? packForm.setFieldsValue({
-                            thumbnail: info.fileList[0].originFileObj,
-                          })
-                        : packForm.resetFields(['thumbnail']);
+                      if (info.fileList.length > 0) {
+                        setThumbnail(info.fileList.map((file) => file));
+                        packForm.setFieldsValue({
+                          thumbnail: info.fileList.map((file) => file),
+                        });
+                      } else {
+                        setThumbnail([]);
+                        packForm.setFieldsValue({ thumbnail: undefined });
+                      }
                     }}
+                    fileList={thumbnail}
                   />
                 </Form.Item>
                 <Form.Item
@@ -342,10 +409,9 @@ const PackAdd = () => {
                   <UploadPicWall
                     maxCount={8}
                     onChange={(info) => {
-                      packForm.setFieldsValue({
-                        image: info.fileList.map((file) => file.originFileObj),
-                      });
+                      setImageList(info.fileList.map((file) => file));
                     }}
+                    fileList={imageList}
                   />
                 </Form.Item>
                 <Form.Item
@@ -370,7 +436,20 @@ const PackAdd = () => {
                   <TextEditor placeholder='Please add the package description here.' />
                 </Form.Item>
                 <Form.Item label='Package Status' name='status'>
-                  <Checkbox>Hidden</Checkbox>
+                  <Checkbox
+                    checked={packStatus === 'hidden'}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        packForm.setFieldsValue({ status: 'hidden' });
+                        setPackStatus('hidden');
+                      } else {
+                        packForm.setFieldsValue({ status: 'active' });
+                        setPackStatus('active');
+                      }
+                    }}
+                  >
+                    Hidden
+                  </Checkbox>
                 </Form.Item>
               </Space>
             </MainCard>
@@ -672,7 +751,9 @@ const PackAdd = () => {
                   </Form.Item>
                   <Checkbox
                     checked={!hideEndTime}
-                    onChange={(e) => setHideEndTime(!e.target.checked)}
+                    onChange={(e) => {
+                      setHideEndTime(!e.target.checked);
+                    }}
                   >
                     Set End Time
                   </Checkbox>
@@ -696,6 +777,7 @@ const PackAdd = () => {
             <AffixAction
               offsetBottom={0}
               label='Package'
+              type='edit'
               loading={loading}
               disabled={dataLoading || loading}
             />
@@ -717,4 +799,4 @@ const PackAdd = () => {
   );
 };
 
-export default PackAdd;
+export default PackEdit;

@@ -1,9 +1,6 @@
-from ast import For
-import json
 import re
-from django import views
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.forms import ValidationError
+from django.db.models import Prefetch
 from django.http import QueryDict
 from rest_framework import viewsets
 from rest_framework import generics
@@ -17,11 +14,11 @@ from item.serializers import (
     ItemSerializer,
     PackagePrevSerializer,
     PackageSerializer,
+    PackageWriteSerializer,
     ProductPrevSerializer,
     ProductSerializer,
 )
 from urllib.parse import urlparse
-from collections import OrderedDict
 
 
 def validate_image(instance, request):
@@ -79,7 +76,7 @@ class ItemListView(generics.ListAPIView):
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all().prefetch_related("image")
+    queryset = Product.objects.all().prefetch_related("image").order_by("-last_update")
     serializer_class = ProductSerializer
 
     def partial_update(self, request, *args, **kwargs):
@@ -165,7 +162,9 @@ def prodBulkUpdView(request):
 
 
 class PackageViewSet(viewsets.ModelViewSet):
-    queryset = Package.objects.all()
+    queryset = Package.objects.all().prefetch_related(
+        "image", "pack_item", Prefetch("pack_item__prod")
+    ).order_by("-last_update")
     serializer_class = PackageSerializer
 
     def create(self, request, *args, **kwargs):
@@ -182,6 +181,7 @@ class PackageViewSet(viewsets.ModelViewSet):
         return super().create(update_request_data(request, data), *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):
+        print(request.data)
         data = validate_image(self.get_object(), request)
 
         product_list = []
@@ -197,9 +197,20 @@ class PackageViewSet(viewsets.ModelViewSet):
             update_request_data(request, data), *args, **kwargs
         )
 
+    def get_serializer_class(self):
+        if (
+            self.action == "create"
+            or self.action == "update"
+            or self.action == "partial_update"
+        ):
+            return PackageWriteSerializer
+        return PackageSerializer
+
 
 class PackagePrevView(generics.ListAPIView):
-    queryset = Package.objects.all().prefetch_related("image", "pack_item")
+    queryset = Package.objects.all().prefetch_related(
+        "image", "pack_item", Prefetch("pack_item__prod")
+    ).order_by("-last_update")
     serializer_class = PackagePrevSerializer
     filterset_class = PackageFilter
 
@@ -225,9 +236,8 @@ def packBulkUpdView(request):
                 "detail": "Please provide the product id as 'id' for each data."
             }
             return response
-
     package_list = list(Package.objects.select_related().filter(id__in=ids))
-    serializer = PackageSerializer(package_list, data=dataList, many=True, partial=True)
+    serializer = PackageWriteSerializer(package_list, data=dataList, many=True, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
 

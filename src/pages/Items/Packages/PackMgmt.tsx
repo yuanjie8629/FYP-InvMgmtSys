@@ -28,7 +28,11 @@ import {
 } from '@api/services/packageAPI';
 import { actionSuccessMsg, serverErrMsg } from '@utils/messageUtils';
 import { ActionModal } from '@components/Modal';
-import { getItemDetails, onItemSelectBtn, selectButtonsProps } from '../itemUtils';
+import {
+  getItemDetails,
+  onItemSelectBtn,
+  selectButtonsProps,
+} from '../itemUtils';
 import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
 import { moneyFormatter } from '@utils/numUtils';
 
@@ -228,17 +232,17 @@ const PackMgmt = () => {
           <Col xs={15} xl={17}>
             <Space direction='vertical' size={5}>
               <div className='text-button-wrapper'>
-                <Text strong className='text-button'>
+                <Text
+                  strong
+                  className='text-button'
+                  onClick={() => {
+                    navigate(`/package/${data.id}`);
+                  }}
+                >
                   {data.name}
                 </Text>
               </div>
-              <Text
-                type='secondary'
-                className='text-sm text-break'
-                onClick={() => {
-                  navigate(`/package/${data['id']}`);
-                }}
-              >
+              <Text type='secondary' className='text-sm text-break'>
                 {data.sku}
               </Text>
             </Space>
@@ -338,7 +342,7 @@ const PackMgmt = () => {
               type='link'
               color='info'
               onClick={() => {
-                navigate(`/product/${data.id}`);
+                navigate(`/package/${data.id}`);
               }}
             />
             <DeleteButton

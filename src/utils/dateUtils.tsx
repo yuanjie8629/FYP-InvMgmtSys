@@ -428,4 +428,4 @@ export const formatDt = (
 
 export const getCurUnixTm = () => moment().subtract(15, 'second').unix();
 
-export const getDtTm = (date) => moment(date).format('DD-MM-YYYY HH:mm:ss');
+export const getDtTm = (date:moment.Moment) => moment(date).format('DD-MM-YYYY HH:mm:ss');

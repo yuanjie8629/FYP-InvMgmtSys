@@ -21,8 +21,10 @@ django-heroku==0.3.1
 django-imagekit==4.1.0
 django-ipware==4.0.2
 django-pickling==1.0
+django-polymorphic==3.1.0
 django-rest-passwordreset==1.2.1
-django-simple-history==3.0.0
+django-rest-polymorphic==0.1.9
+django-reversion==5.0.0
 djangorestframework==3.13.1
 djangorestframework-simplejwt==5.0.0
 face-recognition-models==0.3.0
