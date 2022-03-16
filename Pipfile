@@ -9,7 +9,6 @@ asgiref = "==3.5.0"
 astroid = "==2.9.3"
 black = "==22.1.0"
 certifi = "==2021.10.8"
-click = "==8.0.4"
 cloudinary = "==1.29.0"
 colorama = "==0.4.4"
 distlib = "==0.3.4"
@@ -67,6 +66,8 @@ Django = "==4.0.2"
 Pillow = "==9.0.1"
 PyJWT = "==2.3.0"
 Rx = "==1.6.1"
+wheel = "*"
+setuptools = "*"
 
 [dev-packages]
 
