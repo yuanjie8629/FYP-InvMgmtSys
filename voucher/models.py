@@ -28,7 +28,7 @@ class Voucher(SoftDeleteModel):
         db_table = "voucher"
 
     def save(self, *args, **kwargs):
-        if self.total_amt <= 0 and self.status == "active":
+        if self.total_amt == 0 and self.status == "active":
             self.status = "oos"
 
         if self.total_amt > 0 and self.status == "oos":
