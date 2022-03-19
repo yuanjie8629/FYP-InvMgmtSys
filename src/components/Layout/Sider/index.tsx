@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Layout, Menu, Image } from 'antd';
 import { SiderProps as AntdSiderProps } from 'antd/lib/layout';
 import menuList from './siderMenuList';
-import Logo from '@assets/logo.webp';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { checkURL, findRouteLabel, findRoutePath } from '@utils/routingUtils';
 import classNames from 'classnames';
@@ -74,7 +73,7 @@ const Sider = ({ onCollapsed = () => null, ...props }: SiderProps) => {
             }}
           >
             <Image
-              src={Logo}
+              src='https://res.cloudinary.com/yuanjie/image/upload/v1645908976/logo_mvamgs.png'
               alt='Logo'
               preview={false}
               height={!collapsedSiderOpen ? 25 : 65}

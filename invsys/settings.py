@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt",
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     "django_filters",
     "django_pickling",
     "polymorphic",
+    "cloudinary",
     "reversion",
     "cacheops",
     "corsheaders",
@@ -72,9 +74,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -179,34 +181,37 @@ USE_I18N = True
 
 USE_TZ = False
 
-DATE_INPUT_FORMATS=[
-    '%d-%m-%Y',  # '25-10-2006'
-    '%Y-%m-%d',  # '2006-10-25'
-    '%m/%d/%Y',  # '10/25/2006'
-    '%m/%d/%y',  # '10/25/06'
-    '%b %d %Y',  # 'Oct 25 2006'
-    '%b %d, %Y',  # 'Oct 25, 2006'
-    '%d %b %Y',  # '25 Oct 2006'
-    '%d %b, %Y',  # '25 Oct, 2006'
-    '%B %d %Y',  # 'October 25 2006'
-    '%B %d, %Y',  # 'October 25, 2006'
-    '%d %B %Y',  # '25 October 2006'
-    '%d %B, %Y',  # '25 October, 2006'
+DATE_INPUT_FORMATS = [
+    "%d-%m-%Y",  # '25-10-2006'
+    "%Y-%m-%d",  # '2006-10-25'
+    "%m/%d/%Y",  # '10/25/2006'
+    "%m/%d/%y",  # '10/25/06'
+    "%b %d %Y",  # 'Oct 25 2006'
+    "%b %d, %Y",  # 'Oct 25, 2006'
+    "%d %b %Y",  # '25 Oct 2006'
+    "%d %b, %Y",  # '25 Oct, 2006'
+    "%B %d %Y",  # 'October 25 2006'
+    "%B %d, %Y",  # 'October 25, 2006'
+    "%d %B %Y",  # '25 October 2006'
+    "%d %B, %Y",  # '25 October, 2006'
 ]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "build"),
+    os.path.join(BASE_DIR, "build/static"),
+]
 STATIC_URL = "/static/"
-
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "build/static")]
-
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+WHITENOISE_ROOT = os.path.join(BASE_DIR, "build")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -233,7 +238,7 @@ LOGGING = {
 AUTH_USER_MODEL = "administrator.Admin"
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
@@ -318,8 +323,8 @@ MEDIA_URL = "/media/"
 # Email configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = "yuanjie8629@gmail.com"
-EMAIL_HOST_PASSWORD = "iyhugqtqypasckns"
+EMAIL_HOST_USER = "fyp.shrf@gmail.com"
+EMAIL_HOST_PASSWORD = "bzvhflfpcotzcouk"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = "default from email"

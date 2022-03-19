@@ -5,7 +5,6 @@ import Button from '@components/Button';
 import './Login.less';
 import Hashtag from '@assets/Login/Hashtag.svg';
 import Inventory from '@assets/Login/LoginBackground.webp';
-import Logo from '@assets/logo.webp';
 import { Helmet } from 'react-helmet';
 import { BoldTitle } from '@components/Title';
 import { loginAPI } from '@api/services/authAPI';
@@ -204,7 +203,7 @@ const Login = (_props) => {
               className='login-logo-wrapper'
             >
               <Image
-                src={Logo}
+                src='https://res.cloudinary.com/yuanjie/image/upload/v1645908976/logo_mvamgs.png'
                 alt='logo'
                 width='20%'
                 preview={false}

@@ -1,11 +1,11 @@
 from django.db import models
-from core.models import BaseModel
+from core.models import SoftDeleteModel
 from customer.models import CustAcc
 
 from item.models import Item
 
 # Create your models here.
-class Cart(BaseModel):
+class Cart(SoftDeleteModel):
     id = models.AutoField(primary_key=True)
     cust = models.ForeignKey(CustAcc, on_delete=models.CASCADE)
     items = models.ManyToManyField(Item, through='CartItem')
@@ -16,7 +16,7 @@ class Cart(BaseModel):
 
 class CartItem(models.Model):
     id = models.AutoField(primary_key=True)
-    quantity = models.IntegerField()
+    quantity = models.PositiveIntegerField()
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
 

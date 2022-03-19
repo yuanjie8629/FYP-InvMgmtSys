@@ -1,23 +1,43 @@
+import django
 from django.db import models
+
 # from address.models import Postcode
 
 from administrator.models import Admin
 
 
-
 # Create your models here.
 class CustAcc(models.Model):
     id = models.AutoField(primary_key=True)
-    username = models.CharField(unique=True, max_length=45)
+    email = models.CharField(unique=True, max_length=255)
     password = models.CharField(max_length=255)
-    status = models.CharField(max_length=20)
     cust_type = models.ForeignKey("CustType", on_delete=models.DO_NOTHING)
     pos_reg = models.ForeignKey(
         "CustPosReg", on_delete=models.DO_NOTHING, blank=True, null=True
     )
+    last_login = models.DateTimeField(blank=True, null=True, verbose_name="last login")
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Designates whether this user should be treated as active. Unselect this instead of deleting accounts.",
+        verbose_name="active",
+    )
+    is_superuser = models.BooleanField(
+        default=False,
+        help_text="Designates that this user has all permissions without explicitly assigning them.",
+        verbose_name="superuser status",
+    )
+    is_staff = models.BooleanField(
+        default=False,
+        help_text="Designates whether the user can log into this admin site.",
+        verbose_name="staff status",
+    )
+    date_joined = models.DateTimeField(
+        default=django.utils.timezone.now, verbose_name="date joined"
+    )
 
     class Meta:
         db_table = "cust_acc"
+  
 
 
 class CustPosDeclar(models.Model):
@@ -80,3 +100,4 @@ class CustType(models.Model):
 
     class Meta:
         db_table = "cust_type"
+

@@ -22,7 +22,7 @@ import AdminMgmt from '@pages/Admins/AdminMgmt';
 import AdminAdd from '@pages/Admins/AdminAdd';
 import Help from '@pages/Help/Help';
 import ShpFeeMgmt from '@pages/Shipments/ShptFeeMgmt';
-import NotFound from '@pages/Not Found/NotFound';
+import NotFound from '@pages/NotFound/NotFound';
 import ResetPass from '@pages/Login/ResetPass';
 import { SuccessResult } from '@pages/ResultFeedback';
 import ProdEdit from '@pages/Items/Products/ProdEdit';

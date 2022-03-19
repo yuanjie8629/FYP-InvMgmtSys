@@ -1,8 +1,6 @@
 from django.core.mail import EmailMultiAlternatives
 from django.dispatch import receiver
 from django.template.loader import render_to_string
-from django.urls import reverse
-from rest_framework import permissions
 from django_rest_passwordreset.signals import reset_password_token_created
 from administrator.models import Admin
 from rest_framework import generics
@@ -56,7 +54,7 @@ def password_reset_token_created(
         # message:
         email_plaintext_message,
         # from:
-        "yuanjie8629@gmail.com",
+        "fyp.shrf@gmail.com",
         # to:
         [reset_password_token.user.email],
     )

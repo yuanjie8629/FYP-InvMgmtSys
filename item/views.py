@@ -1,13 +1,17 @@
 import re
+import cloudinary.uploader
+import cloudinary
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Prefetch
 from django.http import QueryDict
+from rest_framework import serializers
 from rest_framework import viewsets
 from rest_framework import generics
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from core.utils import update_request_data
+from image.serializers import ImageSerializer
 from item.filters import PackageFilter, ProductFilter
 from item.models import Item, Package, Product
 from item.serializers import (
@@ -58,7 +62,10 @@ def validate_image(instance, request):
             to_be_deleted.add(ori.id)
 
     if to_be_deleted:
-        ori_images.filter(id__in=(to_be_deleted)).delete()
+        images = ori_images.filter(id__in=(to_be_deleted))
+        for img in images:
+            cloudinary.uploader.destroy(img.image.public_id, invalidate=True)
+        img.delete()
         print("Deleted Images")
         print(to_be_deleted)
 
@@ -71,6 +78,8 @@ def validate_image(instance, request):
 
 
 class ItemListView(generics.ListAPIView):
+    image = ImageSerializer(many=True, required=False)
+    thumbnail = serializers.ImageField()
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
 
@@ -162,9 +171,11 @@ def ProdBulkUpdView(request):
 
 
 class PackageViewSet(viewsets.ModelViewSet):
-    queryset = Package.objects.all().prefetch_related(
-        "image", "pack_item", Prefetch("pack_item__prod")
-    ).order_by("-last_update")
+    queryset = (
+        Package.objects.all()
+        .prefetch_related("image", "pack_item", Prefetch("pack_item__prod"))
+        .order_by("-last_update")
+    )
     serializer_class = PackageSerializer
 
     def create(self, request, *args, **kwargs):
@@ -208,9 +219,11 @@ class PackageViewSet(viewsets.ModelViewSet):
 
 
 class PackagePrevView(generics.ListAPIView):
-    queryset = Package.objects.all().prefetch_related(
-        "image", "pack_item", Prefetch("pack_item__prod")
-    ).order_by("-last_update")
+    queryset = (
+        Package.objects.all()
+        .prefetch_related("image", "pack_item", Prefetch("pack_item__prod"))
+        .order_by("-last_update")
+    )
     serializer_class = PackagePrevSerializer
     filterset_class = PackageFilter
 
@@ -237,7 +250,9 @@ def PackBulkUpdView(request):
             }
             return response
     package_list = list(Package.objects.select_related().filter(id__in=ids))
-    serializer = PackageWriteSerializer(package_list, data=dataList, many=True, partial=True)
+    serializer = PackageWriteSerializer(
+        package_list, data=dataList, many=True, partial=True
+    )
     serializer.is_valid(raise_exception=True)
     serializer.save()
 

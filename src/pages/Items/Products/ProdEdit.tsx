@@ -118,6 +118,13 @@ const ProdEdit = () => {
 
   const handleEditProduct = (values) => {
     let { profit, description, image, ...data } = values;
+    if (!values.sku) {
+      setErrMsg({
+        type: 'invalid_sku',
+        message: 'Please enter the SKU for the product.',
+      });
+      return;
+    }
     data.description = description.toHTML();
     let newImageList = imageList.map((img) =>
       'originFileObj' in img ? img.originFileObj : img.url
@@ -444,12 +451,6 @@ const ProdEdit = () => {
                     name='sku'
                     validateStatus={errMsg.type === 'invalid_sku' && 'error'}
                     help={errMsg.type === 'invalid_sku' && errMsg.message}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please enter the SKU for the product.',
-                      },
-                    ]}
                     style={{ width: '40%' }}
                   >
                     <Input
