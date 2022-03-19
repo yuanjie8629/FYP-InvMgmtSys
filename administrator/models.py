@@ -1,8 +1,5 @@
-from enum import unique
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-
-# Create your models here.
+from core.models import AuthModel
 
 GENDER_CHOICES = (
     ("M", "Male"),
@@ -10,7 +7,7 @@ GENDER_CHOICES = (
 )
 
 
-class Admin(AbstractUser):
+class Admin(AuthModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, blank=True, null=True)
     username = models.CharField(unique=True, max_length=45)

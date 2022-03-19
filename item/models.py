@@ -6,6 +6,7 @@ from core.models import PolySoftDeleteModel
 from image.models import Image
 from item.choices import ITEM_STATUS, ITEM_TYPE, PROD_CAT
 from uuid import uuid4
+from cloudinary.models import CloudinaryField
 
 
 def upload_to(instance, filename):
@@ -19,7 +20,8 @@ class Item(PolySoftDeleteModel, PolymorphicModel):
     type = models.CharField(max_length=20, choices=ITEM_TYPE)
     description = models.TextField()
     status = models.CharField(max_length=20, choices=ITEM_STATUS)
-    thumbnail = models.ImageField(upload_to=upload_to)
+    # thumbnail = models.ImageField(upload_to=upload_to)
+    thumbnail = CloudinaryField("image", width_field='700', height_field='700')
     image = models.ManyToManyField(
         Image,
         through="ImageItemLine",

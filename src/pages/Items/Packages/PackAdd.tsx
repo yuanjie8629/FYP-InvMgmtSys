@@ -99,7 +99,13 @@ const PackAdd = () => {
       return;
     }
     let { profit, description, ...data } = values;
-    console.log(values);
+    if (!values.sku) {
+      setErrMsg({
+        type: 'invalid_sku',
+        message: 'Please enter the SKU for the package.',
+      });
+      return;
+    }
     if (data.status === undefined) data.status = 'active';
     data.description = description.toHTML();
     data.avail_start_dt = getDt(data.avail_start_dt);
@@ -463,22 +469,7 @@ const PackAdd = () => {
                     name='sku'
                     validateStatus={errMsg.type === 'invalid_sku' && 'error'}
                     help={errMsg.type === 'invalid_sku' && errMsg.message}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please enter the SKU for the product.',
-                      },
-                      ({ getFieldValue }) => ({
-                        validator(_, value) {
-                          if (!value) {
-                            return Promise.reject(
-                              'Please enter the SKU for the product.'
-                            );
-                          }
-                          return Promise.resolve();
-                        },
-                      }),
-                    ]}
+                    
                     style={{ width: '40%' }}
                   >
                     <Input

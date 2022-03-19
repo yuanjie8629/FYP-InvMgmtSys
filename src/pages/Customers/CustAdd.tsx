@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout';
-import UploadPicWall from '@components/Upload/UploadPicWall/UploadPicWall';
 import AffixAction from '@components/Affix/AffixAction';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import {
@@ -17,7 +16,6 @@ import {
   Typography,
 } from 'antd';
 import { MaskedInput } from 'antd-mask-input';
-import profilePic from '@assets/avatar.png';
 import { getStates, getCities, getPostcodes } from 'malaysia-postcodes';
 import { sortByOrder } from '@utils/arrayUtils';
 import {
@@ -40,15 +38,6 @@ const CustAdd = () => {
   const [courtFlag, setCourtFlag] = useState(false);
   const [criminalFlag, setCriminalFlag] = useState(false);
   const [relativeFlag, setRelativeFlag] = useState(false);
-
-  const [fileList, setFileList]: any = useState([
-    {
-      uid: '-1',
-      name: 'image.png',
-      status: 'done',
-      url: profilePic,
-    },
-  ]);
 
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
@@ -93,25 +82,6 @@ const CustAdd = () => {
                   />
                 </Form.Item>
 
-                <Form.Item
-                  label='Customer Photo'
-                  name='custImg'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please upload the customer photo.',
-                    },
-                  ]}
-                >
-                  <UploadPicWall
-                    fileList={fileList}
-                    onChange={(info) => {
-                      setFileList([...info.fileList]);
-                    }}
-                    maxCount={1}
-                    accept='.jpg'
-                  />
-                </Form.Item>
                 <Form.Item
                   label='Gender'
                   name='gender'

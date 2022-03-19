@@ -63,9 +63,11 @@ class ProductListSerializer(serializers.ListSerializer):
         return ret
 
 
+
 class ProductSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     image = ImageSerializer(many=True, required=False)
+    thumbnail = serializers.ImageField()
 
     class Meta:
         model = Product
@@ -80,11 +82,14 @@ class ProductSerializer(serializers.ModelSerializer):
             "sku": {"validators": []},
         }
         list_serializer_class = ProductListSerializer
+    
 
     def create(self, validated_data):
+        print(validated_data)
         check_sku(validated_data.get("sku"))
         images = validated_data.pop("image", None)
         product = Product.objects.create(**validated_data)
+       
         if images:
             for image_data in images:
                 image = Image.objects.create(**image_data)
@@ -111,6 +116,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class ProductPrevSerializer(serializers.ModelSerializer):
     category = ChoiceField(choices=PROD_CAT)
+    thumbnail = serializers.ImageField()
 
     class Meta:
         model = Product
@@ -146,6 +152,7 @@ class PackageItemSerializer(serializers.ModelSerializer):
 
 
 class PackageSerializer(serializers.ModelSerializer):
+    thumbnail = serializers.ImageField()
     image = ImageSerializer(many=True, required=False)
     product = PackageItemSerializer(many=True, source="pack_item", read_only=True)
     avail_start_dt = serializers.DateField(
@@ -187,6 +194,7 @@ class PackageWriteSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     image = ImageSerializer(many=True, required=False)
     product = serializers.ListField(child=serializers.ListField(), write_only=True)
+    thumbnail = serializers.ImageField()
     avail_start_dt = serializers.DateField(
         input_formats=["%d-%m-%Y"], format="%d-%m-%Y"
     )
@@ -300,6 +308,7 @@ class PackageWriteSerializer(serializers.ModelSerializer):
 
 class PackagePrevSerializer(serializers.ModelSerializer):
     product = PackageItemSerializer(many=True, source="pack_item")
+    thumbnail = serializers.ImageField()
 
     class Meta:
         model = Package

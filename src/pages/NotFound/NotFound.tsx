@@ -3,7 +3,6 @@ import Button from '@components/Button';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import Img404 from '@assets/404.svg';
-import Logo from '@assets/logo.webp';
 import './NotFound.less';
 import { BoldTitle } from '@components/Title';
 
@@ -18,7 +17,7 @@ const NotFound = () => {
         <Row justify='center' align='middle' className='full-height'>
           <Col className='not-found-logo-wrapper'>
             <Image
-              src={Logo}
+              src='https://res.cloudinary.com/yuanjie/image/upload/v1645908976/logo_mvamgs.png'
               alt='Logo'
               preview={false}
               height='65px'
