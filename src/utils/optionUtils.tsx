@@ -50,8 +50,9 @@ export const custStatList = [
 export const voucherStatList = [
   { status: 'active', label: 'Active', color: 'success' },
   { status: 'scheduled', label: 'Scheduled', color: 'processing' },
-  { status: 'expired', label: 'Expired', color: 'error' },
+  { status: 'expired', label: 'Expired', color: 'warning' },
   { status: 'hidden', label: 'Hidden', color: 'default' },
+  { status: 'oos', label: 'Out of Stock', color: 'error' },
 ];
 
 export const genderCat = [

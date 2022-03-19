@@ -300,7 +300,7 @@ const VoucherMgmt = () => {
                 <li>Capped at {moneyFormatter(parseFloat(data.max_disc))}</li>
               )}
               {!(
-                data.usage_limit === null || data.usage_limit === undefined
+                data.usage_limit === null || data.usage_limit === undefined || data.usage_limit === -1
               ) && <li>Limit for {data.usage_limit} transactions per user</li>}
             </ul>
           </>
@@ -335,8 +335,8 @@ const VoucherMgmt = () => {
       sorter: true,
       defaultSortOrder: getSortOrder('total_amt'),
       width: 100,
-      render: (availability: string) =>
-        availability === '-1' ? (
+      render: (availability: number) =>
+        availability === -1 ? (
           <Tooltip title='Unlimited'>
             <MdAllInclusive />
           </Tooltip>
