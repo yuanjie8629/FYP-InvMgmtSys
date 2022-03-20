@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Affix, AffixProps, Card, Col, Row } from 'antd';
 import Button from '@components/Button';
+import { useNavigate } from 'react-router-dom';
 
 export interface AffixAddProps extends AffixProps {
   type?: 'add' | 'edit';
@@ -17,6 +18,7 @@ const AffixAction = ({
   ...props
 }: Omit<AffixAddProps, 'children'>) => {
   const [showCard, setShowCard] = useState(false);
+  const navigate = useNavigate();
   return (
     <Affix
       onChange={(affixed) =>
@@ -40,7 +42,13 @@ const AffixAction = ({
       >
         <Row justify='end' gutter={20}>
           <Col>
-            <Button size='middle' disabled={loading || disabled}>
+            <Button
+              size='middle'
+              disabled={loading || disabled}
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
               Cancel
             </Button>
           </Col>
