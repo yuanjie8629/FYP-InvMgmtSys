@@ -1,4 +1,4 @@
 GENDER_CHOICES = (
-    ("M", "Male"),
-    ("F", "Female"),
+    ("m", "Male"),
+    ("f", "Female"),
 )

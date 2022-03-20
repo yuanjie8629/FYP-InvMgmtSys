@@ -1,11 +1,28 @@
 from django.db import models
+from core.models import SoftDeleteModel
 from customer.models import Cust
-from postcode.models import Postcode
+from postgres_copy import CopyManager
 
-# Create your models here.
+class State(models.Model):
+    objects = CopyManager()
+    code = models.CharField(primary_key=True, max_length=3)
+    name = models.CharField(max_length=45)
+
+    class Meta:
+        db_table = "state"
+
+class Postcode(models.Model):
+    objects = CopyManager()
+    id = models.AutoField(primary_key=True)
+    postcode = models.CharField(max_length=5)
+    city= models.CharField(max_length=50)
+    state = models.ForeignKey(State, on_delete=models.DO_NOTHING)
+
+    class Meta:
+        db_table = "postcode"
 
 
-class ShippingAddress(models.Model):
+class ShippingAddress(SoftDeleteModel):
     id = models.AutoField(primary_key=True)
     address = models.CharField(max_length=200)
     contact_name = models.CharField(max_length=100)

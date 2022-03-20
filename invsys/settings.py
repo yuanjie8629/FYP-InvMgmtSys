@@ -65,7 +65,6 @@ INSTALLED_APPS = [
     "item",
     "order",
     "payment",
-    "postcode",
     "review",
     "shipment",
     "voucher",
@@ -234,7 +233,7 @@ LOGGING = {
     },
 }
 
-AUTH_USER_MODEL = "core.Users"
+AUTH_USER_MODEL = "administrator.Admin"
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
