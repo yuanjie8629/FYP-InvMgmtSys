@@ -166,8 +166,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTHENTICATION_BACKENDS = [
     # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
     "axes.backends.AxesBackend",
-    # Django ModelBackend is the default authentication backend.
-    "django.contrib.auth.backends.ModelBackend",
+    "core.auth.EmailOrUsernameModelBackend",
 ]
 
 # Internationalization
@@ -235,7 +234,7 @@ LOGGING = {
     },
 }
 
-AUTH_USER_MODEL = "administrator.Admin"
+AUTH_USER_MODEL = "core.Users"
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],

@@ -115,14 +115,14 @@ const Login = (_props) => {
                       rules={[
                         {
                           required: true,
-                          message: 'Please enter your Username!',
+                          message: 'Please enter your username or email.',
                           whitespace: true,
                         },
                       ]}
                     >
                       <Input
                         size='large'
-                        placeholder='Username'
+                        placeholder='Username / Email'
                         className='login-input'
                       />
                     </Form.Item>
@@ -131,7 +131,7 @@ const Login = (_props) => {
                       rules={[
                         {
                           required: true,
-                          message: 'Please enter your Password!',
+                          message: 'Please enter your password.',
                         },
                       ]}
                     >

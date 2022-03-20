@@ -1,14 +1,14 @@
 from django.db import models
 from core.models import SoftDeleteModel
-from customer.models import CustAcc
+from customer.models import Cust
 
 from item.models import Item
 
 # Create your models here.
 class Cart(SoftDeleteModel):
     id = models.AutoField(primary_key=True)
-    cust = models.ForeignKey(CustAcc, on_delete=models.CASCADE)
-    items = models.ManyToManyField(Item, through='CartItem')
+    cust = models.ForeignKey(Cust, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Item, through="CartItem")
 
     class Meta:
         db_table = "cart"

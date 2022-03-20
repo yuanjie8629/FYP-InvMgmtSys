@@ -33,6 +33,7 @@ const ProdAdd = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const { Link } = Anchor;
   const [price, setPrice] = useState<number>();
+  const [specialPrice, setSpecialPrice] = useState<number>();
   const [costPerUnit, setCostPerUnit] = useState<number>();
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
@@ -268,7 +269,7 @@ const ProdAdd = () => {
                           placeholder='Input'
                           onChange={(value) => {
                             setPrice(value);
-                            if (costPerUnit) {
+                            if (costPerUnit && !specialPrice) {
                               prodForm.setFieldsValue({
                                 profit: (value - costPerUnit).toFixed(2),
                               });
@@ -290,6 +291,18 @@ const ProdAdd = () => {
                           precision={2}
                           min={0}
                           placeholder='Input'
+                          onChange={(value) => {
+                            setSpecialPrice(value);
+                            if (costPerUnit && value) {
+                              prodForm.setFieldsValue({
+                                profit: (value - costPerUnit).toFixed(2),
+                              });
+                            } else {
+                              prodForm.setFieldsValue({
+                                profit: (price - costPerUnit).toFixed(2),
+                              });
+                            }
+                          }}
                         />
                       </Form.Item>
                     </Col>
@@ -318,7 +331,11 @@ const ProdAdd = () => {
                           placeholder='Input'
                           onChange={(value) => {
                             setCostPerUnit(value);
-                            if (price) {
+                            if (specialPrice) {
+                              prodForm.setFieldsValue({
+                                profit: (specialPrice - value).toFixed(2),
+                              });
+                            } else if (price) {
                               prodForm.setFieldsValue({
                                 profit: (price - value).toFixed(2),
                               });

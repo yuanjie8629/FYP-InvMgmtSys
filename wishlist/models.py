@@ -1,6 +1,6 @@
 from django.db import models
 from core.models import BaseModel
-from customer.models import CustAcc
+from customer.models import Cust
 
 from item.models import Item
 
@@ -8,8 +8,9 @@ from item.models import Item
 class Wishlist(BaseModel):
     id = models.IntegerField(primary_key=True)
     created_at = models.DateTimeField(auto_created=True)
-    cust = models.ForeignKey(CustAcc, on_delete=models.CASCADE)
-    item = models.ManyToManyField(Item, through='WishlistItem')
+    cust = models.ForeignKey(Cust, on_delete=models.CASCADE)
+    item = models.ManyToManyField(Item, through="WishlistItem")
+
     class Meta:
         db_table = "wishlist"
 
