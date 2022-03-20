@@ -1,7 +1,9 @@
 from django.db import models
+from core.choices import GENDER_CHOICES
 from core.managers import PolySoftDeleteManager, SoftDeleteManager
 from cacheops import invalidate_model
 from django.contrib.auth.models import AbstractUser
+
 
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -10,11 +12,28 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
-class AuthModel(AbstractUser):
+
+class Users(AbstractUser):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    email = models.CharField(unique=True, max_length=255)
+    password = models.CharField(max_length=255)
+    username = models.CharField(unique=True, max_length=45)
+    birthdate = models.DateField(blank=True, null=True)
+    gender = models.CharField(
+        max_length=1, blank=True, null=True, choices=GENDER_CHOICES
+    )
+
     first_name = None
     last_name = None
+
+    USERNAME_FIELD = "username"
+    EMAIL_FIELD = "email"
+    REQUIRED_FIELDS = []
+
     class Meta:
-        abstract=True
+        db_table = "users"
+
 
 class SoftDeleteModel(BaseModel):
     is_deleted = models.BooleanField(null=False, default=False)

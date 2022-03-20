@@ -12,7 +12,7 @@ class AdminList(generics.ListCreateAPIView):
     serializer_class = AdminSerializer
 
 
-class AdminDetails(generics.RetrieveDestroyAPIView):
+class AdminDetails(generics.RetrieveAPIView):
     queryset = Admin.objects.all()
     serializer_class = AdminSerializer
     lookup_field = "id"

@@ -1,6 +1,6 @@
 from enum import auto
 from django.db import models
-from customer.models import CustAcc
+from customer.models import Cust
 from item.models import Item
 from voucher.models import Voucher
 
@@ -11,11 +11,11 @@ class Order(models.Model):
     total_amt = models.DecimalField(max_digits=10, decimal_places=2)
     ship_type = models.CharField(max_length=20)
     status = models.CharField(max_length=20)
-    cust = models.ForeignKey(CustAcc, on_delete=models.DO_NOTHING)
+    cust = models.ForeignKey(Cust, on_delete=models.DO_NOTHING)
     voucher = models.ForeignKey(
         Voucher, on_delete=models.DO_NOTHING, blank=True, null=True
     )
-    item = models.ManyToManyField(Item, through='OrderLine')
+    item = models.ManyToManyField(Item, through="OrderLine")
 
     class Meta:
         db_table = "order"

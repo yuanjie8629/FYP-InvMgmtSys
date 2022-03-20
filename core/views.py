@@ -19,6 +19,8 @@ from rest_framework_simplejwt.serializers import (
 from rest_framework_simplejwt.exceptions import InvalidToken
 import jwt
 
+from core.models import Users
+
 
 def index(request):
     return render(request, "index.html")
@@ -30,7 +32,7 @@ class CookieTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         token["name"] = user.name
         token["role"] = "Super Admin" if user.is_superuser else "Admin"
-        token['gender']= user.gender
+        token["gender"] = user.gender
 
         return token
 
