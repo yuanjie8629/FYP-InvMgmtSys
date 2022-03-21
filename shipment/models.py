@@ -1,5 +1,5 @@
 from django.db import models
-from address.models import ShippingAddress
+from address.models import Address
 from core.models import PolySoftDeleteModel, SoftDeleteModel
 from polymorphic.models import PolymorphicModel
 from order.models import Order
@@ -16,7 +16,7 @@ class OrderShipment(PolySoftDeleteModel, PolymorphicModel):
 
 class Shipment(OrderShipment):
     track_num = models.CharField(max_length=50)
-    address = models.ForeignKey(ShippingAddress, on_delete=models.DO_NOTHING)
+    address = models.ForeignKey(Address, on_delete=models.DO_NOTHING)
     ship_fee = models.ForeignKey("ShippingFee", on_delete=models.DO_NOTHING)
 
     class Meta:

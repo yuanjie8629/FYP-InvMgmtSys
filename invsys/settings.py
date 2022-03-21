@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "payment",
     "review",
     "shipment",
+    "postcode",
     "voucher",
     "wishlist",
     "django_cleanup.apps.CleanupConfig",

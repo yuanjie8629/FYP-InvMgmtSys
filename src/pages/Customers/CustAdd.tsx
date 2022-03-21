@@ -23,7 +23,6 @@ import {
   custStatusCat,
   genderCat,
   maritalStatCat,
-  ynOptions,
 } from '@utils/optionUtils';
 
 const CustAdd = () => {
@@ -35,9 +34,6 @@ const CustAdd = () => {
 
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
-  const [courtFlag, setCourtFlag] = useState(false);
-  const [criminalFlag, setCriminalFlag] = useState(false);
-  const [relativeFlag, setRelativeFlag] = useState(false);
 
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
@@ -49,7 +45,6 @@ const CustAdd = () => {
     { link: 'address', title: 'Address' },
     { link: 'employment', title: 'Employment Details' },
     { link: 'position', title: 'Position' },
-    { link: 'declaration', title: 'Declaration Form' },
   ];
 
   useEffect(() => {
@@ -158,7 +153,6 @@ const CustAdd = () => {
                   <Divider />
                   <Space direction='vertical' size={15} className='full-width'>
                     <Title level={5}>Emergency Contact</Title>
-
                     <Form.Item
                       label='Name'
                       name='emerg'
@@ -221,7 +215,6 @@ const CustAdd = () => {
                 <Title level={4} id='address'>
                   Address
                 </Title>
-
                 <Form.Item
                   label='State'
                   name='state'
@@ -375,128 +368,6 @@ const CustAdd = () => {
                   ]}
                 >
                   <Radio.Group options={custStatusCat} />
-                </Form.Item>
-              </Space>
-            </MainCard>
-            <MainCard>
-              <Space direction='vertical' size={20} className='full-width'>
-                <Title level={4} id='declaration'>
-                  Declaration Form
-                </Title>
-                <Form.Item
-                  label='Has the customer been declared bankrupt? '
-                  name='bankrupt'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please answer the above question.',
-                    },
-                  ]}
-                >
-                  <Radio.Group options={ynOptions} />
-                </Form.Item>
-
-                <Form.Item
-                  label='Has the customer been charged in court?'
-                  name='court'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please answer the above question.',
-                    },
-                  ]}
-                >
-                  <Radio.Group
-                    options={ynOptions}
-                    onChange={(e: any) => setCourtFlag(e.target.value)}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label='Please include any guilty pleas or convictions based on the plea bargain or pretrial diversion program:'
-                  name='courtDesc'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please answer the above question.',
-                    },
-                  ]}
-                  style={{ marginLeft: 10, width: '60%' }}
-                  hidden={!courtFlag}
-                >
-                  <TextArea
-                    rows={4}
-                    showCount
-                    maxLength={128}
-                    autoSize={{ minRows: 4, maxRows: 12 }}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label='Do the customer has any criminal record or any pending criminal case?'
-                  name='criminal'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please answer the above question.',
-                    },
-                  ]}
-                >
-                  <Radio.Group
-                    options={ynOptions}
-                    onChange={(e: any) => setCriminalFlag(e.target.value)}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label='Please explain:'
-                  name='criminalDesc'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please answer the above question.',
-                    },
-                  ]}
-                  style={{ marginLeft: 10, width: '60%' }}
-                  hidden={!criminalFlag}
-                >
-                  <TextArea
-                    rows={4}
-                    showCount
-                    maxLength={128}
-                    autoSize={{ minRows: 4, maxRows: 12 }}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label='Are any relatives or family members of the customer currently employed as the agent or drop-shipper in Sharifah Food?'
-                  name='relative'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please answer the above question.',
-                    },
-                  ]}
-                >
-                  <Radio.Group
-                    options={ynOptions}
-                    onChange={(e: any) => setRelativeFlag(e.target.value)}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label='Please specify the name(s) of relative(s) or family member(s):'
-                  name='relativeDesc'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please answer the above question.',
-                    },
-                  ]}
-                  style={{ marginLeft: 10, width: '60%' }}
-                  hidden={!relativeFlag}
-                >
-                  <TextArea
-                    rows={4}
-                    showCount
-                    maxLength={128}
-                    autoSize={{ minRows: 4, maxRows: 12 }}
-                  />
                 </Form.Item>
               </Space>
             </MainCard>
