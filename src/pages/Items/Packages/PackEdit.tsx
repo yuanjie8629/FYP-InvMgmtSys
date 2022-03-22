@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout';
 import UploadPicWall from '@components/Upload/UploadPicWall/UploadPicWall';
@@ -14,7 +14,6 @@ import {
   Image,
   Input,
   InputNumber,
-  message,
   Row,
   Space,
   Typography,
@@ -35,11 +34,12 @@ import { prodCat } from '@utils/optionUtils';
 import moment from 'moment';
 import { productPrevAllAPI } from '@api/services/productAPI';
 import FormSpin from '@components/Spin';
+import { MessageContext } from '@contexts/MessageContext';
 
 const PackEdit = () => {
   const { Text, Title, Paragraph } = Typography;
   const [packForm] = Form.useForm();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = useContext(MessageContext);
   const { id } = useParams();
   const { Link } = Anchor;
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
@@ -80,12 +80,12 @@ const PackEdit = () => {
   const [endTime, setEndTime] = useState<moment.Moment>();
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => message.destroy('serverErr'), 3000);
+    setTimeout(() => messageApi.destroy('serverErr'), 3000);
   };
 
   const showErrMsg = (errMsg?: string) => {
     messageApi.open({ key: 'err', type: 'error', content: errMsg });
-    setTimeout(() => message.destroy('err'), 3000);
+    setTimeout(() => messageApi.destroy('err'), 3000);
   };
 
   const handleEditPackage = (values) => {
@@ -342,7 +342,6 @@ const PackEdit = () => {
       onFinish={handleEditPackage}
     >
       <Layout>
-        {contextHolder}
         <FormSpin spinning={dataLoading || loading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
@@ -549,7 +548,6 @@ const PackEdit = () => {
                     name='sku'
                     validateStatus={errMsg.type === 'invalid_sku' && 'error'}
                     help={errMsg.type === 'invalid_sku' && errMsg.message}
-                   
                     style={{ width: '40%' }}
                   >
                     <Input

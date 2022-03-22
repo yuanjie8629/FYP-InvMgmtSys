@@ -3,10 +3,10 @@ import Button from '@components/Button';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
-import { Row, Space, Col, Typography, Image, message } from 'antd';
+import { Row, Space, Col, Typography, Image } from 'antd';
 import InformativeTable from '@components/Table/InformativeTable';
 import prodTabList from './prodTabList';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
@@ -22,13 +22,14 @@ import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
 import { getItemInvDetails, onInvSelectBtn } from '../itemUtils';
 import InvStockInput from '@components/Input/InvStockInput';
 import { actionSuccessMsg, serverErrMsg } from '@utils/messageUtils';
+import { MessageContext } from '@contexts/MessageContext';
 
 const ProdInv = () => {
   const { Text } = Typography;
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = useContext(MessageContext);
   const [list, setList] = useState([]);
   const [recordCount, setRecordCount] = useState<number>();
   const [selected, setSelected] = useState([]);
@@ -71,12 +72,12 @@ const ProdInv = () => {
 
   const showUpdSuccessMsg = (updCount?: number) => {
     messageApi.open(actionSuccessMsg('Product', 'update', updCount));
-    setTimeout(() => message.destroy('updSuccess'), 3000);
+    setTimeout(() => messageApi.destroy('updSuccess'), 3000);
   };
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => message.destroy('serverErr'), 3000);
+    setTimeout(() => messageApi.destroy('serverErr'), 3000);
   };
 
   const bulkUpdBtn = (props: any) => (
@@ -222,7 +223,6 @@ const ProdInv = () => {
   ];
   return (
     <Layout>
-      {contextHolder}
       <MainCardContainer className='prod-inv'>
         <MainCard
           tabList={prodTabList}

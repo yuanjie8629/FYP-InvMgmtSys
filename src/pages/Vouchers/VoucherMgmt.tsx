@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
-import { Row, Space, Col, Typography, message } from 'antd';
+import { Row, Space, Col, Typography } from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
@@ -34,13 +34,14 @@ import voucherTabList from './voucherTabList';
 import { actionSuccessMsg, serverErrMsg } from '@utils/messageUtils';
 import { ActionModal } from '@components/Modal';
 import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
+import { MessageContext } from '@contexts/MessageContext';
 
 const VoucherMgmt = () => {
   const { Text } = Typography;
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = useContext(MessageContext);
   const [list, setList] = useState([]);
   const [recordCount, setRecordCount] = useState<number>();
   const [selected, setSelected] = useState([]);
@@ -86,12 +87,12 @@ const VoucherMgmt = () => {
     messageApi.open(
       actionSuccessMsg('Product', action, isMulti ? selected.length : 1)
     );
-    setTimeout(() => message.destroy(action), 3000);
+    setTimeout(() => messageApi.destroy(action), 3000);
   };
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => message.destroy('serverErr'), 3000);
+    setTimeout(() => messageApi.destroy('serverErr'), 3000);
   };
 
   const activateBtn = (props: any) => (
@@ -300,7 +301,9 @@ const VoucherMgmt = () => {
                 <li>Capped at {moneyFormatter(parseFloat(data.max_disc))}</li>
               )}
               {!(
-                data.usage_limit === null || data.usage_limit === undefined || data.usage_limit === -1
+                data.usage_limit === null ||
+                data.usage_limit === undefined ||
+                data.usage_limit === -1
               ) && <li>Limit for {data.usage_limit} transactions per user</li>}
             </ul>
           </>
@@ -438,7 +441,6 @@ const VoucherMgmt = () => {
 
   return (
     <Layout>
-      {contextHolder}
       <MainCardContainer className='voucher-mgmt'>
         <MainCard
           tabList={voucherTabList}

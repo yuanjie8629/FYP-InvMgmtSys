@@ -1,4 +1,4 @@
-import React, { useEffect, useState, lazy, Suspense } from 'react';
+import React, { useEffect, useState, lazy, Suspense, useContext } from 'react';
 import ColorCard from '@components/Card/ColorCard';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import DropdownDate from '@components/Input/DropdownDate';
@@ -19,6 +19,7 @@ import topProduct from './topProducts';
 import { prodCat } from '@utils/optionUtils';
 import Popover from '@components/Popover';
 import { BoldTitle } from '@components/Title';
+import { MessageContext } from '@contexts/MessageContext';
 
 const LineChart = lazy(() => import('@components/Chart/LineChart'));
 const CarouselArrow = lazy(() => import('@components/Carousel/CarouselArrow'));
@@ -93,7 +94,7 @@ const BusinessStatistics = () => {
   };
 
   const KeyMetricsDashboard = (props) => {
-    const [messageApi, contextHolder] = message.useMessage();
+    const [messageApi] = useContext(MessageContext);
 
     const [keyMetricsDtInfo, setKeyMetricsDtInfo] = useState({
       date: getDt(),
@@ -125,7 +126,7 @@ const BusinessStatistics = () => {
             </span>
           ),
         });
-        setTimeout(() => message.destroy('minSelectedMetrics'), 2000);
+        setTimeout(() => messageApi.destroy('minSelectedMetrics'), 2000);
         return;
       }
 
@@ -144,7 +145,7 @@ const BusinessStatistics = () => {
           ),
         });
 
-        setTimeout(() => message.destroy('maxSelectedMetrics'), 2000);
+        setTimeout(() => messageApi.destroy('maxSelectedMetrics'), 2000);
 
         return;
       }
@@ -223,7 +224,6 @@ const BusinessStatistics = () => {
 
     return (
       <DashboardContainer>
-        {contextHolder}
         <DropdownDate
           onChange={(dateInfo) => {
             setKeyMetricsDtInfo(dateInfo);
