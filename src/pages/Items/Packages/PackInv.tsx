@@ -72,12 +72,12 @@ const PackInv = () => {
 
   const showUpdSuccessMsg = (updCount?: number) => {
     messageApi.open(actionSuccessMsg('Package', 'update', updCount));
-    setTimeout(() => messageApi.destroy('update'), 3000);
+  
   };
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy('serverErr'), 3000);
+
   };
 
   const bulkUpdBtn = (props: any) => (

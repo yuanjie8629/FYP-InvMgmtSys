@@ -6,37 +6,37 @@ const toDoList: {
   {
     label: 'Pending Orders',
     quantity: 5,
-    link: 'orderPend',
+    link: '/order/management?status=toShip',
   },
   {
     label: 'Unpaid Orders',
     quantity: 3,
-    link: 'orderUnpaid',
+    link: '/order/management?status=unpaid',
   },
   {
-    label: 'Pending Return/Refund',
+    label: 'Pending Cancellation',
     quantity: 0,
-    link: 'orderRefund',
+    link: '/order/management?status=cancel',
   },
   {
     label: 'Out-of-Stock Products',
     quantity: 0,
-    link: 'prodMgmt',
+    link: '/product/management?status=oos',
   },
   {
     label: 'Out-of-Stock Packages',
     quantity: 0,
-    link: 'packMgmt',
+    link: '/package/management?status=oos',
   },
   {
     label: 'Pending Agent Registration',
     quantity: 3,
-    link: 'custReg',
+    link: 'customer/registrations',
   },
   {
     label: 'Pending Dropshipper Registration',
     quantity: 1,
-    link: 'custReg',
+    link: 'customer/registrations',
   },
 ];
 

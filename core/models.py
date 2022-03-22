@@ -23,6 +23,7 @@ class Users(AbstractUser):
     gender = models.CharField(
         max_length=1, blank=True, null=True, choices=GENDER_CHOICES
     )
+    last_update = models.DateTimeField(auto_now=True)
 
     first_name = None
     last_name = None

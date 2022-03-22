@@ -4,7 +4,10 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 import ActivateModal from '../ActionModal/ActivateModal';
 import DeleteModal from '../ActionModal/DeleteModal';
 import HideModal from '../ActionModal/HideModal';
+import AcceptModal from './AcceptModal';
 import BulkUpdateModal from './BulkUpdateModal';
+import RejectModal from './RejectModal';
+import SuspendModal from './SuspendModal';
 
 export type ActionModalPayload = {
   onOk?: (data?) => void;
@@ -16,9 +19,19 @@ export const ActionModalComponent = {
   hide: HideModal,
   activate: ActivateModal,
   bulkUpd: BulkUpdateModal,
+  suspend: SuspendModal,
+  accept: AcceptModal,
+  reject: RejectModal,
 };
 
-export type ActionModalType = 'activate' | 'delete' | 'hide' | 'bulkUpd';
+export type ActionModalType =
+  | 'activate'
+  | 'delete'
+  | 'hide'
+  | 'bulkUpd'
+  | 'suspend'
+  | 'accept'
+  | 'reject';
 
 export interface ActionModalContentProps {
   recordType?: string;

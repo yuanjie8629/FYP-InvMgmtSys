@@ -6,7 +6,7 @@ import SelectWithLabel from '@components/Input/SelectWithLabel';
 import { custStatusCat } from '@utils/optionUtils';
 import { Button, Col, Row, Space } from 'antd';
 
-const FilterInputs = () => {
+const CustMgmtFilterInputs = () => {
   const orderInputSelect: {
     defaultVal: string;
     options: {
@@ -14,10 +14,11 @@ const FilterInputs = () => {
       label: string;
     }[];
   } = {
-    defaultVal: 'custID',
+    defaultVal: 'id',
     options: [
-      { value: 'custID', label: 'Customer ID' },
-      { value: 'custNm', label: 'Customer Name' },
+      { value: 'id', label: 'Customer ID' },
+      { value: 'name', label: 'Customer Name' },
+      { value: 'email', label: 'Customer Email' },
     ],
   };
 
@@ -46,13 +47,10 @@ const FilterInputs = () => {
 
         <FilterInputCol>
           <DateRangePickerWithLabel
-            label='Birthdate'
+            label='Joined Date'
+            textSpan={6}
             justify='start'
-            textSpan={7}
           />
-        </FilterInputCol>
-        <FilterInputCol>
-          <DateRangePickerWithLabel label='Registration Date' textSpan={7} />
         </FilterInputCol>
         <FilterInputCol>
           <InputNumberRange
@@ -62,12 +60,15 @@ const FilterInputs = () => {
             prefixWidth={60}
             min={0}
             precision={2}
-            justify='start'
             textSpan={7}
           />
         </FilterInputCol>
         <FilterInputCol>
-          <DateRangePickerWithLabel label='Last Order Date' textSpan={7} />
+          <DateRangePickerWithLabel
+            label='Last Order Date'
+            textSpan={6}
+            justify='start'
+          />
         </FilterInputCol>
       </Row>
       <Row gutter={20}>
@@ -82,4 +83,4 @@ const FilterInputs = () => {
   );
 };
 
-export default FilterInputs;
+export default CustMgmtFilterInputs;

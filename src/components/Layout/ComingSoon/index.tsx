@@ -4,6 +4,7 @@ import Button from '@components/Button';
 import { useNavigate } from 'react-router-dom';
 import MainCard from '@components/Card/MainCard';
 import { BoldTitle } from '@components/Title';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 export interface ComingSoonProps extends SpaceProps {
   img: string;
@@ -22,7 +23,7 @@ const ComingSoon = ({ img, ...props }: ComingSoonProps) => {
           align='center'
         >
           <MainCard bodyStyle={{ padding: 15 }}>
-            <img
+            <LazyLoadImage
               src={img}
               alt='comingSoonImg'
               height={370}

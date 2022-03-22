@@ -8,11 +8,18 @@ export const serverErrMsg: ArgsProps = {
 
 export const actionSuccessMsg: (
   recordType: string,
-  action: 'activate' | 'delete' | 'hide' | 'update',
+  action:
+    | 'activate'
+    | 'delete'
+    | 'hide'
+    | 'update'
+    | 'suspend'
+    | 'accept'
+    | 'reject',
   length: number
 ) => ArgsProps = (
   recordType: string,
-  action: 'activate' | 'delete' | 'hide' | 'update',
+  action: 'activate' | 'delete' | 'hide' | 'update' | 'suspend',
   length: number
 ) => {
   return {
@@ -27,6 +34,12 @@ export const actionSuccessMsg: (
         ? 'Hidden'
         : action === 'update'
         ? 'Updated'
+        : action === 'suspend'
+        ? 'Suspended'
+        : action === 'accept'
+        ? 'Accepted'
+        : action === 'reject'
+        ? 'Rejected'
         : null
     } Successfully`,
   };

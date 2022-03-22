@@ -87,12 +87,12 @@ const PackMgmt = () => {
     messageApi.open(
       actionSuccessMsg('Package', action, isMulti ? selected.length : 1)
     );
-    setTimeout(() => messageApi.destroy(action), 3000);
+
   };
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy('serverErr'), 3000);
+  
   };
 
   const activateBtn = (props: any) => (
