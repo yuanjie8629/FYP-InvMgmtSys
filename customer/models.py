@@ -18,7 +18,11 @@ class Cust(Users):
 
     def __init__(self, *args, **kwargs):
         super(Cust, self).__init__(*args, **kwargs)
-        self.cust_type = CustType.objects.get(type="cust")
+        if not self.cust_type:
+            self.cust_type = CustType.objects.get(type="cust")
+
+    def get_id(self):
+        return f"{self.cust_type.type.upper()}-{self.id}"
 
 
 class CustPosReg(SoftDeleteModel):
@@ -31,10 +35,10 @@ class CustPosReg(SoftDeleteModel):
     birthdate = models.DateField()
     address = models.CharField(max_length=255)
     postcode = models.ForeignKey(Postcode, on_delete=models.DO_NOTHING)
-    position = models.CharField(max_length=30, choices=CUST_TYPE)
+    position = models.ForeignKey("CustType", on_delete=models.DO_NOTHING)
     occupation = models.CharField(max_length=45)
     comp_name = models.CharField(max_length=100, blank=True, null=True)
-    accept = models.BooleanField(default=False)
+    accept = models.BooleanField(blank=True, null=True)
 
     class Meta:
         db_table = "cust_pos_reg"

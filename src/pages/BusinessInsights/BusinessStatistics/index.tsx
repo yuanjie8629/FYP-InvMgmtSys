@@ -126,7 +126,7 @@ const BusinessStatistics = () => {
             </span>
           ),
         });
-        setTimeout(() => messageApi.destroy('minSelectedMetrics'), 2000);
+
         return;
       }
 
@@ -144,8 +144,6 @@ const BusinessStatistics = () => {
             </span>
           ),
         });
-
-        setTimeout(() => messageApi.destroy('maxSelectedMetrics'), 2000);
 
         return;
       }

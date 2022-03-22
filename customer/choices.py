@@ -6,3 +6,5 @@ MARITAL_STATUS = (
     ("seperated", "Seperated"),
     ("divorced", "Divorced"),
 )
+
+CUST_STATUS = (("active", "Active"), ("suspended", "Suspended"))

@@ -57,12 +57,12 @@ const VoucherEdit = () => {
   const [dataLoading, setDataLoading] = useState(false);
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy('serverErr'), 3000);
+ 
   };
 
   const showErrMsg = (errMsg?: string) => {
     messageApi.open({ key: 'err', type: 'error', content: errMsg });
-    setTimeout(() => messageApi.destroy('err'), 3000);
+
   };
 
   const handleEditVoucher = (values) => {

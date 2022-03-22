@@ -11,7 +11,7 @@ type InformativeTableButtonProps = {
   key: string;
   fltr?: {
     fld: string;
-    value: string | number | undefined;
+    value: string | number | boolean | undefined;
     rel: 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte'; //Relational Operator
   }[];
 }[];

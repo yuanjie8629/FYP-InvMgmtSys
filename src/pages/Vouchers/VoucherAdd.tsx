@@ -53,12 +53,12 @@ const VoucherAdd = () => {
   const [endTime, setEndTime] = useState<moment.Moment>();
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy('serverErr'), 3000);
+
   };
 
   const showErrMsg = (errMsg?: string) => {
     messageApi.open({ key: 'err', type: 'error', content: errMsg });
-    setTimeout(() => messageApi.destroy('err'), 3000);
+ 
   };
 
   const handleAddVoucher = (values) => {

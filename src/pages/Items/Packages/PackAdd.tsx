@@ -71,13 +71,13 @@ const PackAdd = () => {
   const [dataLoading, setDataLoading] = useState(false);
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy('serverErr'), 3000);
+
   };
   const [startTime, setStartTime] = useState<moment.Moment>();
   const [endTime, setEndTime] = useState<moment.Moment>();
   const showErrMsg = (errMsg?: string) => {
     messageApi.open({ key: 'err', type: 'error', content: errMsg });
-    setTimeout(() => messageApi.destroy('err'), 3000);
+
   };
 
   const handleAddPackage = (values) => {

@@ -15,8 +15,7 @@ import {
   Typography,
 } from 'antd';
 import { MaskedInput } from 'antd-mask-input';
-import { getStates, getCities, getPostcodes } from 'malaysia-postcodes';
-import { sortByOrder } from '@utils/arrayUtils';
+import { removeInvalidData, sortByOrder } from '@utils/arrayUtils';
 import {
   custPositionCat,
   custStatusCat,
@@ -25,6 +24,15 @@ import {
 } from '@utils/optionUtils';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
+import { postcodeListAPI } from '@api/services/addressAPI';
+import { getDt } from '@utils/dateUtils';
+import { posRegAPI } from '@api/services/custAPI';
+import { useNavigate } from 'react-router-dom';
+import { findRoutePath } from '@utils/routingUtils';
+import { getCities, getPostcodes, getStates } from '@utils/addressUtils';
+import FormSpin from '@components/Spin';
+import InfoModal from '@components/Modal/InfoModal';
+import Button from '@components/Button';
 
 const CustAdd = () => {
   const { Title } = Typography;
@@ -32,15 +40,17 @@ const CustAdd = () => {
   const { TextArea } = Input;
   const { Link } = Anchor;
   const [custForm] = Form.useForm();
-
+  const [loading, setLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [postcode, setPostcode] = useState([]);
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
-
+  const [showConfirm, setShowConfirm] = useState(false);
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
   );
   const [messageApi] = useContext(MessageContext);
-
+  const navigate = useNavigate();
   const anchorList = [
     { link: 'basicInfo', title: 'Basic Information' },
     { link: 'contactInfo', title: 'Contact Information' },
@@ -50,17 +60,87 @@ const CustAdd = () => {
   ];
 
   useEffect(() => {
+    let isMounted = true;
     setTargetOffset(window.innerHeight / 1.5);
+    setLoading(true);
+    postcodeListAPI()
+      .then((res) => {
+        if (isMounted) {
+          setPostcode(res.data);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setLoading(false);
+          showServerErrMsg();
+        }
+      });
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy('serverErr'), 3000);
   };
 
+  const handleSubmit = (values) => {
+    let { city, state, ...data } = values;
+    data.birthdate = getDt(data.birthdate);
+    data.phone_num = data.phone_num.replace(/-/g, '');
+    data = removeInvalidData(data);
+    console.log(data);
+    setSubmitLoading(true);
+    posRegAPI(data)
+      .then((res) => {
+        setSubmitLoading(false);
+        navigate(findRoutePath('custAddSuccess'));
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setSubmitLoading(false);
+          showServerErrMsg();
+        }
+      });
+  };
+
+  const ConfirmSubmissionButton = [
+    <Button
+      color='error'
+      onClick={() => {
+        setShowConfirm(false);
+      }}
+      style={{ width: '20%' }}
+    >
+      No
+    </Button>,
+    <Button
+      type='primary'
+      htmlType='submit'
+      color='info'
+      onClick={() => {
+        setShowConfirm(false);
+        custForm.submit();
+      }}
+      style={{ width: '20%' }}
+    >
+      Yes
+    </Button>,
+  ];
+
   return (
-    <Form name='custForm' layout='vertical' size='small' form={custForm}>
+    <Form
+      name='custForm'
+      layout='vertical'
+      size='small'
+      form={custForm}
+      onFinish={handleSubmit}
+      scrollToFirstError={{ behavior: 'smooth', block: 'center' }}
+    >
       <Layout>
+        <FormSpin spinning={loading || submitLoading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>
@@ -70,7 +150,7 @@ const CustAdd = () => {
                 </Title>
                 <Form.Item
                   label='Customer Name'
-                  name='custNm'
+                  name='name'
                   rules={[
                     {
                       required: true,
@@ -109,7 +189,16 @@ const CustAdd = () => {
                   <DatePicker style={{ width: '40%' }} />
                 </Form.Item>
 
-                <Form.Item label='Marital Status' name='maritalStat'>
+                <Form.Item
+                  label='Marital Status'
+                  name='marital_status'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter your marital status.',
+                    },
+                  ]}
+                >
                   <Radio.Group options={maritalStatCat} />
                 </Form.Item>
               </Space>
@@ -123,7 +212,7 @@ const CustAdd = () => {
                 <Space direction='vertical' size={15} className='full-width'>
                   <Form.Item
                     label='Phone Number'
-                    name='phoneNum'
+                    name='phone_num'
                     rules={[
                       {
                         required: true,
@@ -132,8 +221,8 @@ const CustAdd = () => {
                     ]}
                   >
                     <MaskedInput
-                      prefix='(+60)'
-                      mask='11-111 1111'
+                      prefix='(+6)'
+                      mask='011-111 1111'
                       placeholderChar=' '
                       placeholder='12-345 6789'
                       style={{ width: '20%' }}
@@ -183,7 +272,7 @@ const CustAdd = () => {
                       setCity('');
                     }}
                   >
-                    {sortByOrder(getStates()).map((state: string) => (
+                    {sortByOrder(getStates(postcode)).map((state: string) => (
                       <Option key={state}>{state}</Option>
                     ))}
                   </Select>
@@ -208,9 +297,11 @@ const CustAdd = () => {
                       custForm.resetFields(['postcode']);
                     }}
                   >
-                    {sortByOrder(getCities(state)).map((city: string) => (
-                      <Option key={city}>{city}</Option>
-                    ))}
+                    {sortByOrder(getCities(postcode, state)).map(
+                      (city: string) => (
+                        <Option key={city}>{city}</Option>
+                      )
+                    )}
                   </Select>
                 </Form.Item>
 
@@ -229,7 +320,7 @@ const CustAdd = () => {
                     placeholder='Please select the postal code'
                     disabled={!state || !city}
                   >
-                    {sortByOrder(getPostcodes(state, city)).map(
+                    {sortByOrder(getPostcodes(postcode, city)).map(
                       (postcode: string) => (
                         <Option value={postcode} key={postcode}>
                           {postcode}
@@ -315,12 +406,21 @@ const CustAdd = () => {
                       message: "Please select the customer's status.",
                     },
                   ]}
+                  initialValue='active'
                 >
                   <Radio.Group options={custStatusCat} />
                 </Form.Item>
               </Space>
             </MainCard>
-            <AffixAction offsetBottom={0} label='Customer' />
+            <AffixAction
+              offsetBottom={0}
+              label='Customer'
+              loading={submitLoading}
+              disabled={loading}
+              onClick={() => {
+                setShowConfirm(true);
+              }}
+            />
           </MainCardContainer>
         </Col>
         <Col xs={8} xl={5}>
@@ -334,6 +434,15 @@ const CustAdd = () => {
             ))}
           </Anchor>
         </Col>
+        <InfoModal
+          visible={showConfirm}
+          onCancel={() => {
+            setShowConfirm(false);
+          }}
+          title='Are you sure to submit?'
+          subTitle='The information cannot be modified after submission.'
+          extra={ConfirmSubmissionButton}
+        />
       </Layout>
     </Form>
   );

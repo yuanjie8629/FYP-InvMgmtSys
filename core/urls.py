@@ -20,4 +20,6 @@ urlpatterns = [
     path("", include("image.urls")),
     path("item/", include("item.urls")),
     path("voucher/", include("voucher.urls")),
+    path("postcode/", include("postcode.urls")),
+    path("customer/", include("customer.urls")),
 ]

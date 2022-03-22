@@ -8,6 +8,7 @@ export interface AffixAddProps extends AffixProps {
   label?: string;
   loading?: boolean;
   disabled?: boolean;
+  onClick?: () => void;
 }
 
 const AffixAction = ({
@@ -15,6 +16,7 @@ const AffixAction = ({
   label,
   loading = false,
   disabled = false,
+  onClick = () => null,
   ...props
 }: Omit<AffixAddProps, 'children'>) => {
   const [showCard, setShowCard] = useState(false);
@@ -56,9 +58,10 @@ const AffixAction = ({
             <Button
               size='middle'
               type='primary'
-              htmlType='submit'
+              htmlType={onClick ? 'button' : 'submit'}
               loading={loading}
               disabled={disabled && !loading}
+              onClick={onClick}
             >
               {type === 'add' ? 'Add' : 'Edit'} {label}
             </Button>

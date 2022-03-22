@@ -192,7 +192,13 @@ const routeList: {
     path: '/customer/add',
     protected: true,
     component: <CustAdd />,
-  },
+    },
+    {
+      label: 'custAddSuccess',
+      path: '/customer/add/success',
+      protected: true,
+      component: <SuccessResult record='cust' type='add' />,
+    },
   {
     label: 'custEdit',
     path: '/customer/:id',

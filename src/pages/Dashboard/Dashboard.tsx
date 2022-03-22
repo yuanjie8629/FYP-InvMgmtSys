@@ -204,7 +204,7 @@ const Dashboard = () => {
             <Col
               key={toDoItem.label}
               flex='25%'
-              onClick={() => navigate(findRoutePath(toDoItem.link))}
+              onClick={() => navigate(toDoItem.link)}
               className='dashboard-toDoList-col'
             >
               <ColorCard
