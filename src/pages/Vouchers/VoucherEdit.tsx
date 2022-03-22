@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout';
 import AffixAction from '@components/Affix/AffixAction';
@@ -12,7 +12,6 @@ import {
   Form,
   Input,
   InputNumber,
-  message,
   Radio,
   Row,
   Space,
@@ -27,13 +26,14 @@ import { custCat } from '@utils/optionUtils';
 import { getDt } from '@utils/dateUtils';
 import FormSpin from '@components/Spin';
 import moment from 'moment';
+import { MessageContext } from '@contexts/MessageContext';
 
 const VoucherEdit = () => {
   const { Text, Title } = Typography;
   const { Link } = Anchor;
   const [voucherForm] = Form.useForm();
   const { id } = useParams();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = useContext(MessageContext);
   const [discType, setDiscType] = useState('amount');
   const [usageLimitUltd, setUsageLimitUltd] = useState(false);
   const [availabilityUltd, setAvailabilityUltd] = useState(false);
@@ -57,12 +57,12 @@ const VoucherEdit = () => {
   const [dataLoading, setDataLoading] = useState(false);
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => message.destroy('serverErr'), 3000);
+    setTimeout(() => messageApi.destroy('serverErr'), 3000);
   };
 
   const showErrMsg = (errMsg?: string) => {
     messageApi.open({ key: 'err', type: 'error', content: errMsg });
-    setTimeout(() => message.destroy('err'), 3000);
+    setTimeout(() => messageApi.destroy('err'), 3000);
   };
 
   const handleEditVoucher = (values) => {
@@ -166,7 +166,6 @@ const VoucherEdit = () => {
       onFinish={handleEditVoucher}
     >
       <Layout>
-        {contextHolder}
         <FormSpin spinning={dataLoading || loading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>

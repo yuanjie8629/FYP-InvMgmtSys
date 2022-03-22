@@ -9,7 +9,8 @@
       "@routes/*": ["./routes/*"],
       "@utils/*": ["./utils/*"],
       "@state/*": ["./state/*"],
-      "@hooks/*": ["./hooks/*"]
+      "@hooks/*": ["./hooks/*"],
+      "@contexts/*": ["./contexts/*"]
     }
   }
 }

@@ -9,11 +9,6 @@ const AuthRoute = (_props) => {
     .filter((route) => route.protected === false)
     .map((filteredRoute) => filteredRoute.path);
   const access = Cookies.get('access_token');
-  console.log(checkURL(location.pathname));
-  console.log(location.pathname);
-  console.log(
-    !(access || notProtectedRoute.includes(checkURL(location.pathname)))
-  );
   if (!(access || notProtectedRoute.includes(checkURL(location.pathname)))) {
     return (
       <Navigate

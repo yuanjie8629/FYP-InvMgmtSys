@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout';
 import UploadPicWall from '@components/Upload/UploadPicWall/UploadPicWall';
@@ -12,7 +12,6 @@ import {
   Form,
   Input,
   InputNumber,
-  message,
   Radio,
   Row,
   Space,
@@ -27,12 +26,13 @@ import { findRoutePath } from '@utils/routingUtils';
 import { serverErrMsg } from '@utils/messageUtils';
 import BraftEditor from 'braft-editor';
 import FormSpin from '@components/Spin';
+import { MessageContext } from '@contexts/MessageContext';
 
 const ProdEdit = () => {
   const { Text, Title } = Typography;
   const [prodForm] = Form.useForm();
   const { id } = useParams();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = useContext(MessageContext);
   const { Link } = Anchor;
   const [price, setPrice] = useState<number>();
   const [specialPrice, setSpecialPrice] = useState<number>();
@@ -67,12 +67,12 @@ const ProdEdit = () => {
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => message.destroy('serverErr'), 3000);
+    setTimeout(() => messageApi.destroy('serverErr'), 3000);
   };
 
   const showErrMsg = (errMsg?: string) => {
     messageApi.open({ key: 'err', type: 'error', content: errMsg });
-    setTimeout(() => message.destroy('err'), 3000);
+    setTimeout(() => messageApi.destroy('err'), 3000);
   };
 
   useEffect(() => {
@@ -180,7 +180,6 @@ const ProdEdit = () => {
       onFinish={handleEditProduct}
     >
       <Layout>
-        {contextHolder}
         <FormSpin spinning={dataLoading || loading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout';
 import AffixAction from '@components/Affix/AffixAction';
@@ -7,7 +7,6 @@ import {
   Anchor,
   Col,
   DatePicker,
-  Divider,
   Form,
   Input,
   Radio,
@@ -24,6 +23,8 @@ import {
   genderCat,
   maritalStatCat,
 } from '@utils/optionUtils';
+import { MessageContext } from '@contexts/MessageContext';
+import { serverErrMsg } from '@utils/messageUtils';
 
 const CustAdd = () => {
   const { Title } = Typography;
@@ -38,6 +39,7 @@ const CustAdd = () => {
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
   );
+  const [messageApi] = useContext(MessageContext);
 
   const anchorList = [
     { link: 'basicInfo', title: 'Basic Information' },
@@ -50,6 +52,11 @@ const CustAdd = () => {
   useEffect(() => {
     setTargetOffset(window.innerHeight / 1.5);
   }, []);
+
+  const showServerErrMsg = () => {
+    messageApi.open(serverErrMsg);
+    setTimeout(() => messageApi.destroy('serverErr'), 3000);
+  };
 
   return (
     <Form name='custForm' layout='vertical' size='small' form={custForm}>
@@ -112,102 +119,44 @@ const CustAdd = () => {
                 <Title level={4} id='contactInfo'>
                   Contact Information
                 </Title>
-                <div>
-                  <Space direction='vertical' size={15} className='full-width'>
-                    <Form.Item
-                      label='Phone Number'
-                      name='phoneNum'
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please enter the customer's phone number.",
-                        },
-                      ]}
-                    >
-                      <MaskedInput
-                        prefix='(+60)'
-                        mask='11-111 1111'
-                        placeholderChar=' '
-                        placeholder='12-345 6789'
-                        style={{ width: '20%' }}
-                      />
-                    </Form.Item>
 
-                    <Form.Item
-                      label='Email Address'
-                      name='email'
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please enter the customer's email address.",
-                        },
-                      ]}
-                    >
-                      <Input
-                        type='email'
-                        placeholder='e.g. xxxxx@gmail.com'
-                        style={{ width: '40%' }}
-                      />
-                    </Form.Item>
-                  </Space>
-                  <Divider />
-                  <Space direction='vertical' size={15} className='full-width'>
-                    <Title level={5}>Emergency Contact</Title>
-                    <Form.Item
-                      label='Name'
-                      name='emerg'
-                      rules={[
-                        {
-                          required: true,
-                          message:
-                            'Please enter the name of the emergency contact.',
-                        },
-                      ]}
-                    >
-                      <Input
-                        placeholder='e.g. Loo Phaik Cheng'
-                        style={{ width: '40%' }}
-                      />
-                    </Form.Item>
+                <Space direction='vertical' size={15} className='full-width'>
+                  <Form.Item
+                    label='Phone Number'
+                    name='phoneNum'
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter the customer's phone number.",
+                      },
+                    ]}
+                  >
+                    <MaskedInput
+                      prefix='(+60)'
+                      mask='11-111 1111'
+                      placeholderChar=' '
+                      placeholder='12-345 6789'
+                      style={{ width: '20%' }}
+                    />
+                  </Form.Item>
 
-                    <Form.Item
-                      label='Relationship'
-                      name='relationship'
-                      rules={[
-                        {
-                          required: true,
-                          message:
-                            'Please justify the relationship with the emergency contact.',
-                        },
-                      ]}
-                    >
-                      <Input
-                        placeholder='e.g. Mother'
-                        style={{ width: '40%' }}
-                      />
-                    </Form.Item>
-
-                    <Form.Item
-                      label='Contact Number'
-                      name='emrgContact'
-                      rules={[
-                        {
-                          required: true,
-                          message:
-                            'Please provide the contact number of the emergency contact.',
-                        },
-                      ]}
-                    >
-                      <MaskedInput
-                        prefix='(+60)'
-                        mask='11-111 1111'
-                        placeholderChar=' '
-                        placeholder='12-345 6789'
-                        style={{ width: '20%' }}
-                      />
-                    </Form.Item>
-                  </Space>
-                </div>
+                  <Form.Item
+                    label='Email Address'
+                    name='email'
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter the customer's email address.",
+                      },
+                    ]}
+                  >
+                    <Input
+                      type='email'
+                      placeholder='e.g. xxxxx@gmail.com'
+                      style={{ width: '40%' }}
+                    />
+                  </Form.Item>
+                </Space>
               </Space>
             </MainCard>
             <MainCard>

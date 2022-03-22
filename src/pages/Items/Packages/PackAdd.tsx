@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout';
 import UploadPicWall from '@components/Upload/UploadPicWall/UploadPicWall';
@@ -14,7 +14,6 @@ import {
   Image,
   Input,
   InputNumber,
-  message,
   Row,
   Space,
   Typography,
@@ -32,11 +31,12 @@ import { DeleteButton } from '@components/Button/ActionButton';
 import { getDt } from '@utils/dateUtils';
 import ProductSelect from './ProductSelect';
 import FormSpin from '@components/Spin';
+import { MessageContext } from '@contexts/MessageContext';
 
 const PackAdd = () => {
   const { Text, Title, Paragraph } = Typography;
   const [packForm] = Form.useForm();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = useContext(MessageContext);
   const { Link } = Anchor;
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
@@ -71,13 +71,13 @@ const PackAdd = () => {
   const [dataLoading, setDataLoading] = useState(false);
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => message.destroy('serverErr'), 3000);
+    setTimeout(() => messageApi.destroy('serverErr'), 3000);
   };
   const [startTime, setStartTime] = useState<moment.Moment>();
   const [endTime, setEndTime] = useState<moment.Moment>();
   const showErrMsg = (errMsg?: string) => {
     messageApi.open({ key: 'err', type: 'error', content: errMsg });
-    setTimeout(() => message.destroy('err'), 3000);
+    setTimeout(() => messageApi.destroy('err'), 3000);
   };
 
   const handleAddPackage = (values) => {
@@ -279,7 +279,6 @@ const PackAdd = () => {
       onFinish={handleAddPackage}
     >
       <Layout>
-        {contextHolder}
         <FormSpin spinning={dataLoading || loading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
@@ -469,7 +468,6 @@ const PackAdd = () => {
                     name='sku'
                     validateStatus={errMsg.type === 'invalid_sku' && 'error'}
                     help={errMsg.type === 'invalid_sku' && errMsg.message}
-                    
                     style={{ width: '40%' }}
                   >
                     <Input

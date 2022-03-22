@@ -1,6 +1,8 @@
 from django.db import models
 from core.choices import GENDER_CHOICES
-from core.models import Users
+from core.models import SoftDeleteModel, Users
+from customer.choices import CUST_TYPE, MARITAL_STATUS
+from postcode.models import Postcode
 
 
 class Cust(Users):
@@ -19,22 +21,20 @@ class Cust(Users):
         self.cust_type = CustType.objects.get(type="cust")
 
 
-class CustPosReg(models.Model):
+class CustPosReg(SoftDeleteModel):
     id = models.AutoField(primary_key=True)
-    ic_num = models.CharField(max_length=15)
     name = models.CharField(max_length=100)
+    marital_status = models.CharField(max_length=20, choices=MARITAL_STATUS)
     email = models.CharField(max_length=255)
     phone_num = models.CharField(max_length=15)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     birthdate = models.DateField()
     address = models.CharField(max_length=255)
-    position = models.CharField(max_length=30)
-    marital_status = models.CharField(max_length=20)
-    occupation = models.CharField(max_length=45, blank=True, null=True)
+    postcode = models.ForeignKey(Postcode, on_delete=models.DO_NOTHING)
+    position = models.CharField(max_length=30, choices=CUST_TYPE)
+    occupation = models.CharField(max_length=45)
     comp_name = models.CharField(max_length=100, blank=True, null=True)
-    reg_dt = models.DateTimeField()
-    accept = models.IntegerField()
-    # postal = models.ForeignKey(Postcode, on_delete=models.DO_NOTHING)
+    accept = models.BooleanField(default=False)
 
     class Meta:
         db_table = "cust_pos_reg"

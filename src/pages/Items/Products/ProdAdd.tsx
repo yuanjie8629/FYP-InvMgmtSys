@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout';
 import UploadPicWall from '@components/Upload/UploadPicWall/UploadPicWall';
@@ -12,7 +12,6 @@ import {
   Form,
   Input,
   InputNumber,
-  message,
   Radio,
   Row,
   Space,
@@ -26,11 +25,12 @@ import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { serverErrMsg } from '@utils/messageUtils';
 import FormSpin from '@components/Spin';
+import { MessageContext } from '@contexts/MessageContext';
 
 const ProdAdd = () => {
   const { Text, Title } = Typography;
   const [prodForm] = Form.useForm();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = useContext(MessageContext);
   const { Link } = Anchor;
   const [price, setPrice] = useState<number>();
   const [specialPrice, setSpecialPrice] = useState<number>();
@@ -67,12 +67,12 @@ const ProdAdd = () => {
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => message.destroy('serverErr'), 3000);
+    setTimeout(() => messageApi.destroy('serverErr'), 3000);
   };
 
   const showErrMsg = (errMsg?: string) => {
     messageApi.open({ key: 'err', type: 'error', content: errMsg });
-    setTimeout(() => message.destroy('err'), 3000);
+    setTimeout(() => messageApi.destroy('err'), 3000);
   };
 
   const handleAddProduct = (values) => {
@@ -132,7 +132,6 @@ const ProdAdd = () => {
       scrollToFirstError={{ behavior: 'smooth', block: 'center' }}
       onFinish={handleAddProduct}
     >
-      {contextHolder}
       <Layout>
         <FormSpin
           spinning={loading}

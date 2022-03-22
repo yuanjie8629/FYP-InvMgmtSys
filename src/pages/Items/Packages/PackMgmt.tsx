@@ -3,11 +3,11 @@ import Button from '@components/Button';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
-import { Row, Space, Col, Typography, Image, message } from 'antd';
+import { Row, Space, Col, Typography, Image } from 'antd';
 import InformativeTable from '@components/Table/InformativeTable';
 
 import packTabList from './packTabList';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { packStatList } from '@utils/optionUtils';
@@ -35,13 +35,14 @@ import {
 } from '../itemUtils';
 import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
 import { moneyFormatter } from '@utils/numUtils';
+import { MessageContext } from '@contexts/MessageContext';
 
 const PackMgmt = () => {
   const { Text } = Typography;
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = useContext(MessageContext);
   const [list, setList] = useState([]);
   const [recordCount, setRecordCount] = useState<number>();
   const [selected, setSelected] = useState([]);
@@ -86,12 +87,12 @@ const PackMgmt = () => {
     messageApi.open(
       actionSuccessMsg('Package', action, isMulti ? selected.length : 1)
     );
-    setTimeout(() => message.destroy(action), 3000);
+    setTimeout(() => messageApi.destroy(action), 3000);
   };
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => message.destroy('serverErr'), 3000);
+    setTimeout(() => messageApi.destroy('serverErr'), 3000);
   };
 
   const activateBtn = (props: any) => (
@@ -372,7 +373,6 @@ const PackMgmt = () => {
 
   return (
     <Layout>
-      {contextHolder}
       <MainCardContainer className='pack-mgmt'>
         <MainCard
           tabList={packTabList}

@@ -3,10 +3,10 @@ import Layout from '@components/Layout';
 import InformativeTable from '@components/Table/InformativeTable';
 import Button from '@components/Button';
 import MainCardContainer from '@components/Container/MainCardContainer';
-import { Col, Image, message, Row, Space, Typography } from 'antd';
+import { Col, Image, Row, Space, Typography } from 'antd';
 import FilterInputs from './FilterInputs';
 import packTabList from './packTabList';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import InvStockInput from '@components/Input/InvStockInput';
@@ -22,13 +22,14 @@ import {
 import { getItemInvDetails, onInvSelectBtn } from '../itemUtils';
 import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
 import { moneyFormatter } from '@utils/numUtils';
+import { MessageContext } from '@contexts/MessageContext';
 
 const PackInv = () => {
   const { Text } = Typography;
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = useContext(MessageContext);
   const [list, setList] = useState([]);
   const [recordCount, setRecordCount] = useState<number>();
   const [selected, setSelected] = useState([]);
@@ -71,12 +72,12 @@ const PackInv = () => {
 
   const showUpdSuccessMsg = (updCount?: number) => {
     messageApi.open(actionSuccessMsg('Package', 'update', updCount));
-    setTimeout(() => message.destroy('update'), 3000);
+    setTimeout(() => messageApi.destroy('update'), 3000);
   };
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => message.destroy('serverErr'), 3000);
+    setTimeout(() => messageApi.destroy('serverErr'), 3000);
   };
 
   const bulkUpdBtn = (props: any) => (
@@ -235,7 +236,6 @@ const PackInv = () => {
   ];
   return (
     <Layout>
-      {contextHolder}
       <MainCardContainer className='pack-inv'>
         <MainCard
           tabList={packTabList}
