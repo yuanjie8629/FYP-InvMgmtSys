@@ -65,11 +65,9 @@ INSTALLED_APPS = [
     "item",
     "order",
     "payment",
-    "review",
     "shipment",
     "postcode",
     "voucher",
-    "wishlist",
     "django_cleanup.apps.CleanupConfig",
 ]
 
@@ -136,6 +134,8 @@ CACHEOPS_REDIS = "rediss://:p10bd0c9416edcdcb8946f8143d70d2e19d87f7acb87c5a80e9a
 CACHEOPS_DEFAULTS = {"timeout": 60 * 15}
 CACHEOPS = {
     "*.*": {},
+    "postcode.*": {"ops": "all"},
+    "customer.CustType": {"ops": "all"},
 }
 
 
@@ -149,7 +149,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         "NAME": "administrator.validators.MaximumLengthValidator",
-        "OPTIONS": {"max_length": 16},
+        "OPTIONS": {"max_length": 30},
     },
     {"NAME": "administrator.validators.NumberValidator", "OPTIONS": {"min_digits": 1}},
     {
@@ -234,10 +234,11 @@ LOGGING = {
     },
 }
 
-AUTH_USER_MODEL = "administrator.Admin"
+AUTH_USER_MODEL = "core.Users"
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+    # "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),

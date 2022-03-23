@@ -8,7 +8,6 @@ import PackInv from '@pages/Items/Packages/PackInv';
 import PackAdd from '@pages/Items/Packages/PackAdd';
 import OrderMgmt from '@pages/Orders/OrderMgmt';
 import OrderAdd from '@pages/Orders/OrderAdd';
-import ShptMgmt from '@pages/Shipments/ShptMgmt';
 import CustMgmt from '@pages/Customers/CustMgmt';
 import CustReg from '@pages/Customers/CustReg';
 import CustAdd from '@pages/Customers/CustAdd';
@@ -21,13 +20,17 @@ import AccSettings from '@pages/MyAccount/AccSettings';
 import AdminMgmt from '@pages/Admins/AdminMgmt';
 import AdminAdd from '@pages/Admins/AdminAdd';
 import Help from '@pages/Help/Help';
-import ShpFeeMgmt from '@pages/Shipments/ShptFeeMgmt';
+import ShptFeeMgmt from '@pages/Shipments/ShptFeeMgmt';
 import NotFound from '@pages/NotFound/NotFound';
 import ResetPass from '@pages/Login/ResetPass';
 import { SuccessResult } from '@pages/ResultFeedback';
 import ProdEdit from '@pages/Items/Products/ProdEdit';
 import PackEdit from '@pages/Items/Packages/PackEdit';
 import VoucherEdit from '@pages/Vouchers/VoucherEdit';
+import CustRegView from '@pages/Customers/CustRegView';
+import CustView from '@pages/Customers/CustView';
+import ShptFeeAdd from '@pages/Shipments/ShptFeeAdd';
+import ShptFeeEdit from '@pages/Shipments/ShptFeeEdit';
 
 const routeList: {
   label: string;
@@ -159,16 +162,28 @@ const routeList: {
     protected: true,
   },
   {
-    label: 'shptMgmt',
-    path: '/shipment/management',
+    label: 'shptFeeMgmt',
+    path: '/shipment/shipping_fee',
     protected: true,
-    component: <ShptMgmt />,
+    component: <ShptFeeMgmt />,
   },
   {
-    label: 'shpFeeMgmt',
-    path: '/shipment/shipping-fee',
+    label: 'shptFeeAdd',
+    path: '/shipment/shipping_fee/add',
     protected: true,
-    component: <ShpFeeMgmt />,
+    component: <ShptFeeAdd />,
+  },
+  {
+    label: 'shptFeeAdd',
+    path: '/shipment/shipping_fee/:id',
+    protected: true,
+    component: <ShptFeeEdit />,
+  },
+  {
+    label: 'shptFeeAddSuccess',
+    path: '/shipment/shipping_fee/add/success',
+    protected: true,
+    component: <SuccessResult record='shptFee' type='add' />,
   },
   {
     label: 'customer',
@@ -182,23 +197,35 @@ const routeList: {
     component: <CustMgmt />,
   },
   {
+    label: 'custMgmt',
+    path: '/customer/:id',
+    protected: true,
+    component: <CustView />,
+  },
+  {
     label: 'custReg',
-    path: '/customer/registrations',
+    path: '/customer/registration',
     protected: true,
     component: <CustReg />,
+  },
+  {
+    label: 'custReg',
+    path: '/customer/registration/:id',
+    protected: true,
+    component: <CustRegView />,
   },
   {
     label: 'custAdd',
     path: '/customer/add',
     protected: true,
     component: <CustAdd />,
-    },
-    {
-      label: 'custAddSuccess',
-      path: '/customer/add/success',
-      protected: true,
-      component: <SuccessResult record='cust' type='add' />,
-    },
+  },
+  {
+    label: 'custAddSuccess',
+    path: '/customer/add/success',
+    protected: true,
+    component: <SuccessResult record='cust' type='add' />,
+  },
   {
     label: 'custEdit',
     path: '/customer/:id',
@@ -207,18 +234,18 @@ const routeList: {
   },
   {
     label: 'bizInsights',
-    path: '/business-insights',
+    path: '/business_insights',
     protected: true,
   },
   {
     label: 'bizStatistics',
-    path: '/business-insights/statistics',
+    path: '/business_insights/statistics',
     protected: true,
     component: <Statistics />,
   },
   {
     label: 'invAnalysis',
-    path: '/business-insights/inventory-analysis',
+    path: '/business_insights/inventory_analysis',
     protected: true,
     component: <InvAnalysis />,
   },
@@ -259,18 +286,18 @@ const routeList: {
   },
   {
     label: 'myAccount',
-    path: '/my-acc',
+    path: '/my_acc',
     protected: true,
   },
   {
     label: 'profileMgmt',
-    path: '/my-acc/profile-management',
+    path: '/my_acc/profile_management',
     protected: true,
     component: <ProfileMgmt />,
   },
   {
     label: 'accSettings',
-    path: '/my-acc/acc-settings',
+    path: '/my_acc/acc_settings',
     protected: true,
     component: <AccSettings />,
   },

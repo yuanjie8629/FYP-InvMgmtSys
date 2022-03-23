@@ -67,8 +67,8 @@ const menuList: {
         label: 'Shipments',
         icon: MdLocalShipping,
         child: [
-          { key: 'shptMgmt', label: 'Manage Shipments' },
-          { key: 'shpFeeMgmt', label: 'Manage Shipping Fees' },
+          { key: 'shptFeeMgmt', label: 'Manage Shipping Fees' },
+          { key: 'shptFeeAdd', label: 'Add Shipping Fee' },
         ],
       },
 

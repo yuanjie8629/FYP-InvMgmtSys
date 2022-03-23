@@ -1,0 +1,10 @@
+Hi, {{name}}
+
+Thank you for your interest in {{position}} position with Sharifah Food. We appreciate you taking the time to fill up the application form.
+
+Unfortunately, We are sorry to inform you that your application has been rejected. Please feel free to apply for open positions with us in the future.
+
+We wish you all the best with your job search!
+
+Best regards,
+Sharifah Food Team

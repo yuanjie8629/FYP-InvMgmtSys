@@ -1,0 +1,13 @@
+Welcome, {{name}}!
+We're excited to have you as our {{position}}. You can now login as {{position}} and enjoy {{position}} discounts with your existing account as follows.
+
+Email:
+{{email}}
+
+You can click the following link to enter our website.
+https://fyp-shrf-ecommerce.herokuapp.com/
+
+If you have any questions, just reply to this email—we're always happy to help out.
+
+Cheers,
+Sharifah Food Team

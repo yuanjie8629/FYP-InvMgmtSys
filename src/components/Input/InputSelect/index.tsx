@@ -1,4 +1,10 @@
-import { Form, FormItemProps, Input, InputProps as AntdInputProps, Select } from 'antd';
+import {
+  Form,
+  FormItemProps,
+  Input,
+  InputProps as AntdInputProps,
+  Select,
+} from 'antd';
 import { useState } from 'react';
 
 interface OnSelectProps {
@@ -37,12 +43,16 @@ const InputSelect = ({
   ...props
 }: InputProps) => {
   const [selectType, setSelectType] = useState(selectBefore.defaultVal);
+  const [selectValue, setSelectValue] = useState('');
   const inputSelectBefore = selectBefore !== undefined && (
     <Select
       defaultValue={selectBefore?.defaultVal}
       options={selectBefore.options}
       style={{ width: selectWidth }}
-      onSelect={(value) => setSelectType(value)}
+      onSelect={(value) => {
+        setSelectType(value);
+        onChange({ type: value, value: selectValue });
+      }}
     />
   );
 
@@ -60,7 +70,10 @@ const InputSelect = ({
         addonBefore={inputSelectBefore}
         addonAfter={inputSelectAfter}
         style={{ width: width }}
-        onChange={(e) => onChange({ type: selectType, value: e.target.value })}
+        onChange={(e) => {
+          setSelectValue(e.target.value)
+          onChange({ type: selectType, value: e.target.value });
+        }}
         {...props}
       />
     </Form.Item>

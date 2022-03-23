@@ -25,7 +25,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { serverErrMsg } from '@utils/messageUtils';
 import BraftEditor from 'braft-editor';
-import FormSpin from '@components/Spin';
+import FormSpin from '@components/Spin/FormSpin';
 import { MessageContext } from '@contexts/MessageContext';
 
 const ProdEdit = () => {
@@ -67,12 +67,10 @@ const ProdEdit = () => {
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-   
   };
 
   const showErrMsg = (errMsg?: string) => {
     messageApi.open({ key: 'err', type: 'error', content: errMsg });
-
   };
 
   useEffect(() => {
@@ -83,7 +81,6 @@ const ProdEdit = () => {
       productDetailsAPI(id)
         .then((res) => {
           if (isMounted) {
-            console.log(res.data);
             prodForm.setFieldsValue(res.data);
             let thumbnail = {
               url: res.data?.thumbnail,
@@ -462,34 +459,35 @@ const ProdEdit = () => {
                   Inventory
                 </Title>
                 <div>
-                  <Form.Item
-                    label='Stock Keeping Unit (SKU)'
-                    name='sku'
-                    validateStatus={errMsg.type === 'invalid_sku' && 'error'}
-                    help={errMsg.type === 'invalid_sku' && errMsg.message}
-                    style={{ width: '40%' }}
-                  >
-                    <Input
-                      placeholder='e.g. SHRF-RTC-NBB'
-                      onChange={(e) => {
-                        setErrMsg({ type: undefined, message: undefined });
-                      }}
-                    />
-                  </Form.Item>
+                  <Space direction='vertical' size={20} className='full-width'>
+                    <Form.Item
+                      label='Stock Keeping Unit (SKU)'
+                      name='sku'
+                      validateStatus={errMsg.type === 'invalid_sku' && 'error'}
+                      help={errMsg.type === 'invalid_sku' && errMsg.message}
+                      style={{ width: '40%' }}
+                    >
+                      <Input
+                        placeholder='e.g. SHRF-RTC-NBB'
+                        onChange={(e) => {
+                          setErrMsg({ type: undefined, message: undefined });
+                        }}
+                      />
+                    </Form.Item>
 
-                  <Form.Item
-                    label='Stock Quantity'
-                    name='stock'
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please enter the product stock quantity.',
-                      },
-                    ]}
-                  >
-                    <InputNumber min={0} defaultValue={0} />
-                  </Form.Item>
-
+                    <Form.Item
+                      label='Stock Quantity'
+                      name='stock'
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Please enter the product stock quantity.',
+                        },
+                      ]}
+                    >
+                      <InputNumber min={0} defaultValue={0} />
+                    </Form.Item>
+                  </Space>
                   <Divider />
                   <Row gutter={30}>
                     <Col>

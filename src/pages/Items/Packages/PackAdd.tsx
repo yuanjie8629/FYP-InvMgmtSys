@@ -30,7 +30,7 @@ import { productPrevAllAPI } from '@api/services/productAPI';
 import { DeleteButton } from '@components/Button/ActionButton';
 import { getDt } from '@utils/dateUtils';
 import ProductSelect from './ProductSelect';
-import FormSpin from '@components/Spin';
+import FormSpin from '@components/Spin/FormSpin';
 import { MessageContext } from '@contexts/MessageContext';
 
 const PackAdd = () => {
@@ -111,7 +111,6 @@ const PackAdd = () => {
     data.avail_start_dt = getDt(data.avail_start_dt);
     if (data.avail_end_tm) data.avail_end_tm = getDt(data.avail_end_tm);
     data = removeInvalidData(data);
-    console.log(data);
     let formData = new FormData();
     Object.keys(data).forEach((item) => {
       if (item === 'image') {
@@ -139,7 +138,6 @@ const PackAdd = () => {
         navigate(findRoutePath('packAddSuccess'));
       })
       .catch((err) => {
-        console.log(err.response?.data.hasOwnProperty('thumbnail'));
         if (err.response?.status !== 401) {
           setLoading(false);
           if (err.response?.data?.error?.code === 'invalid_sku') {
@@ -162,7 +160,6 @@ const PackAdd = () => {
     productPrevAllAPI()
       .then((res) => {
         if (isMounted) {
-          console.log(res);
           setDataLoading(false);
           setProducts(res.data);
         }
@@ -174,7 +171,7 @@ const PackAdd = () => {
         }
       });
   };
-  console.log(selectedProds);
+
   useEffect(() => {
     let isMounted = true;
     setTargetOffset(window.innerHeight / 1.5);

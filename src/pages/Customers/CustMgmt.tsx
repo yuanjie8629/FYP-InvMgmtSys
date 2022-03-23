@@ -19,8 +19,7 @@ import { MessageContext } from '@contexts/MessageContext';
 import { custStatusUpdAPI, custListAPI } from '@api/services/custAPI';
 import { actionSuccessMsg, serverErrMsg } from '@utils/messageUtils';
 import { ActionModal } from '@components/Modal';
-import { addSearchParams, parseURL } from '@utils/urlUtls';
-import { getCustId } from '@utils/custUtils';
+import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
 
 const CustMgmt = () => {
   const { Text } = Typography;
@@ -97,7 +96,7 @@ const CustMgmt = () => {
 
             await custStatusUpdAPI(
               selectedKeys.map((key) => {
-                return { id: getCustId(key), is_active: true };
+                return { id: key, is_active: true };
               })
             )
               .then(() => {
@@ -129,7 +128,7 @@ const CustMgmt = () => {
 
             await custStatusUpdAPI(
               selectedKeys.map((key) => {
-                return { id: getCustId(key), is_active: false };
+                return { id: key, is_active: false };
               })
             )
               .then(() => {
@@ -153,33 +152,36 @@ const CustMgmt = () => {
     {
       element: ActivateBtn,
       key: 'activate',
-      fltr: [{ fld: 'is_active', value: false, rel: 'eq' }],
+      fltr: [
+        { fld: 'is_active', value: false, rel: 'eq' },
+        { fld: 'cust_type', value: 'cust', rel: 'neq' },
+      ],
     },
     {
       element: SuspendBtn,
       key: 'suspend',
-      fltr: [{ fld: 'is_active', value: true, rel: 'eq' }],
+      fltr: [
+        { fld: 'is_active', value: true, rel: 'eq' },
+        { fld: 'cust_type', value: 'cust', rel: 'neq' },
+      ],
     },
   ];
 
   const getCustDetails = (selectedRecord) => {
     const selected = [];
-    console.log(selectedRecord);
     selectedRecord.forEach((record) =>
       selected.push({
         key: record.id,
         title: record.name,
-        desc: custCat.find((cust) => cust.value === record.cust_type).label,
+        desc: custCat.find((cust) => cust.value === record.cust_type)?.label,
       })
     );
-    console.log(selected);
     return selected;
   };
 
   const handleSelectChange = (selectedKeys) => {
-    console.log(selectedKeys);
-    const selectedRecord = list.filter((prod) =>
-      selectedKeys.some((selected) => selected === prod.id)
+    const selectedRecord = list.filter((cust) =>
+      selectedKeys.some((selected) => selected === cust.id)
     );
 
     setSelected(getCustDetails(selectedRecord));
@@ -187,9 +189,9 @@ const CustMgmt = () => {
 
   const handleTabChange = (key) => {
     if (key !== 'all') {
-      setSearchParams(addSearchParams(searchParams, { status: key }));
+      setSearchParams(addSearchParams(searchParams, { type: key }));
     } else {
-      searchParams.delete('status');
+      searchParams.delete('type');
       setSearchParams(parseURL(searchParams));
     }
   };
@@ -199,6 +201,7 @@ const CustMgmt = () => {
     dataIndex?: string | string[];
     key: string;
     sorter?: boolean;
+    defaultSortOrder?: 'ascend' | 'descend';
     align?: 'left' | 'center' | 'right';
     fixed?: 'left' | 'right';
     width?: number | string;
@@ -209,11 +212,18 @@ const CustMgmt = () => {
       dataIndex: 'id',
       key: 'id',
       sorter: true,
+      defaultSortOrder: getSortOrder('id'),
       fixed: 'left',
       width: 150,
       render: (data: number) => (
         <div className='text-button-wrapper'>
-          <Text strong className='text-button'>
+          <Text
+            strong
+            className='text-button'
+            onClick={() => {
+              navigate(`/customer/${data}`);
+            }}
+          >
             #{data}
           </Text>
         </div>
@@ -221,35 +231,51 @@ const CustMgmt = () => {
     },
     {
       title: 'Customer',
-      dataIndex: 'name',
+      dataIndex: ['name', 'email'],
       key: 'name',
       sorter: true,
+      defaultSortOrder: getSortOrder('name'),
       width: 200,
+      render: (_: any, data: { [x: string]: string }) => (
+        <Space direction='vertical' size={5}>
+          {data.name && (
+            <Text strong type='secondary'>
+              {data.name}
+            </Text>
+          )}
+          <Text strong={data.name ? true : false} type='secondary'>
+            {data.email}
+          </Text>
+        </Space>
+      ),
     },
     {
       title: 'Customer Type',
       dataIndex: 'cust_type',
       key: 'type',
       sorter: true,
+      defaultSortOrder: getSortOrder('cust_type'),
       width: 150,
       render: (type: string) => (
         <Text type='secondary'>
-          {custCat.find((cust) => cust.value === type).label}
+          {custCat.find((cust) => cust.value === type)?.label}
         </Text>
       ),
     },
     {
       title: 'Joined Date',
       dataIndex: 'date_joined',
-      key: 'joinDate',
+      key: 'date_joined',
       sorter: true,
+      defaultSortOrder: getSortOrder('date_joined'),
       width: 160,
     },
     {
       title: 'Sales per Month',
       dataIndex: 'sales_per_month',
-      key: 'salesMth',
+      key: 'sales_per_month',
       sorter: true,
+      defaultSortOrder: getSortOrder('sales_per_month'),
       width: 160,
       render: (amount: string) =>
         amount !== undefined ? (
@@ -261,8 +287,9 @@ const CustMgmt = () => {
     {
       title: 'Last Order Date',
       dataIndex: 'last_order_dt',
-      key: 'lastOrderDt',
+      key: 'last_order_dt',
       sorter: true,
+      defaultSortOrder: getSortOrder('last_order_dt'),
       width: 150,
       render: (date: string) =>
         date !== undefined ? <Text strong>{date}</Text> : '-',
@@ -270,7 +297,7 @@ const CustMgmt = () => {
     {
       title: 'Status',
       dataIndex: 'is_active',
-      key: 'status',
+      key: 'is_active',
       align: 'center' as const,
       width: 130,
       render: (active: string) => (
@@ -299,7 +326,7 @@ const CustMgmt = () => {
                 onOk: async () => {
                   await custStatusUpdAPI([
                     {
-                      id: getCustId(data.id),
+                      id: data.id,
                       is_active: true,
                     },
                   ])
@@ -324,7 +351,7 @@ const CustMgmt = () => {
                 onOk: async () => {
                   await custStatusUpdAPI([
                     {
-                      id: getCustId(data.id),
+                      id: data.id,
                       is_active: false,
                     },
                   ])
@@ -349,9 +376,7 @@ const CustMgmt = () => {
         <MainCard
           tabList={custTabList}
           activeTabKey={
-            searchParams.get('status') === null
-              ? 'all'
-              : searchParams.get('status')
+            searchParams.get('type') === null ? 'all' : searchParams.get('type')
           }
           onTabChange={handleTabChange}
         >

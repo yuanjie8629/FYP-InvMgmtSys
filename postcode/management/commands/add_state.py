@@ -1,4 +1,4 @@
-from address.models import State
+from postcode.models import State
 from django.core.management.base import BaseCommand
 
 

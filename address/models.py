@@ -1,6 +1,5 @@
 from django.db import models
-from core.models import SoftDeleteModel
-from customer.models import Cust
+from core.models import SoftDeleteModel, Users
 from postcode.models import Postcode
 
 
@@ -11,7 +10,7 @@ class Address(SoftDeleteModel):
     contact_num = models.CharField(max_length=15)
     default = models.BooleanField(blank=True, null=True)
     postcode = models.ForeignKey(Postcode, on_delete=models.DO_NOTHING)
-    cust = models.ForeignKey(Cust, on_delete=models.DO_NOTHING)
+    cust = models.ForeignKey(Users, on_delete=models.DO_NOTHING)
 
     class Meta:
         db_table = "address"

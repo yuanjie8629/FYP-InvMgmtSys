@@ -26,8 +26,12 @@ export const checkURL = (url: string) => {
   if (splitURL[splitURL.length - 1] === '') splitURL.pop();
 
   if (new RegExp(/\d/g).test(splitURL[splitURL.length - 1])) {
-    splitURL[splitURL.length - 1] =
-      splitURL[splitURL.length - 1].replace(/\d/g, '') + ':id';
+    if (splitURL.includes('customer') && splitURL.includes('registration')) {
+      splitURL.pop();
+    } else {
+      splitURL[splitURL.length - 1] =
+        splitURL[splitURL.length - 1].replace(/\d/g, '') + ':id';
+    }
   }
   return `/${splitURL.join('/')}`;
 };

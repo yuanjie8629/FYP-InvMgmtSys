@@ -16,7 +16,7 @@ const AffixAction = ({
   label,
   loading = false,
   disabled = false,
-  onClick = () => null,
+  onClick,
   ...props
 }: Omit<AffixAddProps, 'children'>) => {
   const [showCard, setShowCard] = useState(false);

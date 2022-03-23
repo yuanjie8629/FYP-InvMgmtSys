@@ -3,7 +3,6 @@ import MainCard from '@components/Card/MainCard';
 import Button, { ButtonProps } from '@components/Button';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
-import FilterInputs from './CustMgmtFilterInputs';
 import { Row, Space, Col, Typography } from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
@@ -17,7 +16,8 @@ import { actionSuccessMsg, serverErrMsg } from '@utils/messageUtils';
 import { custRegListAPI, custRegUpdAPI } from '@api/services/custAPI';
 import { ActionModal } from '@components/Modal';
 import { custCat, genderCat } from '@utils/optionUtils';
-import { addSearchParams, parseURL } from '@utils/urlUtls';
+import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
+import CustRegFilterInputs from './CustRegFilterInputs';
 
 const CustReg = () => {
   const { Text } = Typography;
@@ -83,22 +83,19 @@ const CustReg = () => {
 
   const getCustDetails = (selectedRecord) => {
     const selected = [];
-    console.log(selectedRecord);
     selectedRecord.forEach((record) =>
       selected.push({
         key: record.id,
         title: record.name,
-        desc: custCat.find((cust) => cust.value === record.cust_type).label,
+        desc: custCat.find((cust) => cust.value === record.position)?.label,
       })
     );
-    console.log(selected);
     return selected;
   };
 
   const handleSelectChange = (selectedKeys) => {
-    console.log(selectedKeys);
-    const selectedRecord = list.filter((prod) =>
-      selectedKeys.some((selected) => selected === prod.id)
+    const selectedRecord = list.filter((cust) =>
+      selectedKeys.some((selected) => selected === cust.id)
     );
 
     setSelected(getCustDetails(selectedRecord));
@@ -106,9 +103,9 @@ const CustReg = () => {
 
   const handleTabChange = (key) => {
     if (key !== 'all') {
-      setSearchParams(addSearchParams(searchParams, { status: key }));
+      setSearchParams(addSearchParams(searchParams, { type: key }));
     } else {
-      searchParams.delete('status');
+      searchParams.delete('type');
       setSearchParams(parseURL(searchParams));
     }
   };
@@ -181,10 +178,12 @@ const CustReg = () => {
     {
       element: acceptBtn,
       key: 'accept',
+      fltr: [{ fld: 'accept', value: undefined, rel: 'eq' }],
     },
     {
       element: rejectBtn,
       key: 'reject',
+      fltr: [{ fld: 'accept', value: undefined, rel: 'eq' }],
     },
   ];
 
@@ -193,6 +192,7 @@ const CustReg = () => {
     dataIndex?: string | string[];
     key: string;
     sorter?: boolean;
+    defaultSortOrder?: 'ascend' | 'descend';
     align?: 'left' | 'center' | 'right';
     width?: number | string;
     render?: any;
@@ -202,10 +202,17 @@ const CustReg = () => {
       dataIndex: 'id',
       key: 'id',
       sorter: true,
+      defaultSortOrder: getSortOrder('id'),
       width: 150,
       render: (data: number) => (
         <div className='text-button-wrapper'>
-          <Text strong className='text-button'>
+          <Text
+            strong
+            className='text-button'
+            onClick={() => {
+              navigate(`/customer/registration/${data}`);
+            }}
+          >
             #{data}
           </Text>
         </div>
@@ -216,6 +223,7 @@ const CustReg = () => {
       dataIndex: 'name',
       key: 'name',
       sorter: true,
+      defaultSortOrder: getSortOrder('name'),
       width: 300,
     },
     {
@@ -223,10 +231,11 @@ const CustReg = () => {
       dataIndex: 'position',
       key: 'position',
       sorter: true,
+      defaultSortOrder: getSortOrder('position'),
       width: 130,
       render: (type: string) => (
         <Text type='secondary'>
-          {custCat.find((cust) => cust.value === type).label}
+          {custCat.find((cust) => cust.value === type)?.label}
         </Text>
       ),
     },
@@ -235,18 +244,20 @@ const CustReg = () => {
       dataIndex: 'gender',
       key: 'gender',
       sorter: true,
+      defaultSortOrder: getSortOrder('gender'),
       width: 100,
       render: (gender: string) => (
         <Text type='secondary'>
-          {genderCat.find((cat) => cat.value === gender).label}
+          {genderCat.find((cat) => cat.value === gender)?.label}
         </Text>
       ),
     },
     {
       title: 'Registration Date',
       dataIndex: 'created_at',
-      key: 'regDt',
+      key: 'created_at',
       sorter: true,
+      defaultSortOrder: getSortOrder('created_at'),
       width: 160,
     },
     {
@@ -254,63 +265,85 @@ const CustReg = () => {
       dataIndex: 'phone_num',
       key: 'phone_num',
       sorter: true,
+      defaultSortOrder: getSortOrder('phone_num'),
       width: 160,
+      render: (phoneNum: string) => (
+        <Text type='secondary'>
+          {phoneNum.slice(0, 3)}-{phoneNum.slice(3)}
+        </Text>
+      ),
     },
 
     {
       title: 'Action',
       key: 'action',
       width: 120,
-      render: (data: any) => (
-        <Space direction='vertical' size={5}>
-          <AcceptButton
-            type='link'
-            onClick={() => {
-              setSelected(getCustDetails(data));
-              ActionModal.show('accept', {
-                onOk: async () => {
-                  await custRegUpdAPI([
-                    {
-                      id: data.id,
-                      accept: true,
+      render: (data: any) => {
+        if (data.accept === true) {
+          return (
+            <Text strong type='success'>
+              Accepted
+            </Text>
+          );
+        } else if (data.accept === false) {
+          return (
+            <Text strong type='danger'>
+              Rejected
+            </Text>
+          );
+        } else {
+          return (
+            <Space direction='vertical' size={5}>
+              <AcceptButton
+                type='link'
+                onClick={() => {
+                  setSelected(getCustDetails([data]));
+                  ActionModal.show('accept', {
+                    onOk: async () => {
+                      await custRegUpdAPI([
+                        {
+                          id: data.id,
+                          accept: true,
+                        },
+                      ])
+                        .then((res) => {
+                          getTableData();
+                          showActionSuccessMsg('accept', false);
+                        })
+                        .catch((err) => {
+                          showServerErrMsg();
+                        });
                     },
-                  ])
-                    .then((res) => {
-                      getTableData();
-                      showActionSuccessMsg('accept', false);
-                    })
-                    .catch((err) => {
-                      showServerErrMsg();
-                    });
-                },
-              });
-            }}
-          />
-          <RejectButton
-            type='link'
-            onClick={() => {
-              setSelected(getCustDetails(data));
-              ActionModal.show('reject', {
-                onOk: async () => {
-                  await custRegUpdAPI([
-                    {
-                      id: data.id,
-                      accept: false,
+                  });
+                }}
+              />
+              <RejectButton
+                type='link'
+                onClick={() => {
+                  setSelected(getCustDetails([data]));
+                  ActionModal.show('reject', {
+                    onOk: async () => {
+                      await custRegUpdAPI([
+                        {
+                          id: data.id,
+                          accept: false,
+                        },
+                      ])
+                        .then((res) => {
+                          getTableData();
+                          showActionSuccessMsg('reject', false);
+                        })
+                        .catch((err) => {
+                          showServerErrMsg();
+                        });
                     },
-                  ])
-                    .then((res) => {
-                      getTableData();
-                      showActionSuccessMsg('reject', false);
-                    })
-                    .catch((err) => {
-                      showServerErrMsg();
-                    });
-                },
-              });
-            }}
-          />
-        </Space>
-      ),
+                  });
+                }}
+              />
+            </Space>
+          );
+        }
+      },
     },
   ];
 
@@ -320,13 +353,11 @@ const CustReg = () => {
         <MainCard
           tabList={custTabList}
           activeTabKey={
-            searchParams.get('status') === null
-              ? 'all'
-              : searchParams.get('status')
+            searchParams.get('type') === null ? 'all' : searchParams.get('type')
           }
           onTabChange={handleTabChange}
         >
-          <FilterInputs />
+          <CustRegFilterInputs />
         </MainCard>
         <MainCard>
           <Space direction='vertical' size={15} className='full-width'>

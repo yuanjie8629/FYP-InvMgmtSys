@@ -24,7 +24,7 @@ import { findRoutePath } from '@utils/routingUtils';
 import { serverErrMsg } from '@utils/messageUtils';
 import { custCat } from '@utils/optionUtils';
 import { getDt } from '@utils/dateUtils';
-import FormSpin from '@components/Spin';
+import FormSpin from '@components/Spin/FormSpin';
 import moment from 'moment';
 import { MessageContext } from '@contexts/MessageContext';
 
@@ -66,7 +66,6 @@ const VoucherEdit = () => {
   };
 
   const handleEditVoucher = (values) => {
-    console.log(values);
     if (endTime && startTime.isAfter(endTime)) {
       setErrMsg({
         type: 'invalid_avail_tm',
@@ -126,9 +125,7 @@ const VoucherEdit = () => {
       voucherDetailsAPI(id)
         .then((res) => {
           if (isMounted) {
-            let { avail_start_dt, avail_end_dt, product, ...data } = res.data;
-            console.log(res.data);
-
+            let { avail_start_dt, avail_end_dt, ...data } = res.data;
             voucherForm.setFieldsValue(data);
             voucherForm.setFieldsValue({
               avail_start_dt: moment(avail_start_dt, 'DD-MM-YYYY'),

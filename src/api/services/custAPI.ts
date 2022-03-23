@@ -10,12 +10,15 @@ export const custRegListAPI = (searchParam?: string) =>
 
 export const custRegUpdAPI = (
   data: { [key: string]: string | number | boolean }[]
-) => axios.patch(`customer/registration/`, { list: data });
+) => axios.patch(`customer/registration/update/`, { list: data });
 
 export const custStatusUpdAPI = (
   data: { [key: string]: string | number | boolean }[]
 ) => axios.patch(`customer/status/update/`, { list: data });
 
 export const custDetailsAPI = (id) => axios.get(`customer/${id}/`);
+
+export const custRegDetailsAPI = (id) =>
+  axios.get(`customer/registration/${id}/`);
 
 export const posRegAPI = (data) => axios.post(`customer/`, data);

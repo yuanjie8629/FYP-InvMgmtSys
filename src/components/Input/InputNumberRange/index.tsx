@@ -27,7 +27,7 @@ export interface InputNumberRangeProps
   justify?: 'start' | 'end';
   disabled?: boolean;
   value?: number[];
-  onChange?: (value: number) => void;
+  onChange?: (value: number[]) => void;
   formProps?: FormItemProps;
 }
 
@@ -78,6 +78,7 @@ const InputNumberRange = ({
 
   useEffect(() => {
     let isMounted = true;
+    onChange([start, end]);
     if (isMounted && start > end) {
       setValidateFailed(true);
     } else {
@@ -86,13 +87,15 @@ const InputNumberRange = ({
     return () => {
       isMounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [end, start]);
 
   return (
     <Form.Item
       validateStatus={validateFailed && 'error'}
       help={
-        validateFailed && (
+        validateFailed &&
+        (textSpan ? (
           <Row>
             <Col
               push={textSpan}
@@ -102,7 +105,9 @@ const InputNumberRange = ({
               Starting value should be smaller than ending value.
             </Col>
           </Row>
-        )
+        ) : (
+          'Starting value should be smaller than ending value.'
+        ))
       }
       {...formPropsSpread}
     >

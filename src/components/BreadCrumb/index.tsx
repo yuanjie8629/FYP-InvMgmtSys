@@ -2,6 +2,7 @@ import { Breadcrumb as AntdBreadcrumb } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
 import { Link, useLocation } from 'react-router-dom';
 import breadcrumbNameMap from './breadCrumpList';
+import { checkURL } from '@utils/routingUtils';
 
 const BreadCrumb = () => {
   const location = useLocation();
@@ -9,18 +10,10 @@ const BreadCrumb = () => {
 
   const extraBreadcrumbItems = pathSnippets.map((_: any, index: number) => {
     const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
-    let splitURL = url.split('/');
-    if (new RegExp(/^[0-9]*$/).test(splitURL[splitURL.length - 1])) {
-      let newURL = url.replace(/\d/g, '') + ':id';
-      return (
-        <AntdBreadcrumb.Item key={url}>
-          <Link to={url}>{breadcrumbNameMap[newURL]}</Link>
-        </AntdBreadcrumb.Item>
-      );
-    }
+
     return breadcrumbNameMap.hasOwnProperty(url) && url !== '/dashboard' ? (
       <AntdBreadcrumb.Item key={url}>
-        <Link to={url}>{breadcrumbNameMap[url]}</Link>
+        <Link to={url}>{breadcrumbNameMap[checkURL(url)]}</Link>
       </AntdBreadcrumb.Item>
     ) : (
       <AntdBreadcrumb.Item key='none'></AntdBreadcrumb.Item>
