@@ -24,7 +24,7 @@ import { findRoutePath } from '@utils/routingUtils';
 import { serverErrMsg } from '@utils/messageUtils';
 import { custCat } from '@utils/optionUtils';
 import { getDt } from '@utils/dateUtils';
-import FormSpin from '@components/Spin';
+import FormSpin from '@components/Spin/FormSpin';
 import { MessageContext } from '@contexts/MessageContext';
 
 const VoucherAdd = () => {

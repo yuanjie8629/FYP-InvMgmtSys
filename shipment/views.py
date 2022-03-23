@@ -1,3 +1,68 @@
-from django.shortcuts import render
+from rest_framework import viewsets, status, generics
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from postcode.serializers import StateSerializer
+from shipment.filters import ShippingFeeFilter
+from shipment.serializers import ShippingFeeSerializer
+from shipment.models import ShippingFee
+from postcode.models import State
+from cacheops import invalidate_model
 
-# Create your views here.
+
+class ShippingFeeViewSet(viewsets.ModelViewSet):
+    queryset = ShippingFee.objects.all().prefetch_related("location")
+    serializer_class = ShippingFeeSerializer
+    filterset_class = ShippingFeeFilter
+
+    def create(self, request, *args, **kwargs):
+        for data in request.data:
+            weight_start = data.get("weight_start")
+            weight_end = data.get("weight_end")
+            if weight_start > weight_end:
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data={"details": "invalid_weight"},
+                )
+        serializer = ShippingFeeSerializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        invalidate_model(State)
+        return Response(status=status.HTTP_200_OK)
+
+
+class ShippingFeeStateListView(generics.ListAPIView):
+    queryset = State.objects.all().exclude(
+        pk__in=ShippingFee.objects.values_list("location")
+    )
+    serializer_class = StateSerializer
+    pagination_class = None
+
+
+@api_view(["POST"])
+def ShippingFeeBulkDeleteView(request):
+    ids = request.data.get("ids")
+    if not ids:
+        response = Response(status=status.HTTP_400_BAD_REQUEST)
+        response.data = {"detail": "IDs are not found in request body."}
+        return response
+
+    idList = [int(pk) for pk in ids]
+    invalidIds = []
+    for i in idList:
+        try:
+            ShippingFee.objects.get(pk=i).delete()
+        except ShippingFee.DoesNotExist:
+            invalidIds.append(i)
+
+    if invalidIds:
+        response = Response(status=status.HTTP_404_NOT_FOUND)
+        response.data = {
+            "error": {
+                "code": "id_not_found",
+                "message": "The following IDs do not exist.",
+                "fields": invalidIds,
+            }
+        }
+        return response
+
+    return Response(status=status.HTTP_204_NO_CONTENT)

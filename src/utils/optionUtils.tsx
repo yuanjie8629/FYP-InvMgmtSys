@@ -76,6 +76,14 @@ export const custStatusCat = [
   { value: 'active', label: 'Active' },
   { value: 'suspended', label: 'Suspended' },
 ];
+
+export const custRegStatusCat = [
+  { value: 'pending', label: 'Pending' },
+  { value: 'accept', label: 'Accepted' },
+  { value: 'reject', label: 'Rejected' },
+];
+
+
 export const discCat = [
   { value: 'amount', label: 'Fixed Amount' },
   { value: 'percentage', label: 'Percentage' },

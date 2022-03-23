@@ -22,4 +22,5 @@ urlpatterns = [
     path("voucher/", include("voucher.urls")),
     path("postcode/", include("postcode.urls")),
     path("customer/", include("customer.urls")),
+    path("shipment/", include("shipment.urls")),
 ]

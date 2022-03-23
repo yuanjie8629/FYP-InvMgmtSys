@@ -104,8 +104,8 @@ const PackInv = () => {
   );
 
   const handleSelectChange = (selectedKeys) => {
-    const selectedRecord = list.filter((prod) =>
-      selectedKeys.some((selected) => selected === prod.id)
+    const selectedRecord = list.filter((pack) =>
+      selectedKeys.some((selected) => selected === pack.id)
     );
 
     setSelected(getItemInvDetails(selectedRecord));

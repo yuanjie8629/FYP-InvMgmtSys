@@ -30,7 +30,7 @@ import { posRegAPI } from '@api/services/custAPI';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { getCities, getPostcodes, getStates } from '@utils/addressUtils';
-import FormSpin from '@components/Spin';
+import FormSpin from '@components/Spin/FormSpin';
 import InfoModal from '@components/Modal/InfoModal';
 import Button from '@components/Button';
 
@@ -89,9 +89,8 @@ const CustAdd = () => {
   const handleSubmit = (values) => {
     let { city, state, ...data } = values;
     data.birthdate = getDt(data.birthdate);
-    data.phone_num = data.phone_num.replace(/-/g, '');
+    data.phone_num = data.phone_num.replace(/-|\s/g,"");
     data = removeInvalidData(data);
-    console.log(data);
     setSubmitLoading(true);
     posRegAPI(data)
       .then((res) => {
@@ -222,9 +221,9 @@ const CustAdd = () => {
                   >
                     <MaskedInput
                       prefix='(+6)'
-                      mask='011-111 1111'
+                      mask='111-111 1111'
                       placeholderChar=' '
-                      placeholder='12-345 6789'
+                      placeholder='012-345 6789'
                       style={{ width: '20%' }}
                     />
                   </Form.Item>
@@ -372,7 +371,7 @@ const CustAdd = () => {
                     style={{ width: '40%' }}
                   />
                 </Form.Item>
-                <Form.Item label='Company Name' name='company'>
+                <Form.Item label='Company Name' name='comp_name'>
                   <Input
                     placeholder='e.g. SHRF Food Industries Sdn Bhd'
                     style={{ width: '40%' }}

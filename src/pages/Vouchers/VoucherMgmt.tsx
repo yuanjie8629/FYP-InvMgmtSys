@@ -85,7 +85,7 @@ const VoucherMgmt = () => {
     isMulti: boolean = true
   ) => {
     messageApi.open(
-      actionSuccessMsg('Product', action, isMulti ? selected.length : 1)
+      actionSuccessMsg('Voucher', action, isMulti ? selected.length : 1)
     );
   };
 
@@ -211,8 +211,8 @@ const VoucherMgmt = () => {
   };
 
   const handleSelectChange = (selectedKeys) => {
-    const selectedRecord = list.filter((prod) =>
-      selectedKeys.some((selected) => selected === prod.id)
+    const selectedRecord = list.filter((voucher) =>
+      selectedKeys.some((selected) => selected === voucher.id)
     );
 
     setSelected(getVoucherDetails(selectedRecord));

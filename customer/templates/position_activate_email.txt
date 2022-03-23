@@ -1,0 +1,12 @@
+Hi, {{name}}
+
+Please be informed that your account has been suspended.
+You are not allowed to login with your {{position}} account below.
+
+Email:
+{{email}}
+
+If you have any questions, just reply to this email—we're always happy to help out.
+
+Cheers,
+Sharifah Food Team

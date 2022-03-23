@@ -77,7 +77,7 @@ def VoucherBulkDeleteView(request):
 @api_view(["PATCH"])
 def VoucherBulkUpdView(request):
     if "list" in request.data:
-        dataList = request.data.get("list")
+        data_list = request.data.get("list")
     else:
         response = Response(status=status.HTTP_404_NOT_FOUND)
         response.data = {
@@ -86,7 +86,7 @@ def VoucherBulkUpdView(request):
         return response
 
     ids = []
-    for data in dataList:
+    for data in data_list:
         if "id" in data:
             ids.append(data.get("id"))
         else:
@@ -97,7 +97,9 @@ def VoucherBulkUpdView(request):
             return response
 
     voucher_list = list(Voucher.objects.filter(id__in=ids))
-    serializer = VoucherWriteSerializer(voucher_list, data=dataList, many=True, partial=True)
+    serializer = VoucherWriteSerializer(
+        voucher_list, data=data_list, many=True, partial=True
+    )
     serializer.is_valid(raise_exception=True)
     serializer.save()
 

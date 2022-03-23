@@ -21,10 +21,6 @@ class Cust(Users):
         if not self.cust_type:
             self.cust_type = CustType.objects.get(type="cust")
 
-    def get_id(self):
-        return f"{self.cust_type.type.upper()}-{self.id}"
-
-
 class CustPosReg(SoftDeleteModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)

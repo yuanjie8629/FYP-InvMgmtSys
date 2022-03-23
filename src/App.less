@@ -71,6 +71,21 @@ ul {
   }
 }
 
+.align {
+  &-start {
+    display: flex !important;
+    align-items: flex-start !important;
+  }
+  &-end {
+    display: flex !important;
+    align-items: flex-end !important;
+  }
+  &-center {
+    display: flex !important;
+    align-items: center !important;
+  }
+}
+
 .padding-0 {
   padding: 0 !important;
 }
@@ -374,6 +389,11 @@ ul {
       &-required,
       &-label > label {
         color: @grey-600 !important;
+      }
+
+      &-with-help,
+      &-explain {
+        min-height: 0 !important;
       }
     }
   }

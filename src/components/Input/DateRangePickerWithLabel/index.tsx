@@ -28,9 +28,6 @@ const DatePickerWithLabel = ({
           <RangePicker
             className='full-width'
             {...props}
-            onChange={(dates, dateString) => {
-              console.log(dateString);
-            }}
           />
         </Form.Item>
       </Col>

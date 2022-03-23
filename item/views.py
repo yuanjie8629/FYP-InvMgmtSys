@@ -143,7 +143,7 @@ def ItemBulkDeleteView(request):
 @api_view(["PATCH"])
 def ProdBulkUpdView(request):
     if "list" in request.data:
-        dataList = request.data.get("list")
+        data_list = request.data.get("list")
     else:
         response = Response(status=status.HTTP_404_NOT_FOUND)
         response.data = {
@@ -152,7 +152,7 @@ def ProdBulkUpdView(request):
         return response
 
     ids = []
-    for data in dataList:
+    for data in data_list:
         if "id" in data:
             ids.append(data.get("id"))
         else:
@@ -163,7 +163,9 @@ def ProdBulkUpdView(request):
             return response
 
     product_list = list(Product.objects.select_related().filter(id__in=ids))
-    serializer = ProductSerializer(product_list, data=dataList, many=True, partial=True)
+    serializer = ProductSerializer(
+        product_list, data=data_list, many=True, partial=True
+    )
     serializer.is_valid(raise_exception=True)
     serializer.save()
 
@@ -231,7 +233,7 @@ class PackagePrevView(generics.ListAPIView):
 @api_view(["PATCH"])
 def PackBulkUpdView(request):
     if "list" in request.data:
-        dataList = request.data.get("list")
+        data_list = request.data.get("list")
     else:
         response = Response(status=status.HTTP_404_NOT_FOUND)
         response.data = {
@@ -240,7 +242,7 @@ def PackBulkUpdView(request):
         return response
 
     ids = []
-    for data in dataList:
+    for data in data_list:
         if "id" in data:
             ids.append(data.get("id"))
         else:
@@ -251,7 +253,7 @@ def PackBulkUpdView(request):
             return response
     package_list = list(Package.objects.select_related().filter(id__in=ids))
     serializer = PackageWriteSerializer(
-        package_list, data=dataList, many=True, partial=True
+        package_list, data=data_list, many=True, partial=True
     )
     serializer.is_valid(raise_exception=True)
     serializer.save()

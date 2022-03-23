@@ -1,13 +1,9 @@
 Welcome, {{name}}!
-We're excited to have you as our {{position}}. You can now login as {{position}} with the account folow.
+We're excited to have you as our {{position}}. You can now login as {{position}} and enjoy {{position}} discounts with your existing account as follows.
 
 Email:
 {{email}}
 
-Password:
-{{password}}
-
-Please change your password after first login to seure your account.
 You can click the following link to enter our website.
 https://fyp-shrf-ecommerce.herokuapp.com/
 

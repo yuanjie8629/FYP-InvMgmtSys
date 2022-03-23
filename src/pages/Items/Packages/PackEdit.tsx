@@ -33,7 +33,7 @@ import BraftEditor from 'braft-editor';
 import { prodCat } from '@utils/optionUtils';
 import moment from 'moment';
 import { productPrevAllAPI } from '@api/services/productAPI';
-import FormSpin from '@components/Spin';
+import FormSpin from '@components/Spin/FormSpin';
 import { MessageContext } from '@contexts/MessageContext';
 
 const PackEdit = () => {
