@@ -383,7 +383,7 @@ const Dashboard = () => {
             </Row>
           </Col>
           <Col>
-            <More route='orderMgmt' />
+            <More route='invAnalysis' />
           </Col>
         </Row>
         <Row>
