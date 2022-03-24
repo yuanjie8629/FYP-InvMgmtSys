@@ -5,7 +5,6 @@ import menuList from './siderMenuList';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { checkURL, findRouteLabel, findRoutePath } from '@utils/routingUtils';
 import classNames from 'classnames';
-import siderDefKeyList from './siderDefKeyList';
 import { logoutAPI } from '@api/services/authAPI';
 
 export interface SiderProps extends AntdSiderProps {
@@ -24,16 +23,7 @@ const Sider = ({ onCollapsed = () => null, ...props }: SiderProps) => {
     onCollapsed(isSiderCollapsed);
   }, [isSiderCollapsed, onCollapsed]);
 
-  const selectedKeys =
-    siderDefKeyList.find(
-      (defKey) => defKey.path === location.pathname + location.search
-    ) !== undefined
-      ? [
-          siderDefKeyList.find(
-            (defKey) => defKey.path === location.pathname + location.search
-          ).key,
-        ]
-      : [findRouteLabel(checkURL(location.pathname))];
+  const selectedKeys = [findRouteLabel(checkURL(location.pathname))];
 
   const openKeys = [location.pathname.split('/')[1]];
 

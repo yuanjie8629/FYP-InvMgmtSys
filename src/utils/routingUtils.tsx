@@ -25,6 +25,15 @@ export const checkURL = (url: string) => {
   let splitURL = url.split('/').filter((url) => url);
   if (splitURL[splitURL.length - 1] === '') splitURL.pop();
 
+  if (
+    splitURL.includes('shipment') &&
+    splitURL.includes('shipping_fee') &&
+    splitURL[splitURL.length - 1] !== 'shipping_fee'
+  ) {
+    splitURL.pop();
+    splitURL.push(':id');
+  }
+
   if (new RegExp(/\d/g).test(splitURL[splitURL.length - 1])) {
     if (splitURL.includes('customer') && splitURL.includes('registration')) {
       splitURL.pop();

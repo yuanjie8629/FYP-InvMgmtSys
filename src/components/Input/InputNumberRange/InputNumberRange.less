@@ -23,7 +23,7 @@
           }
         }
         &-number {
-          z-index: 5;
+          z-index: 5 !important;
 
           &-input {
             text-align: center;
@@ -48,10 +48,24 @@
     }
 
     &-error {
-      .@{ant-prefix}-input-number{
-        &:hover,
-        &-focused {
+      .@{ant-prefix}-input {
+        &-number {
+          &:hover,
+          &-focused {
+            z-index: 7 !important;
+            border-color: @error-color !important;
+          }
+        }
+        &-disabled {
           border-color: @error-color !important;
+        }
+      }
+      .input-range {
+        &-splitter {
+          z-index: 6 !important;
+          color: @grey;
+          border-left: none;
+          border-right: none;
         }
       }
     }

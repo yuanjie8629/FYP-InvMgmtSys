@@ -18,7 +18,7 @@ urlpatterns = [
     ),
     path(
         r"shipping_fee/bulk/delete/", ShippingFeeBulkDeleteView, name="shptFeeBulkDel"
-    ),
+    )
 ]
 
 urlpatterns += router.urls

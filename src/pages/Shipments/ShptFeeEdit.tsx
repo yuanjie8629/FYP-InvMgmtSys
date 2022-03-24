@@ -15,28 +15,27 @@ import {
   Typography,
 } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { removeInvalidData, sortByOrder } from '@utils/arrayUtils';
+import { removeInvalidData } from '@utils/arrayUtils';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate, useParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import FormSpin from '@components/Spin/FormSpin';
 import '@components/Input/InputNumberRange/InputNumberRange.less';
 import {
   shippingFeeAddAPI,
-  shippingFeeStateListAPI,
+  shippingFeeListAPI,
 } from '@api/services/shipmentAPI';
 import Button from '@components/Button';
 
-const ShptFeeAdd = () => {
+const ShptFeeEdit = () => {
   const { Title } = Typography;
-  const { Option } = Select;
-
   const { Link } = Anchor;
+  const { id } = useParams();
   const [shptFeeForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [state, setState] = useState([]);
+
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
   );
@@ -48,24 +47,41 @@ const ShptFeeAdd = () => {
   const [weightStart, setWeightStart] = useState([]);
   const [weightEnd, setWeightEnd] = useState([]);
   const [weightInvalid, setWeightInvalid] = useState([]);
+  const [validateFailed, setValidateFailed] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
     setTargetOffset(window.innerHeight / 1.5);
     setLoading(true);
-    shippingFeeStateListAPI()
-      .then((res) => {
-        if (isMounted) {
-          setState(res.data.map((state) => state.name));
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        if (err.response?.status !== 401) {
-          setLoading(false);
-          showServerErrMsg();
-        }
-      });
+    if (id) {
+      shptFeeForm.setFieldsValue({ location: id });
+      shippingFeeListAPI(
+        `?no_page&${createSearchParams({ location: id }).toString()}`
+      )
+        .then((res) => {
+          if (isMounted) {
+            let list = [];
+            res.data.forEach((data, index) => {
+              list.push({
+                weight_start: data.weight_start,
+                weight_end: data.weight_end,
+                ship_fee: data.ship_fee,
+              });
+              weightStart.push({ index: index, value: data.weight_start });
+              weightEnd.push({ index: index, value: data.weight_end });
+            });
+            console.log(list);
+            shptFeeForm.setFieldsValue({ location: id, list: list });
+            setLoading(false);
+          }
+        })
+        .catch((err) => {
+          if (err.response?.status !== 401) {
+            setSubmitLoading(false);
+            showServerErrMsg();
+          }
+        });
+    }
     return () => {
       isMounted = false;
     };
@@ -79,17 +95,12 @@ const ShptFeeAdd = () => {
   const handleSubmit = (values) => {
     console.log(values);
     values = removeInvalidData(values);
-    let { list, ...data } = values;
-    let newList = [];
-    list.forEach((item) => {
-      newList.push({ ...item, ...data });
-    });
 
     setSubmitLoading(true);
-    shippingFeeAddAPI(newList)
+    shippingFeeAddAPI(values)
       .then((res) => {
         setSubmitLoading(false);
-        navigate(findRoutePath('shptFeeAddSuccess'));
+        navigate(findRoutePath('shptFeeEditSuccess'));
       })
       .catch((err) => {
         if (err.response?.status !== 401) {
@@ -106,6 +117,12 @@ const ShptFeeAdd = () => {
       size='small'
       form={shptFeeForm}
       onFinish={handleSubmit}
+      onFinishFailed={() => {
+        setValidateFailed(true);
+      }}
+      onFieldsChange={() => {
+        setValidateFailed(false);
+      }}
       scrollToFirstError={{ behavior: 'smooth', block: 'center' }}
     >
       <Layout>
@@ -129,11 +146,7 @@ const ShptFeeAdd = () => {
                   ]}
                   style={{ width: '40%' }}
                 >
-                  <Select placeholder='Please select the state'>
-                    {sortByOrder(state).map((state: string) => (
-                      <Option key={state}>{state}</Option>
-                    ))}
-                  </Select>
+                  <Select placeholder='Please select the state' disabled />
                 </Form.Item>
                 <Form.Item label='Weight (g) & Shipping Fee (RM)' required>
                   <Form.List name='list'>
@@ -146,7 +159,13 @@ const ShptFeeAdd = () => {
                           >
                             <Col span={12}>
                               <Form.Item
-                                className='input-range'
+                                className={`input-range${
+                                  weightInvalid.find(
+                                    (weight) => weight.index === index
+                                  ) || validateFailed
+                                    ? ' input-range-error'
+                                    : ''
+                                }`}
                                 required
                                 help={
                                   weightInvalid.find(
@@ -380,9 +399,10 @@ const ShptFeeAdd = () => {
 
             <AffixAction
               offsetBottom={0}
-              label='Shipping Fee'
+              label='Shipping Fees'
               loading={submitLoading}
               disabled={loading}
+              type='edit'
             />
           </MainCardContainer>
         </Col>
@@ -402,4 +422,4 @@ const ShptFeeAdd = () => {
   );
 };
 
-export default ShptFeeAdd;
+export default ShptFeeEdit;
