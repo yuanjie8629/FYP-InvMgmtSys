@@ -48,7 +48,7 @@ const ShptFeeAdd = () => {
   const [weightStart, setWeightStart] = useState([]);
   const [weightEnd, setWeightEnd] = useState([]);
   const [weightInvalid, setWeightInvalid] = useState([]);
-
+  const [validateFailed, setValidateFailed] = useState(false);
   useEffect(() => {
     let isMounted = true;
     setTargetOffset(window.innerHeight / 1.5);
@@ -77,16 +77,9 @@ const ShptFeeAdd = () => {
   };
 
   const handleSubmit = (values) => {
-    console.log(values);
     values = removeInvalidData(values);
-    let { list, ...data } = values;
-    let newList = [];
-    list.forEach((item) => {
-      newList.push({ ...item, ...data });
-    });
-
     setSubmitLoading(true);
-    shippingFeeAddAPI(newList)
+    shippingFeeAddAPI(values)
       .then((res) => {
         setSubmitLoading(false);
         navigate(findRoutePath('shptFeeAddSuccess'));
@@ -106,6 +99,12 @@ const ShptFeeAdd = () => {
       size='small'
       form={shptFeeForm}
       onFinish={handleSubmit}
+      onFinishFailed={() => {
+        setValidateFailed(true);
+      }}
+      onFieldsChange={() => {
+        setValidateFailed(false);
+      }}
       scrollToFirstError={{ behavior: 'smooth', block: 'center' }}
     >
       <Layout>
@@ -146,7 +145,13 @@ const ShptFeeAdd = () => {
                           >
                             <Col span={12}>
                               <Form.Item
-                                className='input-range'
+                                className={`input-range${
+                                  weightInvalid.find(
+                                    (weight) => weight.index === index
+                                  ) || validateFailed
+                                    ? ' input-range-error'
+                                    : ''
+                                }`}
                                 required
                                 help={
                                   weightInvalid.find(
@@ -380,7 +385,7 @@ const ShptFeeAdd = () => {
 
             <AffixAction
               offsetBottom={0}
-              label='Shipping Fee'
+              label='Shipping Fees'
               loading={submitLoading}
               disabled={loading}
             />

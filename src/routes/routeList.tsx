@@ -31,6 +31,7 @@ import CustRegView from '@pages/Customers/CustRegView';
 import CustView from '@pages/Customers/CustView';
 import ShptFeeAdd from '@pages/Shipments/ShptFeeAdd';
 import ShptFeeEdit from '@pages/Shipments/ShptFeeEdit';
+import ShptMgmt from '@pages/Shipments/ShptMgmt';
 
 const routeList: {
   label: string;
@@ -155,11 +156,16 @@ const routeList: {
     protected: true,
     component: <OrderAdd />,
   },
-
   {
     label: 'shipment',
     path: '/shipment',
     protected: true,
+  },
+  {
+    label: 'shptMgmt',
+    path: '/shipment/management',
+    protected: true,
+    component: <ShptMgmt />,
   },
   {
     label: 'shptFeeMgmt',
@@ -184,6 +190,12 @@ const routeList: {
     path: '/shipment/shipping_fee/add/success',
     protected: true,
     component: <SuccessResult record='shptFee' type='add' />,
+  },
+  {
+    label: 'shptFeeEditSuccess',
+    path: '/shipment/shipping_fee/edit/success',
+    protected: true,
+    component: <SuccessResult record='shptFee' type='edit' />,
   },
   {
     label: 'customer',

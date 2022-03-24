@@ -119,9 +119,9 @@ const ShptFeeMgmt = () => {
       selected.push({
         key: record.id,
         title: record.location,
-        desc: `${record.weight_start}g - ${record.weight_end}g ${moneyFormatter(
-          parseFloat(record.ship_fee)
-        )}`,
+        desc: `${record.weight_start}g - ${
+          record.weight_end
+        }g  (${moneyFormatter(parseFloat(record.ship_fee))})`,
       })
     );
     return selected;
@@ -157,22 +157,22 @@ const ShptFeeMgmt = () => {
   }[] = [
     {
       title: 'Location',
-      dataIndex: 'location',
+      dataIndex: ['location', 'id'],
       key: 'location',
       sorter: true,
       defaultSortOrder: getSortOrder('location'),
       fixed: 'left',
       width: 150,
-      render: (data: string) => (
+      render: (_: any, data: { [x: string]: string }) => (
         <div className='text-button-wrapper'>
           <Text
             strong
             className='text-button'
             onClick={() => {
-              navigate(`/shipment/shipping_fee/${data}`);
+              navigate(`/shipment/shipping_fee/${data.location}`);
             }}
           >
-            #{data}
+            #{data.location}
           </Text>
         </div>
       ),
@@ -259,7 +259,7 @@ const ShptFeeMgmt = () => {
                   type='primary'
                   onClick={() => navigate(findRoutePath('shptFeeAdd'))}
                 >
-                  Add Shipping Fee
+                  Add Shipping Fees
                 </Button>
               </Col>
             </Row>

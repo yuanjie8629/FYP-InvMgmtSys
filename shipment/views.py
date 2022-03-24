@@ -10,24 +10,45 @@ from cacheops import invalidate_model
 
 
 class ShippingFeeViewSet(viewsets.ModelViewSet):
-    queryset = ShippingFee.objects.all().prefetch_related("location")
+    queryset = (
+        ShippingFee.objects.all().prefetch_related("location").order_by("-last_update")
+    )
     serializer_class = ShippingFeeSerializer
     filterset_class = ShippingFeeFilter
 
     def create(self, request, *args, **kwargs):
-        for data in request.data:
+        location = request.data.pop("location")
+        list = []
+        for data in request.data.pop("list"):
             weight_start = data.get("weight_start")
             weight_end = data.get("weight_end")
+            ship_fee = data.get("ship_fee")
             if weight_start > weight_end:
                 return Response(
                     status=status.HTTP_400_BAD_REQUEST,
                     data={"details": "invalid_weight"},
                 )
-        serializer = ShippingFeeSerializer(data=request.data, many=True)
+            list.append(
+                {
+                    "location": location,
+                    "weight_start": weight_start,
+                    "weight_end": weight_end,
+                    "ship_fee": ship_fee,
+                }
+            )
+
+        serializer = ShippingFeeSerializer(data=list, many=True)
         serializer.is_valid(raise_exception=True)
+        ShippingFee.objects.filter(location__name=location).delete()
         serializer.save()
         invalidate_model(State)
         return Response(status=status.HTTP_200_OK)
+
+    def paginate_queryset(self, queryset, view=None):
+        if "no_page" in self.request.query_params:
+            return None
+        else:
+            return self.paginator.paginate_queryset(queryset, self.request, view=self)
 
 
 class ShippingFeeStateListView(generics.ListAPIView):
