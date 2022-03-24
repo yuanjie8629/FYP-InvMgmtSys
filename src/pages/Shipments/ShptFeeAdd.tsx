@@ -40,11 +40,13 @@ const ShptFeeAdd = () => {
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
   );
+
   const [messageApi] = useContext(MessageContext);
   const navigate = useNavigate();
   const anchorList = [
     { link: 'shippingFeeInfo', title: 'Shipping Fee Information' },
   ];
+  const [subFee, setSubFee] = useState<number>();
   const [weightStart, setWeightStart] = useState([]);
   const [weightEnd, setWeightEnd] = useState([]);
   const [weightInvalid, setWeightInvalid] = useState([]);
@@ -91,7 +93,7 @@ const ShptFeeAdd = () => {
         }
       });
   };
-
+  console.log(weightInvalid);
   return (
     <Form
       name='shptFeeForm'
@@ -161,7 +163,9 @@ const ShptFeeAdd = () => {
                                 validateStatus={
                                   weightInvalid.find(
                                     (weight) => weight.index === index
-                                  ) && 'error'
+                                  )
+                                    ? 'error'
+                                    : null
                                 }
                               >
                                 <Input.Group compact>
@@ -177,6 +181,10 @@ const ShptFeeAdd = () => {
                                             value === ''
                                           ) {
                                             setWeightInvalid([
+                                              ...weightInvalid.filter(
+                                                (weight) =>
+                                                  weight.index !== index
+                                              ),
                                               {
                                                 index: index,
                                                 msg: 'Please enter the starting and ending weight for the shipping fee',
@@ -198,6 +206,10 @@ const ShptFeeAdd = () => {
                                               ).value
                                           ) {
                                             setWeightInvalid([
+                                              ...weightInvalid.filter(
+                                                (weight) =>
+                                                  weight.index !== index
+                                              ),
                                               {
                                                 index: index,
                                                 msg: 'Starting value should be smaller than ending value.',
@@ -218,6 +230,10 @@ const ShptFeeAdd = () => {
                                               ).value
                                           ) {
                                             setWeightInvalid([
+                                              ...weightInvalid.filter(
+                                                (weight) =>
+                                                  weight.index !== index
+                                              ),
                                               {
                                                 index: index,
                                                 msg: 'The starting value overlaps with the previous ending value.',
@@ -225,6 +241,7 @@ const ShptFeeAdd = () => {
                                             ]);
                                             return Promise.reject();
                                           }
+
                                           setWeightInvalid(
                                             weightInvalid.filter(
                                               (weight) => weight.index !== index
@@ -272,6 +289,10 @@ const ShptFeeAdd = () => {
                                             value === ''
                                           ) {
                                             setWeightInvalid([
+                                              ...weightInvalid.filter(
+                                                (weight) =>
+                                                  weight.index !== index
+                                              ),
                                               {
                                                 index: index,
                                                 msg: 'Please enter the starting and ending weight for the shipping fee',
@@ -291,6 +312,10 @@ const ShptFeeAdd = () => {
                                               ).value
                                           ) {
                                             setWeightInvalid([
+                                              ...weightInvalid.filter(
+                                                (weight) =>
+                                                  weight.index !== index
+                                              ),
                                               {
                                                 index: index,
                                                 msg: 'Starting value should be smaller than ending value.',
@@ -298,6 +323,36 @@ const ShptFeeAdd = () => {
                                             ]);
                                             return Promise.reject();
                                           }
+
+                                          if (
+                                            weightStart.find(
+                                              (weight) => weight.index === index
+                                            ) &&
+                                            weightEnd.find(
+                                              (weight) =>
+                                                weight.index === index - 1
+                                            ) &&
+                                            weightStart.find(
+                                              (weight) => weight.index === index
+                                            ).value <=
+                                              weightEnd.find(
+                                                (weight) =>
+                                                  weight.index === index - 1
+                                              ).value
+                                          ) {
+                                            setWeightInvalid([
+                                              ...weightInvalid.filter(
+                                                (weight) =>
+                                                  weight.index !== index
+                                              ),
+                                              {
+                                                index: index,
+                                                msg: 'The starting value overlaps with the previous ending value.',
+                                              },
+                                            ]);
+                                            return Promise.reject();
+                                          }
+
                                           setWeightInvalid(
                                             weightInvalid.filter(
                                               (weight) => weight.index !== index
@@ -362,7 +417,7 @@ const ShptFeeAdd = () => {
                             style={{ width: '80%' }}
                             icon={<PlusOutlined />}
                           >
-                            Add field
+                            Add Shipping Fee
                           </Button>
                           <Button
                             type='dashed'
@@ -372,7 +427,7 @@ const ShptFeeAdd = () => {
                             style={{ width: '80%', marginTop: '20px' }}
                             icon={<PlusOutlined />}
                           >
-                            Add field at head
+                            Add Shipping Fee as first
                           </Button>
                           <Form.ErrorList errors={errors} />
                         </Form.Item>
@@ -380,6 +435,51 @@ const ShptFeeAdd = () => {
                     )}
                   </Form.List>
                 </Form.Item>
+                <Row gutter={20}>
+                  <Col>
+                    <Form.Item
+                      label='Subsequent Price'
+                      name='sub_fee'
+                      tooltip={{
+                        title:
+                          'Extra shipping fee charged per subsequent weight when the weight exceeds the specified maximum range',
+                      }}
+                    >
+                      <InputNumber
+                        addonBefore='RM'
+                        precision={2}
+                        min={1}
+                        placeholder='Input'
+                        onChange={(value) => {
+                          if (value) {
+                            setSubFee(value);
+                          } else {
+                            setSubFee(undefined);
+                          }
+                        }}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col>
+                    <Form.Item
+                      label='Subsequent Weight'
+                      name='sub_weight'
+                      rules={[
+                        {
+                          required: subFee ? true : false,
+                          message: 'Please enter the subsequent weight.',
+                        },
+                      ]}
+                    >
+                      <InputNumber
+                        addonAfter='g'
+                        min={0}
+                        placeholder='Input'
+                        disabled={!subFee}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
               </Space>
             </MainCard>
 

@@ -121,7 +121,7 @@ const ShptFeeMgmt = () => {
         title: record.location,
         desc: `${record.weight_start}g - ${
           record.weight_end
-        }g  (${moneyFormatter(parseFloat(record.ship_fee))})`,
+        }g     (${moneyFormatter(parseFloat(record.ship_fee))})`,
       })
     );
     return selected;

@@ -17,29 +17,46 @@ class ShippingFeeViewSet(viewsets.ModelViewSet):
     filterset_class = ShippingFeeFilter
 
     def create(self, request, *args, **kwargs):
-        location = request.data.pop("location")
+        location = request.data.pop("location", None)
+        sub_fee = request.data.pop("sub_fee", None)
+        sub_weight = request.data.pop("sub_weight", None)
         list = []
-        for data in request.data.pop("list"):
-            weight_start = data.get("weight_start")
-            weight_end = data.get("weight_end")
-            ship_fee = data.get("ship_fee")
-            if weight_start > weight_end:
-                return Response(
-                    status=status.HTTP_400_BAD_REQUEST,
-                    data={"details": "invalid_weight"},
-                )
-            list.append(
-                {
-                    "location": location,
-                    "weight_start": weight_start,
-                    "weight_end": weight_end,
-                    "ship_fee": ship_fee,
-                }
-            )
+        data_list = request.data.pop("list")
+        if location:
+            for data in data_list:
+                weight_start = data.get("weight_start")
+                weight_end = data.get("weight_end")
+                ship_fee = data.get("ship_fee")
+                if weight_start > weight_end:
+                    return Response(
+                        status=status.HTTP_400_BAD_REQUEST,
+                        data={"details": "invalid_weight"},
+                    )
+
+                if data == data_list[-1] and sub_fee and sub_weight:
+                    list.append(
+                        {
+                            "location": location,
+                            "weight_start": weight_start,
+                            "weight_end": weight_end,
+                            "ship_fee": ship_fee,
+                            "sub_fee": sub_fee,
+                            "sub_weight": sub_weight,
+                        }
+                    )
+                else:
+                    list.append(
+                        {
+                            "location": location,
+                            "weight_start": weight_start,
+                            "weight_end": weight_end,
+                            "ship_fee": ship_fee,
+                        }
+                    )
 
         serializer = ShippingFeeSerializer(data=list, many=True)
         serializer.is_valid(raise_exception=True)
-        ShippingFee.objects.filter(location__name=location).delete()
+        ShippingFee.objects.filter(location__name=location).delete(hard_delete=True)
         serializer.save()
         invalidate_model(State)
         return Response(status=status.HTTP_200_OK)
