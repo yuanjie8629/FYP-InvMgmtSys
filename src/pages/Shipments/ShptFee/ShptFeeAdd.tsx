@@ -84,7 +84,7 @@ const ShptFeeAdd = () => {
     shippingFeeAddAPI(values)
       .then((res) => {
         setSubmitLoading(false);
-        navigate(findRoutePath('shptFeeAddSuccess'));
+        navigate(findRoutePath('pickupLocAddSuccess'));
       })
       .catch((err) => {
         if (err.response?.status !== 401) {

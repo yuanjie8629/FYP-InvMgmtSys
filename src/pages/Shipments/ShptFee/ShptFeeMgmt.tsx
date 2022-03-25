@@ -68,7 +68,7 @@ const ShptFeeMgmt = () => {
     [searchParams]
   );
 
-  const custTabList = [{ key: 'all', tab: 'All' }];
+  const shptFeeTabList = [{ key: 'all', tab: 'All' }];
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
@@ -128,8 +128,8 @@ const ShptFeeMgmt = () => {
   };
 
   const handleSelectChange = (selectedKeys) => {
-    const selectedRecord = list.filter((cust) =>
-      selectedKeys.some((selected) => selected === cust.id)
+    const selectedRecord = list.filter((shptFee) =>
+      selectedKeys.some((selected) => selected === shptFee.id)
     );
 
     setSelected(getShptFeeDetails(selectedRecord));
@@ -238,9 +238,9 @@ const ShptFeeMgmt = () => {
 
   return (
     <Layout>
-      <MainCardContainer className='cust-mgmt'>
+      <MainCardContainer className='shptFee-mgmt'>
         <MainCard
-          tabList={custTabList}
+          tabList={shptFeeTabList}
           activeTabKey={
             searchParams.get('type') === null ? 'all' : searchParams.get('type')
           }
@@ -252,7 +252,7 @@ const ShptFeeMgmt = () => {
           <Space direction='vertical' size={15} className='full-width'>
             <Row justify='space-between'>
               <Col>
-                <BoldTitle level={4}>Customer List</BoldTitle>
+                <BoldTitle level={4}>Shipping Fees List</BoldTitle>
               </Col>
               <Col>
                 <Button

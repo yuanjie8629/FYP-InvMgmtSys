@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from postcode.models import State
-from shipment.models import ShippingFee
+from shipment.models import PickupLoc, ShippingFee
 
 
 class ShippingFeeSerializer(serializers.ModelSerializer):
@@ -14,3 +14,8 @@ class ShippingFeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShippingFee
         exclude = ["created_at", "is_deleted"]
+
+class PickupLocSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=PickupLoc
+        fields="__all__"

@@ -20,7 +20,7 @@ import AccSettings from '@pages/MyAccount/AccSettings';
 import AdminMgmt from '@pages/Admins/AdminMgmt';
 import AdminAdd from '@pages/Admins/AdminAdd';
 import Help from '@pages/Help/Help';
-import ShptFeeMgmt from '@pages/Shipments/ShptFeeMgmt';
+
 import NotFound from '@pages/NotFound/NotFound';
 import ResetPass from '@pages/Login/ResetPass';
 import { SuccessResult } from '@pages/ResultFeedback';
@@ -29,9 +29,13 @@ import PackEdit from '@pages/Items/Packages/PackEdit';
 import VoucherEdit from '@pages/Vouchers/VoucherEdit';
 import CustRegView from '@pages/Customers/CustRegView';
 import CustView from '@pages/Customers/CustView';
-import ShptFeeAdd from '@pages/Shipments/ShptFeeAdd';
-import ShptFeeEdit from '@pages/Shipments/ShptFeeEdit';
+import ShptFeeAdd from '@pages/Shipments/ShptFee/ShptFeeAdd';
 import ShptMgmt from '@pages/Shipments/ShptMgmt';
+import ShptFeeMgmt from '@pages/Shipments/ShptFee/ShptFeeMgmt';
+import ShptFeeEdit from '@pages/Shipments/ShptFee/ShptFeeEdit';
+import PickupMgmt from '@pages/Shipments/Pickup/PickupMgmt';
+import PickupAdd from '@pages/Shipments/Pickup/PickupAdd';
+import PickupEdit from '@pages/Shipments/Pickup/PickupEdit';
 
 const routeList: {
   label: string;
@@ -196,6 +200,36 @@ const routeList: {
     path: '/shipment/shipping_fee/edit/success',
     protected: true,
     component: <SuccessResult record='shptFee' type='edit' />,
+  },
+  {
+    label: 'pickupMgmt',
+    path: '/shipment/pickup',
+    protected: true,
+    component: <PickupMgmt />,
+  },
+  {
+    label: 'pickupAdd',
+    path: '/shipment/pickup/add',
+    protected: true,
+    component: <PickupAdd />,
+  },
+  {
+    label: 'pickupAdd',
+    path: '/shipment/pickup/:id',
+    protected: true,
+    component: <PickupEdit />,
+  },
+  {
+    label: 'pickupAddSuccess',
+    path: '/shipment/pickup/add/success',
+    protected: true,
+    component: <SuccessResult record='pickup' type='add' />,
+  },
+  {
+    label: 'pickupEditSuccess',
+    path: '/shipment/pickup/edit/success',
+    protected: true,
+    component: <SuccessResult record='pickup' type='edit' />,
   },
   {
     label: 'customer',

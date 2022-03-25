@@ -11,7 +11,8 @@ const BreadCrumb = () => {
   const extraBreadcrumbItems = pathSnippets.map((_: any, index: number) => {
     const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
 
-    return breadcrumbNameMap.hasOwnProperty(url) && url !== '/dashboard' ? (
+    return breadcrumbNameMap.hasOwnProperty(checkURL(url)) &&
+      url !== '/dashboard' ? (
       <AntdBreadcrumb.Item key={url}>
         <Link to={url}>{breadcrumbNameMap[checkURL(url)]}</Link>
       </AntdBreadcrumb.Item>
