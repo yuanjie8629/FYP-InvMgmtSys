@@ -87,7 +87,7 @@ const menuList: {
       },
 
       {
-        key: 'business-insights',
+        key: 'business_insights',
         label: 'Business Insights',
         icon: MdInsertChart,
         child: [
@@ -114,7 +114,7 @@ const menuList: {
     level: 2,
     items: [
       {
-        key: 'my-acc',
+        key: 'my_acc',
         label: 'My Account',
         icon: MdAccountCircle,
         child: [
