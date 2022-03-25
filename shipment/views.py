@@ -2,9 +2,9 @@ from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from postcode.serializers import StateSerializer
-from shipment.filters import ShippingFeeFilter
-from shipment.serializers import ShippingFeeSerializer
-from shipment.models import ShippingFee
+from shipment.filters import PickupLocFilter, ShippingFeeFilter
+from shipment.serializers import PickupLocSerializer, ShippingFeeSerializer
+from shipment.models import PickupLoc, ShippingFee
 from postcode.models import State
 from cacheops import invalidate_model
 
@@ -90,6 +90,42 @@ def ShippingFeeBulkDeleteView(request):
         try:
             ShippingFee.objects.get(pk=i).delete()
         except ShippingFee.DoesNotExist:
+            invalidIds.append(i)
+
+    if invalidIds:
+        response = Response(status=status.HTTP_404_NOT_FOUND)
+        response.data = {
+            "error": {
+                "code": "id_not_found",
+                "message": "The following IDs do not exist.",
+                "fields": invalidIds,
+            }
+        }
+        return response
+
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PickupLocViewSet(viewsets.ModelViewSet):
+    queryset = PickupLoc.objects.all().order_by("-last_update")
+    serializer_class = PickupLocSerializer
+    filterset_class = PickupLocFilter
+
+
+@api_view(["POST"])
+def PickupLocBulkDeleteView(request):
+    ids = request.data.get("ids")
+    if not ids:
+        response = Response(status=status.HTTP_400_BAD_REQUEST)
+        response.data = {"detail": "IDs are not found in request body."}
+        return response
+
+    idList = [int(pk) for pk in ids]
+    invalidIds = []
+    for i in idList:
+        try:
+            PickupLoc.objects.get(pk=i).delete()
+        except PickupLoc.DoesNotExist:
             invalidIds.append(i)
 
     if invalidIds:

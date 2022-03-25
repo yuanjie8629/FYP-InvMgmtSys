@@ -28,7 +28,7 @@ export const checkURL = (url: string) => {
   if (
     splitURL.includes('shipment') &&
     splitURL.includes('shipping_fee') &&
-    splitURL[splitURL.length - 1] !== 'shipping_fee'
+    !['shipping_fee', 'add'].includes(splitURL[splitURL.length - 1])
   ) {
     splitURL.pop();
     splitURL.push(':id');

@@ -69,7 +69,9 @@ const menuList: {
         child: [
           { key: 'shptMgmt', label: 'Manage Shipments' },
           { key: 'shptFeeMgmt', label: 'Manage Shipping Fees' },
+          { key: 'pickupMgmt', label: 'Manage Pickup Loc' },
           { key: 'shptFeeAdd', label: 'Add Shipping Fees' },
+          { key: 'pickupAdd', label: 'Add Pickup Loc' },
         ],
       },
 
