@@ -8,9 +8,6 @@ class ShippingFeeSerializer(serializers.ModelSerializer):
         slug_field="name", queryset=State.objects.all()
     )
     
-
-    def create(self, validated_data):
-        return super().create(validated_data)
     class Meta:
         model = ShippingFee
         exclude = ["created_at", "is_deleted"]

@@ -56,7 +56,7 @@ class ShippingFeeViewSet(viewsets.ModelViewSet):
 
         serializer = ShippingFeeSerializer(data=list, many=True)
         serializer.is_valid(raise_exception=True)
-        ShippingFee.objects.filter(location__name=location).delete(hard_delete=True)
+        ShippingFee.objects.filter(location__name=location).delete()
         serializer.save()
         invalidate_model(State)
         return Response(status=status.HTTP_200_OK)
