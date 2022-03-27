@@ -2,9 +2,6 @@ import re
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.utils.crypto import get_random_string
-from core.models import Users
 from customer.models import Cust, CustPosReg
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
