@@ -45,6 +45,8 @@ class Shipment(OrderShipment):
 
 
 class Pickup(OrderShipment):
+    contact_name = models.CharField(max_length=100)
+    contact_num = models.CharField(max_length=15)
     pickup_dt = models.DateTimeField(blank=True, null=True)
     pickup_loc = models.ForeignKey("PickupLoc", on_delete=models.DO_NOTHING)
 
