@@ -34,7 +34,6 @@ class Order(SoftDeleteModel):
     voucher = models.ForeignKey(
         Voucher, on_delete=models.DO_NOTHING, blank=True, null=True
     )
-    discount = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
     item = models.ManyToManyField(Item, through="OrderLine")
     shipment = models.ForeignKey(
         OrderShipment, on_delete=models.DO_NOTHING, related_name="order"
