@@ -1,147 +1,66 @@
-from datetime import date
+import random
+import string
+import uuid
 from django.db import models
-from django.core.validators import MinValueValidator
-from polymorphic.models import PolymorphicModel
-from core.models import PolySoftDeleteModel
-from image.models import Image
-from item.choices import ITEM_STATUS, ITEM_TYPE, PROD_CAT
-from uuid import uuid4
-from cloudinary.models import CloudinaryField
+from core.models import SoftDeleteModel
+from customer.models import Cust
+from item.models import Item
+from order.choices import ORDER_STATUS
+from shipment.models import OrderShipment
+from voucher.models import Voucher
+
+def create_id():
+        return "".join(random.choices(string.digits, k=15))
+
+def create_unique_id():
+    id = create_id()
+    unique = False
+    while not unique:
+        if not Order.objects.filter(pk=id).exists():
+            print(id)
+            return id
+        else:
+            id = create_id()
+
+class Order(SoftDeleteModel):
+    id = models.CharField(primary_key=True, max_length=40, default=create_unique_id)
+    total_amt = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
+    status = models.CharField(max_length=20, choices=ORDER_STATUS, blank=True)
+    email = models.CharField(max_length=255, blank=True, null=True)
+    cust = models.ForeignKey(Cust, on_delete=models.DO_NOTHING, blank=True, null=True)
+    voucher = models.ForeignKey(
+        Voucher, on_delete=models.DO_NOTHING, blank=True, null=True
+    )
+    discount = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
+    item = models.ManyToManyField(Item, through="OrderLine")
+    shipment = models.ForeignKey(
+        OrderShipment, on_delete=models.DO_NOTHING, related_name="order"
+    )
+
+    class Meta:
+        db_table = "order"
+
+    def save(self, *args, **kwargs):
+        if self.status is None:
+            self.status = "unpaid"
+        super(Order, self).save(*args, **kwargs)
+        return self
+
+    
 
 
-def upload_to(instance, filename):
-    # upload_to = "{}/{}".format(instance.type, instance.name)
-    return "thumbnails/{}.{}".format(uuid4().hex, filename.split(".")[-1])
-
-
-class Item(PolySoftDeleteModel, PolymorphicModel):
+class OrderLine(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100, null=False)
-    type = models.CharField(max_length=20, choices=ITEM_TYPE)
-    description = models.TextField()
-    status = models.CharField(max_length=20, choices=ITEM_STATUS)
-    # thumbnail = models.ImageField(upload_to=upload_to)
-    thumbnail = CloudinaryField("image", width_field='700', height_field='700')
-    image = models.ManyToManyField(
-        Image,
-        through="ImageItemLine",
-        related_name="item",
-        blank=True,
-        max_length=8,
-    )
-    price = models.DecimalField(
-        max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
-    )
+    quantity = models.IntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     special_price = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        blank=True,
-        null=True,
-        validators=[MinValueValidator(0)],
-    )
-    sku = models.CharField(max_length=45, unique=True)
-    stock = models.PositiveIntegerField()
-    weight = models.DecimalField(
-        max_digits=8, decimal_places=2, validators=[MinValueValidator(0)]
-    )
-    length = models.DecimalField(
-        max_digits=8, decimal_places=2, validators=[MinValueValidator(0)]
-    )
-    width = models.DecimalField(
-        max_digits=8, decimal_places=2, validators=[MinValueValidator(0)]
-    )
-    height = models.DecimalField(
-        max_digits=8, decimal_places=2, validators=[MinValueValidator(0)]
-    )
-
-    class Meta:
-        db_table = "item"
-
-    def __str__(self):
-        return "{}: {}".format(self.type, self.name)
-
-    def save(self, *args, **kwargs):
-        if self.stock <= 0 and self.status == "active":
-            self.status = "oos"
-        if self.stock > 0 and self.status == "oos":
-            self.status = "active"
-
-        super(Item, self).save(*args, **kwargs)
-        return self
-
-
-class Product(Item):
-    category = models.CharField(max_length=30, choices=PROD_CAT)
-    cost_per_unit = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True
     )
-    ordering_cost = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True
+    weight = models.DecimalField(max_digits=8, decimal_places=2)
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name="order_line"
     )
-    holding_cost = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True
-    )
-    avg_lead_tm = models.IntegerField(blank=True, null=True)
-    max_lead_tm = models.IntegerField(blank=True, null=True)
-
-    def __init__(self, *args, **kwargs):
-        super(Product, self).__init__(*args, **kwargs)
-        self.type = "prod"
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="order_line")
 
     class Meta:
-        db_table = "product"
-
-
-class Package(Item):
-    avail_start_dt = models.DateField()
-    avail_end_dt = models.DateField(blank=True, null=True, default=date.max)
-    product = models.ManyToManyField(
-        Product, through="PackageItem", related_name="package"
-    )
-
-    def __init__(self, *args, **kwargs):
-        super(Package, self).__init__(*args, **kwargs)
-        self.type = "pack"
-
-    class Meta:
-        db_table = "package"
-
-    def save(self, *args, **kwargs):
-        if (
-            self.avail_start_dt is not None
-            and self.avail_start_dt > date.today()
-            and self.status != "hidden"
-        ):
-            self.status = "scheduled"
-        if (
-            self.avail_end_dt is not None
-            and self.avail_end_dt < date.today()
-            and self.status != "hidden"
-        ):
-            self.status = "expired"
-
-        super(Package, self).save(*args, **kwargs)
-        return self
-
-
-class PackageItem(models.Model):
-    id = models.AutoField(primary_key=True)
-    quantity = models.IntegerField(blank=True, null=True)
-    pack = models.ForeignKey(
-        Package, on_delete=models.CASCADE, related_name="pack_item"
-    )
-    prod = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="pack_item"
-    )
-
-    class Meta:
-        db_table = "package_item"
-
-
-class ImageItemLine(models.Model):
-    id = models.AutoField(primary_key=True)
-    image = models.ForeignKey(Image, on_delete=models.CASCADE)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = "image_item_line"
+        db_table = "order_line"
