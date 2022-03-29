@@ -27,6 +27,9 @@ class Voucher(SoftDeleteModel):
     class Meta:
         db_table = "voucher"
 
+    def __str__(self):
+        return "{}".format(self.code)
+
     def save(self, *args, **kwargs):
         if self.total_amt == 0 and self.status == "active":
             self.status = "oos"
@@ -63,3 +66,6 @@ class VoucherLine(models.Model):
 
     class Meta:
         db_table = "voucher_line"
+
+    def __str__(self):
+        return "{}: {}".format(self.voucher.code, self.cust_type.type)

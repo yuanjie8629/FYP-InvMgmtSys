@@ -35,8 +35,8 @@ const VoucherEdit = () => {
   const { id } = useParams();
   const [messageApi] = useContext(MessageContext);
   const [discType, setDiscType] = useState('amount');
-  const [usageLimitUltd, setUsageLimitUltd] = useState(false);
-  const [availabilityUltd, setAvailabilityUltd] = useState(false);
+  const [availability, setAvailability] = useState<number>();
+  const [usageLimit, setUsageLimit] = useState<number>();
   const [autoApply, setAutoApply] = useState(false);
   const [hideEndTime, setHideEndTime] = useState(true);
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
@@ -57,12 +57,10 @@ const VoucherEdit = () => {
   const [dataLoading, setDataLoading] = useState(false);
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
- 
   };
 
   const showErrMsg = (errMsg?: string) => {
     messageApi.open({ key: 'err', type: 'error', content: errMsg });
-
   };
 
   const handleEditVoucher = (values) => {
@@ -79,12 +77,10 @@ const VoucherEdit = () => {
     if (discType === 'percentage') {
       values.discount = values.discount / 100;
     }
-    if (availabilityUltd) {
-      values.total_amt = -1;
-    }
-    if (usageLimitUltd) {
-      values.usage_limit = -1;
-    }
+
+    values.total_amt = availability;
+
+    values.usage_limit = usageLimit;
 
     values.avail_start_dt = getDt(values.avail_start_dt);
     if (values.avail_end_dt) values.avail_end_dt = getDt(values.avail_end_dt);
@@ -137,6 +133,11 @@ const VoucherEdit = () => {
                   : undefined,
             });
             setAutoApply(res.data.auto_apply);
+
+            setAvailability(data.total_amt);
+
+            setUsageLimit(data.usage_limit);
+
             setDataLoading(false);
           }
         })
@@ -294,7 +295,7 @@ const VoucherEdit = () => {
                   rules={[
                     ({ getFieldValue }) => ({
                       validator(_, value) {
-                        if (!value && !availabilityUltd) {
+                        if (!value && availability === undefined) {
                           return Promise.reject(
                             'Please enter the availability number for the discount.'
                           );
@@ -307,24 +308,26 @@ const VoucherEdit = () => {
                   <Space size={20}>
                     <InputNumber
                       min={0}
-                      value={voucherForm.getFieldValue('total_amt')}
-                      onChange={(value) =>
+                      value={availability !== -1 ? availability : undefined}
+                      onChange={(value) => {
                         voucherForm.setFieldsValue({
                           availability: value,
-                        })
-                      }
-                      disabled={availabilityUltd}
+                        });
+                        setAvailability(value);
+                      }}
+                      disabled={availability === -1}
                     />
                     <Checkbox
+                      checked={availability === -1}
                       onChange={(e) => {
                         if (e.target.checked) {
                           voucherForm.setFieldsValue({
                             total_amt: '-1',
                           });
-                          setAvailabilityUltd(true);
+                          setAvailability(-1);
                         } else {
                           voucherForm.resetFields(['total_amt']);
-                          setAvailabilityUltd(false);
+                          setAvailability(undefined);
                         }
                       }}
                     >
@@ -339,7 +342,7 @@ const VoucherEdit = () => {
                   rules={[
                     ({ getFieldValue }) => ({
                       validator(_, value) {
-                        if (!value && !usageLimitUltd) {
+                        if (!value && usageLimit === undefined) {
                           return Promise.reject(
                             'Please enter the usage limit for the discount.'
                           );
@@ -352,24 +355,30 @@ const VoucherEdit = () => {
                   <Space size={20}>
                     <InputNumber
                       min={0}
-                      value={voucherForm.getFieldValue('usage_limit')}
+                      value={
+                        voucherForm.getFieldValue('usage_limit') === -1
+                          ? ''
+                          : voucherForm.getFieldValue('usage_limit')
+                      }
                       onChange={(value) => {
                         voucherForm.setFieldsValue({
                           usageLimit: value,
                         });
+                        setUsageLimit(value);
                       }}
-                      disabled={usageLimitUltd}
+                      disabled={usageLimit === -1}
                     />
                     <Checkbox
+                      checked={usageLimit === -1}
                       onChange={(e) => {
                         if (e.target.checked) {
                           voucherForm.setFieldsValue({
                             usage_limit: '-1',
                           });
-                          setUsageLimitUltd(true);
+                          setUsageLimit(-1);
                         } else {
                           voucherForm.resetFields(['usage_limit']);
-                          setUsageLimitUltd(false);
+                          setUsageLimit(undefined);
                         }
                       }}
                     >

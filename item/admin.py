@@ -1,5 +1,4 @@
 from django.contrib import admin
-from core.admin import SoftDeleteAdmin
 from item.models import ImageItemLine, Item, PackageItem, Product, Package
 from django.contrib import admin
 from polymorphic.admin import (

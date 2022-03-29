@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Admin
+from administrator.models import Admin
+from reversion.admin import VersionAdmin
 
-# Register your models here.
-admin.site.register(Admin)
+
+@admin.register(Admin)
+class AdministratorAdmin(VersionAdmin):
+    pass
