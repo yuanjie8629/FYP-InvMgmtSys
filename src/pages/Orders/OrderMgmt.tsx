@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import MainCard from '@components/Card/MainCard';
-import Button from '@components/Button';
+import Button, { ButtonProps } from '@components/Button';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import FilterInputs from './FilterInputs';
@@ -8,64 +8,237 @@ import { Row, Space, Col, Typography } from 'antd';
 import InformativeTable, {
   InformativeTableButtonProps,
 } from '@components/Table/InformativeTable';
-import orderList from './orderList';
 import { HiExclamation } from 'react-icons/hi';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
 import orderTabList from './orderTabList';
 import { orderStatList } from '@utils/optionUtils';
-import { BulkEditButton, PrintButton } from '@components/Button/ActionButton';
+import {
+  BulkEditButton,
+  CancelButton,
+  PickupButton,
+  PrintButton,
+} from '@components/Button/ActionButton';
 import UpdButton from '@components/Button/ActionButton/UpdButton';
 import StatusTag from '@components/Tag/StatusTag';
 import Popover from '@components/Popover';
 import { BoldTitle } from '@components/Title';
+import { MessageContext } from '@contexts/MessageContext';
+import {
+  orderTrackNumUpdAPI,
+  orderListAPI,
+  orderPickupUpdAPI,
+  orderCancelAPI,
+} from '@api/services/orderAPI';
+import { actionSuccessMsg, serverErrMsg } from '@utils/messageUtils';
+import { ActionModal } from '@components/Modal';
+import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
+import { getOrderDetails } from './orderUtils';
 
 const OrderMgmt = () => {
   const { Text } = Typography;
-  const [orderListFltr, setOrderListFltr] = useState(orderList);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [messageApi] = useContext(MessageContext);
+  const [list, setList] = useState([]);
+  const [recordCount, setRecordCount] = useState<number>();
+  const [selected, setSelected] = useState([]);
+  const [tableLoading, setTableLoading] = useState(false);
+  const defPg = 10;
 
-  let navigate = useNavigate();
-  let [searchParams, setSearchParams] = useSearchParams();
+  const getTableData = (isMounted: boolean = true) => {
+    setSelected([]);
+    setTableLoading(true);
+    orderListAPI(location.search)
+      .then((res) => {
+        if (isMounted) {
+          setList(res.data?.results);
+          setRecordCount(res.data?.count);
+          setTableLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setTableLoading(false);
+          showServerErrMsg();
+        }
+      });
+  };
 
   useEffect(
-    () =>
-      setOrderListFltr(
-        orderList.filter((order) =>
-          searchParams.get('status') !== null
-            ? order.orderStat === searchParams.get('status')
-            : true
-        )
-      ),
+    () => {
+      let isMounted = true;
+      getTableData(isMounted);
+      return () => {
+        isMounted = false;
+      };
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [searchParams]
   );
 
-  const genInvoiceBtn = (props: any) => (
+  const showServerErrMsg = () => {
+    messageApi.open(serverErrMsg);
+  };
+
+  const showActionSuccessMsg = (action: 'update', isMulti: boolean = true) => {
+    messageApi.open(
+      actionSuccessMsg('Order', action, isMulti ? selected.length : 1)
+    );
+  };
+
+  const genInvoiceBtn = (props: ButtonProps) => (
     <PrintButton type='primary'>Generate Invoice(s)</PrintButton>
   );
 
-  const bulkUpdBtn = (props: any) => <BulkEditButton />;
+  const pickupBtn = (props: ButtonProps) => (
+    <PickupButton
+      type='primary'
+      onClick={() => {
+        ActionModal.show('pickup', {
+          onOk: async () => {
+            const selectedKeys = selected.map(
+              (selectedItem) => selectedItem.key
+            );
+            await orderPickupUpdAPI(
+              selectedKeys.map((key) => {
+                return { id: key };
+              })
+            )
+              .then(() => {
+                getTableData();
+                showActionSuccessMsg('update');
+              })
+              .catch((err) => {
+                if (err.response?.status !== 401) {
+                  showServerErrMsg();
+                }
+              });
+          },
+        });
+      }}
+      {...props}
+    />
+  );
+
+  const cancelBtn = (props: ButtonProps) => (
+    <CancelButton
+      type='primary'
+      onClick={() => {
+        ActionModal.show('cancel', {
+          onOk: async () => {
+            const selectedKeys = selected.map(
+              (selectedItem) => selectedItem.key
+            );
+            await orderCancelAPI(
+              selectedKeys.map((key) => {
+                return { id: key };
+              })
+            )
+              .then(() => {
+                getTableData();
+                showActionSuccessMsg('update');
+              })
+              .catch((err) => {
+                if (err.response?.status !== 401) {
+                  showServerErrMsg();
+                }
+              });
+          },
+        });
+      }}
+      {...props}
+    />
+  );
+
+  const bulkUpdBtn = (props: ButtonProps) => (
+    <BulkEditButton
+      onClick={() => {
+        ActionModal.show('orderBulkUpd', {
+          onOk: async (data) => {
+            console.log(data);
+            await orderTrackNumUpdAPI(data)
+              .then(() => {
+                getTableData();
+                showActionSuccessMsg('update');
+              })
+              .catch((err) => {
+                if (err.response?.status !== 401) {
+                  showServerErrMsg();
+                }
+              });
+          },
+        });
+      }}
+      {...props}
+    />
+  );
 
   const onSelectBtn: InformativeTableButtonProps = [
     {
       element: genInvoiceBtn,
       key: 'genInvoice',
+      fltr: [
+        { fld: 'status', value: 'cancel', rel: 'neq' },
+        { fld: 'status', value: 'unpaid', rel: 'neq' },
+      ],
     },
     {
       element: bulkUpdBtn,
       key: 'bulkUpd',
       fltr: [
-        { fld: 'trackNum', value: undefined, rel: 'eq' },
-        { fld: 'orderStat', value: 'cancel', rel: 'neq' },
+        { fld: 'shipment', value: 'shipping', rel: 'eq' },
+        { fld: 'track_num', value: null, rel: 'eq' },
+        { fld: 'status', value: 'cancel', rel: 'neq' },
+        { fld: 'status', value: 'completed', rel: 'neq' },
+        { fld: 'status', value: 'unpaid', rel: 'neq' },
+      ],
+    },
+    {
+      element: pickupBtn,
+      key: 'pickup',
+      fltr: [
+        { fld: 'shipment', value: 'pickup', rel: 'eq' },
+        { fld: 'status', value: 'cancel', rel: 'neq' },
+        { fld: 'status', value: 'completed', rel: 'neq' },
+        { fld: 'status', value: 'unpaid', rel: 'neq' },
+      ],
+    },
+    {
+      element: cancelBtn,
+      key: 'cancel',
+      fltr: [
+        { fld: 'status', value: 'toPick', rel: 'eq' },
+        { fld: 'status', value: 'toShip', rel: 'eq' },
+        { fld: 'status', value: 'unpaid', rel: 'eq' },
       ],
     },
   ];
+
+  const handleSelectChange = (selectedKeys) => {
+    const selectedRecord = list.filter((order) =>
+      selectedKeys.some((selected) => selected === order.id)
+    );
+    setSelected(getOrderDetails(selectedRecord));
+  };
+
+  const handleTabChange = (key) => {
+    if (key !== 'all') {
+      setSearchParams(addSearchParams(searchParams, { status: key }));
+    } else {
+      searchParams.delete('status');
+      setSearchParams(parseURL(searchParams));
+    }
+  };
 
   const orderMgmtColumns: {
     title: string;
     dataIndex?: string | string[];
     key: string;
     sorter?: boolean;
+    defaultSortOrder?: 'ascend' | 'descend';
     align?: 'left' | 'center' | 'right';
     fixed?: 'left' | 'right';
     width?: number | string;
@@ -73,14 +246,21 @@ const OrderMgmt = () => {
   }[] = [
     {
       title: 'Order ID',
-      dataIndex: 'orderID',
-      key: 'orderID',
+      dataIndex: 'id',
+      key: 'id',
       sorter: true,
+      defaultSortOrder: getSortOrder('id'),
       fixed: 'left',
-      width: 110,
+      width: 160,
       render: (data: number) => (
         <div className='text-button-wrapper'>
-          <Text strong className='text-button'>
+          <Text
+            strong
+            className='text-button'
+            onClick={() => {
+              navigate(`/order/${data}`);
+            }}
+          >
             #{data}
           </Text>
         </div>
@@ -88,21 +268,32 @@ const OrderMgmt = () => {
     },
     {
       title: 'Customer',
-      dataIndex: 'custNm',
-      key: 'custNm',
+      dataIndex: ['cust_name', 'email'],
+      key: 'email',
       sorter: true,
+      defaultSortOrder: getSortOrder('email'),
       width: 200,
-      render: (name: string) => (
-        <Text type='secondary' className='text-break'>
-          {name}
-        </Text>
-      ),
+      render: (_: any, data: { [x: string]: string }) => {
+        return (
+          <Space direction='vertical'>
+            {data?.cust_name && (
+              <Text strong type='secondary' className='text-break'>
+                {data?.cust_name}
+              </Text>
+            )}
+            <Text type='secondary' className='text-break'>
+              {data?.email}
+            </Text>
+          </Space>
+        );
+      },
     },
     {
       title: 'Customer Type',
-      dataIndex: 'custType',
-      key: 'custType',
+      dataIndex: 'cust_type',
+      key: 'cust_type',
       sorter: true,
+      defaultSortOrder: getSortOrder('cust_type'),
       width: 150,
       render: (type: string) => (
         <Text type='secondary'>
@@ -110,30 +301,37 @@ const OrderMgmt = () => {
             ? 'Agent'
             : type === 'drpshpr'
             ? 'Dropshipper'
-            : type === 'cust'
+            : type === 'order'
             ? 'Direct Customer'
-            : null}
+            : 'Unregistered Customer'}
         </Text>
       ),
     },
     {
       title: 'Order Time',
-      dataIndex: 'orderTm',
-      key: 'orderTm',
+      dataIndex: 'order_time',
+      key: 'order_time',
       sorter: true,
+      defaultSortOrder: getSortOrder('order_time'),
       width: 150,
     },
     {
       title: 'Tracking Number',
-      dataIndex: ['trackNum', 'orderStat'],
-      key: 'trackNum',
+      dataIndex: ['track_num', 'status', 'shipment'],
+      key: 'track_num',
       width: 150,
       render: (_: any, data: { [x: string]: string }) =>
-        data['trackNum'] !== undefined ? (
-          <Button type='link' color='info'>
-            #{data['trackNum']}
+        data?.track_num !== null ? (
+          <Button
+            type='link'
+            color='info'
+            onClick={() => {
+              window['linkTrack'](data?.track_num);
+            }}
+          >
+            #{data?.track_num}
           </Button>
-        ) : data['orderStat'] === 'cancel' ? (
+        ) : data?.status === 'cancel' || data?.shipment === 'pickup' ? (
           '-'
         ) : (
           <Popover content='Please update the tracking number'>
@@ -148,16 +346,19 @@ const OrderMgmt = () => {
     },
     {
       title: 'Amount',
-      dataIndex: 'orderAmt',
-      key: 'orderAmt',
+      dataIndex: 'total_amt',
+      key: 'total_amt',
       sorter: true,
+      defaultSortOrder: getSortOrder('total_amt'),
       width: 100,
-      render: (amount: number) => <Text strong>{moneyFormatter(amount)}</Text>,
+      render: (amount: string) => (
+        <Text strong>{moneyFormatter(parseFloat(amount))}</Text>
+      ),
     },
     {
       title: 'Status',
-      dataIndex: 'orderStat',
-      key: 'orderStat',
+      dataIndex: 'status',
+      key: 'status',
       align: 'center' as const,
       width: 130,
       render: (status: string) => (
@@ -166,19 +367,88 @@ const OrderMgmt = () => {
     },
     {
       title: 'Action',
-      dataIndex: ['trackNum', 'orderStat'],
       key: 'action',
       width: 100,
       fixed: 'right',
-      render: (_: any, data: { [x: string]: string }) =>
-        data['orderStat'] !== 'cancel' ? (
-          <Space direction='vertical' size={5}>
+      render: (data: any) => (
+        <Space direction='vertical' size={5}>
+          {!['cancel', 'unpaid'].includes(data?.status) && (
             <PrintButton type='link' color='info' />
-            <UpdButton type='link' color='info' />
-          </Space>
-        ) : (
-          '-'
-        ),
+          )}
+          {!['completed', 'cancel', 'unpaid'].includes(data?.status) &&
+            data?.shipment === 'shipping' && (
+              <UpdButton
+                type='link'
+                color='info'
+                onClick={() => {
+                  setSelected(getOrderDetails([data]));
+                  ActionModal.show('orderBulkUpd', {
+                    onOk: async (data) => {
+                      console.log(data);
+                      await orderTrackNumUpdAPI(data)
+                        .then(() => {
+                          getTableData();
+                          showActionSuccessMsg('update', false);
+                        })
+                        .catch((err) => {
+                          if (err.response?.status !== 401) {
+                            showServerErrMsg();
+                          }
+                        });
+                    },
+                  });
+                }}
+              />
+            )}
+          {!['completed', 'cancel', 'unpaid'].includes(data?.status) &&
+            data?.shipment === 'pickup' && (
+              <PickupButton
+                type='link'
+                color='info'
+                onClick={() => {
+                  setSelected(getOrderDetails([data]));
+                  ActionModal.show('pickup', {
+                    onOk: async () => {
+                      await orderPickupUpdAPI([{ id: data?.id }])
+                        .then(() => {
+                          getTableData();
+                          showActionSuccessMsg('update', false);
+                        })
+                        .catch((err) => {
+                          if (err.response?.status !== 401) {
+                            showServerErrMsg();
+                          }
+                        });
+                    },
+                  });
+                }}
+              />
+            )}
+          {['unpaid', 'toShip', 'toPick'].includes(data?.status) && (
+            <CancelButton
+              type='link'
+              color='info'
+              onClick={() => {
+                setSelected(getOrderDetails([data]));
+                ActionModal.show('cancel', {
+                  onOk: async () => {
+                    await orderCancelAPI([{ id: data?.id }])
+                      .then(() => {
+                        getTableData();
+                        showActionSuccessMsg('update', false);
+                      })
+                      .catch((err) => {
+                        if (err.response?.status !== 401) {
+                          showServerErrMsg();
+                        }
+                      });
+                  },
+                });
+              }}
+            />
+          )}
+        </Space>
+      ),
     },
   ];
 
@@ -192,9 +462,7 @@ const OrderMgmt = () => {
               ? 'all'
               : searchParams.get('status')
           }
-          onTabChange={(key) => {
-            setSearchParams(key !== 'all' ? { status: key } : {});
-          }}
+          onTabChange={handleTabChange}
         >
           <FilterInputs />
         </MainCard>
@@ -215,15 +483,21 @@ const OrderMgmt = () => {
                 </Col>
               </Row>
               <InformativeTable
-                dataSource={orderListFltr}
+                rowKey='id'
+                dataSource={list}
                 columns={orderMgmtColumns}
                 buttons={onSelectBtn}
-                scroll={{ x: 1100 }}
+                loading={tableLoading}
+                defPg={defPg}
+                totalRecord={recordCount}
+                onSelectChange={handleSelectChange}
+                scroll={{ x: 1300 }}
               />
             </Space>
           </Space>
         </MainCard>
       </MainCardContainer>
+      <ActionModal recordType='order' dataSource={selected} />
     </Layout>
   );
 };

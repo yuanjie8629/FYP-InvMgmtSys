@@ -113,8 +113,7 @@ const VoucherMgmt = () => {
                 showActionSuccessMsg('activate');
               })
               .catch((err) => {
-                if (err.response?.status !== 401) setTableLoading(false);
-                else {
+                if (err.response?.status !== 401) {
                   showServerErrMsg();
                 }
               });
@@ -145,8 +144,7 @@ const VoucherMgmt = () => {
                 showActionSuccessMsg('hide');
               })
               .catch((err) => {
-                if (err.response?.status !== 401) setTableLoading(false);
-                else {
+                if (err.response?.status !== 401) {
                   showServerErrMsg();
                 }
               });
@@ -171,8 +169,7 @@ const VoucherMgmt = () => {
                 showActionSuccessMsg('delete');
               })
               .catch((err) => {
-                if (err.response?.status !== 401) setTableLoading(false);
-                else {
+                if (err.response?.status !== 401) {
                   showServerErrMsg();
                 }
               });

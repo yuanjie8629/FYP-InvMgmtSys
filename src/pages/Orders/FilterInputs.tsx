@@ -1,12 +1,21 @@
+import FilterSubmitButton from '@components/Button/ActionButton/FilterSubmitButton';
 import FilterInputCol from '@components/Container/FilterInputCol';
 import DateRangePickerWithLabel from '@components/Input/DateRangePickerWithLabel';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
+import { removeInvalidData } from '@utils/arrayUtils';
+import { getDt } from '@utils/dateUtils';
 import { custCat } from '@utils/optionUtils';
-import { Button, Col, Row, Space } from 'antd';
+import { Form, Row, Space } from 'antd';
+import { useForm } from 'antd/es/form/Form';
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 const FilterInputs = () => {
+  const [orderFilter] = useForm();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const orderInputSelect: {
     defaultVal: string;
     options: {
@@ -14,82 +23,118 @@ const FilterInputs = () => {
       label: string;
     }[];
   } = {
-    defaultVal: 'orderID',
+    defaultVal: 'id',
     options: [
-      { value: 'orderID', label: 'Order ID' },
-      { value: 'custNm', label: 'Customer Name' },
-      { value: 'trackingNum', label: 'Tracking Number' },
+      { value: 'id', label: 'Order ID' },
+      { value: 'cust_name', label: 'Customer Name' },
+      { value: 'email', label: 'Customer Email' },
+      { value: 'track_num', label: 'Tracking Number' },
     ],
   };
+
+  const [selectedInputSelect, setSelectedInputSelect] = useState(
+    orderInputSelect.defaultVal
+  );
 
   const custCatSelect = {
     placeholder: 'Select Customer Type',
     options: custCat,
   };
 
-  const payMthdSelect = {
-    placeholder: 'Select Payment Method',
-    options: [
-      { value: 'intBnk', label: 'Internet Banking' },
-      { value: 'card', label: 'Card' },
-      { value: 'paypal', label: 'Paypal' },
-    ],
+  const handleSearch = (values) => {
+    let { order_date, ...value } = values;
+    value = removeInvalidData(value);
+
+    if (order_date) {
+      order_date = {
+        order_date_after: getDt(order_date[0]),
+        order_date_before: getDt(order_date[1]),
+      };
+    }
+
+    setSearchParams(
+      searchParams.get('type') !== null
+        ? {
+            type: searchParams.get('type'),
+            ...value,
+            ...order_date,
+          }
+        : { ...value, ...order_date }
+    );
+  };
+
+  const handleReset = () => {
+    setSearchParams(
+      searchParams.get('type') !== null
+        ? {
+            type: searchParams.get('type'),
+          }
+        : {}
+    );
   };
 
   return (
-    <Space direction='vertical' size={20} className='full-width'>
-      <Row gutter={[30, 30]}>
-        <FilterInputCol>
-          <InputSelect
-            selectBefore={orderInputSelect}
-            placeholder='Input'
-            selectWidth={150}
-          ></InputSelect>
-        </FilterInputCol>
-        <FilterInputCol>
-          <SelectWithLabel
-            label='Customer Type'
-            select={custCatSelect}
-            textSpan={7}
-          />
-        </FilterInputCol>
+    <Form
+      name='orderFilter'
+      form={orderFilter}
+      onFinish={handleSearch}
+      layout='inline'
+    >
+      <Space direction='vertical' size={30} className='full-width'>
+        <Row gutter={[30, 30]}>
+          <FilterInputCol>
+            <InputSelect
+              formProps={{ name: selectedInputSelect }}
+              selectBefore={orderInputSelect}
+              placeholder='Input'
+              selectWidth={150}
+              onChange={(selected) => {
+                orderFilter.setFieldsValue({
+                  [selected.type]: selected.value,
+                });
+                setSelectedInputSelect(selected.type);
+              }}
+            />
+          </FilterInputCol>
+          <FilterInputCol>
+            <SelectWithLabel
+              formProps={{ name: 'cust_type' }}
+              label='Customer Type'
+              select={custCatSelect}
+              textSpan={7}
+              onSelect={(value) => {
+                orderFilter.setFieldsValue({ cust_type: value });
+              }}
+            />
+          </FilterInputCol>
 
-        <FilterInputCol>
-          <SelectWithLabel
-            label='Payment Method'
-            select={payMthdSelect}
-            justify='start'
-            textSpan={7}
-          />
-        </FilterInputCol>
-        <FilterInputCol>
-          <InputNumberRange
-            label='Amount'
-            placeholder={['Start', 'End']}
-            prefix='RM'
-            prefixWidth={60}
-            min={0}
-            precision={2}
-            textSpan={7}
-          />
-        </FilterInputCol>
-        <FilterInputCol>
-          <DateRangePickerWithLabel
-            label='Order Date'
-            justify='start'
-            textSpan={7}
-          />
-        </FilterInputCol>
-      </Row>
-      <Row gutter={20}>
-        <Col>
-          <Button type='primary'>Search</Button>
-        </Col>
-        <Col>
-          <Button>Reset</Button>
-        </Col>
-      </Row>
-    </Space>
+          <FilterInputCol>
+            <InputNumberRange
+              formProps={{ name: 'amount' }}
+              label='Amount'
+              placeholder={['Start', 'End']}
+              prefix='RM'
+              justify='start'
+              prefixWidth={60}
+              min={0}
+              precision={2}
+              textSpan={4}
+              onChange={(value) => {
+                orderFilter.setFieldsValue({ amount: value });
+              }}
+            />
+          </FilterInputCol>
+          <FilterInputCol>
+            <DateRangePickerWithLabel
+              formProps={{ name: 'order_date' }}
+              label='Order Date'
+              textSpan={7}
+            />
+          </FilterInputCol>
+        </Row>
+        <FilterSubmitButton onReset={handleReset} />
+      </Space>
+    </Form>
   );
 };
 

@@ -3,5 +3,6 @@ ORDER_STATUS = (
     ("cancel", "Cancellation"),
     ("unpaid", "Unpaid"),
     ("toShip", "To Ship"),
+    ("toPick", "To Pickup"),
     ("shipping", "Shipping"),
 )

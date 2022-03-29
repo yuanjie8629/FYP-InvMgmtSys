@@ -84,7 +84,7 @@ const PackInv = () => {
     <BulkEditButton
       disabled={tableLoading}
       onClick={() => {
-        ActionModal.show('bulkUpd', {
+        ActionModal.show('invBulkUpd', {
           onOk: async (data) => {
             await packageBulkUpdAPI(data)
               .then(() => {
@@ -92,8 +92,7 @@ const PackInv = () => {
                 showUpdSuccessMsg(data.length);
               })
               .catch((err) => {
-                if (err.response?.status !== 401) setTableLoading(false);
-                else {
+                if (err.response?.status !== 401) {
                   showServerErrMsg();
                 }
               });

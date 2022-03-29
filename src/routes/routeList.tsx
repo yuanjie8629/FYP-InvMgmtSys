@@ -20,7 +20,6 @@ import AccSettings from '@pages/MyAccount/AccSettings';
 import AdminMgmt from '@pages/Admins/AdminMgmt';
 import AdminAdd from '@pages/Admins/AdminAdd';
 import Help from '@pages/Help/Help';
-
 import NotFound from '@pages/NotFound/NotFound';
 import ResetPass from '@pages/Login/ResetPass';
 import { SuccessResult } from '@pages/ResultFeedback';
@@ -36,6 +35,7 @@ import ShptFeeEdit from '@pages/Shipments/ShptFee/ShptFeeEdit';
 import PickupMgmt from '@pages/Shipments/Pickup/PickupMgmt';
 import PickupAdd from '@pages/Shipments/Pickup/PickupAdd';
 import PickupEdit from '@pages/Shipments/Pickup/PickupEdit';
+import OrderView from '@pages/Orders/OrderView';
 
 const routeList: {
   label: string;
@@ -159,6 +159,12 @@ const routeList: {
     path: '/order/add',
     protected: true,
     component: <OrderAdd />,
+  },
+  {
+    label: 'orderAdd',
+    path: '/order/:id',
+    protected: true,
+    component: <OrderView />,
   },
   {
     label: 'shipment',

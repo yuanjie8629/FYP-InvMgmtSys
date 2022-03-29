@@ -1,0 +1,36 @@
+Thank you for your order!
+
+{%if shipment%}
+We have received your order. We're excited for you to receive your order and will notify you once it is on its way!
+{%else%}
+Your order is ready for pickup!
+{%endif%}
+
+Shipping Information
+
+Contact Name: {{contact_name}}
+Contact Number: {{contact_num}}
+{%if shipment%}
+Address:
+{{address}}
+{{postcode}}, {{city}}, {{state}}.
+{%else%}
+Pickup Location: {{pickup}}
+{%endif%}
+
+Order Summary
+
+Order Number: {{order_id}}
+
+Subtotal - RM {{subtotal}}
+{%if shipment%}
+Shipping Fee - RM {{shipping_fee}}
+{%endif%}
+{%if discount%}
+Discount - RM {{discount}}
+{%endif%}
+
+Total
+RM {{total_price}}
+
+Sharifah Food Ecommerce

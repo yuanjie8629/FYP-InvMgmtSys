@@ -87,12 +87,10 @@ const PackMgmt = () => {
     messageApi.open(
       actionSuccessMsg('Package', action, isMulti ? selected.length : 1)
     );
-
   };
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-  
   };
 
   const activateBtn = (props: any) => (
@@ -115,8 +113,7 @@ const PackMgmt = () => {
                 showActionSuccessMsg('activate');
               })
               .catch((err) => {
-                if (err.response?.status !== 401) setTableLoading(false);
-                else {
+                if (err.response?.status !== 401) {
                   showServerErrMsg();
                 }
               });
@@ -147,8 +144,7 @@ const PackMgmt = () => {
                 showActionSuccessMsg('hide');
               })
               .catch((err) => {
-                if (err.response?.status !== 401) setTableLoading(false);
-                else {
+                if (err.response?.status !== 401) {
                   showServerErrMsg();
                 }
               });
@@ -173,8 +169,7 @@ const PackMgmt = () => {
                 showActionSuccessMsg('delete');
               })
               .catch((err) => {
-                if (err.response?.status !== 401) setTableLoading(false);
-                else {
+                if (err.response?.status !== 401) {
                   showServerErrMsg();
                 }
               });

@@ -1,0 +1,30 @@
+You order has shipped!
+
+Great news! Your order is on its way!
+You can now track your shipment by clicking on the button below.
+https://www.tracking.my/track/{{track_num}}
+
+Shipping Information
+
+Contact Name: {{contact_name}}
+Contact Number: {{contact_num}}
+Address:
+{{address}}
+{{postcode}}, {{city}}, {{state}}.
+
+Order Summary
+
+Order Number: {{order_id}}
+
+Subtotal - RM {{subtotal}}
+{%if shipping_fee%}
+Shipping Fee - RM {{shipping_fee}}
+{%endif%}
+{%if discount%}
+Discount - RM {{discount}}
+{%endif%}
+
+Total
+RM {{total_price}}
+
+Sharifah Food Ecommerce

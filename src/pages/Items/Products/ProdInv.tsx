@@ -72,19 +72,17 @@ const ProdInv = () => {
 
   const showUpdSuccessMsg = (updCount?: number) => {
     messageApi.open(actionSuccessMsg('Product', 'update', updCount));
-   
   };
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    
   };
 
   const bulkUpdBtn = (props: any) => (
     <BulkEditButton
       disabled={tableLoading}
       onClick={() => {
-        ActionModal.show('bulkUpd', {
+        ActionModal.show('invBulkUpd', {
           onOk: async (data) => {
             await productBulkUpdAPI(data)
               .then(() => {
@@ -92,8 +90,7 @@ const ProdInv = () => {
                 showUpdSuccessMsg(data.length);
               })
               .catch((err) => {
-                if (err.response?.status !== 401) setTableLoading(false);
-                else {
+                if (err.response?.status !== 401) {
                   showServerErrMsg();
                 }
               });
@@ -107,7 +104,6 @@ const ProdInv = () => {
     const selectedRecord = list.filter((prod) =>
       selectedKeys.some((selected) => selected === prod.id)
     );
-
     setSelected(getItemInvDetails(selectedRecord));
   };
 

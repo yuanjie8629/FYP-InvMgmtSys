@@ -10,6 +10,7 @@ const breadcrumbNameMap: any = {
   '/package/:id': 'Edit Package',
   '/order': 'Order',
   '/order/add': 'Add Order',
+  '/order/:id': 'View Order',
   '/shipment': 'Shipment',
   '/shipment/shipping_fee': 'Shipping Fee Management',
   '/shipment/shipping_fee/add': 'Add Fees',

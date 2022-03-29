@@ -157,9 +157,13 @@ const InputNumberRange = ({
             </Form.Item>
 
             <Input
-              style={{ width: 30 }}
+              style={{
+                width: 30,
+                backgroundColor: 'white',
+                textAlign: 'center',
+              }}
               value='-'
-              disabled={disabled}
+              disabled
               className='input-range-splitter'
             />
             <Form.Item
