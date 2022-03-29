@@ -75,3 +75,5 @@ class PolySoftDeleteModel(BaseModel):
         self.is_deleted = False
         invalidate_model(self)
         self.save()
+
+

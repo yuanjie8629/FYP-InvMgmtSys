@@ -5,7 +5,10 @@ import ActivateModal from '../ActionModal/ActivateModal';
 import DeleteModal from '../ActionModal/DeleteModal';
 import HideModal from '../ActionModal/HideModal';
 import AcceptModal from './AcceptModal';
-import BulkUpdateModal from './BulkUpdateModal';
+import CancelModal from './CancelModal';
+import InvBulkUpdateModal from './InvBulkUpdateModal';
+import OrderTrackNumUpdModal from './OrderTrackNumUpdModal';
+import PickupModal from './PickupModal';
 import RejectModal from './RejectModal';
 import SuspendModal from './SuspendModal';
 
@@ -18,20 +21,26 @@ export const ActionModalComponent = {
   delete: DeleteModal,
   hide: HideModal,
   activate: ActivateModal,
-  bulkUpd: BulkUpdateModal,
+  invBulkUpd: InvBulkUpdateModal,
+  orderBulkUpd: OrderTrackNumUpdModal,
+  pickup: PickupModal,
   suspend: SuspendModal,
   accept: AcceptModal,
   reject: RejectModal,
+  cancel: CancelModal,
 };
 
 export type ActionModalType =
   | 'activate'
   | 'delete'
   | 'hide'
-  | 'bulkUpd'
+  | 'invBulkUpd'
+  | 'orderBulkUpd'
+  | 'pickup'
   | 'suspend'
   | 'accept'
-  | 'reject';
+  | 'reject'
+  | 'cancel';
 
 export interface ActionModalContentProps {
   recordType?: string;

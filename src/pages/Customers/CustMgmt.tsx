@@ -39,8 +39,8 @@ const CustMgmt = () => {
     custListAPI(location.search)
       .then((res) => {
         if (isMounted) {
-          setList(res.data.results);
-          setRecordCount(res.data.count);
+          setList(res.data?.results);
+          setRecordCount(res.data?.count);
           setTableLoading(false);
         }
       })

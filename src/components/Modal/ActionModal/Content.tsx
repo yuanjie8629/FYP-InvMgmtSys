@@ -54,7 +54,7 @@ const Content = memo(
           data={dataSource}
           itemHeight={47}
           itemKey='key'
-          style={{ maxHeight: 360 }}
+          style={{ maxHeight: 360, overflow: 'auto' }}
         >
           {(item) => (
             <List.Item {...listItemProps}>

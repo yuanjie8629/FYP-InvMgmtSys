@@ -100,7 +100,7 @@ const CustRegFilterInputs = () => {
                 });
                 setSelectedInputSelect(selected.type);
               }}
-            ></InputSelect>
+           />
           </FilterInputCol>
           <FilterInputCol>
             <SelectWithLabel

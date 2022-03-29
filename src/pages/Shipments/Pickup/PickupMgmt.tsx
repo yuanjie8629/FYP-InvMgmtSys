@@ -92,8 +92,7 @@ const PickupMgmt = () => {
                 showActionSuccessMsg('delete');
               })
               .catch((err) => {
-                if (err.response?.status !== 401) setTableLoading(false);
-                else {
+                if (err.response?.status !== 401) {
                   showServerErrMsg();
                 }
               });

@@ -1,0 +1,35 @@
+Order Cancellation
+
+We are sorry but your order has been cancelled.
+If you have paid for the order, you will be refunded within 14 days.
+
+The order details are as follows.
+
+Shipping Information
+
+Contact Name: {{contact_name}}
+Contact Number: {{contact_num}}
+{%if shipment%}
+Address:
+{{address}}
+{{postcode}}, {{city}}, {{state}}.
+{%else%}
+Pickup Location: {{pickup}}
+{%endif%}
+
+Order Summary
+
+Order Number: {{order_id}}
+
+Subtotal - RM {{subtotal}}
+{%if shipment%}
+Shipping Fee - RM {{shipping_fee}}
+{%endif%}
+{%if discount%}
+Discount - RM {{discount}}
+{%endif%}
+
+Total
+RM {{total_price}}
+
+Sharifah Food Ecommerce

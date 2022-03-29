@@ -69,6 +69,7 @@ Rx = "==1.6.1"
 wheel = "*"
 setuptools = "*"
 django-postgres-copy = "*"
+pdfkit = "*"
 
 [dev-packages]
 

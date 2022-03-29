@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { AcceptButton, RejectButton } from '@components/Button/ActionButton';
 import SpinMask from '@components/Spin/SpinMask';
 
-export interface AffixAddProps extends AffixProps {
+export interface AffixCustRegProps extends AffixProps {
   loading?: boolean;
   disabled?: boolean;
   accept?: string;
@@ -18,7 +18,7 @@ const AffixCustReg = ({
   onClick = () => null,
   accept,
   ...props
-}: Omit<AffixAddProps, 'children'>) => {
+}: Omit<AffixCustRegProps, 'children'>) => {
   const { Text } = Typography;
   const [showCard, setShowCard] = useState(false);
   const navigate = useNavigate();

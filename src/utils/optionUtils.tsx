@@ -36,10 +36,11 @@ export const packStatList = [
 
 export const orderStatList = [
   { status: 'completed', label: 'Completed', color: 'success' },
-  { status: 'cancel', label: 'Cancellation', color: 'error' },
+  { status: 'cancel', label: 'Cancelled', color: 'error' },
   { status: 'unpaid', label: 'Unpaid', color: 'error' },
   { status: 'toShip', label: 'To Ship', color: 'warning' },
   { status: 'shipping', label: 'Shipping', color: 'processing' },
+  { status: 'toPick', label: 'To Pickup', color: 'processing' },
 ];
 
 export const custStatList = [
@@ -82,7 +83,6 @@ export const custRegStatusCat = [
   { value: 'accept', label: 'Accepted' },
   { value: 'reject', label: 'Rejected' },
 ];
-
 
 export const discCat = [
   { value: 'amount', label: 'Fixed Amount' },

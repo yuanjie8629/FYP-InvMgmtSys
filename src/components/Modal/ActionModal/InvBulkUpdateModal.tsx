@@ -4,7 +4,7 @@ import Content from './Content';
 import { Row, Typography, Col, InputNumber } from 'antd';
 import { ActionModalContentProps } from '.';
 
-const BulkUpdateModal = memo(
+const InvBulkUpdateModal = memo(
   ({ recordType, ...props }: ActionModalContentProps, _ref) => {
     const { Text } = Typography;
     const [updateData, setUpdateData] = useState([]);
@@ -48,4 +48,4 @@ const BulkUpdateModal = memo(
   }
 );
 
-export default BulkUpdateModal;
+export default InvBulkUpdateModal;

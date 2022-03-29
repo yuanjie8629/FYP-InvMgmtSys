@@ -8,6 +8,7 @@ from item.models import Item
 from order.choices import ORDER_STATUS
 from shipment.models import OrderShipment
 from voucher.models import Voucher
+from django.db.models import Sum, F, Case, When
 
 
 def create_id():
@@ -41,6 +42,24 @@ class Order(SoftDeleteModel):
 
     class Meta:
         db_table = "order"
+
+    @property
+    def get_subtotal_price(self):
+        result = self.order_line.aggregate(
+            total_price=Sum(
+                Case(
+                    When(
+                        item__special_price__isnull=True,
+                        then=(F("quantity") * F("item__price")),
+                    ),
+                    When(
+                        item__special_price__isnull=False,
+                        then=(F("quantity") * F("item__special_price")),
+                    ),
+                )
+            )
+        )
+        return result.get("total_price")
 
     def save(self, *args, **kwargs):
         if self.status is None:
