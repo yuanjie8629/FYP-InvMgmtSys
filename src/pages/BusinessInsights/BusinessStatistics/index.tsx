@@ -372,6 +372,11 @@ const BusinessStatistics = () => {
       cat: 'tdy',
     });
 
+    const rankingCardSelections = [
+      { key: 'bySales', label: 'By Sales', desc: 'Sort ranking by sales' },
+      { key: 'byUnits', label: 'By Units', desc: 'Sort ranking by unit sold' },
+    ];
+
     return (
       <DashboardContainer>
         <DropdownDate
@@ -398,10 +403,7 @@ const BusinessStatistics = () => {
                 </div>
                 <RankingList
                   dataSource={topProduct}
-                  cardSelections={[
-                    { key: 'bySales', label: 'By Sales', desc: '2323' },
-                    { key: 'byUnits', label: 'By Units', desc: '123213' },
-                  ]}
+                  cardSelections={rankingCardSelections}
                   selectOptions={{
                     placeholder: 'Category',
                     options: prodCat,
@@ -428,10 +430,7 @@ const BusinessStatistics = () => {
                 </div>
                 <RankingList
                   dataSource={topProduct}
-                  cardSelections={[
-                    { key: 'bySales', label: 'By Sales', desc: '2323' },
-                    { key: 'byUnits', label: 'By Units', desc: '123213' },
-                  ]}
+                  cardSelections={rankingCardSelections}
                 />
               </Space>
             </MainCard>

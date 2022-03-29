@@ -48,75 +48,72 @@ const RankingList = ({
   const [selectedCard, setSelectedCard] = useState('bySales');
   return (
     <Space direction='vertical' className='full-width'>
-      {cardSelections !== undefined ||
-        (selectOptions !== undefined && (
-          <Row justify='space-between' align='middle'>
-            <Col span={13}>
-              {cardSelections !== undefined && (
-                <CarouselArrow style={{ width: 274 }}>
-                  {splitIntoChunks(cardSelections, 2).map((chunks, index) => (
-                    <div key={`rankingSelections-${index}`}>
-                      <Row gutter={20}>
-                        {chunks.map((selection) => (
-                          <Col key={`col-${selection.key}`}>
-                            <ColorCard
-                              key={selection.key}
-                              bodyStyle={{ padding: 15 }}
-                              style={{ minWidth: 125 }}
-                              backgroundColor={
-                                selectedCard === selection.key
-                                  ? 'success'
-                                  : 'grey'
-                              }
-                              hover={
-                                selectedCard !== selection.key
-                                  ? 'success'
-                                  : null
-                              }
-                              label={
-                                <>
-                                  <Text className='text-break'>
-                                    {selection.label}
-                                  </Text>
-                                  {selection.desc !== undefined && (
-                                    <Popover content={selection.desc}>
-                                      <QuestionCircleOutlined
-                                        style={{
-                                          padding: '0 5px',
-                                        }}
-                                        className='color-grey'
-                                      />
-                                    </Popover>
-                                  )}
-                                </>
-                              }
-                              indicator={
-                                selectedCard === selection.key ? 'true' : null
-                              }
-                              onClick={() => {
-                                setSelectedCard(selection.key);
-                                onCardSelect(selection.key);
-                              }}
-                            />
-                          </Col>
-                        ))}
-                      </Row>
-                    </div>
-                  ))}
-                </CarouselArrow>
-              )}
-            </Col>
-            {selectOptions !== undefined && (
-              <Col span={7}>
-                <Select
-                  {...selectOptions}
-                  className='full-width'
-                  onChange={(value) => onSelectChange(value)}
-                />
-              </Col>
+      {(cardSelections !== undefined || selectOptions !== undefined) && (
+        <Row justify='space-between' align='middle'>
+          <Col span={13}>
+            {cardSelections !== undefined && (
+              <CarouselArrow style={{ width: 274 }}>
+                {splitIntoChunks(cardSelections, 2).map((chunks, index) => (
+                  <div key={`rankingSelections-${index}`}>
+                    <Row gutter={20}>
+                      {chunks.map((selection) => (
+                        <Col key={`col-${selection.key}`}>
+                          <ColorCard
+                            key={selection.key}
+                            bodyStyle={{ padding: 15 }}
+                            style={{ minWidth: 125 }}
+                            backgroundColor={
+                              selectedCard === selection.key
+                                ? 'success'
+                                : 'grey'
+                            }
+                            hover={
+                              selectedCard !== selection.key ? 'success' : null
+                            }
+                            label={
+                              <>
+                                <Text className='text-break'>
+                                  {selection.label}
+                                </Text>
+                                {selection.desc !== undefined && (
+                                  <Popover content={selection.desc}>
+                                    <QuestionCircleOutlined
+                                      style={{
+                                        padding: '0 5px',
+                                      }}
+                                      className='color-grey'
+                                    />
+                                  </Popover>
+                                )}
+                              </>
+                            }
+                            indicator={
+                              selectedCard === selection.key ? 'true' : null
+                            }
+                            onClick={() => {
+                              setSelectedCard(selection.key);
+                              onCardSelect(selection.key);
+                            }}
+                          />
+                        </Col>
+                      ))}
+                    </Row>
+                  </div>
+                ))}
+              </CarouselArrow>
             )}
-          </Row>
-        ))}
+          </Col>
+          {selectOptions !== undefined && (
+            <Col span={7}>
+              <Select
+                {...selectOptions}
+                className='full-width'
+                onChange={(value) => onSelectChange(value)}
+              />
+            </Col>
+          )}
+        </Row>
+      )}
       <List
         dataSource={dataSource.items}
         renderItem={(item: {
@@ -144,7 +141,7 @@ const RankingList = ({
                 </Col>
                 <Col>
                   <Text className='ranking-list-sales'>
-                    {dataSource.type === 'sales' ? 'sales' : 'units'}
+                    {dataSource.type === 'sales' ? 'MYR' : 'units'}
                   </Text>
                 </Col>
               </Row>

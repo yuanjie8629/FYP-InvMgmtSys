@@ -1,3 +1,8 @@
 from django.contrib import admin
+from order.models import Order
+from reversion.admin import VersionAdmin
 
-# Register your models here.
+
+@admin.register(Order)
+class OrderAdmin(VersionAdmin):
+    pass

@@ -1,3 +1,8 @@
 from django.contrib import admin
+from payment.models import Payment
+from reversion.admin import VersionAdmin
 
-# Register your models here.
+
+@admin.register(Payment)
+class PaymentAdmin(VersionAdmin):
+    pass

@@ -175,6 +175,12 @@ const Login = (_props) => {
                           />
                         }
                         className='login-left-align'
+                        onClick={() =>
+                          window.open(
+                            'https://fyp-shrf-ecommerce.herokuapp.com/',
+                            '_self'
+                          )
+                        }
                       >
                         Go to Sharifah Food E-commerce
                       </Button>

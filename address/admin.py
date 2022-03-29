@@ -1,3 +1,8 @@
 from django.contrib import admin
+from address.models import Address
+from reversion.admin import VersionAdmin
 
-# Register your models here.
+
+@admin.register(Address)
+class AddressAdmin(VersionAdmin):
+    pass
