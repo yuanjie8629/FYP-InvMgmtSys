@@ -19,7 +19,12 @@ import { MessageContext } from '@contexts/MessageContext';
 import { custStatusUpdAPI, custListAPI } from '@api/services/custAPI';
 import { actionSuccessMsg, serverErrMsg } from '@utils/messageUtils';
 import { ActionModal } from '@components/Modal';
-import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
+import {
+  addSearchParams,
+  getSortOrder,
+  getSortOrderWithKey,
+  parseURL,
+} from '@utils/urlUtls';
 
 const CustMgmt = () => {
   const { Text } = Typography;
@@ -40,6 +45,7 @@ const CustMgmt = () => {
     custListAPI(location.search)
       .then((res) => {
         if (isMounted) {
+          console.log(res.data);
           setList(res.data?.results);
           setRecordCount(res.data?.count);
           if (searchParams.has('offset')) {
@@ -172,27 +178,28 @@ const CustMgmt = () => {
     },
   ];
 
-  const getCustDetails = (selectedRecord) => {
+  const getCustDetails = (selectedRecord: any[]) => {
     const selected = [];
-    selectedRecord.forEach((record) =>
-      selected.push({
-        key: record.id,
-        title: record.name,
-        desc: custCat.find((cust) => cust.value === record.cust_type)?.label,
-      })
+    selectedRecord.forEach(
+      (record: { id: any; name: any; cust_type: string }) =>
+        selected.push({
+          key: record.id,
+          title: record.name,
+          desc: custCat.find((cust) => cust.value === record.cust_type)?.label,
+        })
     );
     return selected;
   };
 
-  const handleSelectChange = (selectedKeys) => {
+  const handleSelectChange = (selectedKeys: any[]) => {
     const selectedRecord = list.filter((cust) =>
-      selectedKeys.some((selected) => selected === cust.id)
+      selectedKeys.some((selected: any) => selected === cust.id)
     );
 
     setSelected(getCustDetails(selectedRecord));
   };
 
-  const handleTabChange = (key) => {
+  const handleTabChange = (key: string) => {
     if (key !== 'all') {
       setSearchParams(addSearchParams(searchParams, { type: key }));
     } else {
@@ -205,7 +212,7 @@ const CustMgmt = () => {
     title: string;
     dataIndex?: string | string[];
     key: string;
-    sorter?: boolean;
+    sorter?: any;
     defaultSortOrder?: 'ascend' | 'descend';
     align?: 'left' | 'center' | 'right';
     fixed?: 'left' | 'right';
@@ -278,9 +285,12 @@ const CustMgmt = () => {
     {
       title: 'Sales per Month',
       dataIndex: 'sales_per_month',
-      key: 'sales_per_month',
+      key: 'order/sales_per_month',
       sorter: true,
-      defaultSortOrder: getSortOrder('sales_per_month'),
+      defaultSortOrder: getSortOrderWithKey('order', 'sales_per_month'),
+      // sorter: (a, b) =>
+      //   parseFloat(a.sales_per_month) - parseFloat(b.sales_per_month),
+      // defaultSortOrder: getSortOrder('sales_per_month'),
       width: 160,
       render: (amount: string) =>
         amount !== undefined ? (
@@ -292,12 +302,21 @@ const CustMgmt = () => {
     {
       title: 'Last Order Date',
       dataIndex: 'last_order_dt',
-      key: 'last_order_dt',
+      key: 'order/last_order_dt',
       sorter: true,
-      defaultSortOrder: getSortOrder('last_order_dt'),
+      defaultSortOrder: getSortOrderWithKey('order', 'last_order_dt'),
+      // sorter: (a, b) =>
+      //   moment(a.last_order_dt, 'DD-MM-YYYY') >
+      //   moment(b.last_order_dt, 'DD-MM-YYYY'),
       width: 150,
       render: (date: string) =>
-        date !== undefined ? <Text strong>{date}</Text> : '-',
+        date !== null && date !== undefined ? (
+          <Text strong type='secondary'>
+            {date}
+          </Text>
+        ) : (
+          '-'
+        ),
     },
     {
       title: 'Status',

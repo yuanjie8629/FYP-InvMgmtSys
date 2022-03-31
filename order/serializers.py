@@ -1,15 +1,9 @@
-from datetime import date
 from rest_framework import serializers
-from cart.models import Cart
-from core.utils import calculate_discount, calculate_ship_fee
 from customer.models import Cust
 from item.models import Item
 from order.models import Order, OrderLine
-from postcode.models import Postcode
-from shipment.models import OrderShipment, Pickup, Shipment
+from shipment.models import Shipment
 from shipment.serializers import PickupSerializer, ShipmentSerializer
-from voucher.models import Voucher
-from django.db.models import Prefetch, Sum, F
 
 
 class OrderLineSerializer(serializers.ModelSerializer):

@@ -178,6 +178,12 @@ def OrderPickupUpdView(request):
     return Response(status=status.HTTP_200_OK, data=serializer.data)
 
 
+def restore_product_quantity(self, instance):
+    item = instance.item
+    item.stock = item.stock + instance.quantity
+    item.save()
+
+
 @api_view(["PATCH"])
 def OrderCancelView(request):
     if "list" in request.data:
@@ -207,6 +213,7 @@ def OrderCancelView(request):
             if order.id == data.get("id"):
                 order.status = "cancel"
                 order.save(update_fields=["last_update", "status"])
+    restore_product_quantity(order)
 
     serializer = OrderSerializer(order_list, many=True)
 

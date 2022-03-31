@@ -64,7 +64,7 @@ const BusinessStatistics = () => {
         />
         <Row justify='center' gutter={[20, 20]}>
           {statisticsList.map((statistics, index) => (
-            <Col key={`col-${statistics.key}`} flex='20%'>
+            <Col key={`col-${statistics.key}`} flex='25%'>
               <MainCard bodyStyle={{ padding: 15 }} style={{ height: 105 }}>
                 <Statistics
                   key={statistics.key}
@@ -197,7 +197,7 @@ const BusinessStatistics = () => {
 
     const keyMetricsValList = [
       { key: 'sales', value: 600 },
-      { key: 'revenue', value: 324.5 },
+      { key: 'profit', value: 324.5 },
       { key: 'conversionRt', value: 0.2949 },
       { key: 'salesPerOrder', value: 40.0 },
       { key: 'visitors', value: 78 },

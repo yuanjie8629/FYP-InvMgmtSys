@@ -81,10 +81,12 @@ const InputNumberRange = ({
   useEffect(() => {
     let isMounted = true;
     onChange([start, end]);
-    if (isMounted && start > end) {
-      setValidateFailed(true);
-    } else {
-      setValidateFailed(false);
+    if (isMounted) {
+      if (start > end) {
+        setValidateFailed(true);
+      } else {
+        setValidateFailed(false);
+      }
     }
     return () => {
       isMounted = false;

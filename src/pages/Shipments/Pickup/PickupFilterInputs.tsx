@@ -4,7 +4,7 @@ import InputSelect from '@components/Input/InputSelect';
 import { removeInvalidData } from '@utils/arrayUtils';
 import { Form, Row, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const FilterInputs = () => {
@@ -25,6 +25,16 @@ const FilterInputs = () => {
   const [selectedInputSelect, setSelectedInputSelect] = useState(
     pickupLocInputSelect.defaultVal
   );
+
+  useEffect(() => {
+    searchParams.forEach((value, key) => {
+      pickupLocFilter.setFieldsValue({ [key]: value });
+      if (pickupLocInputSelect.options.find((opt) => opt.value === key)) {
+        setSelectedInputSelect(key);
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSearch = (values) => {
     values = removeInvalidData(values);

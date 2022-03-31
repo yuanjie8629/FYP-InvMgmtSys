@@ -26,9 +26,18 @@ export const addFilter = (currFilter, newKey: string, newValue) => {
 
 export const getSortOrder = (column: string) => {
   let url = new URLSearchParams(window.location.search);
-  return url.get('order') === column
+  return url.get('ordering') === column
     ? 'ascend'
-    : url.get('order') === `-${column}`
+    : url.get('ordering') === `-${column}`
+    ? 'descend'
+    : undefined;
+};
+
+export const getSortOrderWithKey = (key: string, column: string) => {
+  let url = new URLSearchParams(window.location.search);
+  return url.get(`${key}_ordering`) === column
+    ? 'ascend'
+    : url.get(`${key}_ordering`) === `-${column}`
     ? 'descend'
     : undefined;
 };

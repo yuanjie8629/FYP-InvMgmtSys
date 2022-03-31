@@ -1,42 +1,42 @@
 const toDoList: {
   label: string;
-  quantity: number;
+  value: string;
   link: string;
 }[] = [
   {
-    label: 'Pending Orders',
-    quantity: 5,
+    label: 'Pending Order Shipments',
+    value: 'order_shipment',
     link: '/order/management?status=toShip',
   },
   {
+    label: 'Pending Order Pickup',
+    value: 'order_pickup',
+    link: '/order/management?status=toPick',
+  },
+  {
     label: 'Unpaid Orders',
-    quantity: 3,
+    value: 'order_unpaid',
     link: '/order/management?status=unpaid',
   },
   {
-    label: 'Pending Cancellation',
-    quantity: 0,
-    link: '/order/management?status=cancel',
-  },
-  {
     label: 'Out-of-Stock Products',
-    quantity: 0,
+    value: 'product_oos',
     link: '/product/management?status=oos',
   },
   {
     label: 'Out-of-Stock Packages',
-    quantity: 0,
+    value: 'package_oos',
     link: '/package/management?status=oos',
   },
   {
     label: 'Pending Agent Registration',
-    quantity: 3,
-    link: 'customer/registrations',
+    value: 'agent_reg',
+    link: '/customer/registration?type=agent&pending=true',
   },
   {
     label: 'Pending Dropshipper Registration',
-    quantity: 1,
-    link: 'customer/registrations',
+    value: 'drpshpr_reg',
+    link: '/customer/registration?type=drpshpr&pending=true',
   },
 ];
 

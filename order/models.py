@@ -1,14 +1,14 @@
 import random
 import string
-import uuid
 from django.db import models
 from core.models import SoftDeleteModel
 from customer.models import Cust
-from item.models import Item
+from item.models import Item, Package
 from order.choices import ORDER_STATUS
 from shipment.models import OrderShipment
 from voucher.models import Voucher
 from django.db.models import Sum, F, Case, When
+from reversion.models import Version
 
 
 def create_id():
@@ -31,7 +31,9 @@ class Order(SoftDeleteModel):
     total_amt = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
     status = models.CharField(max_length=20, choices=ORDER_STATUS, blank=True)
     email = models.CharField(max_length=255, blank=True, null=True)
-    cust = models.ForeignKey(Cust, on_delete=models.DO_NOTHING, blank=True, null=True)
+    cust = models.ForeignKey(
+        Cust, on_delete=models.DO_NOTHING, blank=True, null=True, related_name="order"
+    )
     voucher = models.ForeignKey(
         Voucher, on_delete=models.DO_NOTHING, blank=True, null=True
     )
@@ -75,6 +77,9 @@ class OrderLine(models.Model):
     special_price = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True
     )
+    cost_per_unit = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True
+    )
     weight = models.DecimalField(max_digits=8, decimal_places=2)
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name="order_line"
@@ -84,7 +89,37 @@ class OrderLine(models.Model):
     class Meta:
         db_table = "order_line"
 
+    @property
     def line_total(self):
         if self.special_price:
             return self.quantity * self.special_price
         return self.quantity * self.price
+
+    @property
+    def get_profit(self):
+        item_version = (
+            Version.objects.get_for_object(self.item)
+            .filter(revision__date_created__lte=self.order.created_at)
+            .order_by("-revision__date_created")
+            .first()
+        )
+        print(item_version)
+
+        if hasattr(self.item, "cost_per_unit"):
+            cost_per_unit = self.item.product.cost_per_unit
+        else:
+            products = self.item.package.product.all()
+            if item_version:
+                print(item_version.field_dict)
+                product_versions = (
+                    Version.objects.get_for_object(products)
+                    .filter(revision__date_created__lte=self.order.created_at)
+                    .order_by("-revision__date_created")
+                    .first()
+                )
+                print(products)
+
+        if item_version:
+            cost_per_unit = item_version.field_dict["cost_per_unit"]
+
+        return self.line_total - (self.quantity * cost_per_unit)

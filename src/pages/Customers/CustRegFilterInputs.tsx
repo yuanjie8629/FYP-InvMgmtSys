@@ -57,11 +57,15 @@ const CustRegFilterInputs = () => {
       }
 
       if (key === 'accept') {
-        value === 'True'
+        value === 'true'
           ? custRegFilter.setFieldsValue({ status: 'accept' })
-          : value === 'None'
-          ? custRegFilter.setFieldsValue({ status: 'pending' })
           : custRegFilter.setFieldsValue({ status: 'reject' });
+      }
+
+      if (key === 'pending') {
+        if (value === 'true') {
+          custRegFilter.setFieldsValue({ status: 'pending' });
+        }
       }
     });
 
@@ -85,7 +89,7 @@ const CustRegFilterInputs = () => {
     let { registration_date, status, ...value } = values;
 
     if (status === 'pending') {
-      value.accept = 'None';
+      value.pending = true;
     } else if (status === 'accept') {
       value.accept = true;
     } else if (status === 'reject') {
@@ -132,6 +136,7 @@ const CustRegFilterInputs = () => {
             <InputSelect
               formProps={{ name: selectedInputSelect }}
               selectBefore={custRegInputSelect}
+              selectedKeyValue={selectedInputSelect}
               placeholder='Input'
               selectWidth={150}
               onChange={(selected) => {
