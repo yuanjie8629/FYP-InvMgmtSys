@@ -7,6 +7,7 @@ import HideModal from '../ActionModal/HideModal';
 import AcceptModal from './AcceptModal';
 import CancelModal from './CancelModal';
 import InvBulkUpdateModal from './InvBulkUpdateModal';
+import InvoiceModal from './InvoiceModal';
 import OrderTrackNumUpdModal from './OrderTrackNumUpdModal';
 import PickupModal from './PickupModal';
 import RejectModal from './RejectModal';
@@ -28,6 +29,7 @@ export const ActionModalComponent = {
   accept: AcceptModal,
   reject: RejectModal,
   cancel: CancelModal,
+  invoice: InvoiceModal,
 };
 
 export type ActionModalType =
@@ -40,7 +42,7 @@ export type ActionModalType =
   | 'suspend'
   | 'accept'
   | 'reject'
-  | 'cancel';
+  | 'cancel' | 'invoice';
 
 export interface ActionModalContentProps {
   recordType?: string;

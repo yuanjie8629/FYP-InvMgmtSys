@@ -37,6 +37,7 @@ const ProdInv = () => {
     [key: string]: any;
   }>({ loading: false, index: undefined });
   const [tableLoading, setTableLoading] = useState(false);
+  const [currentPg, setCurrentPg] = useState(1);
   const defPg = 5;
 
   const getTableData = (isMounted: boolean = true) => {
@@ -45,8 +46,12 @@ const ProdInv = () => {
     productPrevAPI(location.search)
       .then((res) => {
         if (isMounted) {
-          setList(res.data.results);
-          setRecordCount(res.data.count);
+          setList(res.data?.results);
+          setRecordCount(res.data?.count);
+          if (searchParams.has('offset')) {
+            let offset = Number(searchParams.get('offset'));
+            setCurrentPg(offset / defPg + 1);
+          }
           setTableLoading(false);
         }
       })
@@ -254,6 +259,7 @@ const ProdInv = () => {
               columns={prodInvColumns}
               buttons={onInvSelectBtn(bulkUpdBtn)}
               defPg={defPg}
+              currentPg={currentPg}
               totalRecord={recordCount}
               loading={tableLoading}
               onSelectChange={handleSelectChange}

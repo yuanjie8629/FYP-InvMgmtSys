@@ -78,7 +78,7 @@ const AffixOrder = ({
                 </CancelButton>
               </Col>
             )}
-            {trackNum && (
+            {trackNum && !['cancel', 'unpaid', 'complete'].includes(status) && (
               <Col>
                 <UpdButton
                   size='middle'

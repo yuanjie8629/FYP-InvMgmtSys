@@ -1,8 +1,9 @@
+import jwt
+import zipfile
 from datetime import date
 from django.conf import settings
-import jwt
 from rest_framework.authentication import CSRFCheck
-from rest_framework import exceptions,status
+from rest_framework import exceptions, status
 from rest_framework.response import Response
 from customer.models import Cust
 from order.models import Order
@@ -10,7 +11,10 @@ from shipment.models import ShippingFee
 from shipment.serializers import ShippingFeeSerializer
 from voucher.models import Voucher
 from voucher.serializers import VoucherSerializer
-
+from io import BytesIO
+from django.template.loader import get_template, render_to_string
+import pdfkit
+import os, sys, subprocess, platform
 
 
 def enforce_csrf(request):
@@ -67,16 +71,16 @@ def calculate_ship_fee(total_weight, state):
         weight_start__lte=total_weight,
         weight_end__gte=total_weight,
     ).first()
-    
+
     if not shipping_fee:
         weight_most_end = (
             ShippingFee.objects.filter(location__name=state)
             .order_by("-weight_end")
             .first()
         )
-        if hasattr(weight_most_end, 'sub_fee'):
+        if hasattr(weight_most_end, "sub_fee"):
             sub_fee = weight_most_end.sub_fee
-        if hasattr(weight_most_end, 'sub_weight'):
+        if hasattr(weight_most_end, "sub_weight"):
             sub_weight = weight_most_end.sub_weight
         ship_fee = weight_most_end.ship_fee
         weight_end = weight_most_end.weight_end
@@ -87,7 +91,6 @@ def calculate_ship_fee(total_weight, state):
         return "0"
     serializer = ShippingFeeSerializer(shipping_fee)
     return "{:.2f}".format(float(serializer.data.get("ship_fee")))
-
 
 
 def calculate_discount(total_amt, voucher, user):
@@ -150,3 +153,50 @@ def calculate_disocunt_by_code(total_amt, code, user):
         .first()
     )
     return calculate_discount(total_amt, voucher_instance, user)
+
+
+def render_to_pdf(template_src, context_dict={}):
+    # get wkhtmltopdf path
+    if platform.system() == "Windows":
+        pdfkit_config = pdfkit.configuration(
+            wkhtmltopdf=os.environ.get(
+                "WKHTMLTOPDF_BINARY",
+                "C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe",
+            )
+        )
+    else:
+        os.environ["PATH"] += os.pathsep + os.path.dirname(sys.executable)
+        WKHTMLTOPDF_CMD = (
+            subprocess.Popen(
+                ["which", os.environ.get("WKHTMLTOPDF_BINARY", "wkhtmltopdf")],
+                stdout=subprocess.PIPE,
+            )
+            .communicate()[0]
+            .strip()
+        )
+        pdfkit_config = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_CMD)
+
+    options = {
+        "encoding": "UTF-8",
+        "--header-html": "core/templates/pdf_header.html",
+        "--header-line": "",
+        "--header-font-size": 7,
+        "--footer-html": "core/templates/pdf_footer.html",
+        "--footer-line": "",
+        "--footer-font-size": 7,
+        "--footer-font-name": "Helvetica",
+        "--header-font-name": "Helvetica",
+    }
+
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    return pdfkit.from_string(html, False, options=options, configuration=pdfkit_config)
+
+
+def generate_zip(files):
+    mem_zip = BytesIO()
+    with zipfile.ZipFile(mem_zip, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for f in files:
+            zf.writestr(f[0], f[1])
+
+    return mem_zip.getvalue()

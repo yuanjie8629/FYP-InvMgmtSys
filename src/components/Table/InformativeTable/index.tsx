@@ -19,6 +19,7 @@ type InformativeTableButtonProps = {
 type InformativeTableProps = TableProps & {
   defPg?: number;
   totalRecord?: number;
+  currentPg?: number;
 } & (
     | {
         buttons: InformativeTableButtonProps;
@@ -30,6 +31,7 @@ type InformativeTableProps = TableProps & {
 
 const InformativeTable = ({
   defPg = 10,
+  currentPg = 1,
   buttons,
   rowSelectable = true,
   onSelectChange = () => '',
@@ -49,28 +51,9 @@ const InformativeTable = ({
     setSelectedRowCount(0);
     setSelectedRowKeys(undefined);
     setBtnShow([]);
-    if (pagination !== undefined) {
-      if (pagination.current > 1) {
-        setSearchParams(
-          addSearchParams(searchParams, {
-            limit: String(pagination.pageSize),
-            offset: (pagination.current - 1) * pagination.pageSize,
-          })
-        );
-      } else {
-        setSearchParams(
-          removeSearchParams(
-            new URLSearchParams(
-              addSearchParams(searchParams, {
-                limit: String(pagination.pageSize),
-              })
-            ),
-            'offset'
-          )
-        );
-      }
-    } else
+    if (pagination === undefined) {
       setSearchParams(addSearchParams(searchParams, { limit: String(defPg) }));
+    }
   }, [defPg, pagination, searchParams, setSearchParams, props.dataSource]);
 
   const hanldeTableChange = (paginate, _filters, sorter) => {
@@ -176,12 +159,34 @@ const InformativeTable = ({
           rowSelection={rowSelectable && rowSelection}
           pagination={{
             size: 'small',
+            current: currentPg,
             showTotal: showTotal,
             showSizeChanger: true,
             showQuickJumper: true,
             defaultPageSize: defPg,
             pageSizeOptions: ['5', '10', '15', '20'],
             total: totalRecord,
+            onChange: (page, pageSize) => {
+              if (page > 1) {
+                setSearchParams(
+                  addSearchParams(searchParams, {
+                    limit: String(pageSize),
+                    offset: (page - 1) * pageSize,
+                  })
+                );
+              } else {
+                setSearchParams(
+                  removeSearchParams(
+                    new URLSearchParams(
+                      addSearchParams(searchParams, {
+                        limit: String(pageSize),
+                      })
+                    ),
+                    'offset'
+                  )
+                );
+              }
+            },
           }}
           onChange={hanldeTableChange}
           {...props}

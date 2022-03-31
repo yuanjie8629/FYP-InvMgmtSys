@@ -9,7 +9,8 @@ import { getDt } from '@utils/dateUtils';
 import { custCat } from '@utils/optionUtils';
 import { Form, Row, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { useState } from 'react';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const FilterInputs = () => {
@@ -40,6 +41,27 @@ const FilterInputs = () => {
     placeholder: 'Select Customer Type',
     options: custCat,
   };
+
+  useEffect(() => {
+    searchParams.forEach((value, key) => {
+      if (orderInputSelect.options.find((opt) => opt.value === key)) {
+        setSelectedInputSelect(key);
+      }
+      orderFilter.setFieldsValue({ [key]: value });
+    });
+    if (
+      searchParams.has('order_date_after') &&
+      searchParams.has('order_date_before')
+    ) {
+      orderFilter.setFieldsValue({
+        order_date: [
+          moment(searchParams.get('order_date_after'), 'DD-MM-YYYY'),
+          moment(searchParams.get('order_date_before'), 'DD-MM-YYYY'),
+        ],
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSearch = (values) => {
     let { order_date, ...value } = values;
@@ -86,6 +108,7 @@ const FilterInputs = () => {
             <InputSelect
               formProps={{ name: selectedInputSelect }}
               selectBefore={orderInputSelect}
+              selectedKeyValue={selectedInputSelect}
               placeholder='Input'
               selectWidth={150}
               onChange={(selected) => {
@@ -113,6 +136,13 @@ const FilterInputs = () => {
               formProps={{ name: 'amount' }}
               label='Amount'
               placeholder={['Start', 'End']}
+              defaultValue={
+                searchParams.has('min_amount') &&
+                searchParams.has('max_amount') && [
+                  parseFloat(searchParams.get('min_amount')),
+                  parseFloat(searchParams.get('max_amount')),
+                ]
+              }
               prefix='RM'
               justify='start'
               prefixWidth={60}
@@ -122,6 +152,7 @@ const FilterInputs = () => {
               onChange={(value) => {
                 orderFilter.setFieldsValue({ amount: value });
               }}
+              maxLength={10}
             />
           </FilterInputCol>
           <FilterInputCol>

@@ -15,11 +15,20 @@ export const actionSuccessMsg: (
     | 'update'
     | 'suspend'
     | 'accept'
-    | 'reject',
+    | 'reject'
+    | 'invoice',
   length: number
 ) => ArgsProps = (
   recordType: string,
-  action: 'activate' | 'delete' | 'hide' | 'update' | 'suspend',
+  action:
+    | 'activate'
+    | 'delete'
+    | 'hide'
+    | 'update'
+    | 'suspend'
+    | 'accept'
+    | 'reject'
+    | 'invoice',
   length: number
 ) => {
   return {
@@ -40,6 +49,8 @@ export const actionSuccessMsg: (
         ? 'Accepted'
         : action === 'reject'
         ? 'Rejected'
+        : action === 'invoice'
+        ? 'Generated'
         : null
     } Successfully`,
   };

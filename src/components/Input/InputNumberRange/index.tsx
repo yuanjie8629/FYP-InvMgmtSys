@@ -26,6 +26,7 @@ export interface InputNumberRangeProps
   textSpan?: number;
   justify?: 'start' | 'end';
   disabled?: boolean;
+  defaultValue?: number[];
   value?: number[];
   onChange?: (value: number[]) => void;
   formProps?: FormItemProps;
@@ -64,6 +65,7 @@ const InputNumberRange = ({
   suffixWidth = suffix !== undefined ? 80 : 0,
   disabled = false,
   value,
+  defaultValue,
   formProps,
   onChange = () => '',
   className,
@@ -143,6 +145,7 @@ const InputNumberRange = ({
               }}
             >
               <InputNumber
+                defaultValue={defaultValue && defaultValue[0]}
                 value={value && value[0]}
                 placeholder={placeholder[0]}
                 disabled={disabled}
@@ -175,6 +178,7 @@ const InputNumberRange = ({
               }}
             >
               <InputNumber
+                defaultValue={defaultValue && defaultValue[1]}
                 value={value && value[1]}
                 placeholder={placeholder[1]}
                 disabled={disabled}

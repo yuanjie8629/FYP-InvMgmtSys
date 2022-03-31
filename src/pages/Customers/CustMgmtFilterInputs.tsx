@@ -9,7 +9,8 @@ import { getDt } from '@utils/dateUtils';
 import { custStatusCat } from '@utils/optionUtils';
 import { Form, Row, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { useState } from 'react';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const CustMgmtFilterInputs = () => {
@@ -39,6 +40,40 @@ const CustMgmtFilterInputs = () => {
     placeholder: 'Select Customer Status',
     options: custStatusCat,
   };
+
+  useEffect(() => {
+    searchParams.forEach((value, key) => {
+      if (custInputSelect.options.find((opt) => opt.value === key)) {
+        setSelectedInputSelect(key);
+      }
+      if (
+        ![
+          'joined_date_after',
+          'joined_date_before',
+          'last_order_date',
+        ].includes(key)
+      ) {
+        custMgmtFilter.setFieldsValue({ [key]: value });
+      }
+
+      if (key === 'is_active') {
+        value === 'True' ?  custMgmtFilter.setFieldsValue({ status: 'active' }):custMgmtFilter.setFieldsValue({ status: 'suspended' });
+      }
+    });
+
+    if (
+      searchParams.has('joined_date_after') &&
+      searchParams.has('joined_date_before')
+    ) {
+      custMgmtFilter.setFieldsValue({
+        joined_date: [
+          moment(searchParams.get('joined_date_after'), 'DD-MM-YYYY'),
+          moment(searchParams.get('joined_date_before'), 'DD-MM-YYYY'),
+        ],
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSearch = (values) => {
     values = removeInvalidData(values);
@@ -124,6 +159,13 @@ const CustMgmtFilterInputs = () => {
               formProps={{ name: 'sales_per_month' }}
               label='Sales per Month'
               placeholder={['Start', 'End']}
+              defaultValue={
+                searchParams.has('sales_per_month_start') &&
+                searchParams.has('sales_per_month_end') && [
+                  parseFloat(searchParams.get('sales_per_month_start')),
+                  parseFloat(searchParams.get('sales_per_month_end')),
+                ]
+              }
               prefix='RM'
               prefixWidth={60}
               min={0}

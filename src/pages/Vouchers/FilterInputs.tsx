@@ -9,6 +9,8 @@ import { getDt } from '@utils/dateUtils';
 import { custCat } from '@utils/optionUtils';
 import { Form, Row, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import moment from 'moment';
+import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const FilterInputs = () => {
@@ -30,13 +32,32 @@ const FilterInputs = () => {
     options: custCat,
   };
 
+  useEffect(() => {
+    searchParams.forEach((value, key) => {
+      voucherFilter.setFieldsValue({ [key]: value });
+    });
+
+    if (
+      searchParams.has('avail_start_dt') &&
+      searchParams.has('avail_end_dt')
+    ) {
+      voucherFilter.setFieldsValue({
+        avail_dt: [
+          moment(searchParams.get('avail_start_dt'), 'DD-MM-YYYY'),
+          moment(searchParams.get('avail_end_dt'), 'DD-MM-YYYY'),
+        ],
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleSearch = (values) => {
     values = removeInvalidData(values);
-    let { avail_tm, ...value } = values;
+    let { avail_dt, ...value } = values;
 
     let availTm = {
-      avail_start_dt: getDt(avail_tm[0]),
-      avail_end_dt: getDt(avail_tm[1]),
+      avail_start_dt: getDt(avail_dt[0]),
+      avail_end_dt: getDt(avail_dt[1]),
     };
 
     setSearchParams(
@@ -88,7 +109,7 @@ const FilterInputs = () => {
 
           <FilterInputCol>
             <DateRangePickerWithLabel
-              formProps={{ name: 'avail_tm' }}
+              formProps={{ name: 'avail_dt' }}
               label='Available Date'
               justify='start'
               textSpan={6}
@@ -97,6 +118,13 @@ const FilterInputs = () => {
           <FilterInputCol>
             <InputNumberRange
               formProps={{ name: 'avail' }}
+              defaultValue={
+                searchParams.has('min_avail') &&
+                searchParams.has('max_avail') && [
+                  Number(searchParams.get('min_avail')),
+                  Number(searchParams.get('max_avail')),
+                ]
+              }
               label='Availability'
               placeholder={['Start', 'End']}
               min={0}

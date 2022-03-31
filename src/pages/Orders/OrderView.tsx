@@ -20,6 +20,7 @@ import { useParams } from 'react-router-dom';
 import {
   orderCancelAPI,
   orderDetailsAPI,
+  orderInvoiceAPI,
   orderPickupUpdAPI,
   orderTrackNumUpdAPI,
 } from '@api/services/orderAPI';
@@ -34,6 +35,7 @@ import AffixOrder from '@components/Affix/AffixOrder';
 import { ActionModal } from '@components/Modal';
 import { getOrderDetails } from './orderUtils';
 import Button from '@components/Button';
+import { saveAs } from 'file-saver';
 
 const OrderView = () => {
   const { Text, Title } = Typography;
@@ -82,9 +84,16 @@ const OrderView = () => {
     messageApi.open(serverErrMsg);
   };
 
-  const showActionSuccessMsg = (action: 'update', isMulti: boolean = true) => {
+  const showActionSuccessMsg = (
+    action: 'update' | 'invoice',
+    isMulti: boolean = true
+  ) => {
     messageApi.open(
-      actionSuccessMsg('Order', action, isMulti ? selected.length : 1)
+      actionSuccessMsg(
+        action === 'invoice' ? 'Invoice' : 'Order',
+        action,
+        isMulti ? selected.length : 1
+      )
     );
   };
 
@@ -512,6 +521,22 @@ const OrderView = () => {
                       .then(() => {
                         getOrderData();
                         showActionSuccessMsg('update', false);
+                      })
+                      .catch((err) => {
+                        if (err.response?.status !== 401) {
+                          showServerErrMsg();
+                        }
+                      });
+                  },
+                });
+              } else if (type === 'invoice') {
+                setSelected(getOrderDetails([data]));
+                ActionModal.show('invoice', {
+                  onOk: async () => {
+                    await orderInvoiceAPI(data['id'])
+                      .then((res) => {
+                        saveAs(res.data, `${data['id']}.pdf`);
+                        showActionSuccessMsg('invoice', false);
                       })
                       .catch((err) => {
                         if (err.response?.status !== 401) {
