@@ -8,7 +8,8 @@ import { getDt } from '@utils/dateUtils';
 import { custRegStatusCat } from '@utils/optionUtils';
 import { Form, Row, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { useState } from 'react';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const CustRegFilterInputs = () => {
@@ -32,7 +33,7 @@ const CustRegFilterInputs = () => {
   };
 
   const [selectedInputSelect, setSelectedInputSelect] = useState(
-    custRegInputSelect.defaultVal
+    custRegInputSelect?.defaultVal
   );
 
   const regStatus = {
@@ -40,7 +41,46 @@ const CustRegFilterInputs = () => {
     options: custRegStatusCat,
   };
 
+  useEffect(() => {
+    searchParams.forEach((value, key) => {
+      if (custRegInputSelect.options.find((opt) => opt.value === key)) {
+        setSelectedInputSelect(key);
+      }
+      if (
+        ![
+          'registration_date_after',
+          'registration_date_before',
+          'last_order_date',
+        ].includes(key)
+      ) {
+        custRegFilter.setFieldsValue({ [key]: value });
+      }
+
+      if (key === 'accept') {
+        value === 'True'
+          ? custRegFilter.setFieldsValue({ status: 'accept' })
+          : value === 'None'
+          ? custRegFilter.setFieldsValue({ status: 'pending' })
+          : custRegFilter.setFieldsValue({ status: 'reject' });
+      }
+    });
+
+    if (
+      searchParams.has('registration_date_after') &&
+      searchParams.has('registration_date_before')
+    ) {
+      custRegFilter.setFieldsValue({
+        registration_date: [
+          moment(searchParams.get('registration_date_after'), 'DD-MM-YYYY'),
+          moment(searchParams.get('registration_date_before'), 'DD-MM-YYYY'),
+        ],
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleSearch = (values) => {
+    console.log(values);
     values = removeInvalidData(values);
     let { registration_date, status, ...value } = values;
 
@@ -95,12 +135,13 @@ const CustRegFilterInputs = () => {
               placeholder='Input'
               selectWidth={150}
               onChange={(selected) => {
+                console.log(selected);
+                setSelectedInputSelect(selected.type);
                 custRegFilter.setFieldsValue({
                   [selected.type]: selected.value,
                 });
-                setSelectedInputSelect(selected.type);
               }}
-           />
+            />
           </FilterInputCol>
           <FilterInputCol>
             <SelectWithLabel

@@ -90,7 +90,20 @@
       ol ol ol ol {
         list-style-type: decimal !important;
       }
+      .subtitle {
+        font-size: 24px;
+      }
+      .title {
+        font-size: 40px;
+      }
+
       @media screen and (max-width: 480px) {
+        .title {
+          font-size: 28px;
+        }
+        .subtitle {
+          font-size: 18px;
+        }
         .price_space {
           display: none;
         }
@@ -141,13 +154,10 @@
       }
     </style>
     <!--user entered Head Start-->
-    <link
-      href="https://fonts.googleapis.com/css?family=Viga&display=swap"
-      rel="stylesheet"
-    />
+
     <style>
       body {
-        font-family: 'Viga', sans-serif;
+        font-family: 'Helvetica', sans-serif;
       }
     </style>
     <!--End Head user entered-->
@@ -347,8 +357,8 @@
                                                     <tr>
                                                       <td
                                                         style="
-                                                          padding: 100px 0px
-                                                            18px 0px;
+                                                          padding: 30px 0px 18px
+                                                            0px;
                                                           line-height: 36px;
                                                           text-align: inherit;
                                                         "
@@ -367,9 +377,9 @@
                                                             <span
                                                               style="
                                                                 color: #ffffff;
-                                                                font-size: 40px;
                                                                 font-family: inherit;
                                                               "
+                                                              class="title"
                                                               >Order
                                                               Cancellation</span
                                                             >
@@ -417,8 +427,8 @@
                                                             <span
                                                               style="
                                                                 color: white;
-                                                                font-size: 24px;
                                                               "
+                                                              class="subtitle"
                                                               >We are sorry but
                                                               your order has
                                                               been cancelled.<br />If
@@ -923,6 +933,8 @@
                                                         style="
                                                           line-height: 22px;
                                                           text-align: inherit;
+                                                          padding: 18px 0px 18px
+                                                            0px;
                                                         "
                                                         height="100%"
                                                         valign="top"

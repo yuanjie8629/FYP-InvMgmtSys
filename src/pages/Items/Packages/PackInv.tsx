@@ -37,6 +37,7 @@ const PackInv = () => {
     [key: string]: any;
   }>({ loading: false, index: undefined });
   const [tableLoading, setTableLoading] = useState(false);
+  const [currentPg, setCurrentPg] = useState(1);
   const defPg = 5;
 
   const getTableData = (isMounted: boolean = true) => {
@@ -45,8 +46,12 @@ const PackInv = () => {
     packagePrevAPI(location.search)
       .then((res) => {
         if (isMounted) {
-          setList(res.data.results);
-          setRecordCount(res.data.count);
+          setList(res.data?.results);
+          setRecordCount(res.data?.count);
+          if (searchParams.has('offset')) {
+            let offset = Number(searchParams.get('offset'));
+            setCurrentPg(offset / defPg + 1);
+          }
           setTableLoading(false);
         }
       })
@@ -72,12 +77,10 @@ const PackInv = () => {
 
   const showUpdSuccessMsg = (updCount?: number) => {
     messageApi.open(actionSuccessMsg('Package', 'update', updCount));
-  
   };
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-
   };
 
   const bulkUpdBtn = (props: any) => (
@@ -269,6 +272,7 @@ const PackInv = () => {
               columns={packInvColumns}
               buttons={onInvSelectBtn(bulkUpdBtn)}
               defPg={defPg}
+              currentPg={currentPg}
               totalRecord={recordCount}
               loading={tableLoading}
               onSelectChange={handleSelectChange}

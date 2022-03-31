@@ -83,3 +83,8 @@ class OrderLine(models.Model):
 
     class Meta:
         db_table = "order_line"
+
+    def line_total(self):
+        if self.special_price:
+            return self.quantity * self.special_price
+        return self.quantity * self.price

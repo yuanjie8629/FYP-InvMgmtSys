@@ -1,5 +1,7 @@
 import FilterSubmitButton from '@components/Button/ActionButton/FilterSubmitButton';
-import FilterInputCol, { FilterInputsProps } from '@components/Container/FilterInputCol';
+import FilterInputCol, {
+  FilterInputsProps,
+} from '@components/Container/FilterInputCol';
 import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';

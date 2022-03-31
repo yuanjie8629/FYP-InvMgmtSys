@@ -31,12 +31,14 @@ export interface InputProps extends Omit<AntdInputProps, 'onChange'> {
   selectWidth?: number | string;
   onChange?: (selected: OnSelectProps) => void;
   formProps?: FormItemProps;
+  selectedKeyValue?: string;
 }
 
 const InputSelect = ({
   width = '100%',
   selectBefore,
   selectAfter,
+  selectedKeyValue,
   selectWidth = 'fit-content',
   onChange = () => null,
   formProps,
@@ -46,7 +48,7 @@ const InputSelect = ({
   const [selectValue, setSelectValue] = useState('');
   const inputSelectBefore = selectBefore !== undefined && (
     <Select
-      defaultValue={selectBefore?.defaultVal}
+      defaultValue={selectedKeyValue || selectBefore?.defaultVal}
       options={selectBefore.options}
       style={{ width: selectWidth }}
       onSelect={(value) => {
@@ -58,7 +60,7 @@ const InputSelect = ({
 
   const inputSelectAfter = selectAfter !== undefined && (
     <Select
-      defaultValue={selectAfter?.defaultVal}
+      defaultValue={selectedKeyValue || selectAfter?.defaultVal}
       options={selectAfter.options}
       style={{ width: selectWidth }}
     />
@@ -71,7 +73,7 @@ const InputSelect = ({
         addonAfter={inputSelectAfter}
         style={{ width: width }}
         onChange={(e) => {
-          setSelectValue(e.target.value)
+          setSelectValue(e.target.value);
           onChange({ type: selectType, value: e.target.value });
         }}
         {...props}

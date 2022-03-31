@@ -16,3 +16,9 @@ export const orderPickupUpdAPI = (
 export const orderCancelAPI = (
   data: { [key: string]: string | number | boolean }[]
 ) => axios.patch(`order/cancel/`, { list: data });
+
+export const orderBulkInvoicesAPI = (ids: string[]) =>
+  axios.post(`order/invoices/bulk/`, { ids: ids }, { responseType: 'blob' });
+
+export const orderInvoiceAPI = (id) =>
+  axios.get(`order/invoice/${id}/`, { responseType: 'blob' });

@@ -1,7 +1,9 @@
 from datetime import datetime
-from rest_framework import mixins, viewsets, status
+from django.http import HttpResponse
+from rest_framework import mixins, viewsets, status, generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from core.utils import generate_zip
 from order.filters import OrderFilter
 from order.models import Order
 from order.serializers import (
@@ -10,6 +12,7 @@ from order.serializers import (
     OrderWithShipmentSerializer,
 )
 from reversion.models import Version
+from order.utils import generate_invoice
 from shipment.models import Pickup, Shipment
 from voucher.models import Voucher
 
@@ -120,7 +123,7 @@ def OrderTrackNumUpdView(request):
             if order.id == data.get("id"):
                 shipment.track_num = data.get("track_num")
                 shipment.save(update_fields=["last_update", "track_num"])
-                
+
                 if order.status != "shipping":
                     order.status = "shipping"
                     order.save(update_fields=["last_update", "status"])
@@ -208,3 +211,48 @@ def OrderCancelView(request):
     serializer = OrderSerializer(order_list, many=True)
 
     return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+
+@api_view(["POST"])
+def BulkInvoicesView(request):
+    if "ids" in request.data:
+        data_list = request.data.get("ids")
+    else:
+        return Response(
+            status=status.HTTP_404_NOT_FOUND,
+            data={
+                "detail": "Please make sure to put the data with a 'list' key as {ids: [data]}"
+            },
+        )
+
+    ids = [id for id in data_list]
+
+    order_list = list(Order.objects.select_related().filter(id__in=ids))
+    files = []
+    print(order_list)
+    for order in order_list:
+        pdf = generate_invoice(order)
+        files.append((order.id + ".pdf", pdf))
+
+    full_zip_in_memory = generate_zip(files)
+
+    response = HttpResponse(
+        full_zip_in_memory, content_type="application/force-download"
+    )
+    response["Content-Disposition"] = 'attachment; filename="{}"'.format("invoices.zip")
+    return response
+
+
+class InvoiceView(generics.RetrieveAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    lookup_field = "id"
+
+    def get(self, request, *args, **kwargs):
+        order = self.get_object()
+        pdf = generate_invoice(order)
+        response = HttpResponse(pdf, content_type="application/force-download")
+        response["Content-Disposition"] = 'attachment; filename="{}"'.format(
+            "{}.zip".format(order.id)
+        )
+        return response

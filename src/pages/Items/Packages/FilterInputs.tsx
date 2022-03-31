@@ -7,6 +7,7 @@ import InputNumberRange from '@components/Input/InputNumberRange';
 import InputSelect from '@components/Input/InputSelect';
 import { removeInvalidData } from '@utils/arrayUtils';
 import { getDt } from '@utils/dateUtils';
+import { removeSearchParams } from '@utils/urlUtls';
 import { Form, Row, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useState } from 'react';
@@ -36,6 +37,7 @@ const FilterInputs = (props: FilterInputsProps) => {
 
   const handleSearch = (values) => {
     values = removeInvalidData(values);
+    console.log(values);
     let { avail, ...value } = values;
     let availTm = {
       avail_start_dt: getDt(avail[0]),
@@ -43,13 +45,16 @@ const FilterInputs = (props: FilterInputsProps) => {
     };
 
     setSearchParams(
-      searchParams.get('status') !== null
-        ? {
-            status: searchParams.get('status'),
-            ...value,
-            ...availTm,
-          }
-        : { ...value, ...availTm }
+      removeSearchParams(
+        searchParams.get('status') !== null
+          ? {
+              status: searchParams.get('status'),
+              ...value,
+              ...availTm,
+            }
+          : { ...value, ...availTm },
+        'offset'
+      )
     );
   };
 

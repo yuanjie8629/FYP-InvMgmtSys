@@ -30,11 +30,19 @@ import {
   orderListAPI,
   orderPickupUpdAPI,
   orderCancelAPI,
+  orderBulkInvoicesAPI,
+  orderInvoiceAPI,
 } from '@api/services/orderAPI';
 import { actionSuccessMsg, serverErrMsg } from '@utils/messageUtils';
 import { ActionModal } from '@components/Modal';
-import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
+import {
+  addSearchParams,
+  getSortOrder,
+  parseURL,
+  removeSearchParams,
+} from '@utils/urlUtls';
 import { getOrderDetails } from './orderUtils';
+import { saveAs } from 'file-saver';
 
 const OrderMgmt = () => {
   const { Text } = Typography;
@@ -46,6 +54,7 @@ const OrderMgmt = () => {
   const [recordCount, setRecordCount] = useState<number>();
   const [selected, setSelected] = useState([]);
   const [tableLoading, setTableLoading] = useState(false);
+  const [currentPg, setCurrentPg] = useState(1);
   const defPg = 10;
 
   const getTableData = (isMounted: boolean = true) => {
@@ -56,6 +65,10 @@ const OrderMgmt = () => {
         if (isMounted) {
           setList(res.data?.results);
           setRecordCount(res.data?.count);
+          if (searchParams.has('offset')) {
+            let offset = Number(searchParams.get('offset'));
+            setCurrentPg(offset / defPg + 1);
+          }
           setTableLoading(false);
         }
       })
@@ -83,14 +96,48 @@ const OrderMgmt = () => {
     messageApi.open(serverErrMsg);
   };
 
-  const showActionSuccessMsg = (action: 'update', isMulti: boolean = true) => {
+  const showActionSuccessMsg = (
+    action: 'update' | 'invoice',
+    isMulti: boolean = true
+  ) => {
     messageApi.open(
-      actionSuccessMsg('Order', action, isMulti ? selected.length : 1)
+      actionSuccessMsg(
+        action === 'invoice' ? 'Invoice' : 'Order',
+        action,
+        isMulti ? selected.length : 1
+      )
     );
   };
 
   const genInvoiceBtn = (props: ButtonProps) => (
-    <PrintButton type='primary'>Generate Invoice(s)</PrintButton>
+    <PrintButton
+      type='primary'
+      onClick={() => {
+        ActionModal.show('invoice', {
+          onOk: async () => {
+            const selectedKeys = selected.map(
+              (selectedItem) => selectedItem.key
+            );
+            await orderBulkInvoicesAPI(
+              selectedKeys.map((key) => {
+                return key;
+              })
+            )
+              .then((res) => {
+                saveAs(res.data, 'invoices.zip');
+                showActionSuccessMsg('invoice');
+              })
+              .catch((err) => {
+                if (err.response?.status !== 401) {
+                  showServerErrMsg();
+                }
+              });
+          },
+        });
+      }}
+    >
+      Generate Invoice(s)
+    </PrintButton>
   );
 
   const pickupBtn = (props: ButtonProps) => (
@@ -226,9 +273,15 @@ const OrderMgmt = () => {
 
   const handleTabChange = (key) => {
     if (key !== 'all') {
-      setSearchParams(addSearchParams(searchParams, { status: key }));
+      setSearchParams(
+        addSearchParams(
+          new URLSearchParams(removeSearchParams(searchParams, 'offset')),
+          { status: key }
+        )
+      );
     } else {
       searchParams.delete('status');
+      searchParams.delete('offset');
       setSearchParams(parseURL(searchParams));
     }
   };
@@ -373,7 +426,27 @@ const OrderMgmt = () => {
       render: (data: any) => (
         <Space direction='vertical' size={5}>
           {!['cancel', 'unpaid'].includes(data?.status) && (
-            <PrintButton type='link' color='info' />
+            <PrintButton
+              type='link'
+              color='info'
+              onClick={() => {
+                setSelected(getOrderDetails([data]));
+                ActionModal.show('invoice', {
+                  onOk: async () => {
+                    await orderInvoiceAPI(data?.id)
+                      .then((res) => {
+                        saveAs(res.data, `${data?.id}.pdf`);
+                        showActionSuccessMsg('invoice', false);
+                      })
+                      .catch((err) => {
+                        if (err.response?.status !== 401) {
+                          showServerErrMsg();
+                        }
+                      });
+                  },
+                });
+              }}
+            />
           )}
           {!['completed', 'cancel', 'unpaid'].includes(data?.status) &&
             data?.shipment === 'shipping' && (
@@ -447,6 +520,7 @@ const OrderMgmt = () => {
               }}
             />
           )}
+          {['cancel'].includes(data?.status) && '-'}
         </Space>
       ),
     },
@@ -489,6 +563,7 @@ const OrderMgmt = () => {
                 buttons={onSelectBtn}
                 loading={tableLoading}
                 defPg={defPg}
+                currentPg={currentPg}
                 totalRecord={recordCount}
                 onSelectChange={handleSelectChange}
                 scroll={{ x: 1300 }}
