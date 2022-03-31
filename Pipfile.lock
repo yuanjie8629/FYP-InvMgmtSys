@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "6aca6cd730df60901459697b5e9b53ed43b6abcb5d635f8b199985d6d24a9a83"
+            "sha256": "e8273a4c5fcf8f13089fe8b60f569bfdb420e33459954282c9bafb1069bc2373"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -1114,6 +1114,13 @@
             ],
             "index": "pypi",
             "version": "==0.2"
+        },
+        "wkhtmltopdf-pack-ng": {
+            "hashes": [
+                "sha256:15257420717df156ef9cfadd64dd833a2289d9bac78606a30efaa2aac349f6eb"
+            ],
+            "index": "pypi",
+            "version": "==0.12.3.0"
         },
         "wrapt": {
             "hashes": [
