@@ -43,23 +43,40 @@ const CustMgmtFilterInputs = () => {
 
   useEffect(() => {
     searchParams.forEach((value, key) => {
-      if (custInputSelect.options.find((opt) => opt.value === key)) {
-        setSelectedInputSelect(key);
-      }
       if (
-        ![
-          'joined_date_after',
-          'joined_date_before',
-          'last_order_date',
-        ].includes(key)
+        !['joined_date_after', 'joined_date_before', 'last_order_dt'].includes(
+          key
+        )
       ) {
         custMgmtFilter.setFieldsValue({ [key]: value });
       }
 
+      if (custInputSelect.options.find((opt) => opt.value === key)) {
+        setSelectedInputSelect(key);
+      }
+
+      if (['min_sales_per_month', 'max_sales_per_month'].includes(key)) {
+        custMgmtFilter.setFieldsValue({ [key]: parseFloat(value) });
+      }
+
       if (key === 'is_active') {
-        value === 'True' ?  custMgmtFilter.setFieldsValue({ status: 'active' }):custMgmtFilter.setFieldsValue({ status: 'suspended' });
+        value === 'True'
+          ? custMgmtFilter.setFieldsValue({ status: 'active' })
+          : custMgmtFilter.setFieldsValue({ status: 'suspended' });
       }
     });
+
+    if (
+      searchParams.has('last_order_dt_after') &&
+      searchParams.has('last_order_dt_before')
+    ) {
+      custMgmtFilter.setFieldsValue({
+        last_order_dt: [
+          moment(searchParams.get('last_order_dt_after'), 'DD-MM-YYYY'),
+          moment(searchParams.get('last_order_dt_before'), 'DD-MM-YYYY'),
+        ],
+      });
+    }
 
     if (
       searchParams.has('joined_date_after') &&
@@ -77,11 +94,18 @@ const CustMgmtFilterInputs = () => {
 
   const handleSearch = (values) => {
     values = removeInvalidData(values);
-    let { joined_date, status, ...value } = values;
+    let { joined_date, last_order_dt, status, ...value } = values;
     if (status === 'active') {
       value.is_active = true;
     } else if (status === 'suspended') {
       value.is_active = false;
+    }
+
+    if (last_order_dt) {
+      last_order_dt = {
+        last_order_dt_after: getDt(last_order_dt[0]),
+        last_order_dt_before: getDt(last_order_dt[1]),
+      };
     }
 
     if (joined_date) {
@@ -96,8 +120,10 @@ const CustMgmtFilterInputs = () => {
         ? {
             type: searchParams.get('type'),
             ...value,
+            ...joined_date,
+            ...last_order_dt,
           }
-        : { ...value, ...joined_date }
+        : { ...value, ...joined_date, ...last_order_dt }
     );
   };
 
@@ -124,6 +150,7 @@ const CustMgmtFilterInputs = () => {
             <InputSelect
               formProps={{ name: selectedInputSelect }}
               selectBefore={custInputSelect}
+              selectedKeyValue={selectedInputSelect}
               placeholder='Input'
               selectWidth={150}
               onChange={(selected) => {
@@ -160,10 +187,10 @@ const CustMgmtFilterInputs = () => {
               label='Sales per Month'
               placeholder={['Start', 'End']}
               defaultValue={
-                searchParams.has('sales_per_month_start') &&
-                searchParams.has('sales_per_month_end') && [
-                  parseFloat(searchParams.get('sales_per_month_start')),
-                  parseFloat(searchParams.get('sales_per_month_end')),
+                searchParams.has('min_sales_per_month') &&
+                searchParams.has('max_sales_per_month') && [
+                  parseFloat(searchParams.get('min_sales_per_month')),
+                  parseFloat(searchParams.get('max_sales_per_month')),
                 ]
               }
               prefix='RM'
@@ -178,7 +205,7 @@ const CustMgmtFilterInputs = () => {
           </FilterInputCol>
           <FilterInputCol>
             <DateRangePickerWithLabel
-              formProps={{ name: 'last_order_date' }}
+              formProps={{ name: 'last_order_dt' }}
               label='Last Order Date'
               textSpan={6}
               justify='start'

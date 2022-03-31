@@ -13,8 +13,8 @@ const keyMetricsList: {
     toFixed: 2,
   },
   {
-    key: 'revenue',
-    label: 'Revenue',
+    key: 'profit',
+    label: 'Profit',
     desc: '',
     cat: 'money',
     toFixed: 2,

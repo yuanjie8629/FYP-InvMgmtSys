@@ -3,7 +3,6 @@ import {
   MdOutlineAssignment,
   MdOutlineAttachMoney,
   MdOutlineTrendingUp,
-  MdOutlineVisibility,
   MdPersonOutline,
 } from 'react-icons/md';
 
@@ -33,19 +32,13 @@ const statisticsList: {
     toFixed: 2,
   },
   {
-    key: 'visitors',
-    title: 'Visitors',
-    icon: MdOutlineVisibility,
-    color: '#FDBA39',
-  },
-  {
-    key: 'newCust',
+    key: 'new_cust',
     title: 'New Customers',
     icon: MdPersonOutline,
     color: '#00CFE8',
   },
   {
-    key: 'newOrder',
+    key: 'new_order',
     title: 'New Orders',
     icon: MdOutlineAssignment,
     color: '#EA5455',

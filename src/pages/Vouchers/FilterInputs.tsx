@@ -35,6 +35,10 @@ const FilterInputs = () => {
   useEffect(() => {
     searchParams.forEach((value, key) => {
       voucherFilter.setFieldsValue({ [key]: value });
+
+      if (['min_avail', 'max_avail'].includes(key)) {
+        voucherFilter.setFieldsValue({ [key]: parseFloat(value) });
+      }
     });
 
     if (

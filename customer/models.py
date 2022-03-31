@@ -1,7 +1,9 @@
+import datetime
 from django.db import models
+from django.db.models import Sum
 from core.choices import GENDER_CHOICES
 from core.models import SoftDeleteModel, Users
-from customer.choices import CUST_TYPE, MARITAL_STATUS
+from customer.choices import MARITAL_STATUS
 from postcode.models import Postcode
 
 
@@ -20,6 +22,35 @@ class Cust(Users):
         super(Cust, self).__init__(*args, **kwargs)
         if not self.cust_type:
             self.cust_type = CustType.objects.get(type="cust")
+
+    @property
+    def get_sales_per_month(self):
+        if self.order.all().exists():
+            order_list = self.order.all().filter(
+                created_at__month=datetime.datetime.now().month
+            )
+            total_amt = order_list.aggregate(Sum("total_amt")).get("total_amt__sum")
+            if total_amt:
+                return total_amt
+            else:
+                return 0
+        else:
+            return 0
+
+    @property
+    def get_last_order_dt(self):
+        if self.order.all().exists():
+            return self.order.all().order_by("-created_at").first().created_at
+        else:
+            return None
+
+    @property
+    def get_last_order_dt_datetime(self):
+        if self.order.all().exists():
+            return self.order.all().order_by("-created_at").first().created_at
+        else:
+            return datetime.datetime(datetime.MINYEAR, 1, 1)
+
 
 class CustPosReg(SoftDeleteModel):
     id = models.AutoField(primary_key=True)

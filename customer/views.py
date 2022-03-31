@@ -1,4 +1,4 @@
-from numpy import generic
+from datetime import datetime
 from rest_framework import viewsets, generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -13,7 +13,6 @@ from customer.serializers import (
     CustPosRegWriteSerializer,
     CustSerializer,
 )
-
 
 class CustView(viewsets.ModelViewSet):
     queryset = (
@@ -35,6 +34,83 @@ class CustView(viewsets.ModelViewSet):
             return CustPrevSerializer
         else:
             return CustSerializer
+
+    # def list(self, request, *args, **kwargs):
+    #     ordering = request.query_params.get("ordering", None)
+
+    #     response = super().list(request, *args, **kwargs)
+    #     min_sales_per_month = request.query_params.get("min_sales_per_month", None)
+    #     max_sales_per_month = request.query_params.get("max_sales_per_month", None)
+    #     last_order_dt_before = request.query_params.get("last_order_dt_before", None)
+    #     last_order_dt_after = request.query_params.get("last_order_dt_after", None)
+
+    #     new_data = response.data.get("results")
+
+    #     # Filtering
+    #     if min_sales_per_month:
+    #         new_data = [
+    #             data
+    #             for data in new_data
+    #             for (key, value) in data.items()
+    #             if key == "sales_per_month"
+    #             and float(value) >= float(min_sales_per_month)
+    #         ]
+
+    #     if max_sales_per_month:
+    #         new_data = [
+    #             data
+    #             for data in new_data
+    #             for (key, value) in data.items()
+    #             if key == "sales_per_month"
+    #             and float(value) <= float(max_sales_per_month)
+    #         ]
+
+    #     if last_order_dt_before:
+    #         new_data = [
+    #             data
+    #             for data in new_data
+    #             for (key, value) in data.items()
+    #             if key == "last_order_dt"
+    #             and datetime.strptime(value, "%d-%m-%Y")
+    #             <= datetime.strptime(last_order_dt_before, "%d-%m-%Y")
+    #         ]
+
+    #     if last_order_dt_after:
+    #         new_data = [
+    #             data
+    #             for data in new_data
+    #             for (key, value) in data.items()
+    #             if key == "last_order_dt"
+    #             and datetime.strptime(value, "%d-%m-%Y")
+    #             >= datetime.strptime(last_order_dt_after, "%d-%m-%Y")
+    #         ]
+
+    #     descending = False
+
+    #     if ordering:
+    #         if ordering[0] == "-":
+    #             descending = True
+    #             ordering = ordering[1:]
+
+    #         if ordering == "sales_per_month":
+    #             print("sort sales_per_month")
+    #             new_data = sorted(
+    #                 new_data,
+    #                 key=lambda d: float(d["sales_per_month"]),
+    #                 reverse=descending,
+    #             )
+
+    #         if ordering == "last_order_dt":
+    #             print("sort last_order_dt")
+    #             new_data = sorted(
+    #                 new_data,
+    #                 key=lambda d: datetime.strptime(d["sales_per_month"], "%d-%m-%Y"),
+    #                 reverse=descending,
+    #             )
+
+    #     print(new_data)
+    #     response.data.update({"results": new_data})
+    #     return response
 
 
 class CustPosRegView(generics.ListAPIView):

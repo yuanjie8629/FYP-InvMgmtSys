@@ -5,7 +5,7 @@ import InputSelect from '@components/Input/InputSelect';
 import { removeInvalidData } from '@utils/arrayUtils';
 import { Form, Row, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const FilterInputs = () => {
@@ -27,9 +27,26 @@ const FilterInputs = () => {
     shptFeeInputSelect.defaultVal
   );
 
+  useEffect(() => {
+    searchParams.forEach((value, key) => {
+      shptFeeFilter.setFieldsValue({ [key]: value });
+      if (shptFeeInputSelect.options.find((opt) => opt.value === key)) {
+        setSelectedInputSelect(key);
+      }
+
+      if (
+        ['min_ship_fee', 'max_ship_fee', 'min_weight', 'max_weight'].includes(
+          key
+        )
+      ) {
+        shptFeeFilter.setFieldsValue({ [key]: parseFloat(value) });
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleSearch = (values) => {
     values = removeInvalidData(values);
-
     setSearchParams(
       searchParams.get('type') !== null
         ? {
@@ -78,6 +95,13 @@ const FilterInputs = () => {
             <InputNumberRange
               formProps={{ name: 'ship_fee' }}
               label='Shipping Fee'
+              defaultValue={
+                searchParams.has('min_ship_fee') &&
+                searchParams.has('max_ship_fee') && [
+                  parseFloat(searchParams.get('min_ship_fee')),
+                  parseFloat(searchParams.get('max_ship_fee')),
+                ]
+              }
               placeholder={['Start', 'End']}
               prefix='RM'
               prefixWidth={60}
@@ -93,6 +117,13 @@ const FilterInputs = () => {
             <InputNumberRange
               formProps={{ name: 'weight' }}
               label='Weight'
+              defaultValue={
+                searchParams.has('min_weight') &&
+                searchParams.has('max_weight') && [
+                  parseFloat(searchParams.get('min_weight')),
+                  parseFloat(searchParams.get('max_weight')),
+                ]
+              }
               placeholder={['Start', 'End']}
               suffix='g'
               suffixWidth={60}

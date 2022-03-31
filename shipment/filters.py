@@ -27,7 +27,7 @@ class ShippingFeeFilter(filters.FilterSet):
 class PickupLocFilter(filters.FilterSet):
     location = filters.CharFilter(field_name="location", lookup_expr="icontains")
 
-    ordering = filters.OrderingFilter(fields=("location"))
+    ordering = filters.OrderingFilter(fields=("location",))
 
     class Meta:
         model = PickupLoc

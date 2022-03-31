@@ -59,11 +59,20 @@ const InformativeTable = ({
   const hanldeTableChange = (paginate, _filters, sorter) => {
     setPagination(paginate);
     if (sorter['order'] !== undefined) {
+      let key = sorter['columnKey'];
+      let prefix;
+      if (key.includes('/')) {
+        let split = key.split('/');
+        prefix = split[0];
+        key = split[1];
+      }
+      let ordering = 'ordering';
+      if (prefix) {
+        ordering = `${prefix}_ordering`;
+      }
       setSearchParams(
         addSearchParams(searchParams, {
-          ordering: `${sorter['order'] === 'descend' ? '-' : ''}${
-            sorter['columnKey']
-          }`,
+          [ordering]: `${sorter['order'] === 'descend' ? '-' : ''}${key}`,
         })
       );
     } else {

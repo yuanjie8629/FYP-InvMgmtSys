@@ -1,8 +1,60 @@
+import datetime
 from django_filters import rest_framework as filters
+from django_property_filter import (
+    PropertyFilterSet,
+    PropertyNumberFilter,
+    PropertyDateTimeFilter,
+    PropertyOrderingFilter,
+)
+from django_property_filter.utils import get_value_for_db_field
 from .models import Cust, CustPosReg
 
+# class CustomPropertyOrderingFilter(PropertyOrderingFilter):
+#     def sorted_pk_list_from_property(self, sort_property, queryset):
+#         """Sorting the primary key list of the given queryset based on the given property."""
+#         # Identify the sort order
+#         descending = False
+#         if sort_property.startswith("-"):
+#             descending = True
+#             sort_property = sort_property[1:]
 
-class CustFilter(filters.FilterSet):
+#         # Build a list of pk and value, this might become very large depending on data type
+#         # Need to use a list because set will loose order
+#         value_list = []
+#         is_datetime = False
+#         is_date = False
+#         for obj in queryset:
+#             property_value = get_value_for_db_field(obj, sort_property)
+#             is_datetime = (
+#                 True if isinstance(property_value, datetime.datetime) else False
+#             )
+#             is_date = True if isinstance(property_value, datetime.date) else False
+#             value_list.append((obj.pk, property_value))
+
+#         mindatetime = datetime.datetime(datetime.MINYEAR, 1, 1)
+#         mindate = datetime.datetime(datetime.MINYEAR, 1, 1)
+
+#         cmp = lambda x: x[1]
+#         if is_datetime:
+#             cmp = lambda x: x[1] or mindatetime
+#         elif is_date:
+#             cmp = lambda x: x[1] or mindate
+#         # Sort the list of tuples
+#         value_list = sorted(
+#             value_list,
+#             key=cmp,
+#             reverse=descending,
+#         )
+
+#         # Get a list of sorted primary keys
+#         value_list = [entry[0] for entry in value_list]
+
+#         print(value_list)
+
+#         return value_list
+
+
+class CustFilter(PropertyFilterSet):
     id = filters.CharFilter(field_name="id", lookup_expr="icontains")
     type = filters.CharFilter(field_name="cust_type__type")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
@@ -14,13 +66,32 @@ class CustFilter(filters.FilterSet):
     joined_date_after = filters.DateFilter(
         field_name="date_joined", input_formats=["%d-%m-%Y"], lookup_expr="gte"
     )
+    min_sales_per_month = PropertyNumberFilter(
+        field_name="get_sales_per_month", lookup_expr="gte"
+    )
+    max_sales_per_month = PropertyNumberFilter(
+        field_name="get_sales_per_month", lookup_expr="lte"
+    )
+    last_order_dt_before = PropertyDateTimeFilter(
+        field_name="get_last_order_dt", input_formats=["%d-%m-%Y"], lookup_expr="lte"
+    )
+    last_order_dt_after = PropertyDateTimeFilter(
+        field_name="get_last_order_dt", input_formats=["%d-%m-%Y"], lookup_expr="gte"
+    )
 
     ordering = filters.OrderingFilter(
         fields=(
-            "id",
-            "name",
-            "cust_type",
-            "date_joined",
+            ("id", "id"),
+            ("name", "name"),
+            ("cust_type", "cust_type"),
+            ("date_joined", "date_joined"),
+        )
+    )
+
+    order_ordering = PropertyOrderingFilter(
+        fields=(
+            ("get_sales_per_month", "sales_per_month"),
+            ("get_last_order_dt_datetime", "last_order_dt"),
         )
     )
 
@@ -33,6 +104,7 @@ class CustFilter(filters.FilterSet):
             "cust_type",
             "is_active",
             "date_joined",
+            "order",
         ]
 
 
@@ -43,6 +115,7 @@ class CustPosRegFilter(filters.FilterSet):
     email = filters.CharFilter(field_name="email", lookup_expr="icontains")
     contact_num = filters.CharFilter(field_name="phone_num", lookup_expr="icontains")
     accept = filters.BooleanFilter(field_name="accept")
+    pending = filters.BooleanFilter(field_name="accept", lookup_expr="isnull")
     registration_date_before = filters.DateFilter(
         field_name="created_at", input_formats=["%d-%m-%Y"], lookup_expr="lte"
     )

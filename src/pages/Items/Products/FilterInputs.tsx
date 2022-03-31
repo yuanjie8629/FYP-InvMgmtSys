@@ -9,7 +9,7 @@ import { removeInvalidData } from '@utils/arrayUtils';
 import { prodCat } from '@utils/optionUtils';
 import { Form, Row, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const FilterInputs = (props: FilterInputsProps) => {
@@ -37,6 +37,20 @@ const FilterInputs = (props: FilterInputsProps) => {
   const [selectedInputSelect, setSelectedInputSelect] = useState(
     prodInputSelect.defaultVal
   );
+
+  useEffect(() => {
+    searchParams.forEach((value, key) => {
+      prodFilter.setFieldsValue({ [key]: value });
+      if (prodInputSelect.options.find((opt) => opt.value === key)) {
+        setSelectedInputSelect(key);
+      }
+
+      if (['min_price', 'max_price', 'min_stock', 'max_stock'].includes(key)) {
+        prodFilter.setFieldsValue({ [key]: parseFloat(value) });
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSearch = (values) => {
     values = removeInvalidData(values);
@@ -74,6 +88,7 @@ const FilterInputs = (props: FilterInputsProps) => {
             <InputSelect
               formProps={{ name: selectedInputSelect }}
               selectBefore={prodInputSelect}
+              selectedKeyValue={selectedInputSelect}
               placeholder='Input'
               selectWidth={150}
               onChange={(selected) => {
@@ -96,8 +111,16 @@ const FilterInputs = (props: FilterInputsProps) => {
             <InputNumberRange
               formProps={{ name: 'stock' }}
               label='Stock'
+              defaultValue={
+                searchParams.has('min_stock') &&
+                searchParams.has('max_stock') && [
+                  parseFloat(searchParams.get('min_stock')),
+                  parseFloat(searchParams.get('max_stock')),
+                ]
+              }
               placeholder={['Start', 'End']}
               min={0}
+              maxLength={10}
               justify='start'
               textSpan={4}
               disabled={searchParams.get('status') === 'oos'}
@@ -110,10 +133,18 @@ const FilterInputs = (props: FilterInputsProps) => {
             <InputNumberRange
               formProps={{ name: 'price' }}
               label='Price'
+              defaultValue={
+                searchParams.has('min_price') &&
+                searchParams.has('max_price') && [
+                  parseFloat(searchParams.get('min_price')),
+                  parseFloat(searchParams.get('max_price')),
+                ]
+              }
               placeholder={['Start', 'End']}
               prefix='RM'
               prefixWidth={60}
               min={0}
+              maxLength={10}
               precision={2}
               onChange={(value) => {
                 prodFilter.setFieldsValue({ price: value });

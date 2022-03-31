@@ -44,10 +44,14 @@ const FilterInputs = () => {
 
   useEffect(() => {
     searchParams.forEach((value, key) => {
+      orderFilter.setFieldsValue({ [key]: value });
       if (orderInputSelect.options.find((opt) => opt.value === key)) {
         setSelectedInputSelect(key);
       }
-      orderFilter.setFieldsValue({ [key]: value });
+
+      if (['min_amount', 'max_amount'].includes(key)) {
+        orderFilter.setFieldsValue({ [key]: parseFloat(value) });
+      }
     });
     if (
       searchParams.has('order_date_after') &&

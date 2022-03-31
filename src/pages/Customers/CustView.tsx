@@ -9,6 +9,7 @@ import {
   DatePicker,
   Form,
   Input,
+  InputNumber,
   Radio,
   Space,
   Typography,
@@ -27,18 +28,37 @@ const CustView = () => {
   const { id } = useParams();
   const [custForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [positionFlag, setPositionFlag] = useState(false);
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
   );
   const [messageApi] = useContext(MessageContext);
   const anchorList = [{ link: 'custInfo', title: 'Customer Information' }];
+  const posAnchorList = [
+    ...anchorList,
+    {
+      link: 'posInfo',
+      title: 'Agent / Dropshipper Information',
+    },
+  ];
 
   const getCustRegDetails = (isMounted = true) => {
     setLoading(true);
     custDetailsAPI(id)
       .then((res) => {
         if (isMounted) {
-          let { last_login, date_joined, birthdate, ...data } = res.data;
+          let { last_login, date_joined, birthdate, last_order_dt, ...data } =
+            res.data;
+
+          if (['agent', 'drpshpr'].includes(data.cust_type)) {
+            setPositionFlag(true);
+          } else {
+            setPositionFlag(false);
+          }
+
+          if (last_order_dt) {
+            data.last_order_dt = moment(last_order_dt, 'DD-MM-YYYY');
+          }
 
           if (birthdate) {
             data.birthdate = moment(birthdate, 'DD-MM-YYYY');
@@ -152,17 +172,54 @@ const CustView = () => {
                 </Form.Item>
               </Space>
             </MainCard>
+            {positionFlag && (
+              <MainCard>
+                <Space direction='vertical' size={20} className='full-width'>
+                  <Title level={4} id='posInfo'>
+                    Agent / Dropshipper Information
+                  </Title>
+                  <Form.Item label='Sales per Month' name='sales_per_month'>
+                    <InputNumber
+                      prefix='RM'
+                      precision={2}
+                      style={{ width: '40%' }}
+                      disabled
+                    />
+                  </Form.Item>
+
+                  <Form.Item label='Last Order Date' name='last_order_dt'>
+                    {custForm.getFieldValue('last_order_dt') ? (
+                      <DatePicker style={{ width: '40%' }} disabled />
+                    ) : (
+                      <Input
+                        disabled
+                        placeholder='Not Set'
+                        style={{ width: '40%' }}
+                      />
+                    )}
+                  </Form.Item>
+                </Space>
+              </MainCard>
+            )}
           </MainCardContainer>
         </Col>
         <Col xs={8} xl={5}>
           <Anchor offsetTop={150} targetOffset={targetOffset}>
-            {anchorList.map((anchor) => (
-              <Link
-                key={anchor.link}
-                href={`#${anchor.link}`}
-                title={anchor.title}
-              />
-            ))}
+            {!positionFlag
+              ? anchorList.map((anchor) => (
+                  <Link
+                    key={anchor.link}
+                    href={`#${anchor.link}`}
+                    title={anchor.title}
+                  />
+                ))
+              : posAnchorList.map((anchor) => (
+                  <Link
+                    key={anchor.link}
+                    href={`#${anchor.link}`}
+                    title={anchor.title}
+                  />
+                ))}
           </Anchor>
         </Col>
       </Layout>

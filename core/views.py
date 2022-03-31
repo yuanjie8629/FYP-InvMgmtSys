@@ -19,8 +19,6 @@ from rest_framework_simplejwt.serializers import (
 from rest_framework_simplejwt.exceptions import InvalidToken
 import jwt
 
-from core.models import Users
-
 
 def index(request):
     return render(request, "index.html")

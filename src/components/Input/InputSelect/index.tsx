@@ -46,9 +46,10 @@ const InputSelect = ({
 }: InputProps) => {
   const [selectType, setSelectType] = useState(selectBefore.defaultVal);
   const [selectValue, setSelectValue] = useState('');
-  const inputSelectBefore = selectBefore !== undefined && (
+  console.log(selectValue);
+  const inputSelectBefore = selectBefore && (
     <Select
-      defaultValue={selectedKeyValue || selectBefore?.defaultVal}
+      defaultValue={selectedKeyValue || selectBefore.defaultVal}
       options={selectBefore.options}
       style={{ width: selectWidth }}
       onSelect={(value) => {
@@ -58,7 +59,7 @@ const InputSelect = ({
     />
   );
 
-  const inputSelectAfter = selectAfter !== undefined && (
+  const inputSelectAfter = selectAfter && (
     <Select
       defaultValue={selectedKeyValue || selectAfter?.defaultVal}
       options={selectAfter.options}
