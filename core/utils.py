@@ -177,7 +177,6 @@ def render_to_pdf(template_src, context_dict={}):
         pdfkit_config = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_CMD)
 
     options = {
-        "encoding": "UTF-8",
         "--header-html": "core/templates/pdf_header.html",
         "--header-line": "",
         "--header-font-size": 7,
