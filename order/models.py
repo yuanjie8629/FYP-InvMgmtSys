@@ -95,31 +95,31 @@ class OrderLine(models.Model):
             return self.quantity * self.special_price
         return self.quantity * self.price
 
-    @property
-    def get_profit(self):
-        item_version = (
-            Version.objects.get_for_object(self.item)
-            .filter(revision__date_created__lte=self.order.created_at)
-            .order_by("-revision__date_created")
-            .first()
-        )
-        print(item_version)
+    # @property
+    # def get_profit(self):
+    #     item_version = (
+    #         Version.objects.get_for_object(self.item)
+    #         .filter(revision__date_created__lte=self.order.created_at)
+    #         .order_by("-revision__date_created")
+    #         .first()
+    #     )
+    #     print(item_version)
 
-        if hasattr(self.item, "cost_per_unit"):
-            cost_per_unit = self.item.product.cost_per_unit
-        else:
-            products = self.item.package.product.all()
-            if item_version:
-                print(item_version.field_dict)
-                product_versions = (
-                    Version.objects.get_for_object(products)
-                    .filter(revision__date_created__lte=self.order.created_at)
-                    .order_by("-revision__date_created")
-                    .first()
-                )
-                print(products)
+    #     if hasattr(self.item, "cost_per_unit"):
+    #         cost_per_unit = self.item.product.cost_per_unit
+    #     else:
+    #         products = self.item.package.product.all()
+    #         if item_version:
+    #             print(item_version.field_dict)
+    #             product_versions = (
+    #                 Version.objects.get_for_object(products)
+    #                 .filter(revision__date_created__lte=self.order.created_at)
+    #                 .order_by("-revision__date_created")
+    #                 .first()
+    #             )
+    #             print(products)
 
-        if item_version:
-            cost_per_unit = item_version.field_dict["cost_per_unit"]
+    #     if item_version:
+    #         cost_per_unit = item_version.field_dict["cost_per_unit"]
 
-        return self.line_total - (self.quantity * cost_per_unit)
+    #     return self.line_total - (self.quantity * cost_per_unit)
