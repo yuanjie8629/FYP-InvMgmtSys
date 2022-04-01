@@ -183,9 +183,8 @@ def render_to_pdf(template_src, context_dict={}):
         "margin-right": "0.5in",
         "margin-bottom": "0.5in",
         "margin-left": "0.5in",
-        "enable-smart-shrinking": True,
         # zoom to fix production invoice view
-        # "zoom": "0.7",
+        "zoom": "0.7",
         "enable-local-file-access": True,
         "header-html": "core/templates/pdf_header.html",
         # "header-line": True,
