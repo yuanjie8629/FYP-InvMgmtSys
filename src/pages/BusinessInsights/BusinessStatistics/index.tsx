@@ -1,13 +1,10 @@
-import React, { useEffect, useState, lazy, Suspense, useContext } from 'react';
+import React, { useState, lazy, Suspense, useContext } from 'react';
 import ColorCard from '@components/Card/ColorCard';
 import MainCardContainer from '@components/Container/MainCardContainer';
 import DropdownDate from '@components/Input/DropdownDate';
 import Layout from '@components/Layout';
-import Statistics from '@components/Statistics';
-import statisticsList from '@components/Statistics/statisticsList';
 import { Col, Row, Space, Spin, Typography, message, Checkbox } from 'antd';
 import { LoadingOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import statisticsData from './statisticsData';
 import { formatDt, getDt } from '@utils/dateUtils';
 import MainCard from '@components/Card/MainCard';
 import Button from '@components/Button';
@@ -20,78 +17,20 @@ import { prodCat } from '@utils/optionUtils';
 import Popover from '@components/Popover';
 import { BoldTitle } from '@components/Title';
 import { MessageContext } from '@contexts/MessageContext';
+import StatisticsDashboard from './StatisticsDashboard';
 
 const LineChart = lazy(() => import('@components/Chart/LineChart'));
 const CarouselArrow = lazy(() => import('@components/Carousel/CarouselArrow'));
 
+export const DashboardContainer = (props) => (
+  <Space direction='vertical' size={25} className='full-width'>
+    {props.children}
+  </Space>
+);
+
 const BusinessStatistics = () => {
   message.config({ duration: 2 });
   const { Text, Title } = Typography;
-
-  const DashboardContainer = (props) => (
-    <Space direction='vertical' size={25} className='full-width'>
-      {props.children}
-    </Space>
-  );
-
-  const StatisticsDashboard = (props) => {
-    const [statisticsDtInfo, setStatisticsDtInfo] = useState({
-      date: getDt(),
-      label: 'Today',
-      cat: 'tdy',
-    });
-    const [statisticsTdy, setStatisticsTdy] = useState(
-      getDt(undefined, undefined, 'HH:mm:ss')
-    );
-
-    useEffect(() => {
-      const updateStatistics = setInterval(
-        () => setStatisticsTdy(getDt(undefined, undefined, 'HH:mm:ss')),
-        600000
-      );
-      return () => {
-        clearInterval(updateStatistics);
-      };
-    });
-
-    return (
-      <DashboardContainer>
-        <DropdownDate
-          onChange={(dateInfo) => {
-            setStatisticsDtInfo(dateInfo);
-          }}
-          className='main-card'
-        />
-        <Row justify='center' gutter={[20, 20]}>
-          {statisticsList.map((statistics, index) => (
-            <Col key={`col-${statistics.key}`} flex='25%'>
-              <MainCard bodyStyle={{ padding: 15 }} style={{ height: 105 }}>
-                <Statistics
-                  key={statistics.key}
-                  value={statisticsData[statistics.key]}
-                  title={statistics.title}
-                  date={statisticsDtInfo.date}
-                  untilTm={
-                    statisticsDtInfo.cat === 'tdy'
-                      ? `Until ${statisticsTdy}`
-                      : ''
-                  }
-                  icon={statistics.icon}
-                  color={statistics.color}
-                  prefix={statistics.prefix}
-                  suffix={statistics.suffix}
-                  toFixed={statistics.toFixed}
-                  space={15}
-                  valueSize={16}
-                  avatarSize={55}
-                />
-              </MainCard>
-            </Col>
-          ))}
-        </Row>
-      </DashboardContainer>
-    );
-  };
 
   const KeyMetricsDashboard = (props) => {
     const [messageApi] = useContext(MessageContext);
@@ -101,6 +40,7 @@ const BusinessStatistics = () => {
       label: 'Today',
       cat: 'tdy',
     });
+    
     const [selectedKeyMetrics, setSelectedKeyMetrics] = useState(['Sales']);
 
     const minSelectedMetrics = 1;

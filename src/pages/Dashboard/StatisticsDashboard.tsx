@@ -4,17 +4,16 @@ import { Skeleton, Space, Typography } from 'antd';
 import statisticsList from '@components/Statistics/statisticsList';
 import { DashboardProps } from './Dashboard';
 import Statistics from '@components/Statistics';
+import { getDt } from '@utils/dateUtils';
 
 const StatisticsDashboard = ({ data, loading }: DashboardProps) => {
   const { Text } = Typography;
   return (
     <MainCard>
       <BoldTitle level={5}>Statistics</BoldTitle>
-      {loading || Object.keys(data).length <= 0 ? (
-        <Skeleton active={loading} paragraph={null} title={{ width: '50%' }} />
-      ) : (
-        <Text className='dashboard-grey-text'>{data['date']}</Text>
-      )}
+      <Text className='dashboard-grey-text'>
+        {getDt(undefined, undefined, 'DD MMMM YYYY')}
+      </Text>
       <Space
         direction={'vertical'}
         size={40}

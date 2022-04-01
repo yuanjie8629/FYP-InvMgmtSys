@@ -428,4 +428,12 @@ export const formatDt = (
 
 export const getCurUnixTm = () => moment().subtract(15, 'second').unix();
 
-export const getDtTm = (date:moment.Moment) => moment(date).format('DD-MM-YYYY HH:mm:ss');
+export const getDtTm = (date: moment.Moment) =>
+  moment(date).format('DD-MM-YYYY HH:mm:ss');
+
+export const getStartMthDt = () =>
+  moment().startOf('month').format('DD-MM-YYYY');
+
+export const getEndMthDt = () => moment().endOf('month').format('DD-MM-YYYY');
+
+export const getThisMthYr = () => moment().format('YYYY MMMM');
