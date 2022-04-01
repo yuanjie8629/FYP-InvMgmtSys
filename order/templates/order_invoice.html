@@ -149,8 +149,10 @@
                         Invoice To:
                       </p>
                       {{contact_name}}<br />
+                      {%if pickup%}
                       {{address}}<br />
                       {{postcode}}, {{city}}, {{state}}.
+                      {%endif %}
                     </td>
                   </tr>
                 </tbody>

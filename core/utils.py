@@ -177,11 +177,14 @@ def render_to_pdf(template_src, context_dict={}):
         pdfkit_config = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_CMD)
 
     options = {
+        "encoding": "UTF-8",
+        "print-media-type": "",
         "page-size": "A4",
-        "margin-top": "0.75in",
-        "margin-right": "0.5in",
-        "margin-bottom": "0.5in",
-        "margin-left": "0.75in",
+        "margin-top": "5mm",
+        "margin-bottom": "5mm",
+        "margin-left": "5mm",
+        "margin-right": "5mm",
+        "zoom": "0.75",
         "enable-external-links": True,
         "images": True,
         "header-html": "core/templates/pdf_header.html",
@@ -196,7 +199,9 @@ def render_to_pdf(template_src, context_dict={}):
 
     template = get_template(template_src)
     html = template.render(context_dict)
-    return pdfkit.from_string(html, False, options=options, configuration=pdfkit_config)
+    return pdfkit.from_string(
+        html, False, options=options, configuration=pdfkit_config, verbose=True
+    )
 
 
 def generate_zip(files):
