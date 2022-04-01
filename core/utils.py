@@ -164,6 +164,26 @@ def render_to_pdf(template_src, context_dict={}):
                 "C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe",
             )
         )
+        options = {
+            "encoding": "UTF-8",
+            "page-size": "A4",
+            "margin-top": "0.75in",
+            "margin-right": "0.5in",
+            "margin-bottom": "0.5in",
+            "margin-left": "0.5in",
+            # zoom to fix production invoice view
+            # "zoom": "0.7",
+            "enable-local-file-access": True,
+            "header-html": "core/templates/pdf_header.html",
+            # "header-line": True,
+            # "header-font-size": 7,
+            "footer-html": "core/templates/pdf_footer.html",
+            # "footer-line": True,
+            # "footer-font-size": 7,
+            "footer-font-name": "Helvetica",
+            "header-font-name": "Helvetica",
+        }
+
     else:
         os.environ["PATH"] += os.pathsep + os.path.dirname(sys.executable)
         WKHTMLTOPDF_CMD = (
@@ -175,26 +195,25 @@ def render_to_pdf(template_src, context_dict={}):
             .strip()
         )
         pdfkit_config = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_CMD)
-
-    options = {
-        "encoding": "UTF-8",
-        "page-size": "A4",
-        "margin-top": "0.75in",
-        "margin-right": "0.5in",
-        "margin-bottom": "0.5in",
-        "margin-left": "0.5in",
-        # zoom to fix production invoice view
-        "zoom": "0.7",
-        "enable-local-file-access": True,
-        "header-html": "core/templates/pdf_header.html",
-        # "header-line": True,
-        # "header-font-size": 7,
-        "footer-html": "core/templates/pdf_footer.html",
-        # "footer-line": True,
-        # "footer-font-size": 7,
-        "footer-font-name": "Helvetica",
-        "header-font-name": "Helvetica",
-    }
+        options = {
+            "encoding": "UTF-8",
+            "page-size": "A4",
+            "margin-top": "0.75in",
+            "margin-right": "0.5in",
+            "margin-bottom": "0.5in",
+            "margin-left": "0.5in",
+            # zoom to fix production invoice view
+            "zoom": "0.8",
+            "enable-local-file-access": True,
+            "header-html": "core/templates/pdf_header.html",
+            # "header-line": True,
+            # "header-font-size": 7,
+            "footer-html": "core/templates/pdf_footer.html",
+            # "footer-line": True,
+            # "footer-font-size": 7,
+            "footer-font-name": "Helvetica",
+            "header-font-name": "Helvetica",
+        }
 
     template = get_template(template_src)
     html = template.render(context_dict)
