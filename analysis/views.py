@@ -8,6 +8,7 @@ from order.models import Order, OrderLine
 from django.db.models import Sum, F, Case, When
 from reversion.models import Version
 
+
 @api_view(["GET"])
 def ToDoListView(request):
     pending_shipment = Order.objects.filter(status="toShip").count()
@@ -43,41 +44,61 @@ def StatisticsView(request):
                 Case(
                     When(
                         order_line__item__special_price__isnull=True,
-                        then=(F("order_line__quantity") * F("order_line__item__price")),
+                        then=(F("order_line__quantity") * F("order_line__price")),
                     ),
                     When(
                         order_line__item__special_price__isnull=False,
                         then=(
-                            F("order_line__quantity")
-                            * F("order_line__item__special_price")
+                            F("order_line__quantity") * F("order_line__special_price")
                         ),
                     ),
                 )
             )
         )
         .get("sales")
-    )
+    ) or 0
     print(sales)
 
-    order = Order.objects.filter(created_at=datetime.today())
-    
-    item_version = (
-            Version.objects.get_for_object(order.order_line.item)
-            .filter(revision__date_created__lte=self.order.created_at)
-            .order_by("-revision__date_created")
-            .first()
+    profit = (
+        Order.objects.filter(created_at=datetime.today())
+        .aggregate(
+            profit=Sum(
+                Case(
+                    When(
+                        order_line__special_price__isnull=True,
+                        then=(
+                            (F("order_line__quantity") * F("order_line__price"))
+                            - (
+                                F("order_line__quantity")
+                                * F("order_line__cost_per_unit")
+                            )
+                        ),
+                    ),
+                    When(
+                        order_line__special_price__isnull=False,
+                        then=(
+                            (F("order_line__quantity") * F("order_line__special_price"))
+                            - (
+                                F("order_line__quantity")
+                                * F("order_line__cost_per_unit")
+                            )
+                        ),
+                    ),
+                )
+            )
         )
-
-    profit = Order.objects.filter(created_at=datetime.today()).aggregate(
-        Sum("order_line__get_profit")
-    )
+        .get("profit")
+    ) or 0
     new_cust = Cust.objects.filter(date_joined=datetime.today()).count()
     new_order = Order.objects.filter(created_at=datetime.today()).count()
 
     data = {
+        "date": datetime.today().strftime("%d-%m-%Y"),
         "sales": sales,
         "profit": profit,
         "new_cust": new_cust,
         "new_order": new_order,
     }
     return Response(data=data, status=status.HTTP_200_OK)
+
+
