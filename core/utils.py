@@ -177,6 +177,13 @@ def render_to_pdf(template_src, context_dict={}):
         pdfkit_config = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_CMD)
 
     options = {
+        "--page-size": "A4",
+        "--margin-top": "0.75in",
+        "--margin-right": "0.5in",
+        "--margin-bottom": "0.5in",
+        "--margin-left": "0.75in",
+        "--enable-external-links": True,
+        "--images": True,
         "--header-html": "core/templates/pdf_header.html",
         "--header-line": "",
         "--header-font-size": 7,
