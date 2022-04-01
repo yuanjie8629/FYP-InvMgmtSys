@@ -1,17 +1,16 @@
+import datetime
 import re
 import cloudinary.uploader
 import cloudinary
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.db.models import Prefetch
+from django.db.models import Prefetch, F, Sum, Case, When
 from django.http import QueryDict
-from rest_framework import serializers
-from rest_framework import viewsets
-from rest_framework import generics
-from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework import serializers, viewsets, generics, status
+from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from core.utils import update_request_data
 from image.serializers import ImageSerializer
+from item.choices import PROD_CAT
 from item.filters import PackageFilter, ProductFilter
 from item.models import Item, Package, Product
 from item.serializers import (
@@ -94,6 +93,143 @@ class ProductViewSet(viewsets.ModelViewSet):
         return super().partial_update(
             update_request_data(request, data), *args, **kwargs
         )
+
+    @action(
+        methods=["get"],
+        detail=False,
+        url_path=r"ranking/sales",
+        url_name="ranking-sales",
+    )
+    def ranking_by_sales(self, request, pk=None):
+        from_date = request.query_params.get("from_date", None)
+        to_date = request.query_params.get("to_date", None)
+        category = request.query_params.get("category", None)
+
+        if from_date and to_date:
+            try:
+                from_date = datetime.datetime.strptime(from_date, "%d-%m-%Y")
+
+                # add 1 day to to_date so that it won't miss the last date
+                to_date = datetime.datetime.strptime(
+                    to_date, "%d-%m-%Y"
+                ) + datetime.timedelta(days=1)
+
+            except ValueError:
+                raise serializers.ValidationError(
+                    detail={
+                        "error": {
+                            "code": "invalid date",
+                            "message": "Please ensure the date format is 'DD-MM-YYYY'",
+                        }
+                    }
+                )
+        else:
+            return Response(
+                {"detail": "require from_date and to_date"}, status.HTTP_400_BAD_REQUEST
+            )
+
+        if category and not (
+            category in dict(PROD_CAT).keys() or category in dict(PROD_CAT).values()
+        ):
+            return Response({"detail": "invalid_category"}, status.HTTP_400_BAD_REQUEST)
+
+        product = (
+            Product.objects.filter(
+                order_line__order__created_at__range=(from_date, to_date),
+                category=category,
+            )
+            if category
+            else Product.objects.filter(
+                order_line__order__created_at__range=(from_date, to_date)
+            )
+        )
+
+        product_ranking = product.values(
+            "name",
+            "category",
+            sales=Sum(
+                Case(
+                    When(
+                        order_line__special_price__isnull=True,
+                        then=(F("order_line__quantity") * F("order_line__price")),
+                    ),
+                    When(
+                        order_line__special_price__isnull=False,
+                        then=(
+                            F("order_line__quantity") * F("order_line__special_price")
+                        ),
+                    ),
+                ),
+            ),
+        ).order_by("-sales")
+
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            return self.get_paginated_response(product_ranking)
+        return Response(product_ranking, status.HTTP_200_OK)
+
+    @action(
+        methods=["get"],
+        detail=False,
+        url_path=r"ranking/units",
+        url_name="ranking-units",
+    )
+    def ranking_by_units(self, request, pk=None):
+        from_date = request.query_params.get("from_date", None)
+        to_date = request.query_params.get("to_date", None)
+        category = request.query_params.get("category", None)
+
+        if from_date and to_date:
+            try:
+                from_date = datetime.datetime.strptime(from_date, "%d-%m-%Y")
+
+                # add 1 day to to_date so that it won't miss the last date
+                to_date = datetime.datetime.strptime(
+                    to_date, "%d-%m-%Y"
+                ) + datetime.timedelta(days=1)
+
+            except ValueError:
+                raise serializers.ValidationError(
+                    detail={
+                        "error": {
+                            "code": "invalid date",
+                            "message": "Please ensure the date format is 'DD-MM-YYYY'",
+                        }
+                    }
+                )
+        else:
+            return Response(
+                {"detail": "require from_date and to_date"}, status.HTTP_400_BAD_REQUEST
+            )
+
+        if category and not (
+            category in dict(PROD_CAT).keys() or category in dict(PROD_CAT).values()
+        ):
+            return Response({"detail": "invalid_category"}, status.HTTP_400_BAD_REQUEST)
+
+        product = (
+            Product.objects.filter(
+                order_line__order__created_at__range=(from_date, to_date),
+                category=category,
+            )
+            if category
+            else Product.objects.filter(
+                order_line__order__created_at__range=(from_date, to_date)
+            )
+        )
+
+        product_ranking = product.values(
+            "name",
+            "category",
+            units=Sum(F("order_line__quantity")),
+        ).order_by("-units")
+
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            return self.get_paginated_response(product_ranking)
+        return Response(product_ranking, status.HTTP_200_OK)
 
 
 class ProductPrevView(generics.ListAPIView):
@@ -259,3 +395,117 @@ def PackBulkUpdView(request):
     serializer.save()
 
     return Response(status=status.HTTP_200_OK, data=serializer.validated_data)
+
+
+class PackSalesRankingView(generics.ListAPIView):
+    queryset = (
+        Package.objects.all()
+        .prefetch_related("image", "pack_item", Prefetch("pack_item__prod"))
+        .order_by("-last_update")
+    )
+
+    def list(self, request, *args, **kwargs):
+        from_date = request.query_params.get("from_date", None)
+        to_date = request.query_params.get("to_date", None)
+
+        if from_date and to_date:
+            try:
+                from_date = datetime.datetime.strptime(from_date, "%d-%m-%Y")
+
+                # add 1 day to to_date so that it won't miss the last date
+                to_date = datetime.datetime.strptime(
+                    to_date, "%d-%m-%Y"
+                ) + datetime.timedelta(days=1)
+
+            except ValueError:
+                raise serializers.ValidationError(
+                    detail={
+                        "error": {
+                            "code": "invalid date",
+                            "message": "Please ensure the date format is 'DD-MM-YYYY'",
+                        }
+                    }
+                )
+        else:
+            return Response(
+                {"detail": "require from_date and to_date"}, status.HTTP_400_BAD_REQUEST
+            )
+
+        package = Package.objects.filter(
+            order_line__order__created_at__range=(from_date, to_date),
+        )
+
+        package_ranking = package.values(
+            "name",
+            sales=Sum(
+                Case(
+                    When(
+                        order_line__special_price__isnull=True,
+                        then=(F("order_line__quantity") * F("order_line__price")),
+                    ),
+                    When(
+                        order_line__special_price__isnull=False,
+                        then=(
+                            F("order_line__quantity") * F("order_line__special_price")
+                        ),
+                    ),
+                ),
+            ),
+        ).order_by("-sales")
+
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            return self.get_paginated_response(package_ranking)
+        return Response(package_ranking, status.HTTP_200_OK)
+
+
+class PackUnitsRankingView(generics.ListAPIView):
+    queryset = (
+        Package.objects.all()
+        .prefetch_related("image", "pack_item", Prefetch("pack_item__prod"))
+        .order_by("-last_update")
+    )
+
+    def list(self, request, *args, **kwargs):
+        from_date = request.query_params.get("from_date", None)
+        to_date = request.query_params.get("to_date", None)
+
+        if from_date and to_date:
+            try:
+                from_date = datetime.datetime.strptime(from_date, "%d-%m-%Y")
+
+                # add 1 day to to_date so that it won't miss the last date
+                to_date = datetime.datetime.strptime(
+                    to_date, "%d-%m-%Y"
+                ) + datetime.timedelta(days=1)
+
+            except ValueError:
+                raise serializers.ValidationError(
+                    detail={
+                        "error": {
+                            "code": "invalid date",
+                            "message": "Please ensure the date format is 'DD-MM-YYYY'",
+                        }
+                    }
+                )
+        else:
+            return Response(
+                {"detail": "require from_date and to_date"}, status.HTTP_400_BAD_REQUEST
+            )
+
+        package = Package.objects.filter(
+            order_line__order__created_at__range=(from_date, to_date),
+        )
+
+        package_ranking = package.values(
+            "name",
+            units=Sum(F("order_line__quantity")),
+        ).order_by("-units")
+
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            return self.get_paginated_response(package_ranking)
+
+        return Response(package_ranking, status.HTTP_200_OK)

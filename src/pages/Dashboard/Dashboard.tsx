@@ -6,12 +6,10 @@ import Typography from 'antd/es/typography';
 import Layout from '@components/Layout';
 import Table from '@components/Table';
 import MainCardContainer from '@components/Container/MainCardContainer';
-import topProduct from './topProducts';
 import invAnalysis from './invAnalysis';
 import './Dashboard.less';
-import RankingList from '@components/List/RankingList';
 import { BoldTitle } from '@components/Title';
-import { statisticsAPI, toDoListAPI } from '@api/services/dashboardAPI';
+import { statisticsAPI, toDoListAPI } from '@api/services/analysisAPI';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { orderListAPI } from '@api/services/orderAPI';
@@ -20,6 +18,9 @@ import Sales from './Sales';
 import MoreButton from '@components/Button/ActionButton/MoreButton';
 import StatisticsDashboard from './StatisticsDashboard';
 import RecentOrder from './RecentOrder';
+import { topProdSalesAPI } from '@api/services/analysisAPI';
+import { getDt, getEndMthDt, getStartMthDt } from '@utils/dateUtils';
+import TopProducts from './TopProducts';
 const MainCard = lazy(() => import('@components/Card/MainCard'));
 
 export interface DashboardProps {
@@ -37,6 +38,8 @@ const Dashboard = () => {
   const [statisticsLoading, setStatisticsLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
   const [orderLoading, setOrderLoading] = useState(false);
+  const [topProdData, setTopProdData] = useState([]);
+  const [topProdLoading, setTopProdLoading] = useState(false);
 
   const getToDoListData = (isMounted = true) => {
     setToDoListLoading(true);
@@ -58,7 +61,7 @@ const Dashboard = () => {
 
   const getStatisticsData = (isMounted = true) => {
     setStatisticsLoading(true);
-    statisticsAPI()
+    statisticsAPI(getDt(), getDt())
       .then((res) => {
         if (isMounted) {
           console.log(res.data);
@@ -91,11 +94,29 @@ const Dashboard = () => {
       });
   };
 
+  const getTopProdData = (isMounted = true) => {
+    setTopProdLoading(true);
+    topProdSalesAPI(getStartMthDt(), getEndMthDt())
+      .then((res) => {
+        if (isMounted) {
+          setTopProdData(res.data?.results);
+          setTopProdLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setTopProdLoading(false);
+          showServerErrMsg();
+        }
+      });
+  };
+
   useEffect(() => {
     let isMounted = true;
     getToDoListData(isMounted);
     getStatisticsData(isMounted);
     getOrderData(isMounted);
+    getTopProdData(isMounted);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -151,27 +172,6 @@ const Dashboard = () => {
     },
   ];
 
-  const TopProducts = () => (
-    <MainCard>
-      <Space direction='vertical' size={5} className='full-width'>
-        <div>
-          <Row justify='space-between'>
-            <Col>
-              <BoldTitle level={5}>Top Products</BoldTitle>
-            </Col>
-            <Col>
-              <MoreButton route='bizStatistics' />
-            </Col>
-          </Row>
-          <Row>
-            <Text className='dashboard-grey-text'>{topProduct.date}</Text>
-          </Row>
-        </div>
-        <RankingList dataSource={topProduct} />
-      </Space>
-    </MainCard>
-  );
-
   const InvAnalysis = () => (
     <MainCard>
       <Space direction='vertical' size={30} className='full-width'>
@@ -215,7 +215,7 @@ const Dashboard = () => {
         </Row>
         <Row justify='center' gutter={[30, 20]}>
           <Col span={9}>
-            <TopProducts />
+            <TopProducts data={topProdData} loading={topProdLoading} />
           </Col>
           <Col span={15}>
             <InvAnalysis />

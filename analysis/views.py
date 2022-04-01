@@ -1,12 +1,11 @@
-from datetime import datetime
+import datetime
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, serializers
 from customer.models import Cust, CustPosReg
 from item.models import Package, Product
-from order.models import Order, OrderLine
+from order.models import Order
 from django.db.models import Sum, F, Case, When
-from reversion.models import Version
 
 
 @api_view(["GET"])
@@ -37,8 +36,35 @@ def ToDoListView(request):
 
 @api_view(["GET"])
 def StatisticsView(request):
+
+    from_date = request.query_params.get("from_date", None)
+    to_date = request.query_params.get("to_date", None)
+
+    if from_date and to_date:
+        try:
+            from_date = datetime.datetime.strptime(from_date, "%d-%m-%Y")
+
+            # add 1 day to to_date so that it won't miss the last date
+            to_date = datetime.datetime.strptime(
+                to_date, "%d-%m-%Y"
+            ) + datetime.timedelta(days=1)
+
+        except ValueError:
+            raise serializers.ValidationError(
+                detail={
+                    "error": {
+                        "code": "invalid date",
+                        "message": "Please ensure the date format is 'DD-MM-YYYY'",
+                    }
+                }
+            )
+    else:
+        return Response(
+            {"detail": "require from_date and to_date"}, status.HTTP_400_BAD_REQUEST
+        )
+
     sales = (
-        Order.objects.filter(created_at=datetime.today())
+        Order.objects.filter(created_at__range=(from_date, to_date))
         .aggregate(
             sales=Sum(
                 Case(
@@ -60,7 +86,7 @@ def StatisticsView(request):
     print(sales)
 
     profit = (
-        Order.objects.filter(created_at=datetime.today())
+        Order.objects.filter(created_at__range=(from_date, to_date))
         .aggregate(
             profit=Sum(
                 Case(
@@ -89,16 +115,14 @@ def StatisticsView(request):
         )
         .get("profit")
     ) or 0
-    new_cust = Cust.objects.filter(date_joined=datetime.today()).count()
-    new_order = Order.objects.filter(created_at=datetime.today()).count()
+    new_cust = Cust.objects.filter(date_joined__range=(from_date, to_date)).count()
+    new_order = Order.objects.filter(created_at__range=(from_date, to_date)).count()
 
     data = {
-        "date": datetime.today().strftime("%d-%m-%Y"),
+        # "date": datetime.today().strftime("%d-%m-%Y"),
         "sales": sales,
         "profit": profit,
         "new_cust": new_cust,
         "new_order": new_order,
     }
     return Response(data=data, status=status.HTTP_200_OK)
-
-

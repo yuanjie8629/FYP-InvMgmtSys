@@ -24,7 +24,6 @@ const axios = oriAxios.create({
 
 axios.defaults.headers.common['X-CSRFToken'] = Cookies.get('csrftoken');
 
-let refresh = false;
 axios.interceptors.response.use(
   (res) => {
     return res;
@@ -51,10 +50,8 @@ axios.interceptors.response.use(
       error.response.data.code === 'token_not_valid' &&
       error.response.status === 401 &&
       error.response.statusText === 'Unauthorized' &&
-      originalRequest.url !== 'token/verify/' &&
-      !refresh
+      originalRequest.url !== 'token/verify/'
     ) {
-      refresh = true;
       console.log('Requesting new session.');
       return await refreshTknAPI()
         .then(async (res) => {
@@ -66,9 +63,6 @@ axios.interceptors.response.use(
         })
         .catch((err) => {
           return Promise.reject(err);
-        })
-        .finally(() => {
-          refresh = false;
         });
     }
 

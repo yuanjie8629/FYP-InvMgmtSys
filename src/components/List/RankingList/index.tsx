@@ -3,7 +3,6 @@ import ColorCard from '@components/Card/ColorCard';
 import {
   List,
   ListProps,
-  Skeleton,
   Typography,
   Row,
   Col,
@@ -20,11 +19,10 @@ import { BoldTitle } from '@components/Title';
 
 export interface RankingListProps extends Omit<ListProps<any>, 'dataSource'> {
   dataSource: {
-    date: string;
     type: 'sales' | 'units';
     items: {
-      label: string;
-      cat?: string;
+      name: string;
+      category?: string;
       value: number;
     }[];
   };
@@ -44,8 +42,8 @@ const RankingList = ({
   ...props
 }: RankingListProps) => {
   const { Text } = Typography;
-
   const [selectedCard, setSelectedCard] = useState('bySales');
+  
   return (
     <Space direction='vertical' className='full-width'>
       {(cardSelections !== undefined || selectOptions !== undefined) && (
@@ -117,35 +115,32 @@ const RankingList = ({
       <List
         dataSource={dataSource.items}
         renderItem={(item: {
-          label: string;
-          cat?: string;
+          name: string;
+          category?: string;
           value: number;
-          loading: boolean;
         }) => (
-          <List.Item key={item.label}>
-            <Skeleton title={false} active loading={item.loading}>
-              <List.Item.Meta
-                key={item.label}
-                title={<Text className='ranking-list-title'>{item.label}</Text>}
-                description={
-                  <Text type='secondary' className='ranking-list-cat'>
-                    {item.cat}
-                  </Text>
-                }
-              />
-              <Row align='middle' gutter={[5, 5]}>
-                <Col>
-                  <BoldTitle level={5} className='ranking-list-value'>
-                    {item.value}
-                  </BoldTitle>
-                </Col>
-                <Col>
-                  <Text className='ranking-list-sales'>
-                    {dataSource.type === 'sales' ? 'MYR' : 'units'}
-                  </Text>
-                </Col>
-              </Row>
-            </Skeleton>
+          <List.Item key={item.name}>
+            <List.Item.Meta
+              key={item.name}
+              title={<Text className='ranking-list-title'>{item.name}</Text>}
+              description={
+                <Text type='secondary' className='ranking-list-cat'>
+                  {item.category}
+                </Text>
+              }
+            />
+            <Row align='middle' gutter={[5, 5]}>
+              <Col>
+                <BoldTitle level={5} className='ranking-list-value'>
+                  {item.value}
+                </BoldTitle>
+              </Col>
+              <Col>
+                <Text className='ranking-list-sales'>
+                  {dataSource.type === 'sales' ? 'MYR' : 'units'}
+                </Text>
+              </Col>
+            </Row>
           </List.Item>
         )}
         {...props}
