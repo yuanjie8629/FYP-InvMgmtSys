@@ -3,7 +3,8 @@ import re
 import cloudinary.uploader
 import cloudinary
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.db.models import Prefetch, F, Sum, Case, When
+from django.db.models import Prefetch, F, Sum, Case, When, Q, FloatField
+from django.db.models.functions import Coalesce, Cast
 from django.http import QueryDict
 from rest_framework import serializers, viewsets, generics, status
 from rest_framework.decorators import api_view, action
@@ -134,37 +135,55 @@ class ProductViewSet(viewsets.ModelViewSet):
             return Response({"detail": "invalid_category"}, status.HTTP_400_BAD_REQUEST)
 
         product = (
-            Product.objects.filter(
-                order_line__order__created_at__range=(from_date, to_date),
-                category=category,
-            )
+            Product.objects.filter(category=category)
             if category
-            else Product.objects.filter(
-                order_line__order__created_at__range=(from_date, to_date)
-            )
+            else Product.objects.all()
         )
 
         product_ranking = product.values(
             "name",
             "category",
-            sales=Sum(
-                Case(
-                    When(
-                        order_line__special_price__isnull=True,
-                        then=(F("order_line__quantity") * F("order_line__price")),
-                    ),
-                    When(
-                        order_line__special_price__isnull=False,
-                        then=(
-                            F("order_line__quantity") * F("order_line__special_price")
+            sales=(
+                Cast(
+                    Coalesce(
+                        Sum(
+                            Case(
+                                When(
+                                    Q(
+                                        order_line__order__created_at__range=(
+                                            from_date,
+                                            to_date,
+                                        )
+                                    )
+                                    & Q(order_line__special_price__isnull=True),
+                                    then=(
+                                        F("order_line__quantity")
+                                        * F("order_line__price")
+                                    ),
+                                ),
+                                When(
+                                    Q(
+                                        order_line__order__created_at__range=(
+                                            from_date,
+                                            to_date,
+                                        )
+                                    )
+                                    & Q(order_line__special_price__isnull=False),
+                                    then=(
+                                        F("order_line__quantity")
+                                        * F("order_line__special_price")
+                                    ),
+                                ),
+                            ),
                         ),
+                        0,
                     ),
-                ),
+                    FloatField(),
+                )
             ),
         ).order_by("-sales")
 
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
+        page = self.paginate_queryset(product)
         if page is not None:
             return self.get_paginated_response(product_ranking)
         return Response(product_ranking, status.HTTP_200_OK)
@@ -209,24 +228,33 @@ class ProductViewSet(viewsets.ModelViewSet):
             return Response({"detail": "invalid_category"}, status.HTTP_400_BAD_REQUEST)
 
         product = (
-            Product.objects.filter(
-                order_line__order__created_at__range=(from_date, to_date),
-                category=category,
-            )
+            Product.objects.filter(category=category)
             if category
-            else Product.objects.filter(
-                order_line__order__created_at__range=(from_date, to_date)
-            )
+            else Product.objects.all()
         )
 
         product_ranking = product.values(
             "name",
             "category",
-            units=Sum(F("order_line__quantity")),
+            units=Coalesce(
+                Sum(
+                    Case(
+                        When(
+                            Q(
+                                order_line__order__created_at__range=(
+                                    from_date,
+                                    to_date,
+                                )
+                            ),
+                            then=F("order_line__quantity"),
+                        )
+                    )
+                ),
+                0,
+            ),
         ).order_by("-units")
 
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
+        page = self.paginate_queryset(product)
         if page is not None:
             return self.get_paginated_response(product_ranking)
         return Response(product_ranking, status.HTTP_200_OK)
@@ -431,30 +459,48 @@ class PackSalesRankingView(generics.ListAPIView):
                 {"detail": "require from_date and to_date"}, status.HTTP_400_BAD_REQUEST
             )
 
-        package = Package.objects.filter(
-            order_line__order__created_at__range=(from_date, to_date),
-        )
+        package = Package.objects.all()
 
         package_ranking = package.values(
             "name",
-            sales=Sum(
-                Case(
-                    When(
-                        order_line__special_price__isnull=True,
-                        then=(F("order_line__quantity") * F("order_line__price")),
-                    ),
-                    When(
-                        order_line__special_price__isnull=False,
-                        then=(
-                            F("order_line__quantity") * F("order_line__special_price")
+            sales=Cast(
+                Coalesce(
+                    Sum(
+                        Case(
+                            When(
+                                Q(
+                                    order_line__order__created_at__range=(
+                                        from_date,
+                                        to_date,
+                                    )
+                                )
+                                & Q(order_line__special_price__isnull=True),
+                                then=(
+                                    F("order_line__quantity") * F("order_line__price")
+                                ),
+                            ),
+                            When(
+                                Q(
+                                    order_line__order__created_at__range=(
+                                        from_date,
+                                        to_date,
+                                    )
+                                )
+                                & Q(order_line__special_price__isnull=False),
+                                then=(
+                                    F("order_line__quantity")
+                                    * F("order_line__special_price")
+                                ),
+                            ),
                         ),
                     ),
+                    0,
                 ),
+                FloatField(),
             ),
         ).order_by("-sales")
 
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
+        page = self.paginate_queryset(package)
         if page is not None:
             return self.get_paginated_response(package_ranking)
         return Response(package_ranking, status.HTTP_200_OK)
@@ -494,17 +540,29 @@ class PackUnitsRankingView(generics.ListAPIView):
                 {"detail": "require from_date and to_date"}, status.HTTP_400_BAD_REQUEST
             )
 
-        package = Package.objects.filter(
-            order_line__order__created_at__range=(from_date, to_date),
-        )
+        package = Package.objects.all()
 
         package_ranking = package.values(
             "name",
-            units=Sum(F("order_line__quantity")),
+            units=Coalesce(
+                Sum(
+                    Case(
+                        When(
+                            Q(
+                                order_line__order__created_at__range=(
+                                    from_date,
+                                    to_date,
+                                )
+                            ),
+                            then=F("order_line__quantity"),
+                        )
+                    )
+                ),
+                0,
+            ),
         ).order_by("-units")
 
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
+        page = self.paginate_queryset(package)
         if page is not None:
             return self.get_paginated_response(package_ranking)
 

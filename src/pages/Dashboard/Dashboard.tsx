@@ -18,7 +18,7 @@ import Sales from './Sales';
 import MoreButton from '@components/Button/ActionButton/MoreButton';
 import StatisticsDashboard from './StatisticsDashboard';
 import RecentOrder from './RecentOrder';
-import { topProdSalesAPI } from '@api/services/analysisAPI';
+import { itemRankingAPI } from '@api/services/analysisAPI';
 import { getDt, getEndMthDt, getStartMthDt } from '@utils/dateUtils';
 import TopProducts from './TopProducts';
 const MainCard = lazy(() => import('@components/Card/MainCard'));
@@ -96,7 +96,13 @@ const Dashboard = () => {
 
   const getTopProdData = (isMounted = true) => {
     setTopProdLoading(true);
-    topProdSalesAPI(getStartMthDt(), getEndMthDt())
+    itemRankingAPI({
+      itemType: 'product',
+      rankingType: 'sales',
+      fromDate: getStartMthDt(),
+      toDate: getEndMthDt(),
+      limit: 6,
+    })
       .then((res) => {
         if (isMounted) {
           setTopProdData(res.data?.results);
@@ -118,6 +124,9 @@ const Dashboard = () => {
     getOrderData(isMounted);
     getTopProdData(isMounted);
 
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

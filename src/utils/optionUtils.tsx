@@ -113,3 +113,7 @@ export const invInputOptions = [
     ),
   },
 ];
+
+export type ItemType = 'product' | 'package';
+
+export type RankingType = 'sales' | 'units';

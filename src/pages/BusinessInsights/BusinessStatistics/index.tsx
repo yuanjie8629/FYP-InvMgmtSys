@@ -11,13 +11,11 @@ import Button from '@components/Button';
 import keyMetricsList from './keyMetricsList';
 import { splitIntoChunks } from '@utils/arrayUtils';
 import { moneyFormatter, percentFormatter } from '@utils/numUtils';
-import RankingList from '@components/List/RankingList';
-import topProduct from './topProducts';
-import { prodCat } from '@utils/optionUtils';
 import Popover from '@components/Popover';
 import { BoldTitle } from '@components/Title';
 import { MessageContext } from '@contexts/MessageContext';
 import StatisticsDashboard from './StatisticsDashboard';
+import RankingDashboard from './RankingDashboard';
 
 const LineChart = lazy(() => import('@components/Chart/LineChart'));
 const CarouselArrow = lazy(() => import('@components/Carousel/CarouselArrow'));
@@ -305,80 +303,7 @@ const BusinessStatistics = () => {
     );
   };
 
-  const RankingDashboard = (props) => {
-    const [rankingDtInfo, setRankingDtInfo] = useState({
-      date: getDt(),
-      label: 'Today',
-      cat: 'tdy',
-    });
-
-    const rankingCardSelections = [
-      { key: 'bySales', label: 'By Sales', desc: 'Sort ranking by sales' },
-      { key: 'byUnits', label: 'By Units', desc: 'Sort ranking by unit sold' },
-    ];
-
-    return (
-      <DashboardContainer>
-        <DropdownDate
-          onChange={(dateInfo) => {
-            setRankingDtInfo(dateInfo);
-          }}
-          className='main-card'
-        />
-        <Row justify='center' gutter={[30, 20]}>
-          <Col span={12}>
-            <MainCard>
-              <Space direction='vertical' size={5} className='full-width'>
-                <div>
-                  <BoldTitle level={5}>Product Rankings</BoldTitle>
-
-                  <Text type='secondary'>
-                    {formatDt(
-                      rankingDtInfo.date,
-                      rankingDtInfo.cat,
-                      'DD-MM-YYYY',
-                      'MMM DD, YYYY'
-                    )}
-                  </Text>
-                </div>
-                <RankingList
-                  dataSource={topProduct}
-                  cardSelections={rankingCardSelections}
-                  selectOptions={{
-                    placeholder: 'Category',
-                    options: prodCat,
-                    allowClear: true,
-                  }}
-                />
-              </Space>
-            </MainCard>
-          </Col>
-          <Col span={12}>
-            <MainCard>
-              <Space direction='vertical' size={5} className='full-width'>
-                <div>
-                  <BoldTitle level={5}>Promotion Rankings</BoldTitle>
-
-                  <Text className='dashboard-grey-text'>
-                    {formatDt(
-                      rankingDtInfo.date,
-                      rankingDtInfo.cat,
-                      'DD-MM-YYYY',
-                      'MMM DD, YYYY'
-                    )}
-                  </Text>
-                </div>
-                <RankingList
-                  dataSource={topProduct}
-                  cardSelections={rankingCardSelections}
-                />
-              </Space>
-            </MainCard>
-          </Col>
-        </Row>
-      </DashboardContainer>
-    );
-  };
+ 
 
   return (
     <Layout>

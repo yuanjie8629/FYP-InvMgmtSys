@@ -1,7 +1,7 @@
 import MoreButton from '@components/Button/ActionButton/MoreButton';
 import MainCard from '@components/Card/MainCard';
 import RankingList from '@components/List/RankingList';
-import ProductRankingListSkeleton from '@components/List/RankingList/ProductRankingListSkeleton';
+import RankingListSkeleton from '@components/List/RankingList/RankingListSkeleton';
 import { BoldTitle } from '@components/Title';
 import { getThisMthYr } from '@utils/dateUtils';
 import { prodCat } from '@utils/optionUtils';
@@ -27,7 +27,7 @@ const TopProducts = ({ data, loading }: DashboardProps) => {
           </Row>
         </div>
         {loading || data.length <= 0 ? (
-          <ProductRankingListSkeleton active={loading} />
+          <RankingListSkeleton itemType='product' active={loading} total={6} />
         ) : (
           <RankingList
             dataSource={{

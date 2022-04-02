@@ -9,6 +9,7 @@ import {
   Space,
   Select,
   SelectProps,
+  Pagination,
 } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import './RankingList.less';
@@ -16,34 +17,42 @@ import CarouselArrow from '@components/Carousel/CarouselArrow';
 import { splitIntoChunks } from '@utils/arrayUtils';
 import Popover from '@components/Popover';
 import { BoldTitle } from '@components/Title';
+import { RankingType } from '@utils/optionUtils';
+
+export interface RankingDataProps {
+  type: RankingType;
+  items: {
+    name: string;
+    category?: string;
+    value: number;
+  }[];
+}
 
 export interface RankingListProps extends Omit<ListProps<any>, 'dataSource'> {
-  dataSource: {
-    type: 'sales' | 'units';
-    items: {
-      name: string;
-      category?: string;
-      value: number;
-    }[];
-  };
+  dataSource: RankingDataProps;
+  totalData?: number;
   cardSelections?: { key: string; label: string; desc?: string }[];
+  cardSelected?: string;
   selectOptions?: SelectProps;
-  onCardSelect?: (selected: string) => void;
+  onCardSelect?: (selected: RankingType) => void;
   onSelectChange?: (selected: string) => void;
+  onPageChange?: (page: number, pageSize: number) => void;
 }
 
 const RankingList = ({
   dataSource,
+  totalData,
   cardSelections,
+  cardSelected,
   selectOptions,
-  onCardSelect = () => '',
-  onSelectChange = () => '',
-
+  onCardSelect = () => null,
+  onSelectChange = () => null,
+  onPageChange = () => null,
   ...props
 }: RankingListProps) => {
   const { Text } = Typography;
-  const [selectedCard, setSelectedCard] = useState('bySales');
-  
+  const [selectedCard, setSelectedCard] = useState(cardSelected || 'sales');
+
   return (
     <Space direction='vertical' className='full-width'>
       {(cardSelections !== undefined || selectOptions !== undefined) && (
@@ -130,21 +139,43 @@ const RankingList = ({
               }
             />
             <Row align='middle' gutter={[5, 5]}>
+              {dataSource.type === 'sales' && (
+                <Col>
+                  <Text className='ranking-list-sales'>RM</Text>
+                </Col>
+              )}
               <Col>
                 <BoldTitle level={5} className='ranking-list-value'>
-                  {item.value}
+                  {dataSource.type === 'sales'
+                    ? item.value?.toFixed(2)
+                    : item.value}
                 </BoldTitle>
               </Col>
-              <Col>
-                <Text className='ranking-list-sales'>
-                  {dataSource.type === 'sales' ? 'MYR' : 'units'}
-                </Text>
-              </Col>
+              {dataSource.type === 'units' && (
+                <Col>
+                  <Text className='ranking-list-sales'>units</Text>
+                </Col>
+              )}
             </Row>
           </List.Item>
         )}
+        style={{ minHeight: 360 }}
         {...props}
       />
+      {dataSource && (
+        <Row justify='end'>
+          <Col>
+            <Pagination
+              showQuickJumper
+              onChange={(page, pageSize) => {
+                onPageChange(page, pageSize);
+              }}
+              showTotal={(total) => `Total ${total} items`}
+              total={totalData}
+            />
+          </Col>
+        </Row>
+      )}
     </Space>
   );
 };
