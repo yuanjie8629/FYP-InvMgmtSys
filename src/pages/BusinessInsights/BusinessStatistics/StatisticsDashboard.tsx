@@ -26,14 +26,16 @@ const StatisticsDashboard = (props) => {
   const [messageApi] = useContext(MessageContext);
 
   useEffect(() => {
-    const updateStatistics = setInterval(
-      () => setStatisticsTdy(getDt(undefined, undefined, 'HH:mm:ss')),
-      600000
-    );
+    const updateStatistics = setInterval(() => {
+      if (statisticsDtInfo.cat === 'tdy') {
+        setStatisticsTdy(getDt(undefined, undefined, 'HH:mm:ss'));
+      }
+    }, 600000);
+
     return () => {
       clearInterval(updateStatistics);
     };
-  });
+  }, [statisticsDtInfo.cat]);
 
   const getStatisticsData = (isMounted = true) => {
     setStatisticsLoading(true);
@@ -65,7 +67,7 @@ const StatisticsDashboard = (props) => {
     return () => {
       isMounted = false;
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statisticsDtInfo]);
 
   const showServerErrMsg = () => {
@@ -87,6 +89,7 @@ const StatisticsDashboard = (props) => {
             <MainCard bodyStyle={{ padding: 15 }} style={{ height: 105 }}>
               {statisticsLoading || Object.keys(statisticsData).length <= 0 ? (
                 <Skeleton
+                  active={statisticsLoading}
                   avatar={{ size: 50 }}
                   title={null}
                   paragraph={{ rows: 3, width: '100%' }}
