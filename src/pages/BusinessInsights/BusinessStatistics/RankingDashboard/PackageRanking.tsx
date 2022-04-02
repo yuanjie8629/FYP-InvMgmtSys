@@ -19,7 +19,7 @@ const PackageRanking = ({ dateInfo }: RankingDashboardProps) => {
   const [rankingType, setRankingType] = useState<RankingType>('sales');
   const [pagination, setPagination] = useState({ page: 1, pageSize: 6 });
   const [messageApi] = useContext(MessageContext);
-  
+
   const getPackageRanking = (isMounted = true) => {
     setLoading(true);
     itemRankingAPI({
@@ -101,6 +101,7 @@ const PackageRanking = ({ dateInfo }: RankingDashboardProps) => {
                 };
               }),
             }}
+            showPagination
             totalData={total}
             cardSelections={rankingCardSelections}
             cardSelected={rankingType}

@@ -9,7 +9,7 @@ from django.http import QueryDict
 from rest_framework import serializers, viewsets, generics, status
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
-from core.utils import update_request_data
+from core.utils import get_date, update_request_data
 from image.serializers import ImageSerializer
 from item.choices import PROD_CAT
 from item.filters import PackageFilter, ProductFilter
@@ -102,32 +102,8 @@ class ProductViewSet(viewsets.ModelViewSet):
         url_name="ranking-sales",
     )
     def ranking_by_sales(self, request, pk=None):
-        from_date = request.query_params.get("from_date", None)
-        to_date = request.query_params.get("to_date", None)
+        from_date, to_date = get_date(request)
         category = request.query_params.get("category", None)
-
-        if from_date and to_date:
-            try:
-                from_date = datetime.datetime.strptime(from_date, "%d-%m-%Y")
-
-                # add 1 day to to_date so that it won't miss the last date
-                to_date = datetime.datetime.strptime(
-                    to_date, "%d-%m-%Y"
-                ) + datetime.timedelta(days=1)
-
-            except ValueError:
-                raise serializers.ValidationError(
-                    detail={
-                        "error": {
-                            "code": "invalid date",
-                            "message": "Please ensure the date format is 'DD-MM-YYYY'",
-                        }
-                    }
-                )
-        else:
-            return Response(
-                {"detail": "require from_date and to_date"}, status.HTTP_400_BAD_REQUEST
-            )
 
         if category and not (
             category in dict(PROD_CAT).keys() or category in dict(PROD_CAT).values()
@@ -195,32 +171,8 @@ class ProductViewSet(viewsets.ModelViewSet):
         url_name="ranking-units",
     )
     def ranking_by_units(self, request, pk=None):
-        from_date = request.query_params.get("from_date", None)
-        to_date = request.query_params.get("to_date", None)
+        from_date, to_date = get_date(request)
         category = request.query_params.get("category", None)
-
-        if from_date and to_date:
-            try:
-                from_date = datetime.datetime.strptime(from_date, "%d-%m-%Y")
-
-                # add 1 day to to_date so that it won't miss the last date
-                to_date = datetime.datetime.strptime(
-                    to_date, "%d-%m-%Y"
-                ) + datetime.timedelta(days=1)
-
-            except ValueError:
-                raise serializers.ValidationError(
-                    detail={
-                        "error": {
-                            "code": "invalid date",
-                            "message": "Please ensure the date format is 'DD-MM-YYYY'",
-                        }
-                    }
-                )
-        else:
-            return Response(
-                {"detail": "require from_date and to_date"}, status.HTTP_400_BAD_REQUEST
-            )
 
         if category and not (
             category in dict(PROD_CAT).keys() or category in dict(PROD_CAT).values()
@@ -433,31 +385,7 @@ class PackSalesRankingView(generics.ListAPIView):
     )
 
     def list(self, request, *args, **kwargs):
-        from_date = request.query_params.get("from_date", None)
-        to_date = request.query_params.get("to_date", None)
-
-        if from_date and to_date:
-            try:
-                from_date = datetime.datetime.strptime(from_date, "%d-%m-%Y")
-
-                # add 1 day to to_date so that it won't miss the last date
-                to_date = datetime.datetime.strptime(
-                    to_date, "%d-%m-%Y"
-                ) + datetime.timedelta(days=1)
-
-            except ValueError:
-                raise serializers.ValidationError(
-                    detail={
-                        "error": {
-                            "code": "invalid date",
-                            "message": "Please ensure the date format is 'DD-MM-YYYY'",
-                        }
-                    }
-                )
-        else:
-            return Response(
-                {"detail": "require from_date and to_date"}, status.HTTP_400_BAD_REQUEST
-            )
+        from_date, to_date = get_date(request)
 
         package = Package.objects.all()
 
@@ -514,31 +442,7 @@ class PackUnitsRankingView(generics.ListAPIView):
     )
 
     def list(self, request, *args, **kwargs):
-        from_date = request.query_params.get("from_date", None)
-        to_date = request.query_params.get("to_date", None)
-
-        if from_date and to_date:
-            try:
-                from_date = datetime.datetime.strptime(from_date, "%d-%m-%Y")
-
-                # add 1 day to to_date so that it won't miss the last date
-                to_date = datetime.datetime.strptime(
-                    to_date, "%d-%m-%Y"
-                ) + datetime.timedelta(days=1)
-
-            except ValueError:
-                raise serializers.ValidationError(
-                    detail={
-                        "error": {
-                            "code": "invalid date",
-                            "message": "Please ensure the date format is 'DD-MM-YYYY'",
-                        }
-                    }
-                )
-        else:
-            return Response(
-                {"detail": "require from_date and to_date"}, status.HTTP_400_BAD_REQUEST
-            )
+        from_date, to_date = get_date(request)
 
         package = Package.objects.all()
 

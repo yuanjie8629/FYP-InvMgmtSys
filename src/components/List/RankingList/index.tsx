@@ -30,6 +30,7 @@ export interface RankingDataProps {
 
 export interface RankingListProps extends Omit<ListProps<any>, 'dataSource'> {
   dataSource: RankingDataProps;
+  showPagination?: boolean;
   totalData?: number;
   cardSelections?: { key: string; label: string; desc?: string }[];
   cardSelected?: string;
@@ -41,6 +42,7 @@ export interface RankingListProps extends Omit<ListProps<any>, 'dataSource'> {
 
 const RankingList = ({
   dataSource,
+  showPagination = false,
   totalData,
   cardSelections,
   cardSelected,
@@ -162,7 +164,7 @@ const RankingList = ({
         style={{ minHeight: 360 }}
         {...props}
       />
-      {dataSource && (
+      {dataSource && showPagination && (
         <Row justify='end'>
           <Col>
             <Pagination

@@ -26,3 +26,32 @@ export const itemRankingAPI = (props: ItemRankingAPIProps) =>
       props.offset ? `&offset=${props.offset}` : ''
     }`
   );
+
+export const keyMetricsSummaryAPI = (fromDate: string, toDate: string) =>
+  axios.get(
+    `analysis/key_metrics/summary/?from_date=${fromDate}&to_date=${toDate}`
+  );
+
+export type KeyMetricsType =
+  | 'sales'
+  | 'profit'
+  | 'orders'
+  | 'customers'
+  | 'buyers'
+  | 'avg_order_value'
+  | 'units_sold'
+  | 'avg_basket_size';
+
+export type KeyMetricsDateType = 'hour' | 'day' | 'month';
+
+export interface KeyMetricsProps {
+  key: KeyMetricsType;
+  dateType: KeyMetricsDateType;
+  fromDate: string;
+  toDate: string;
+}
+
+export const keyMetricsAPI = (props: KeyMetricsProps) =>
+  axios.get(
+    `analysis/key_metrics/?from_date=${props.fromDate}&to_date=${props.toDate}&key=${props.key}&date_type=${props.dateType}`
+  );

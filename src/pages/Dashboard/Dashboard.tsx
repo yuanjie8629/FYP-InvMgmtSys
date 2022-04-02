@@ -46,7 +46,6 @@ const Dashboard = () => {
     toDoListAPI()
       .then((res) => {
         if (isMounted) {
-          console.log(res.data);
           setToDoListData(res.data);
           setToDoListLoading(false);
         }
@@ -64,7 +63,6 @@ const Dashboard = () => {
     statisticsAPI(getDt(), getDt())
       .then((res) => {
         if (isMounted) {
-          console.log(res.data);
           setStatisticsData(res.data);
           setStatisticsLoading(false);
         }

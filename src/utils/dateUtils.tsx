@@ -100,12 +100,14 @@ export const getThisWeekTilYtd = (
   date?: moment.Moment | string,
   inputFormat?: string,
   outputFormat: string = 'DD-MM-YYYY'
-) =>
-  `${moment(date, inputFormat)
-    .startOf('week')
-    .format(outputFormat)} ~ ${moment()
-    .subtract(1, 'day')
-    .format(outputFormat)}`;
+) => {
+  let startWeek = moment(date, inputFormat).startOf('week');
+  let end = moment().subtract(1, 'day');
+  if (startWeek.isAfter(end)) {
+    end = startWeek;
+  }
+  return `${startWeek.format(outputFormat)} ~ ${end.format(outputFormat)}`;
+};
 
 export const getNextMth = (
   date?: moment.Moment | string,

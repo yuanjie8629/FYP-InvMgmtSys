@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import Col from 'antd/es/col';
 import Row from 'antd/es/row';
 import Space from 'antd/es/space';
@@ -10,30 +10,120 @@ import { Radio, Spin } from 'antd';
 import MainCard from '@components/Card/MainCard';
 import MoreButton from '@components/Button/ActionButton/MoreButton';
 import { dateRangeOptions } from '@utils/optionUtils';
-import { dataYear, dataMonth, dataWeek, dataDay } from './salesData';
 import LineChart from '@components/Chart/LineChart';
+import {
+  formatDt,
+  getDt,
+  getThisMthTilYtd,
+  getThisMthYr,
+  getThisWeekTilYtd,
+  getThisYrTilYtd,
+  getWeekOfYear,
+  getYr,
+} from '@utils/dateUtils';
+import { keyMetricsAPI, KeyMetricsDateType } from '@api/services/analysisAPI';
+import { useContext } from 'react';
+import { MessageContext } from '@contexts/MessageContext';
+import { serverErrMsg } from '@utils/messageUtils';
 
 const Sales = () => {
   const { Text } = Typography;
   const [salesDateRange, setSalesDateRange] = useState('year');
+  const [data, setData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [messageApi] = useContext(MessageContext);
 
-  const getSalesData =
-    salesDateRange === 'month'
-      ? dataMonth.data
-      : salesDateRange === 'week'
-      ? dataWeek.data
-      : salesDateRange === 'day'
-      ? dataDay.data
-      : dataYear.data;
+  useEffect(() => {
+    setLoading(true);
+    let isMounted = true;
+    let fromDate = '';
+    let toDate = '';
+    let salesDateType: KeyMetricsDateType;
+    if (salesDateRange === 'month') {
+      salesDateType = 'month';
+      let date = getThisMthTilYtd().split(' ~ ');
+      fromDate = date[0];
+      toDate = date[1];
+    } else if (salesDateRange === 'week') {
+      salesDateType = 'day';
+      let date = getThisWeekTilYtd().split(' ~ ');
+      fromDate = date[0];
+      toDate = date[1];
+    } else if (salesDateRange === 'day') {
+      salesDateType = 'hour';
+      fromDate = getDt();
+      toDate = getDt();
+    } else {
+      salesDateType = 'month';
+      let date = getThisYrTilYtd().split(' ~ ');
+      fromDate = date[0];
+      toDate = date[1];
+    }
+
+    keyMetricsAPI({
+      fromDate: fromDate,
+      toDate: toDate,
+      key: 'sales',
+      dateType: salesDateType,
+    })
+      .then((res) => {
+        if (isMounted) {
+          setData(res.data);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setLoading(false);
+          showServerErrMsg();
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [salesDateRange]);
+
+  const parseData = () => {
+    let newData = [];
+    Object.keys(data).forEach((key) => {
+      if (key !== 'range') {
+        
+        data[key].forEach((datum) => {
+          console.log(datum);
+        });
+      }
+    });
+  };
+
+  const showServerErrMsg = () => {
+    messageApi.open(serverErrMsg);
+  };
 
   const getSalesDate =
     salesDateRange === 'month'
-      ? dataMonth.month
+      ? `${getThisMthYr()} (${formatDt(
+          getThisMthTilYtd(),
+          'byMonth',
+          'DD-MM-YYYY ~ DD-MM-YYYY',
+          'DD-MM-YYYY'
+        )})`
       : salesDateRange === 'week'
-      ? dataWeek.frmDate + ' - ' + dataWeek.toDate
+      ? `${getWeekOfYear()} (${formatDt(
+          getThisWeekTilYtd(),
+          'byWeek',
+          'DD-MM-YYYY ~ DD-MM-YYYY',
+          'DD-MM-YYYY'
+        )})`
       : salesDateRange === 'day'
-      ? dataDay.date
-      : dataYear.year;
+      ? `${formatDt(getDt(), 'byDay', 'DD-MM-YYYY', 'DD MMMM YYYY')}`
+      : `${getYr()} (${formatDt(
+          getThisYrTilYtd(),
+          'byMonth',
+          'DD-MM-YYYY ~ DD-MM-YYYY',
+          'DD-MM-YYYY'
+        )})`;
 
   const getChartTitle = ['month', 'week'].includes(salesDateRange)
     ? 'Day'
@@ -68,6 +158,7 @@ const Sales = () => {
               style={{ marginRight: 30 }}
               onChange={(e) => {
                 setSalesDateRange(e.target.value);
+                parseData();
               }}
               value={salesDateRange}
               options={dateRangeOptions}
@@ -89,15 +180,15 @@ const Sales = () => {
               <Text strong type='secondary'>
                 RM
               </Text>
-              <LineChart
-                data={getSalesData}
+              {/* <LineChart
+                data={[]}
                 titleX={getChartTitle}
                 tooltipName='Total Sales'
                 tooltipTitlePrefix={getChartTooltipTitlePrefix}
                 tooltipTitleSuffix={getChartTooltipTitleSuffix}
                 tooltipValPrefix='RM '
                 toFixed={2}
-              />
+              /> */}
             </Space>
           </Suspense>
         </Row>
