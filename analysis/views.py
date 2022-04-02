@@ -1,4 +1,5 @@
 import datetime
+import json
 import pandas as pd
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -46,10 +47,10 @@ def split_by_date(date_field, date_type, queryset: QuerySet):
 def sort_by_date(key_metrics, date_type, from_date, to_date, queryset: QuerySet):
     to_date = to_date - datetime.timedelta(days=1)
     if date_type in ["hour"]:
-        queryset = queryset.order_by("hour").values("hour", key_metrics)
+        queryset = queryset.order_by("hour").values("hour", "value")
 
         if not queryset.exists():
-            queryset = [{"hour": None, key_metrics: None}]
+            queryset = [{"hour": None, "value": None}]
 
         range = pd.date_range(
             start=from_date.replace(hour=0, minute=0, second=0, microsecond=0),
@@ -58,55 +59,60 @@ def sort_by_date(key_metrics, date_type, from_date, to_date, queryset: QuerySet)
             name="range",
         )
 
-        queryset = (
+        queryset = json.loads(
             pd.DataFrame(queryset)
             .set_index("hour")
             .reindex(range, fill_value=0)
             .reset_index()
+            .assign(category=key_metrics)
+            .to_json(orient="records")
         )
 
     if date_type in ["day"]:
-        queryset = queryset.order_by("day").values("day", key_metrics)
+        queryset = queryset.order_by("day").values("day", "value")
         if not queryset.exists():
-            queryset = [{"day": None, key_metrics: None}]
+            queryset = [{"day": None, "value": None}]
 
-        range = pd.date_range(
+        day = pd.date_range(
             start=from_date.replace(hour=0, minute=0, second=0, microsecond=0),
             end=to_date.replace(hour=0, minute=0, second=0, microsecond=0),
             freq="D",
             name="range",
         )
 
-        queryset = (
+        queryset = json.loads(
             pd.DataFrame(queryset)
             .set_index("day")
-            .reindex(range, fill_value=0)
+            .reindex(day, fill_value=0)
             .reset_index()
+            .assign(category=key_metrics)
+            .to_json(orient="records")
         )
 
     if date_type in ["month"]:
-        queryset = queryset.order_by("month").values("month", key_metrics)
+        queryset = queryset.order_by("month").values("month", "value")
 
         if not queryset.exists():
-            queryset = [{"month": None, key_metrics: None}]
+            queryset = [{"month": None, "value": None}]
 
-        range = pd.date_range(
+        print(queryset)
+        month = pd.date_range(
             start=from_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0),
             end=to_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0),
             freq="MS",
-            name="range",
+            name="month",
         )
-        queryset = (
+
+        queryset = json.loads(
             pd.DataFrame(queryset)
             .set_index("month")
-            .reindex(range, fill_value=0)
+            .reindex(month, fill_value=0)
             .reset_index()
+            .assign(category=key_metrics)
+            .to_json(orient="records")
         )
 
-    range = queryset.pop("range")
-    print(range)
-
-    return queryset, range
+    return queryset
 
 
 def get_sales(from_date, to_date):
@@ -335,7 +341,7 @@ def KeyMetricsView(request):
             }
         )
 
-    data = {}
+    data = []
 
     if "sales" in key_metrics_list:
         query = split_by_date(
@@ -347,7 +353,7 @@ def KeyMetricsView(request):
         )
 
         query = query.annotate(
-            sales=Cast(
+            value=Cast(
                 Coalesce(
                     Sum(
                         Case(
@@ -371,9 +377,8 @@ def KeyMetricsView(request):
                 FloatField(),
             )
         )
-        query, range = sort_by_date("sales", date_type, from_date, to_date, query)
-        data.update(query)
-        data.update({"range": range})
+        query = sort_by_date("sales", date_type, from_date, to_date, query)
+        data.extend(query)
 
     if "profit" in key_metrics_list:
         query = split_by_date(
@@ -385,7 +390,7 @@ def KeyMetricsView(request):
         )
 
         query = query.annotate(
-            profit=Sum(
+            value=Sum(
                 Case(
                     When(
                         order_line__special_price__isnull=True,
@@ -411,9 +416,8 @@ def KeyMetricsView(request):
             )
         )
 
-        query, range = sort_by_date("profit", date_type, from_date, to_date, query)
-        data.update(query)
-        data.update({"range": range})
+        query = sort_by_date("profit", date_type, from_date, to_date, query)
+        data.extend(query)
 
     if "orders" in key_metrics_list:
         query = split_by_date(
@@ -421,10 +425,10 @@ def KeyMetricsView(request):
             date_type,
             Order.objects.filter(created_at__range=(from_date, to_date)),
         )
-        query = query.annotate(orders=Count(F("pk")))
+        query = query.annotate(value=Count(F("pk")))
 
         query = sort_by_date("orders", date_type, from_date, to_date, query)
-        data.update({"orders": query})
+        data.extend(query)
 
     if "customers" in key_metrics_list:
         query = split_by_date(
@@ -433,11 +437,10 @@ def KeyMetricsView(request):
             Cust.objects.filter(date_joined__range=(from_date, to_date)),
         )
 
-        query = query.annotate(customers=Count(F("pk")))
+        query = query.annotate(value=Count(F("pk")))
 
-        query, range = sort_by_date("customers", date_type, from_date, to_date, query)
-        data.update(query)
-        data.update({"range": range})
+        query = sort_by_date("customers", date_type, from_date, to_date, query)
+        data.extend(query)
 
     if "buyers" in key_metrics_list:
         query = split_by_date(
@@ -448,11 +451,10 @@ def KeyMetricsView(request):
             .distinct(),
         )
 
-        query = query.annotate(customers=Count(F("pk")))
+        query = query.annotate(value=Count(F("pk")))
 
-        query, range = sort_by_date("buyers", date_type, from_date, to_date, query)
-        data.update(query)
-        data.update({"range": range})
+        query = sort_by_date("buyers", date_type, from_date, to_date, query)
+        data.extend(query)
 
     if "avg_order_value" in key_metrics_list:
         query = split_by_date(
@@ -464,7 +466,7 @@ def KeyMetricsView(request):
         )
 
         query = query.annotate(
-            avg_sales=Avg(
+            value=Avg(
                 Case(
                     When(
                         order_line__item__special_price__isnull=True,
@@ -480,23 +482,20 @@ def KeyMetricsView(request):
             )
         )
 
-        query, range = sort_by_date(
-            "avg_order_value", date_type, from_date, to_date, query
-        )
-        data.update(query)
-        data.update({"range": range})
+        query = sort_by_date("avg_order_value", date_type, from_date, to_date, query)
+        data.extend(query)
 
     if "units_sold" in key_metrics_list:
         query = split_by_date(
-            "created_at",
+            "order__created_at",
             date_type,
-            Order.objects.filter(created_at__range=(from_date, to_date)).exclude(
-                status__in=("unpaid", "cancel")
-            ),
+            OrderLine.objects.filter(
+                order__created_at__range=(from_date, to_date)
+            ).exclude(order__status__in=("unpaid", "cancel")),
         )
 
         query = query.annotate(
-            units_sold=Sum(
+            value=Sum(
                 Case(
                     When(
                         Q(
@@ -511,9 +510,8 @@ def KeyMetricsView(request):
             ),
         )
 
-        query, range = sort_by_date("units_sold", date_type, from_date, to_date, query)
-        data.update(query)
-        data.update({"range": range})
+        query = sort_by_date("units_sold", date_type, from_date, to_date, query)
+        data.extend(query)
 
     if "avg_basket_size" in key_metrics_list:
         query = split_by_date(
@@ -522,12 +520,9 @@ def KeyMetricsView(request):
             OrderLine.objects.filter(order__created_at__range=(from_date, to_date)),
         )
 
-        query = query.annotate(avg_basket_size=Avg(F("quantity")))
+        query = query.annotate(value=Avg(F("quantity")))
 
-        query, range = sort_by_date(
-            "avg_basket_size", date_type, from_date, to_date, query
-        )
-        data.update(query)
-        data.update({"range": range})
+        query = sort_by_date("avg_basket_size", date_type, from_date, to_date, query)
+        data.extend(query)
 
     return Response(data, status.HTTP_200_OK)
