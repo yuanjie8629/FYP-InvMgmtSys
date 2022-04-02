@@ -1,9 +1,10 @@
+import datetime
 import jwt
 import zipfile
 from datetime import date
 from django.conf import settings
 from rest_framework.authentication import CSRFCheck
-from rest_framework import exceptions, status
+from rest_framework import exceptions, status, serializers
 from rest_framework.response import Response
 from customer.models import Cust
 from order.models import Order
@@ -12,7 +13,7 @@ from shipment.serializers import ShippingFeeSerializer
 from voucher.models import Voucher
 from voucher.serializers import VoucherSerializer
 from io import BytesIO
-from django.template.loader import get_template, render_to_string
+from django.template.loader import get_template
 import pdfkit
 import os, sys, subprocess, platform
 
@@ -229,3 +230,33 @@ def generate_zip(files):
             zf.writestr(f[0], f[1])
 
     return mem_zip.getvalue()
+
+
+
+def get_date(request):
+    from_date = request.query_params.get("from_date", None)
+    to_date = request.query_params.get("to_date", None)
+
+    if from_date and to_date:
+        try:
+            from_date = datetime.datetime.strptime(from_date, "%d-%m-%Y")
+
+            # add 1 day to to_date so that it won't miss the last date
+            to_date = datetime.datetime.strptime(
+                to_date, "%d-%m-%Y"
+            ) + datetime.timedelta(days=1)
+
+        except ValueError:
+            raise serializers.ValidationError(
+                detail={
+                    "error": {
+                        "code": "invalid_date",
+                        "message": "Please ensure the date format is 'DD-MM-YYYY'",
+                    }
+                }
+            )
+    else:
+        raise serializers.ValidationError(
+            {"detail": "require from_date and to_date"}, status.HTTP_400_BAD_REQUEST
+        )
+    return from_date, to_date

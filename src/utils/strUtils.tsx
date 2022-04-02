@@ -9,3 +9,6 @@ export const hasSymbolLetter = (str: string) =>
 
 export const checkLength = (str: string, minRange: number, maxRange: number) =>
   str.length >= minRange && str.length <= maxRange;
+
+export const capitalize = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1);

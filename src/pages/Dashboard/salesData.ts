@@ -90,36 +90,36 @@ const dataWeek: {
 const dataDay: {
   date: string;
   data: {
-    Hour: string;
+    hour: string;
     Sales: number;
   }[];
 } = {
   date: '17 August 2021',
   data: [
-    { Hour: '00', Sales: 10 },
-    { Hour: '01', Sales: 0 },
-    { Hour: '02', Sales: 0 },
-    { Hour: '03', Sales: 0 },
-    { Hour: '04', Sales: 0 },
-    { Hour: '05', Sales: 0 },
-    { Hour: '06', Sales: 0 },
-    { Hour: '07', Sales: 30 },
-    { Hour: '08', Sales: 0 },
-    { Hour: '09', Sales: 20 },
-    { Hour: '10', Sales: 0 },
-    { Hour: '11', Sales: 40 },
-    { Hour: '12', Sales: 13.6 },
-    { Hour: '13', Sales: 15 },
-    { Hour: '14', Sales: 16.5 },
-    { Hour: '15', Sales: 0 },
-    { Hour: '16', Sales: 30.2 },
-    { Hour: '17', Sales: 0 },
-    { Hour: '18', Sales: 0 },
-    { Hour: '19', Sales: 0 },
-    { Hour: '20', Sales: 0 },
-    { Hour: '21', Sales: 0 },
-    { Hour: '22', Sales: 0 },
-    { Hour: '23', Sales: 0 },
+    { hour: '00', Sales: 10 },
+    { hour: '01', Sales: 0 },
+    { hour: '02', Sales: 0 },
+    { hour: '03', Sales: 0 },
+    { hour: '04', Sales: 0 },
+    { hour: '05', Sales: 0 },
+    { hour: '06', Sales: 0 },
+    { hour: '07', Sales: 30 },
+    { hour: '08', Sales: 0 },
+    { hour: '09', Sales: 20 },
+    { hour: '10', Sales: 0 },
+    { hour: '11', Sales: 40 },
+    { hour: '12', Sales: 13.6 },
+    { hour: '13', Sales: 15 },
+    { hour: '14', Sales: 16.5 },
+    { hour: '15', Sales: 0 },
+    { hour: '16', Sales: 30.2 },
+    { hour: '17', Sales: 0 },
+    { hour: '18', Sales: 0 },
+    { hour: '19', Sales: 0 },
+    { hour: '20', Sales: 0 },
+    { hour: '21', Sales: 0 },
+    { hour: '22', Sales: 0 },
+    { hour: '23', Sales: 0 },
   ],
 };
 

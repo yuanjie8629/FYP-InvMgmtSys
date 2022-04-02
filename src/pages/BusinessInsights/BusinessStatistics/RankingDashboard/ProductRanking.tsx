@@ -104,6 +104,7 @@ const ProductRanking = ({ dateInfo }: RankingDashboardProps) => {
                 };
               }),
             }}
+            showPagination
             totalData={total}
             cardSelections={rankingCardSelections}
             cardSelected={rankingType}
