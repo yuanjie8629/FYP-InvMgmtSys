@@ -63,7 +63,6 @@ const ShptFeeEdit = () => {
       )
         .then((res) => {
           if (isMounted) {
-            console.log(res.data);
             let list = [];
             res.data.forEach((data, index) => {
               list.push({
@@ -104,7 +103,6 @@ const ShptFeeEdit = () => {
   };
 
   const handleSubmit = (values) => {
-    console.log(values);
     values = removeInvalidData(values);
 
     setSubmitLoading(true);

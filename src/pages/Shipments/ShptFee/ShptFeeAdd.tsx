@@ -93,7 +93,7 @@ const ShptFeeAdd = () => {
         }
       });
   };
-  console.log(weightInvalid);
+
   return (
     <Form
       name='shptFeeForm'

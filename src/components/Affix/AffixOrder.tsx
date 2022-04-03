@@ -106,7 +106,6 @@ const AffixOrder = ({
               <Col>
                 <PrintButton
                   size='middle'
-                  type='primary'
                   onClick={() => {
                     onClick('invoice');
                   }}

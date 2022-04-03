@@ -46,7 +46,7 @@ const InputSelect = ({
 }: InputProps) => {
   const [selectType, setSelectType] = useState(selectBefore.defaultVal);
   const [selectValue, setSelectValue] = useState('');
-  console.log(selectValue);
+  
   const inputSelectBefore = selectBefore && (
     <Select
       defaultValue={selectedKeyValue || selectBefore.defaultVal}

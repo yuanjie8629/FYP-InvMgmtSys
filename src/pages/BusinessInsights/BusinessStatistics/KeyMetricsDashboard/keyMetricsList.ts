@@ -1,5 +1,7 @@
+import { KeyMetricsType } from "@api/services/analysisAPI";
+
 const keyMetricsList: {
-  key: string;
+  key: KeyMetricsType;
   label: string;
   desc: string;
   cat?: 'money' | 'percent';
@@ -32,7 +34,7 @@ const keyMetricsList: {
   {
     key: 'buyers',
     label: 'Buyers',
-    desc: 'Total number of buyers who placed new orders over the selected period.',
+    desc: 'Total number of unique buyers who placed new orders over the selected period.',
   },
   {
     key: 'avg_order_value',

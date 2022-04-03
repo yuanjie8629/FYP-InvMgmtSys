@@ -45,7 +45,6 @@ const CustMgmt = () => {
     custListAPI(location.search)
       .then((res) => {
         if (isMounted) {
-          console.log(res.data);
           setList(res.data?.results);
           setRecordCount(res.data?.count);
           if (searchParams.has('offset')) {

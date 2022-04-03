@@ -20,8 +20,9 @@ export const getWeekDt = (
 
 export const getDayOfWeek = (
   date?: moment.Moment | string,
-  inputFormat?: string
-) => moment(date, inputFormat).format('dddd');
+  inputFormat?: string,
+  outputFormat:string = 'dddd'
+) => moment(date, inputFormat).format(outputFormat);
 
 export const getWeekOfYear = (
   date?: moment.Moment | string,
@@ -67,9 +68,9 @@ export const getYrDt = (
     .format(outputFormat)}`;
 
 export const getPastDays = (num: number, outputFormat: string = 'DD-MM-YYYY') =>
-  `${moment().subtract(num, 'd').format(outputFormat)} ~ ${moment().format(
-    outputFormat
-  )}`;
+  `${moment().subtract(num, 'd').format(outputFormat)} ~ ${moment()
+    .subtract(1, 'd')
+    .format(outputFormat)}`;
 
 export const getNextDt = (
   date?: moment.Moment | string,
@@ -430,12 +431,32 @@ export const formatDt = (
 
 export const getCurUnixTm = () => moment().subtract(15, 'second').unix();
 
+export const getDtFromUnix = (date: number) => moment.unix(date).toDate();
+
+export const parseDateTime = (
+  date: string,
+  inputFormat: string = 'YYYY-MM-YYYY HH:mm:ss'
+) => moment(date, inputFormat);
+
 export const getDtTm = (date: moment.Moment) =>
   moment(date).format('DD-MM-YYYY HH:mm:ss');
 
 export const getStartMthDt = () =>
   moment().startOf('month').format('DD-MM-YYYY');
 
-export const getEndMthDt = () => moment().endOf('month').format('DD-MM-YYYY');
+export const getEndMthDt = (
+  date?: string,
+  inputFormat?: string,
+  outputFormat: string = 'DD-MM-YYYY'
+) => moment(date, inputFormat).endOf('month').format(outputFormat);
 
 export const getThisMthYr = () => moment().format('YYYY MMMM');
+
+export const compareMonth = (
+  firstDate?: string,
+  firstInputFormat?: string,
+  secondDate?: string,
+  secondInputFormat?: string
+) =>
+  moment(firstDate, firstInputFormat).month() ===
+  moment(secondDate, secondInputFormat).month();

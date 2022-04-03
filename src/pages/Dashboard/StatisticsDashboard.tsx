@@ -2,12 +2,46 @@ import MainCard from '@components/Card/MainCard';
 import { BoldTitle } from '@components/Title';
 import { Skeleton, Space, Typography } from 'antd';
 import statisticsList from '@components/Statistics/statisticsList';
-import { DashboardProps } from './Dashboard';
 import Statistics from '@components/Statistics';
 import { getDt } from '@utils/dateUtils';
+import { useContext, useEffect, useState } from 'react';
+import { statisticsAPI } from '@api/services/analysisAPI';
+import { MessageContext } from '@contexts/MessageContext';
+import { serverErrMsg } from '@utils/messageUtils';
 
-const StatisticsDashboard = ({ data, loading }: DashboardProps) => {
+const StatisticsDashboard = () => {
   const { Text } = Typography;
+  const [data, setData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [messageApi] = useContext(MessageContext);
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    statisticsAPI(getDt(), getDt())
+      .then((res) => {
+        if (isMounted) {
+          setData(res.data);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setLoading(false);
+          showServerErrMsg();
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const showServerErrMsg = () => {
+    messageApi.open(serverErrMsg);
+  };
+
   return (
     <MainCard>
       <BoldTitle level={5}>Statistics</BoldTitle>

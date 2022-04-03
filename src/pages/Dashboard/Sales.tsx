@@ -3,33 +3,39 @@ import Col from 'antd/es/col';
 import Row from 'antd/es/row';
 import Space from 'antd/es/space';
 import Typography from 'antd/es/typography';
-import { LoadingOutlined } from '@ant-design/icons';
 import './Dashboard.less';
 import { BoldTitle } from '@components/Title';
-import { Radio, Spin } from 'antd';
+import { Radio } from 'antd';
 import MainCard from '@components/Card/MainCard';
 import MoreButton from '@components/Button/ActionButton/MoreButton';
 import { dateRangeOptions } from '@utils/optionUtils';
 import LineChart from '@components/Chart/LineChart';
 import {
   formatDt,
+  getDayOfWeek,
   getDt,
+  getMth,
+  getMthDt,
   getThisMthTilYtd,
   getThisMthYr,
   getThisWeekTilYtd,
   getThisYrTilYtd,
+  getWeekDt,
   getWeekOfYear,
   getYr,
+  getYrDt,
+  parseDateTime,
 } from '@utils/dateUtils';
 import { keyMetricsAPI, KeyMetricsDateType } from '@api/services/analysisAPI';
 import { useContext } from 'react';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
+import LoadChart from '@components/Spin/LoadChart';
 
 const Sales = () => {
   const { Text } = Typography;
-  const [salesDateRange, setSalesDateRange] = useState('year');
-  const [data, setData] = useState({});
+  const [salesDateRange, setSalesDateRange] = useState('day');
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [messageApi] = useContext(MessageContext);
 
@@ -38,24 +44,24 @@ const Sales = () => {
     let isMounted = true;
     let fromDate = '';
     let toDate = '';
-    let salesDateType: KeyMetricsDateType;
+    let dateRange: KeyMetricsDateType;
     if (salesDateRange === 'month') {
-      salesDateType = 'month';
-      let date = getThisMthTilYtd().split(' ~ ');
+      dateRange = 'day';
+      let date = getMthDt().split(' ~ ');
       fromDate = date[0];
       toDate = date[1];
     } else if (salesDateRange === 'week') {
-      salesDateType = 'day';
-      let date = getThisWeekTilYtd().split(' ~ ');
+      dateRange = 'day';
+      let date = getWeekDt().split(' ~ ');
       fromDate = date[0];
       toDate = date[1];
     } else if (salesDateRange === 'day') {
-      salesDateType = 'hour';
+      dateRange = 'hour';
       fromDate = getDt();
       toDate = getDt();
     } else {
-      salesDateType = 'month';
-      let date = getThisYrTilYtd().split(' ~ ');
+      dateRange = 'month';
+      let date = getYrDt().split(' ~ ');
       fromDate = date[0];
       toDate = date[1];
     }
@@ -63,12 +69,35 @@ const Sales = () => {
     keyMetricsAPI({
       fromDate: fromDate,
       toDate: toDate,
-      key: 'sales',
-      dateType: salesDateType,
+      key: ['sales'],
+      dateType: dateRange,
     })
       .then((res) => {
         if (isMounted) {
-          setData(res.data);
+          let newData = res.data?.map((datum) => {
+            let newRange;
+            if (salesDateRange === 'week') {
+              let dateRange = `${getDt(
+                datum.day,
+                'YYYY-MM-DD',
+                'DD MMM'
+              )} (${getDayOfWeek(datum.day, 'YYYY-MM-DD', 'ddd')})`;
+
+              return { ...datum, day: dateRange };
+            } else if (salesDateRange === 'month') {
+              let dateRange = getDt(datum.day, 'YYYY-MM-DD', 'DD MMM');
+              newRange = dateRange;
+              return { ...datum, day: newRange };
+            } else if (salesDateRange === 'day') {
+              let dateRange = parseDateTime(datum.hour);
+              newRange = dateRange.hour();
+              return { ...datum, hour: `${String(newRange)}:00` };
+            } else {
+              let dateRange = getMth(datum.month, 'YYYY-MM-DD', 'MMM');
+              return { ...datum, month: dateRange };
+            }
+          });
+          setData(newData);
           setLoading(false);
         }
       })
@@ -85,18 +114,6 @@ const Sales = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [salesDateRange]);
 
-  const parseData = () => {
-    let newData = [];
-    Object.keys(data).forEach((key) => {
-      if (key !== 'range') {
-        
-        data[key].forEach((datum) => {
-          console.log(datum);
-        });
-      }
-    });
-  };
-
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
   };
@@ -105,14 +122,14 @@ const Sales = () => {
     salesDateRange === 'month'
       ? `${getThisMthYr()} (${formatDt(
           getThisMthTilYtd(),
-          'byMonth',
+          'month',
           'DD-MM-YYYY ~ DD-MM-YYYY',
           'DD-MM-YYYY'
         )})`
       : salesDateRange === 'week'
       ? `${getWeekOfYear()} (${formatDt(
           getThisWeekTilYtd(),
-          'byWeek',
+          'week',
           'DD-MM-YYYY ~ DD-MM-YYYY',
           'DD-MM-YYYY'
         )})`
@@ -120,7 +137,7 @@ const Sales = () => {
       ? `${formatDt(getDt(), 'byDay', 'DD-MM-YYYY', 'DD MMMM YYYY')}`
       : `${getYr()} (${formatDt(
           getThisYrTilYtd(),
-          'byMonth',
+          'month',
           'DD-MM-YYYY ~ DD-MM-YYYY',
           'DD-MM-YYYY'
         )})`;
@@ -130,10 +147,6 @@ const Sales = () => {
     : salesDateRange === 'day'
     ? 'Hour'
     : 'Month';
-
-  const getChartTooltipTitlePrefix = salesDateRange === 'month' ? 'Day ' : '';
-
-  const getChartTooltipTitleSuffix = salesDateRange === 'day' ? ':00' : '';
 
   return (
     <MainCard>
@@ -158,7 +171,6 @@ const Sales = () => {
               style={{ marginRight: 30 }}
               onChange={(e) => {
                 setSalesDateRange(e.target.value);
-                parseData();
               }}
               value={salesDateRange}
               options={dateRangeOptions}
@@ -167,29 +179,32 @@ const Sales = () => {
           </Col>
         </Row>
         <Row style={{ paddingTop: 15 }}>
-          <Suspense
-            fallback={
-              <div className='center-flex full-height full-width'>
-                <Spin
-                  indicator={<LoadingOutlined style={{ fontSize: 30 }} spin />}
+          <Suspense fallback={<LoadChart />}>
+            {loading ? (
+              <LoadChart />
+            ) : data.length > 0 ? (
+              <Space direction='vertical' className='full-width' size={20}>
+                <Text strong type='secondary'>
+                  RM
+                </Text>
+                <LineChart
+                  data={data}
+                  titleX={getChartTitle}
+                  tooltipName='Total Sales'
+                  tooltipValPrefix='RM '
+                  toFixed={2}
                 />
+              </Space>
+            ) : (
+              <div
+                className='center-flex full-height full-width'
+                style={{ height: 400 }}
+              >
+                <Text type='secondary' strong>
+                  Failed to load data, please refresh and try again.
+                </Text>
               </div>
-            }
-          >
-            <Space direction='vertical' className='full-width' size={20}>
-              <Text strong type='secondary'>
-                RM
-              </Text>
-              {/* <LineChart
-                data={[]}
-                titleX={getChartTitle}
-                tooltipName='Total Sales'
-                tooltipTitlePrefix={getChartTooltipTitlePrefix}
-                tooltipTitleSuffix={getChartTooltipTitleSuffix}
-                tooltipValPrefix='RM '
-                toFixed={2}
-              /> */}
-            </Space>
+            )}
           </Suspense>
         </Row>
       </Space>

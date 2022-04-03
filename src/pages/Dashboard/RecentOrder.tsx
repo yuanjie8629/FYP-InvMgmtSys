@@ -1,16 +1,49 @@
+import { orderListAPI } from '@api/services/orderAPI';
 import MoreButton from '@components/Button/ActionButton/MoreButton';
 import MainCard from '@components/Card/MainCard';
 import StatusTag from '@components/Tag/StatusTag';
 import { BoldTitle } from '@components/Title';
+import { MessageContext } from '@contexts/MessageContext';
+import { serverErrMsg } from '@utils/messageUtils';
 import { moneyFormatter } from '@utils/numUtils';
 import { orderStatList } from '@utils/optionUtils';
 import { Col, Row, Skeleton, Space, Table, Typography } from 'antd';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DashboardProps } from './Dashboard';
 
-const RecentOrder = ({ data, loading }: DashboardProps) => {
+const RecentOrder = () => {
   const { Text } = Typography;
   const navigate = useNavigate();
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [messageApi] = useContext(MessageContext);
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    orderListAPI(`?limit=6`)
+      .then((res) => {
+        if (isMounted) {
+          setData(res.data?.results);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setLoading(false);
+          showServerErrMsg();
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const showServerErrMsg = () => {
+    messageApi.open(serverErrMsg);
+  };
 
   const recentOrderColumns: {
     title: string;
@@ -33,7 +66,7 @@ const RecentOrder = ({ data, loading }: DashboardProps) => {
             strong
             className='text-button'
             onClick={() => {
-              navigate(`/data/${data}`);
+              navigate(`/order/${data}`);
             }}
           >
             #{data}

@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import React, { lazy, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Col from 'antd/es/col';
 import Row from 'antd/es/row';
@@ -9,13 +9,46 @@ import ColorCard from '@components/Card/ColorCard';
 import './Dashboard.less';
 import { BoldTitle } from '@components/Title';
 import { Skeleton } from 'antd';
-import { DashboardProps } from './Dashboard';
+import { toDoListAPI } from '@api/services/analysisAPI';
+import { serverErrMsg } from '@utils/messageUtils';
+import { MessageContext } from '@contexts/MessageContext';
 
 const MainCard = lazy(() => import('@components/Card/MainCard'));
 
-const ToDoList = ({ data, loading }: DashboardProps) => {
+const ToDoList = () => {
   const { Text } = Typography;
   const navigate = useNavigate();
+
+  const [data, setData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [messageApi] = useContext(MessageContext);
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    toDoListAPI()
+      .then((res) => {
+        if (isMounted) {
+          setData(res.data);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setLoading(false);
+          showServerErrMsg();
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const showServerErrMsg = () => {
+    messageApi.open(serverErrMsg);
+  };
 
   const toDoList: {
     label: string;

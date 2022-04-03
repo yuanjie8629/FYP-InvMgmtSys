@@ -232,7 +232,6 @@ def generate_zip(files):
     return mem_zip.getvalue()
 
 
-
 def get_date(request):
     from_date = request.query_params.get("from_date", None)
     to_date = request.query_params.get("to_date", None)
@@ -259,4 +258,18 @@ def get_date(request):
         raise serializers.ValidationError(
             {"detail": "require from_date and to_date"}, status.HTTP_400_BAD_REQUEST
         )
+
+    # if (
+    #     from_date > datetime.datetime.today()
+    #     or to_date - datetime.timedelta(days=1) > datetime.datetime.today()
+    # ):
+    #     raise serializers.ValidationError(
+    #         detail={
+    #             "error": {
+    #                 "code": "date_out_of_range",
+    #                 "message": "from_date and to_date should not be greater than today.",
+    #             }
+    #         }
+    #     )
+
     return from_date, to_date

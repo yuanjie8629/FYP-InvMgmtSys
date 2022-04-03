@@ -45,7 +45,7 @@ export type KeyMetricsType =
 export type KeyMetricsDateType = 'hour' | 'day' | 'month';
 
 export interface KeyMetricsProps {
-  key: KeyMetricsType;
+  key: KeyMetricsType[];
   dateType: KeyMetricsDateType;
   fromDate: string;
   toDate: string;
