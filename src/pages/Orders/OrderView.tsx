@@ -500,7 +500,6 @@ const OrderView = () => {
                 setSelected(getOrderDetails([data]));
                 ActionModal.show('orderBulkUpd', {
                   onOk: async (data) => {
-                    console.log(data);
                     await orderTrackNumUpdAPI(data)
                       .then(() => {
                         getOrderData();

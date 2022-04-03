@@ -8,10 +8,10 @@ export const ynOptions = [
 ];
 
 export const dateRangeOptions = [
-  { value: 'year', label: 'Year' },
-  { value: 'month', label: 'Month' },
-  { value: 'week', label: 'Week' },
   { value: 'day', label: 'Day' },
+  { value: 'week', label: 'Week' },
+  { value: 'month', label: 'Month' },
+  { value: 'year', label: 'Year' },
 ];
 
 export const prodCat = [

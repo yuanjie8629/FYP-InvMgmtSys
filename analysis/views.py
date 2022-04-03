@@ -44,70 +44,201 @@ def split_by_date(date_field, date_type, queryset: QuerySet):
     return queryset
 
 
-def sort_by_date(key_metrics, date_type, from_date, to_date, queryset: QuerySet):
+def sort_by_date(
+    key_metrics,
+    date_type,
+    from_date: datetime.date,
+    to_date: datetime.date,
+    queryset: QuerySet,
+):
     to_date = to_date - datetime.timedelta(days=1)
-    if date_type in ["hour"]:
+    if date_type == "hour":
         queryset = queryset.order_by("hour").values("hour", "value")
 
         if not queryset.exists():
             queryset = [{"hour": None, "value": None}]
 
-        range = pd.date_range(
-            start=from_date.replace(hour=0, minute=0, second=0, microsecond=0),
-            end=to_date.replace(hour=23, minute=0, second=0, microsecond=0),
-            freq="H",
-            name="range",
-        )
+        end_hour = 23
 
-        queryset = json.loads(
-            pd.DataFrame(queryset)
-            .set_index("hour")
-            .reindex(range, fill_value=0)
-            .reset_index()
-            .assign(category=key_metrics)
-            .to_json(orient="records")
-        )
+        if to_date.date() >= datetime.date.today():
+            end_hour = datetime.datetime.now().hour
+        print(end_hour)
+        # Return None if the specified time has not elapsed today
+        if end_hour != 23:
+            hour = pd.date_range(
+                start=from_date.replace(hour=0, minute=0, second=0, microsecond=0),
+                end=datetime.datetime.today().replace(
+                    hour=end_hour - 1 if end_hour != 0 else end_hour,
+                    minute=0,
+                    second=0,
+                    microsecond=0,
+                ),
+                freq="H",
+                name="hour",
+            )
 
-    if date_type in ["day"]:
+            new_hour = pd.date_range(
+                start=datetime.datetime.today().replace(
+                    hour=end_hour, minute=0, second=0, microsecond=0
+                ),
+                end=to_date.replace(hour=23, minute=0, second=0, microsecond=0),
+                freq="H",
+                name="hour",
+            )
+
+            hour_passed = (
+                pd.DataFrame(queryset)
+                .set_index("hour")
+                .reindex(hour, fill_value=0)
+                .reset_index()
+            )
+
+            hour_passed["hour"] = (
+                hour_passed["hour"].dt.tz_localize("Asia/Kuala_Lumpur").astype(str)
+            )
+
+            hour_future = (
+                pd.DataFrame(queryset)
+                .set_index("hour")
+                .reindex(new_hour, fill_value=None)
+                .reset_index()
+            )
+
+            hour_future["hour"] = (
+                hour_future["hour"].dt.tz_localize("Asia/Kuala_Lumpur").astype(str)
+            )
+
+            queryset = json.loads(
+                pd.concat([hour_passed, hour_future])
+                .assign(category=key_metrics)
+                .sort_values(by=["hour"])
+                .to_json(orient="records")
+            )
+        else:
+
+            hour = pd.date_range(
+                start=from_date.replace(hour=0, minute=0, second=0, microsecond=0),
+                end=to_date.replace(hour=end_hour, minute=0, second=0, microsecond=0),
+                freq="H",
+                name="hour",
+            )
+
+            queryset = (
+                pd.DataFrame(queryset)
+                .set_index("hour")
+                .reindex(hour, fill_value=0)
+                .reset_index()
+            )
+
+            queryset["hour"] = (
+                queryset["hour"].dt.tz_localize("Asia/Kuala_Lumpur").astype(str)
+            )
+
+            queryset = json.loads(
+                queryset.assign(category=key_metrics)
+                .sort_values(by=["hour"])
+                .to_json(orient="records")
+            )
+
+    elif date_type == "day":
         queryset = queryset.order_by("day").values("day", "value")
         if not queryset.exists():
             queryset = [{"day": None, "value": None}]
 
+        end_day = to_date
+
+        if to_date.date() >= datetime.date.today():
+            end_day = datetime.date.today()
+
         day = pd.date_range(
-            start=from_date.replace(hour=0, minute=0, second=0, microsecond=0),
-            end=to_date.replace(hour=0, minute=0, second=0, microsecond=0),
+            start=from_date,
+            end=end_day,
             freq="D",
-            name="range",
+            name="day",
         )
 
-        queryset = json.loads(
+        day_passed = (
             pd.DataFrame(queryset)
             .set_index("day")
             .reindex(day, fill_value=0)
             .reset_index()
+        )
+
+        day_passed["day"] = (
+            day_passed["day"].dt.tz_localize("Asia/Kuala_Lumpur").astype(str)
+        )
+
+        new_day = pd.date_range(
+            start=(end_day + datetime.timedelta(days=1)),
+            end=to_date,
+            freq="D",
+            name="day",
+        )
+
+        day_future = (
+            pd.DataFrame(queryset)
+            .set_index("day")
+            .reindex(new_day, fill_value=None)
+            .reset_index()
+        )
+
+        day_future["day"] = (
+            day_future["day"].dt.tz_localize("Asia/Kuala_Lumpur").astype(str)
+        )
+
+        queryset = json.loads(
+            pd.concat([day_passed, day_future])
             .assign(category=key_metrics)
             .to_json(orient="records")
         )
 
-    if date_type in ["month"]:
+    elif date_type == "month":
         queryset = queryset.order_by("month").values("month", "value")
 
         if not queryset.exists():
             queryset = [{"month": None, "value": None}]
 
-        print(queryset)
+        if to_date.date().month >= datetime.date.today().month:
+            end_month = datetime.date.today()
+
         month = pd.date_range(
-            start=from_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0),
-            end=to_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0),
+            start=from_date.replace(day=1),
+            end=end_month,
             freq="MS",
             name="month",
         )
 
-        queryset = json.loads(
+        month_passed = (
             pd.DataFrame(queryset)
             .set_index("month")
             .reindex(month, fill_value=0)
             .reset_index()
+        )
+
+        month_passed["month"] = (
+            month_passed["month"].dt.tz_localize("Asia/Kuala_Lumpur").astype(str)
+        )
+
+        new_month = pd.date_range(
+            start=(end_month),
+            end=to_date,
+            freq="MS",
+            name="month",
+        )
+
+        month_future = (
+            pd.DataFrame(queryset)
+            .set_index("month")
+            .reindex(new_month, fill_value=None)
+            .reset_index()
+        )
+
+        month_future["month"] = (
+            month_future["month"].dt.tz_localize("Asia/Kuala_Lumpur").astype(str)
+        )
+
+        queryset = json.loads(
+            pd.concat([month_passed, month_future])
             .assign(category=key_metrics)
             .to_json(orient="records")
         )
@@ -446,12 +577,10 @@ def KeyMetricsView(request):
         query = split_by_date(
             "created_at",
             date_type,
-            Order.objects.filter(created_at__range=(from_date, to_date))
-            .values("email")
-            .distinct(),
+            Order.objects.filter(created_at__range=(from_date, to_date)),
         )
 
-        query = query.annotate(value=Count(F("pk")))
+        query = query.annotate(value=Count(F("email"), distinct=True))
 
         query = sort_by_date("buyers", date_type, from_date, to_date, query)
         data.extend(query)

@@ -1,19 +1,35 @@
 import MainCard from '@components/Card/MainCard';
 import { MessageContext } from '@contexts/MessageContext';
-import { LoadingOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import { formatDt, getDt } from '@utils/dateUtils';
-import { lazy, Suspense, useContext, useEffect, useState } from 'react';
+import { QuestionCircleOutlined } from '@ant-design/icons';
+import {
+  compareMonth,
+  formatDt,
+  getDayOfWeek,
+  getDt,
+  getEndMthDt,
+  getMth,
+  parseDateTime,
+} from '@utils/dateUtils';
+import { lazy, Suspense, useContext, useEffect, useRef, useState } from 'react';
 import { DashboardContainer } from '..';
 import DropdownDate from '@components/Input/DropdownDate';
-import { Checkbox, Col, Row, Skeleton, Space, Spin, Typography } from 'antd';
+import { Checkbox, Col, Row, Skeleton, Space, Typography } from 'antd';
 import { BoldTitle } from '@components/Title';
 import Button from '@components/Button';
 import { splitIntoChunks } from '@utils/arrayUtils';
 import keyMetricsList from './keyMetricsList';
 import ColorCard from '@components/Card/ColorCard';
-import { keyMetricsSummaryAPI } from '@api/services/analysisAPI';
+import {
+  keyMetricsAPI,
+  KeyMetricsDateType,
+  keyMetricsSummaryAPI,
+  KeyMetricsType,
+} from '@api/services/analysisAPI';
 import { serverErrMsg } from '@utils/messageUtils';
 import Popover from '@components/Popover';
+import LoadChart from '@components/Spin/LoadChart';
+import { PrintButton } from '@components/Button/ActionButton';
+import ExportButton from '@components/Button/ActionButton/ExportButton';
 
 const LineChart = lazy(() => import('@components/Chart/LineChart'));
 const CarouselArrow = lazy(() => import('@components/Carousel/CarouselArrow'));
@@ -21,20 +37,25 @@ const CarouselArrow = lazy(() => import('@components/Carousel/CarouselArrow'));
 const KeyMetricsDashboard = (props) => {
   const { Text, Title } = Typography;
   const [messageApi] = useContext(MessageContext);
+  const chartRef = useRef<any>();
   const [keyMetricsDtInfo, setKeyMetricsDtInfo] = useState({
     date: getDt(),
     label: 'Today',
     cat: 'tdy',
   });
-  const [selectedKeyMetrics, setSelectedKeyMetrics] = useState(['Sales']);
+  const [selectedKeyMetrics, setSelectedKeyMetrics] = useState<
+    KeyMetricsType[]
+  >(['sales']);
   const minSelectedMetrics = 1;
   const [maxSelectedMetrics, setMaxSelectedMetrics] = useState(5);
   const [summaryData, setSummaryData] = useState({});
   const [summaryLoading, setSummaryLoading] = useState(false);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    let isMounted = true;
+  const getKeymetricsSummary = (isMounted = true) => {
     setSummaryLoading(true);
+    setSummaryData({});
     keyMetricsSummaryAPI(
       keyMetricsDtInfo.date.includes(' ~ ')
         ? keyMetricsDtInfo.date.split(' ~ ')[0]
@@ -55,27 +76,136 @@ const KeyMetricsDashboard = (props) => {
           showServerErrMsg();
         }
       });
+  };
 
-    const showServerErrMsg = () => {
-      messageApi.open(serverErrMsg);
-    };
+  const getKeyMetricsData = (isMounted = true) => {
+    setLoading(true);
+    let fromDate = keyMetricsDtInfo.date.split(' ~ ')[0];
+    let toDate = keyMetricsDtInfo.date.split(' ~ ')[1];
+    let dateType: KeyMetricsDateType;
+    if (['byDay', 'tdy', 'ytd'].includes(keyMetricsDtInfo.cat)) {
+      dateType = 'hour';
+      toDate = fromDate;
+    } else if (
+      ['byWeek', 'byMonth', 'past7d', 'past30d'].includes(keyMetricsDtInfo.cat)
+    ) {
+      dateType = 'day';
+
+      if (keyMetricsDtInfo.cat === 'byMonth') {
+        console.log(compareMonth(toDate, 'DD-MM-YYYY'));
+        if (compareMonth(toDate, 'DD-MM-YYYY')) {
+          toDate = getEndMthDt(toDate, 'DD-MM-YYYY');
+        }
+      }
+    } else if (keyMetricsDtInfo.cat === 'byYear') {
+      dateType = 'month';
+    }
+
+    keyMetricsAPI({
+      fromDate: fromDate,
+      toDate: toDate,
+      key: selectedKeyMetrics.map((key) => key),
+      dateType: dateType,
+    })
+      .then((res) => {
+        if (isMounted) {
+          let newData = res.data?.map((datum) => {
+            let newRange;
+            if (keyMetricsDtInfo.cat === 'byWeek') {
+              let dateRange = `${getDt(
+                datum.day,
+                'YYYY-MM-DD',
+                'DD MMM'
+              )} (${getDayOfWeek(datum.day, 'YYYY-MM-DD', 'ddd')})`;
+
+              return {
+                ...datum,
+                day: dateRange,
+                category: keyMetricsList.find(
+                  (metrics) => metrics.key === datum?.category
+                )?.label,
+              };
+            } else if (
+              ['byMonth', 'past7d', 'past30d'].includes(keyMetricsDtInfo.cat)
+            ) {
+              if (keyMetricsDtInfo.cat === 'byMonth') {
+                newRange = getDt(datum.day, 'YYYY-MM-DD', 'DD MMM');
+              } else if (['past7d', 'past30d'].includes(keyMetricsDtInfo.cat)) {
+                newRange = getDt(datum.day, 'YYYY-MM-DD', 'DD MMM');
+              }
+              return {
+                ...datum,
+                day: newRange,
+                category: keyMetricsList.find(
+                  (metrics) => metrics.key === datum?.category
+                )?.label,
+              };
+            } else if (['byDay', 'tdy', 'ytd'].includes(keyMetricsDtInfo.cat)) {
+              let dateRange = parseDateTime(datum.hour);
+              newRange = dateRange.hour();
+              return {
+                ...datum,
+                hour: `${String(newRange)}:00`,
+                category: keyMetricsList.find(
+                  (metrics) => metrics.key === datum?.category
+                )?.label,
+              };
+            } else {
+              let dateRange = getMth(datum.month, 'YYYY-MM-DD', 'MMM');
+              return {
+                ...datum,
+                month: dateRange,
+                category: keyMetricsList.find(
+                  (metrics) => metrics.key === datum?.category
+                )?.label,
+              };
+            }
+          });
+          setData(newData);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setLoading(false);
+          showServerErrMsg();
+        }
+      });
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+
+    getKeyMetricsData(isMounted);
 
     return () => {
       isMounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedKeyMetrics, keyMetricsDtInfo]);
 
+  useEffect(() => {
+    let isMounted = true;
+    getKeymetricsSummary(isMounted);
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keyMetricsDtInfo]);
 
+  const showServerErrMsg = () => {
+    messageApi.open(serverErrMsg);
+  };
+
   const handleKeyMetricsClick = (keyMetrics) => {
     if (maxSelectedMetrics === 1) {
-      setSelectedKeyMetrics([keyMetrics.label]);
+      setSelectedKeyMetrics([keyMetrics.key]);
       return;
     }
 
     if (
       selectedKeyMetrics.length === minSelectedMetrics &&
-      selectedKeyMetrics.includes(keyMetrics.label)
+      selectedKeyMetrics.includes(keyMetrics.key)
     ) {
       messageApi.open({
         key: 'minSelectedMetrics',
@@ -93,7 +223,7 @@ const KeyMetricsDashboard = (props) => {
 
     if (
       selectedKeyMetrics.length >= maxSelectedMetrics &&
-      !selectedKeyMetrics.includes(keyMetrics.label)
+      !selectedKeyMetrics.includes(keyMetrics.key)
     ) {
       messageApi.open({
         key: 'maxSelectedMetrics',
@@ -108,53 +238,14 @@ const KeyMetricsDashboard = (props) => {
 
       return;
     }
-    !selectedKeyMetrics.includes(keyMetrics.label)
-      ? setSelectedKeyMetrics([...selectedKeyMetrics, keyMetrics.label])
+    !selectedKeyMetrics.includes(keyMetrics.key)
+      ? setSelectedKeyMetrics([...selectedKeyMetrics, keyMetrics.key])
       : setSelectedKeyMetrics([
           ...selectedKeyMetrics.filter(
-            (selected) => selected !== keyMetrics.label
+            (selected) => selected !== keyMetrics.key
           ),
         ]);
   };
-
-  const data = [
-    { Day: '1', Sales: 300, cat: '1' },
-    { Day: '2', Sales: 356, cat: '1' },
-    { Day: '3', Sales: 481, cat: '1' },
-    { Day: '4', Sales: 237, cat: '1' },
-    { Day: '5', Sales: 285, cat: '1' },
-    { Day: '6', Sales: 300, cat: '1' },
-    { Day: '1', Sales: 107, cat: '2' },
-    { Day: '2', Sales: 402, cat: '2' },
-    { Day: '3', Sales: 266, cat: '2' },
-    { Day: '4', Sales: 470, cat: '2' },
-    { Day: '5', Sales: 391, cat: '2' },
-    { Day: '6', Sales: 379, cat: '2' },
-    { Day: '7', Sales: 107, cat: '2' },
-    { Day: '8', Sales: 402, cat: '2' },
-    { Day: '9', Sales: 266, cat: '2' },
-    { Day: '10', Sales: 470, cat: '2' },
-    { Day: '11', Sales: 391, cat: '2' },
-    { Day: '12', Sales: 379, cat: '2' },
-    { Day: '13', Sales: 418, cat: '3' },
-    { Day: '14', Sales: 301, cat: '3' },
-    { Day: '15', Sales: 317, cat: '3' },
-    { Day: '16', Sales: 30, cat: '3' },
-    { Day: '17', Sales: 391, cat: '3' },
-    { Day: '18', Sales: 106, cat: '3' },
-    { Day: '19', Sales: 465, cat: '4' },
-    { Day: '20', Sales: 50, cat: '4' },
-    { Day: '21', Sales: 321, cat: '4' },
-    { Day: '22', Sales: 279, cat: '4' },
-    { Day: '23', Sales: 186, cat: '4' },
-    { Day: '24', Sales: 500, cat: '4' },
-    { Day: '25', Sales: 223, cat: '5' },
-    { Day: '26', Sales: 447, cat: '5' },
-    { Day: '27', Sales: 70, cat: '5' },
-    { Day: '28', Sales: 58, cat: '5' },
-    { Day: '29', Sales: 400, cat: '5' },
-    { Day: '30', Sales: 600, cat: '5' },
-  ];
 
   const getKeyMetricsVal = (keyMetrics) => {
     let value =
@@ -165,11 +256,24 @@ const KeyMetricsDashboard = (props) => {
     return value?.toFixed(keyMetrics.toFixed);
   };
 
+  const getChartTitle = ['byDay', 'tdy', 'ytd'].includes(keyMetricsDtInfo.cat)
+    ? 'Hour'
+    : ['byWeek', 'byMonth', 'past7d', 'past30d'].includes(keyMetricsDtInfo.cat)
+    ? 'Day'
+    : 'Month';
+
+  const downloadImage = () => {
+    chartRef.current?.downloadImage(
+      `${selectedKeyMetrics.map((key) => key)}_${keyMetricsDtInfo.date}`,
+      'image/jpg',
+      1
+    );
+  };
+
   return (
     <DashboardContainer>
       <DropdownDate
         onChange={(dateInfo) => {
-          console.log(dateInfo);
           setKeyMetricsDtInfo(dateInfo);
         }}
         className='main-card'
@@ -189,7 +293,17 @@ const KeyMetricsDashboard = (props) => {
               </Text>
             </Col>
             <Col>
-              <Button type='primary'>Generate Report(s)</Button>
+              <Space size={20}>
+                <ExportButton
+                  onClick={downloadImage}
+                  disabled={loading || summaryLoading}
+                >
+                  Export Chart
+                </ExportButton>
+                <PrintButton disabled={loading || summaryLoading}>
+                  Generate Report
+                </PrintButton>
+              </Space>
             </Col>
           </Row>
 
@@ -213,7 +327,7 @@ const KeyMetricsDashboard = (props) => {
                       ) : (
                         <ColorCard
                           backgroundColor={
-                            !selectedKeyMetrics.includes(keyMetrics.label)
+                            !selectedKeyMetrics.includes(keyMetrics.key)
                               ? 'grey'
                               : 'success'
                           }
@@ -228,7 +342,7 @@ const KeyMetricsDashboard = (props) => {
                             </Popover>
                           }
                           indicator={
-                            selectedKeyMetrics.includes(keyMetrics.label)
+                            selectedKeyMetrics.includes(keyMetrics.key)
                               ? 'true'
                               : null
                           }
@@ -287,31 +401,39 @@ const KeyMetricsDashboard = (props) => {
                   type='link'
                   color='info'
                   style={{ fontSize: 12 }}
-                  onClick={() => setSelectedKeyMetrics(['Sales'])}
+                  onClick={() => setSelectedKeyMetrics(['sales'])}
                 >
                   Reset
                 </Button>
               </Space>
             </Col>
           </Row>
-          <Suspense
-            fallback={
-              <div className='center-flex' style={{ width: 1176, height: 400 }}>
-                <Spin
-                  indicator={<LoadingOutlined style={{ fontSize: 30 }} spin />}
-                />
+          <Suspense fallback={<LoadChart />}>
+            {loading ? (
+              <LoadChart />
+            ) : data.length > 0 ? (
+              <LineChart
+                data={data}
+                ratioData={maxSelectedMetrics !== 1 && summaryData}
+                titleX={getChartTitle}
+                seriesField='category'
+                yAxis={{
+                  label: maxSelectedMetrics !== 1 ? null : undefined,
+                }}
+                onReady={(plot) => {
+                  chartRef.current = plot;
+                }}
+              />
+            ) : (
+              <div
+                className='center-flex full-height full-width'
+                style={{ height: 400 }}
+              >
+                <Text type='secondary' strong>
+                  Failed to load data, please refresh and try again.
+                </Text>
               </div>
-            }
-          >
-            {/* <LineChart
-              data={data}
-              tooltipValPrefix='RM '
-              tooltipName='Total Sales'
-              seriesField='cat'
-              yAxis={{
-                label: maxSelectedMetrics !== 1 ? null : undefined,
-              }}
-            /> */}
+            )}
           </Suspense>
         </DashboardContainer>
       </MainCard>

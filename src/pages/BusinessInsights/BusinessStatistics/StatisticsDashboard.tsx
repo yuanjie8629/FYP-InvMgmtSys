@@ -78,7 +78,6 @@ const StatisticsDashboard = (props) => {
     <DashboardContainer>
       <DropdownDate
         onChange={(dateInfo) => {
-          console.log(dateInfo);
           setStatisticsDtInfo(dateInfo);
         }}
         className='main-card'

@@ -84,7 +84,6 @@ const CustRegFilterInputs = () => {
   }, []);
 
   const handleSearch = (values) => {
-    console.log(values);
     values = removeInvalidData(values);
     let { registration_date, status, ...value } = values;
 
@@ -140,7 +139,6 @@ const CustRegFilterInputs = () => {
               placeholder='Input'
               selectWidth={150}
               onChange={(selected) => {
-                console.log(selected);
                 setSelectedInputSelect(selected.type);
                 custRegFilter.setFieldsValue({
                   [selected.type]: selected.value,

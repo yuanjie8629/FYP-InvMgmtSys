@@ -6,6 +6,7 @@ const PrintButton = ({ children = 'Invoice', ...props }: ButtonProps) => {
     <Button
       icon={<HiPrinter size={16} style={{ marginRight: 4 }} />}
       className='center-flex'
+      type='primary'
       {...props}
     >
       {children}

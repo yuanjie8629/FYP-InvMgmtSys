@@ -111,7 +111,6 @@ const OrderMgmt = () => {
 
   const genInvoiceBtn = (props: ButtonProps) => (
     <PrintButton
-      type='primary'
       onClick={() => {
         ActionModal.show('invoice', {
           onOk: async () => {
@@ -205,7 +204,6 @@ const OrderMgmt = () => {
       onClick={() => {
         ActionModal.show('orderBulkUpd', {
           onOk: async (data) => {
-            console.log(data);
             await orderTrackNumUpdAPI(data)
               .then(() => {
                 getTableData();
@@ -457,7 +455,6 @@ const OrderMgmt = () => {
                   setSelected(getOrderDetails([data]));
                   ActionModal.show('orderBulkUpd', {
                     onOk: async (data) => {
-                      console.log(data);
                       await orderTrackNumUpdAPI(data)
                         .then(() => {
                           getTableData();

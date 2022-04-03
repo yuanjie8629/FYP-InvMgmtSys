@@ -1,4 +1,4 @@
-import React, { lazy, useState, useEffect, useContext } from 'react';
+import React, { lazy } from 'react';
 import Col from 'antd/es/col';
 import Row from 'antd/es/row';
 import Space from 'antd/es/space';
@@ -9,17 +9,11 @@ import MainCardContainer from '@components/Container/MainCardContainer';
 import invAnalysis from './invAnalysis';
 import './Dashboard.less';
 import { BoldTitle } from '@components/Title';
-import { statisticsAPI, toDoListAPI } from '@api/services/analysisAPI';
-import { MessageContext } from '@contexts/MessageContext';
-import { serverErrMsg } from '@utils/messageUtils';
-import { orderListAPI } from '@api/services/orderAPI';
 import ToDoList from './ToDoList';
 import Sales from './Sales';
 import MoreButton from '@components/Button/ActionButton/MoreButton';
 import StatisticsDashboard from './StatisticsDashboard';
 import RecentOrder from './RecentOrder';
-import { itemRankingAPI } from '@api/services/analysisAPI';
-import { getDt, getEndMthDt, getStartMthDt } from '@utils/dateUtils';
 import TopProducts from './TopProducts';
 const MainCard = lazy(() => import('@components/Card/MainCard'));
 
@@ -30,107 +24,6 @@ export interface DashboardProps {
 
 const Dashboard = () => {
   const { Text } = Typography;
-  const [messageApi] = useContext(MessageContext);
-
-  const [toDoListData, setToDoListData] = useState({});
-  const [toDoListLoading, setToDoListLoading] = useState(false);
-  const [statisticsData, setStatisticsData] = useState({});
-  const [statisticsLoading, setStatisticsLoading] = useState(false);
-  const [orderData, setOrderData] = useState([]);
-  const [orderLoading, setOrderLoading] = useState(false);
-  const [topProdData, setTopProdData] = useState([]);
-  const [topProdLoading, setTopProdLoading] = useState(false);
-
-  const getToDoListData = (isMounted = true) => {
-    setToDoListLoading(true);
-    toDoListAPI()
-      .then((res) => {
-        if (isMounted) {
-          setToDoListData(res.data);
-          setToDoListLoading(false);
-        }
-      })
-      .catch((err) => {
-        if (err.response?.status !== 401) {
-          setToDoListLoading(false);
-          showServerErrMsg();
-        }
-      });
-  };
-
-  const getStatisticsData = (isMounted = true) => {
-    setStatisticsLoading(true);
-    statisticsAPI(getDt(), getDt())
-      .then((res) => {
-        if (isMounted) {
-          setStatisticsData(res.data);
-          setStatisticsLoading(false);
-        }
-      })
-      .catch((err) => {
-        if (err.response?.status !== 401) {
-          setStatisticsLoading(false);
-          showServerErrMsg();
-        }
-      });
-  };
-
-  const getOrderData = (isMounted = true) => {
-    setOrderLoading(true);
-    orderListAPI(`?limit=6`)
-      .then((res) => {
-        if (isMounted) {
-          setOrderData(res.data?.results);
-          setOrderLoading(false);
-        }
-      })
-      .catch((err) => {
-        if (err.response?.status !== 401) {
-          setOrderLoading(false);
-          showServerErrMsg();
-        }
-      });
-  };
-
-  const getTopProdData = (isMounted = true) => {
-    setTopProdLoading(true);
-    itemRankingAPI({
-      itemType: 'product',
-      rankingType: 'sales',
-      fromDate: getStartMthDt(),
-      toDate: getEndMthDt(),
-      limit: 6,
-    })
-      .then((res) => {
-        if (isMounted) {
-          setTopProdData(res.data?.results);
-          setTopProdLoading(false);
-        }
-      })
-      .catch((err) => {
-        if (err.response?.status !== 401) {
-          setTopProdLoading(false);
-          showServerErrMsg();
-        }
-      });
-  };
-
-  useEffect(() => {
-    let isMounted = true;
-    getToDoListData(isMounted);
-    getStatisticsData(isMounted);
-    getOrderData(isMounted);
-    getTopProdData(isMounted);
-
-    return () => {
-      isMounted = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const showServerErrMsg = () => {
-    messageApi.open(serverErrMsg);
-  };
 
   const invAnalysisColumns: {
     title: string;
@@ -207,22 +100,19 @@ const Dashboard = () => {
   return (
     <Layout>
       <MainCardContainer className='dashboard'>
-        <ToDoList data={toDoListData} loading={toDoListLoading} />
+        <ToDoList />
         <Sales />
         <Row justify='center' gutter={[30, 20]}>
           <Col span={7}>
-            <StatisticsDashboard
-              data={statisticsData}
-              loading={statisticsLoading}
-            />
+            <StatisticsDashboard />
           </Col>
           <Col span={17}>
-            <RecentOrder data={orderData} loading={orderLoading} />
+            <RecentOrder />
           </Col>
         </Row>
         <Row justify='center' gutter={[30, 20]}>
           <Col span={9}>
-            <TopProducts data={topProdData} loading={topProdLoading} />
+            <TopProducts />
           </Col>
           <Col span={15}>
             <InvAnalysis />
