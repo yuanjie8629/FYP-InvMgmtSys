@@ -16,7 +16,7 @@ type InformativeTableButtonProps = {
   }[];
 }[];
 
-type InformativeTableProps = TableProps & {
+export type InformativeTableProps = TableProps & {
   defPg?: number;
   totalRecord?: number;
   currentPg?: number;
@@ -58,6 +58,7 @@ const InformativeTable = ({
 
   const hanldeTableChange = (paginate, _filters, sorter) => {
     setPagination(paginate);
+    console.log(sorter['order']);
     if (sorter['order'] !== undefined) {
       let key = sorter['columnKey'];
       let prefix;
@@ -76,7 +77,7 @@ const InformativeTable = ({
         })
       );
     } else {
-      searchParams.delete('ordering');
+      setSearchParams(removeSearchParams(searchParams, 'ordering'));
     }
   };
 
@@ -176,14 +177,18 @@ const InformativeTable = ({
             pageSizeOptions: ['5', '10', '15', '20'],
             total: totalRecord,
             onChange: (page, pageSize) => {
-              if (page > 1) {
+              if (
+                page > 1 &&
+                (Number(searchParams.get('limit')) !== pageSize ||
+                  Number(searchParams.get('offset')) !== (page - 1) * pageSize)
+              ) {
                 setSearchParams(
                   addSearchParams(searchParams, {
                     limit: String(pageSize),
                     offset: (page - 1) * pageSize,
                   })
                 );
-              } else {
+              } else if (Number(searchParams.get('limit')) !== pageSize) {
                 setSearchParams(
                   removeSearchParams(
                     new URLSearchParams(

@@ -55,3 +55,6 @@ export const keyMetricsAPI = (props: KeyMetricsProps) =>
   axios.get(
     `analysis/key_metrics/?from_date=${props.fromDate}&to_date=${props.toDate}&key=${props.key}&date_type=${props.dateType}`
   );
+
+export const invAnalysisAPI = (type: string, searchParam?: string) =>
+  axios.get(`analysis/${type}/${searchParam !== undefined ? searchParam : ''}`);

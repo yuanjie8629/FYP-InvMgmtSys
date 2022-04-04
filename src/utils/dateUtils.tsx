@@ -21,7 +21,7 @@ export const getWeekDt = (
 export const getDayOfWeek = (
   date?: moment.Moment | string,
   inputFormat?: string,
-  outputFormat:string = 'dddd'
+  outputFormat: string = 'dddd'
 ) => moment(date, inputFormat).format(outputFormat);
 
 export const getWeekOfYear = (
@@ -183,7 +183,7 @@ export const getPrevWeek = (
     .endOf('week')
     .format(outputFormat)}`;
 
-export const getPrevMth = (
+export const getPrevMthDt = (
   date?: moment.Moment | string,
   inputFormat?: string,
   outputFormat: string = 'DD-MM-YYYY'
@@ -195,6 +195,12 @@ export const getPrevMth = (
     .subtract(1, 'month')
     .endOf('month')
     .format(outputFormat)}`;
+
+export const getPrevMth = (
+  date?: moment.Moment | string,
+  inputFormat?: string,
+  outputFormat: string = 'YYYY-MM'
+) => `${moment(date, inputFormat).subtract(1, 'month').format(outputFormat)}`;
 
 export const getPrevYr = (
   date?: moment.Moment | string,
@@ -313,7 +319,7 @@ export const validateMonth = (
         ))
       : func === 'previous'
       ? (date = moment(
-          getPrevMth(date, inputFormat).split(' ~ ')[0],
+          getPrevMthDt(date, inputFormat).split(' ~ ')[0],
           'DD-MM-YYYY'
         ))
       : moment(date, inputFormat);
@@ -450,7 +456,11 @@ export const getEndMthDt = (
   outputFormat: string = 'DD-MM-YYYY'
 ) => moment(date, inputFormat).endOf('month').format(outputFormat);
 
-export const getThisMthYr = () => moment().format('YYYY MMMM');
+export const getMthYr = (
+  date?: string,
+  inputFormat?: string,
+  outputFormat: string = 'YYYY MMMM'
+) => moment(date, inputFormat).format(outputFormat);
 
 export const compareMonth = (
   firstDate?: string,

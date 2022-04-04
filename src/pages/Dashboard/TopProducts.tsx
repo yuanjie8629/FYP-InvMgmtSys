@@ -5,7 +5,7 @@ import RankingList from '@components/List/RankingList';
 import RankingListSkeleton from '@components/List/RankingList/RankingListSkeleton';
 import { BoldTitle } from '@components/Title';
 import { MessageContext } from '@contexts/MessageContext';
-import { getEndMthDt, getStartMthDt, getThisMthYr } from '@utils/dateUtils';
+import { getEndMthDt, getStartMthDt, getMthYr } from '@utils/dateUtils';
 import { serverErrMsg } from '@utils/messageUtils';
 import { prodCat } from '@utils/optionUtils';
 import { Col, Row, Space, Typography } from 'antd';
@@ -63,7 +63,7 @@ const TopProducts = () => {
             </Col>
           </Row>
           <Row>
-            <Text className='dashboard-grey-text'>{getThisMthYr()}</Text>
+            <Text className='dashboard-grey-text'>{getMthYr()}</Text>
           </Row>
         </div>
         {loading || data.length <= 0 ? (

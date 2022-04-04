@@ -1,12 +1,20 @@
 import datetime
 import json
+from unicodedata import category
 import pandas as pd
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status, serializers
+from rest_framework import status, serializers, generics, pagination
+from analysis.serializers import (
+    ABCAnalysisResultSerializer,
+    ABCAnalysisSerializer,
+    HMLAnalysisResultSerializer,
+    HMLAnalysisSerializer,
+)
 from core.utils import get_date
 from customer.models import Cust, CustPosReg
-from item.models import Package, Product
+from item.filters import ProductFilter
+from item.models import Package, PackageItem, Product
 from order.models import Order, OrderLine
 from django.db.models import (
     Sum,
@@ -19,6 +27,9 @@ from django.db.models import (
     QuerySet,
     FloatField,
     Value,
+    Subquery,
+    OuterRef,
+    IntegerField,
 )
 from django.db.models.functions import (
     # ExtractHour,
@@ -30,6 +41,7 @@ from django.db.models.functions import (
     Coalesce,
     Cast,
 )
+from item.choices import PROD_CAT
 
 
 def split_by_date(date_field, date_type, queryset: QuerySet):
@@ -62,7 +74,7 @@ def sort_by_date(
 
         if to_date.date() >= datetime.date.today():
             end_hour = datetime.datetime.now().hour
-        print(end_hour)
+
         # Return None if the specified time has not elapsed today
         if end_hour != 23:
             hour = pd.date_range(
@@ -655,3 +667,413 @@ def KeyMetricsView(request):
         data.extend(query)
 
     return Response(data, status.HTTP_200_OK)
+
+
+def abc_classification(percentage):
+    if percentage > 0 and percentage <= 80:
+        return "A"
+    elif percentage > 80 and percentage <= 95:
+        return "B"
+    else:
+        return "C"
+
+
+class ABCAnalysisView(generics.ListAPIView):
+    queryset = (
+        Product.objects.all().prefetch_related("image").order_by(("-last_update"))
+    )
+    serializer_class = ABCAnalysisResultSerializer
+
+    def get(self, request, *args, **kwargs):
+        month = request.query_params.get("month", None)
+
+        if month:
+            try:
+                month = datetime.datetime.strptime(month, "%Y-%m")
+
+            except ValueError:
+                raise serializers.ValidationError(
+                    detail={
+                        "error": {
+                            "code": "invalid_date",
+                            "message": "Please ensure the date format is 'YYYY-MM'",
+                        }
+                    }
+                )
+        else:
+            raise serializers.ValidationError(
+                {"detail": "require_month"}, status.HTTP_400_BAD_REQUEST
+            )
+
+        if month.month >= datetime.date.today().month:
+            raise serializers.ValidationError(
+                detail={
+                    "error": {
+                        "code": "invalid_date",
+                        "message": "Analysis can only be performed on previous months.",
+                    }
+                }
+            )
+
+        prod_quantity_in_pack = (
+            PackageItem.objects.filter(pack__order__created_at__month=month.month)
+            .values("prod")
+            .annotate(
+                demand=Coalesce(Sum(F("quantity") * F("pack__order_line__quantity")), 0)
+            )
+            .values("demand")
+        )
+
+        if prod_quantity_in_pack.exists():
+
+            query = (
+                Product.objects.all()
+                .values("id")
+                .annotate(
+                    cost_per_unit=Coalesce(
+                        Avg(
+                            Case(
+                                When(
+                                    order__created_at__month=month.month,
+                                    then=F("order_line__cost_per_unit"),
+                                )
+                            )
+                        ),
+                        F("cost_per_unit"),
+                    ),
+                    demand=Coalesce(
+                        Sum(
+                            Case(
+                                When(
+                                    order__created_at__month=month.month,
+                                    then=F("order_line__quantity"),
+                                )
+                            )
+                        )
+                        + Subquery(
+                            prod_quantity_in_pack.filter(pk=OuterRef("pk")).values(
+                                "demand"
+                            ),
+                            output_field=IntegerField(),
+                        ),
+                        0,
+                    ),
+                )
+            )
+        else:
+            query = (
+                Product.objects.all()
+                .values("id")
+                .annotate(
+                    cost_per_unit=Coalesce(
+                        Avg(
+                            Case(
+                                When(
+                                    order__created_at__month=month.month,
+                                    then=F("order_line__cost_per_unit"),
+                                )
+                            )
+                        ),
+                        F("cost_per_unit"),
+                    ),
+                    demand=Coalesce(
+                        Sum(
+                            Case(
+                                When(
+                                    order__created_at__month=month.month,
+                                    then=F("order_line__quantity"),
+                                )
+                            )
+                        ),
+                        0,
+                    ),
+                )
+            )
+
+        data = query.annotate(
+            consumption_value=F("demand") * F("cost_per_unit"),
+        ).values(
+            "id",
+            "name",
+            "sku",
+            "category",
+            "thumbnail",
+            "demand",
+            "cost_per_unit",
+            "consumption_value",
+        )
+
+        serializer = ABCAnalysisSerializer(data, many=True)
+        data = serializer.data
+
+        df = pd.DataFrame(data)
+        df["demand"] = df["demand"].astype("float")
+        df["consumption_value"] = df["consumption_value"].astype("float")
+        df.sort_values(by=["consumption_value"], ascending=False, inplace=True)
+        df.reset_index(drop=True, inplace=True)
+        df["demand_total"] = df["demand"].sum()
+        df["demand_percent"] = df["demand"] / df["demand_total"]
+        df["consumption_value_total"] = df["consumption_value"].sum()
+        df["consumption_value_percent"] = (
+            df["consumption_value"] / df["consumption_value_total"]
+        )
+        df["consumption_value_cumsum"] = df["consumption_value"].cumsum()
+        df["consumption_value_cumsum_percent"] = (
+            df["consumption_value_cumsum"] / df["consumption_value_total"]
+        ) * 100
+        df["grade"] = df["consumption_value_cumsum_percent"].apply(abc_classification)
+
+        if not any(df["grade"] == "A"):
+            if df.loc[0, "consumption_value_percent"] > 0.8:
+                df = df.copy()
+                df.loc[0, "grade"] = "A"
+
+        if not any(df["grade"] == "B"):
+            df = df.copy()
+            df.loc[
+                ((df["grade"] == "C") & (df["consumption_value_percent"] > 0.15)),
+                "grade",
+            ] = "B"
+
+        df = df.drop(
+            columns=[
+                "demand_total",
+                "consumption_value_total",
+                "consumption_value_cumsum",
+                "consumption_value_cumsum_percent",
+            ],
+        )
+        df = df.round(4)
+        df["consumption_value_percent"] = (
+            df["consumption_value_percent"].astype(float).round(4)
+        )
+        df["cost_per_unit"] = df["cost_per_unit"].astype(float).round(2)
+        df = df.fillna(0)
+
+        # filter & ordering
+        ordering = request.query_params.get("ordering", None)
+
+        if not ordering:
+            df.sort_values(
+                by=["consumption_value_percent"], ascending=False, inplace=True
+            )
+        else:
+            ascending = True
+            if "-" in ordering:
+                ordering = ordering[1:]
+                ascending = False
+            df.sort_values(by=[ordering], ascending=ascending, inplace=True)
+
+        name = request.query_params.get("name", None)
+        sku = request.query_params.get("sku", None)
+        category = request.query_params.get("category", None)
+        min_demand = request.query_params.get("min_demand", None)
+        max_demand = request.query_params.get("max_demand", None)
+        min_consumption_value = request.query_params.get("min_consumption_value", None)
+        max_consumption_value = request.query_params.get("max_consumption_value", None)
+
+        if name:
+            df = df[df.name.str.contains(name)]
+
+        if sku:
+            df = df[df.sku.str.contains(sku)]
+
+        if category:
+            df = df[df.category == dict(PROD_CAT)[category]]
+
+        if min_demand:
+            df = df[df.demand >= float(min_demand)]
+
+        if max_demand:
+            df = df[df.demand <= float(max_demand)]
+
+        if min_consumption_value:
+            df = df[df.consumption_value >= float(min_consumption_value)]
+
+        if max_consumption_value:
+            df = df[df.consumption_value <= float(max_consumption_value)]
+
+        # summary = df.groupby("grade", as_index=False).agg(
+        #     total_demand=("demand", sum),
+        #     total_consumption_value=("consumption_value", sum),
+        # )
+
+        data = json.loads(df.to_json(orient="records"))
+        # summary = json.loads(summary.to_json(orient="records"))
+        # final_data = {"data": data, "summary": summary}
+
+        page = self.paginate_queryset(data)
+        serializer = self.get_serializer(page, many=True)
+        data = serializer.data
+
+        if page is not None:
+            return self.get_paginated_response(data)
+        return Response(data, status.HTTP_200_OK)
+
+
+def hml_classification(percentage):
+    if percentage > 0 and percentage <= 75:
+        return "H"
+    elif percentage > 75 and percentage <= 90:
+        return "M"
+    else:
+        return "L"
+
+
+class HMLAnalysisView(generics.ListAPIView):
+    queryset = (
+        Product.objects.all().prefetch_related("image").order_by(("-last_update"))
+    )
+    filterset_class = ProductFilter
+    serializer_class = HMLAnalysisResultSerializer
+
+    def get(self, request, *args, **kwargs):
+        month = request.query_params.get("month", None)
+
+        if month:
+            try:
+                month = datetime.datetime.strptime(month, "%Y-%m")
+
+            except ValueError:
+                raise serializers.ValidationError(
+                    detail={
+                        "error": {
+                            "code": "invalid_date",
+                            "message": "Please ensure the date format is 'YYYY-MM'",
+                        }
+                    }
+                )
+        else:
+            raise serializers.ValidationError(
+                {"detail": "require_month"}, status.HTTP_400_BAD_REQUEST
+            )
+
+        if month.month >= datetime.date.today().month:
+            raise serializers.ValidationError(
+                detail={
+                    "error": {
+                        "code": "invalid_date",
+                        "message": "Unable to perform analysis on future month.",
+                    }
+                }
+            )
+
+        data = (
+            Product.objects.filter()
+            .values("id")
+            .annotate(
+                cost_per_unit=Coalesce(
+                    Avg(
+                        Case(
+                            When(
+                                order__created_at__month=month.month,
+                                then=F("order_line__cost_per_unit"),
+                            )
+                        )
+                    ),
+                    F("cost_per_unit"),
+                )
+            )
+            .values(
+                "id",
+                "name",
+                "sku",
+                "thumbnail",
+                "category",
+                "stock",
+                "cost_per_unit",
+            )
+        )
+
+        serializer = HMLAnalysisSerializer(data, many=True)
+        data = serializer.data
+
+        df = pd.DataFrame(data)
+        df["cost_per_unit"] = df["cost_per_unit"].astype("float")
+        df["cost_per_unit_total"] = df["cost_per_unit"].sum()
+        df.sort_values(by=["cost_per_unit"], ascending=False, inplace=True)
+        df.reset_index(drop=True, inplace=True)
+        df["cost_per_unit_percent"] = df["cost_per_unit"] / df["cost_per_unit_total"]
+        df["cost_per_unit_cumsum"] = df["cost_per_unit"].cumsum()
+        df["cost_per_unit_cumsum_percent"] = (
+            df["cost_per_unit_cumsum"] / df["cost_per_unit_total"]
+        ) * 100
+        df["grade"] = df["cost_per_unit_cumsum_percent"].apply(hml_classification)
+
+        if not any(df["grade"] == "H"):
+            if df.loc[0, "cost_per_unit_percent"] > 0.75:
+                df = df.copy()
+                df.loc[0, "grade"] = "H"
+
+        if not any(df["grade"] == "M"):
+            df = df.copy()
+            df.loc[
+                ((df["grade"] == "L") & (df["cost_per_unit_percent"] > 0.15)),
+                "grade",
+            ] = "M"
+
+        df = df.drop(
+            columns=[
+                "cost_per_unit_total",
+                "cost_per_unit_cumsum",
+                "cost_per_unit_cumsum_percent",
+            ],
+        )
+        df = df.round(4)
+        df["cost_per_unit"] = df["cost_per_unit"].astype(float).round(2)
+        df = df.fillna(0)
+
+        # filter & ordering
+        ordering = request.query_params.get("ordering", None)
+
+        if not ordering:
+            df.sort_values(by=["cost_per_unit_percent"], ascending=False, inplace=True)
+        else:
+            ascending = True
+            if "-" in ordering:
+                ordering = ordering[1:]
+                ascending = False
+            if ordering == "grade":
+                df.sort_values(
+                    by=["cost_per_unit_percent"], ascending=ascending, inplace=True
+                )
+            else:
+                df.sort_values(by=[ordering], ascending=ascending, inplace=True)
+
+        name = request.query_params.get("name", None)
+        sku = request.query_params.get("sku", None)
+        category = request.query_params.get("category", None)
+        min_cost_per_unit = request.query_params.get("min_cost_per_unit", None)
+        max_cost_per_unit = request.query_params.get("max_cost_per_unit", None)
+        min_stock = request.query_params.get("min_stock", None)
+        max_stock = request.query_params.get("max_stock", None)
+
+        if name:
+            df = df[df.name.str.contains(name)]
+
+        if sku:
+            df = df[df.sku.str.contains(sku)]
+
+        if category:
+            df = df[df.category == dict(PROD_CAT)[category]]
+
+        if min_cost_per_unit:
+            df = df[df.cost_per_unit >= float(min_cost_per_unit)]
+
+        if max_cost_per_unit:
+            df = df[df.cost_per_unit <= float(max_cost_per_unit)]
+
+        if min_stock:
+            df = df[df.stock >= float(min_stock)]
+
+        if max_stock:
+            df = df[df.stock <= float(max_stock)]
+
+        data = json.loads(df.to_json(orient="records"))
+        page = self.paginate_queryset(data)
+        serializer = self.get_serializer(page, many=True)
+        data = serializer.data
+
+        if page is not None:
+            return self.get_paginated_response(data)
+        return Response(data, status.HTTP_200_OK)

@@ -50,7 +50,7 @@ const FilterInputs = (props: FilterInputsProps) => {
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [searchParams]);
 
   const handleSearch = (values) => {
     values = removeInvalidData(values);
@@ -107,28 +107,29 @@ const FilterInputs = (props: FilterInputsProps) => {
               }}
             />
           </FilterInputCol>
-          <FilterInputCol>
-            <InputNumberRange
-              formProps={{ name: 'stock' }}
-              label='Stock'
-              defaultValue={
-                searchParams.has('min_stock') &&
-                searchParams.has('max_stock') && [
-                  parseFloat(searchParams.get('min_stock')),
-                  parseFloat(searchParams.get('max_stock')),
-                ]
-              }
-              placeholder={['Start', 'End']}
-              min={0}
-              maxLength={10}
-              justify='start'
-              textSpan={4}
-              disabled={searchParams.get('status') === 'oos'}
-              onChange={(value) => {
-                prodFilter.setFieldsValue({ stock: value });
-              }}
-            />
-          </FilterInputCol>
+          {searchParams.get('status') !== 'oos' && (
+            <FilterInputCol>
+              <InputNumberRange
+                formProps={{ name: 'stock' }}
+                label='Stock'
+                defaultValue={
+                  searchParams.has('min_stock') &&
+                  searchParams.has('max_stock') && [
+                    parseFloat(searchParams.get('min_stock')),
+                    parseFloat(searchParams.get('max_stock')),
+                  ]
+                }
+                placeholder={['Start', 'End']}
+                min={0}
+                maxLength={10}
+                justify='start'
+                textSpan={4}
+                onChange={(value) => {
+                  prodFilter.setFieldsValue({ stock: value });
+                }}
+              />
+            </FilterInputCol>
+          )}
           <FilterInputCol>
             <InputNumberRange
               formProps={{ name: 'price' }}
@@ -143,6 +144,7 @@ const FilterInputs = (props: FilterInputsProps) => {
               placeholder={['Start', 'End']}
               prefix='RM'
               prefixWidth={60}
+              justify={searchParams.get('status') === 'oos' ? 'start' : 'end'}
               min={0}
               maxLength={10}
               precision={2}
