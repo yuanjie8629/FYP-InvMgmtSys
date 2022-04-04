@@ -7,6 +7,7 @@ from image.models import Image
 from item.choices import ITEM_STATUS, ITEM_TYPE, PROD_CAT
 from uuid import uuid4
 from cloudinary.models import CloudinaryField
+from django.db.models import Avg, Sum, F
 
 
 def upload_to(instance, filename):

@@ -1,28 +1,96 @@
-import React, { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Space, Typography, Row, Col } from 'antd';
+import React, { useContext, useEffect, useState } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
+import { Row, Col, CardProps } from 'antd';
 import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
-import InformativeTable from '@components/Table/InformativeTable';
 import DescriptionList from '@components/List/DescriptionList';
 import AnalysisCard from '@components/Card/AnalysisCard';
 import CollapseCard from '@components/Card/CollapseCard';
-import { getDt } from '@utils/dateUtils';
-import FilterInputs from './FilterInputs';
-import { abcAnalysis, eoqAnalysis, hmlAnalysis, ssAnalysis } from './Analyses';
+import {
+  AbcAnalysis,
+  abcUtils,
+  EoqAnalysis,
+  eoqUtils,
+  HmlAnalysis,
+  hmlUtils,
+  SsAnalysis,
+  ssUtils,
+} from './Analyses';
 import './InvAnalysis.less';
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
-import { BoldTitle } from '@components/Title';
+import { invAnalysisAPI } from '@api/services/analysisAPI';
+import { MessageContext } from '@contexts/MessageContext';
+import { serverErrMsg } from '@utils/messageUtils';
+import { getPrevMth } from '@utils/dateUtils';
+import AbcFilterInputs from './Analyses/AbcAnalysis/AbcFilterInputs';
+import HmlFilterInputs from './Analyses/HmlAnalysis/HmlFilterInputs';
+
+export interface InvAnalysisProps extends CardProps {
+  data?: any[];
+  loading?: boolean;
+  totalCount?: number;
+  currentPg?: number;
+  defPg?: number;
+}
 
 const InvAnalysis = () => {
-  const { Text } = Typography;
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [messageApi] = useContext(MessageContext);
+  const [list, setList] = useState([]);
+  const [recordCount, setRecordCount] = useState<number>();
+  const [tableLoading, setTableLoading] = useState(false);
+  const [currentPg, setCurrentPg] = useState(1);
+  const defPg = 5;
 
-  let [searchParams, setSearchParams] = useSearchParams();
+  const getTableData = (isMounted: boolean = true) => {
+    if (searchParams.has('month')) {
+      setList([]);
+      setTableLoading(true);
+      invAnalysisAPI(searchParams.get('type'), location.search)
+        .then((res) => {
+          if (isMounted) {
+            setList(res.data?.results);
+            setRecordCount(res.data?.count);
+            if (searchParams.has('offset')) {
+              let offset = Number(searchParams.get('offset'));
+              setCurrentPg(offset / defPg + 1);
+            }
+            setTableLoading(false);
+          }
+        })
+        .catch((err) => {
+          if (err.response?.status !== 401) {
+            setTableLoading(false);
+            showServerErrMsg();
+          }
+        });
+    }
+  };
 
-  useEffect(() => {
-    if (searchParams.get('type') === null) setSearchParams({ type: 'abc' });
-  }, [searchParams, setSearchParams]);
+  useEffect(
+    () => {
+      if (!(searchParams.has('month') && searchParams.has('type'))) {
+        setSearchParams({
+          type: 'abc',
+          month: getPrevMth(undefined, undefined, 'YYYY-MM'),
+          limit: String(defPg),
+        });
+      }
+      let isMounted = true;
+      getTableData(isMounted);
+      return () => {
+        isMounted = false;
+      };
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searchParams, searchParams.get('type')]
+  );
+
+  const showServerErrMsg = () => {
+    messageApi.open(serverErrMsg);
+  };
 
   const invAnalysisTab = [
     { key: 'abc', tab: 'ABC' },
@@ -52,28 +120,24 @@ const InvAnalysis = () => {
         prodList: string[];
       }[];
     };
-    columns: {
-      title: string;
-      dataIndex?: string | string[];
-      key: string;
-      sorter?: boolean;
-      align?: 'left' | 'center' | 'right';
-      width?: number | string;
-      fixed?: 'left' | 'right';
-      render?: any;
-    }[];
-    tableScroll?: number;
-    data: any[];
   } =>
     analysis === 'abc'
-      ? abcAnalysis
+      ? abcUtils
       : analysis === 'hml'
-      ? hmlAnalysis
+      ? hmlUtils
       : analysis === 'eoq'
-      ? eoqAnalysis
-      : ssAnalysis;
+      ? eoqUtils
+      : ssUtils;
 
   const analysis = getAnalysis(searchParams.get('type'));
+
+  const handleTabChange = (key: string) => {
+    setSearchParams({
+      type: key,
+      month: getPrevMth(undefined, undefined, 'YYYY-MM'),
+      limit: String(defPg),
+    });
+  };
 
   return (
     <Layout>
@@ -125,39 +189,47 @@ const InvAnalysis = () => {
         <MainCard
           tabList={invAnalysisTab}
           activeTabKey={searchParams.get('type')}
-          onTabChange={(key) => {
-            setSearchParams({ type: key });
-          }}
+          onTabChange={handleTabChange}
         >
-          <FilterInputs />
+          {searchParams.get('type') === 'abc' ? (
+            <AbcFilterInputs />
+          ) : searchParams.get('type') === 'hml' ? (
+            <HmlFilterInputs />
+          ) : null}
         </MainCard>
-        <MainCard>
-          <Space direction='vertical' size={15} className='full-width'>
-            <Space direction='vertical' size={5}>
-              <BoldTitle level={4}>
-                {`${
-                  invAnalysisTab.find(
-                    (tab) => tab.key === searchParams.get('type')
-                  )?.tab
-                } Analysis`}
-              </BoldTitle>
-              <Text type='secondary'>
-                {getDt(undefined, undefined, 'YYYY MMMM')}
-              </Text>
-            </Space>
-            <InformativeTable
-              dataSource={analysis.data}
-              columns={analysis.columns}
-              rowSelectable={false}
-              scroll={{
-                x:
-                  analysis.tableScroll !== undefined
-                    ? analysis.tableScroll
-                    : undefined,
-              }}
-            />
-          </Space>
-        </MainCard>
+        {searchParams.get('type') === 'abc' ? (
+          <AbcAnalysis
+            data={list}
+            defPg={defPg}
+            currentPg={currentPg}
+            totalCount={recordCount}
+            loading={tableLoading}
+          />
+        ) : searchParams.get('type') === 'hml' ? (
+          <HmlAnalysis
+            data={list}
+            defPg={defPg}
+            currentPg={currentPg}
+            totalCount={recordCount}
+            loading={tableLoading}
+          />
+        ) : searchParams.get('type') === 'eoq' ? (
+          <EoqAnalysis
+            data={list}
+            defPg={defPg}
+            currentPg={currentPg}
+            totalCount={recordCount}
+            loading={tableLoading}
+          />
+        ) : (
+          <SsAnalysis
+            data={list}
+            defPg={defPg}
+            currentPg={currentPg}
+            totalCount={recordCount}
+            loading={tableLoading}
+          />
+        )}
       </MainCardContainer>
     </Layout>
   );

@@ -17,7 +17,7 @@ import {
   getMth,
   getMthDt,
   getThisMthTilYtd,
-  getThisMthYr,
+  getMthYr,
   getThisWeekTilYtd,
   getThisYrTilYtd,
   getWeekDt,
@@ -120,7 +120,7 @@ const Sales = () => {
 
   const getSalesDate =
     salesDateRange === 'month'
-      ? `${getThisMthYr()} (${formatDt(
+      ? `${getMthYr()} (${formatDt(
           getThisMthTilYtd(),
           'month',
           'DD-MM-YYYY ~ DD-MM-YYYY',

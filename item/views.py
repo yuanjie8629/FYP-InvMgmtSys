@@ -1,4 +1,3 @@
-import datetime
 import re
 import cloudinary.uploader
 import cloudinary
@@ -159,9 +158,9 @@ class ProductViewSet(viewsets.ModelViewSet):
             ),
         ).order_by("-sales")
 
-        page = self.paginate_queryset(product)
+        page = self.paginate_queryset(product_ranking)
         if page is not None:
-            return self.get_paginated_response(product_ranking)
+            return self.get_paginated_response(page)
         return Response(product_ranking, status.HTTP_200_OK)
 
     @action(
@@ -206,9 +205,9 @@ class ProductViewSet(viewsets.ModelViewSet):
             ),
         ).order_by("-units")
 
-        page = self.paginate_queryset(product)
+        page = self.paginate_queryset(product_ranking)
         if page is not None:
-            return self.get_paginated_response(product_ranking)
+            return self.get_paginated_response(page)
         return Response(product_ranking, status.HTTP_200_OK)
 
 
@@ -428,9 +427,9 @@ class PackSalesRankingView(generics.ListAPIView):
             ),
         ).order_by("-sales")
 
-        page = self.paginate_queryset(package)
+        page = self.paginate_queryset(package_ranking)
         if page is not None:
-            return self.get_paginated_response(package_ranking)
+            return self.get_paginated_response(page)
         return Response(package_ranking, status.HTTP_200_OK)
 
 
@@ -466,8 +465,8 @@ class PackUnitsRankingView(generics.ListAPIView):
             ),
         ).order_by("-units")
 
-        page = self.paginate_queryset(package)
+        page = self.paginate_queryset(package_ranking)
         if page is not None:
-            return self.get_paginated_response(package_ranking)
+            return self.get_paginated_response(page)
 
         return Response(package_ranking, status.HTTP_200_OK)

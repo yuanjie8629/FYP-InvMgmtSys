@@ -53,7 +53,7 @@ const FilterInputs = () => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [searchParams]);
 
   const handleSearch = (values) => {
     values = removeInvalidData(values);

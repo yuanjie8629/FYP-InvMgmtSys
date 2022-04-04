@@ -439,7 +439,7 @@ const ProdAdd = () => {
                         label='Average Lead Time'
                         name='avg_lead_tm'
                         tooltip={{
-                          title: 'Average Lead Time',
+                          title: 'Average number of days it takes to receive the product once you place a new order',
                         }}
                       >
                         <InputNumber
@@ -454,7 +454,7 @@ const ProdAdd = () => {
                         label='Maximum Lead Time'
                         name='max_lead_tm'
                         tooltip={{
-                          title: 'Maximum Lead Time',
+                          title: 'Maximum number of days it takes to receive the product once you place a new order',
                         }}
                       >
                         <InputNumber
