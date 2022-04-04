@@ -76,7 +76,7 @@ class HMLAnalysisSerializer(serializers.ModelSerializer):
         ]
 
 
-class HMLAnalysisResultSerializer(ABCAnalysisSerializer):
+class HMLAnalysisResultSerializer(HMLAnalysisSerializer):
     thumbnail = serializers.URLField(read_only=True)
     cost_per_unit_percent = serializers.DecimalField(max_digits=10, decimal_places=4)
     grade = serializers.CharField()
@@ -93,4 +93,52 @@ class HMLAnalysisResultSerializer(ABCAnalysisSerializer):
             "category",
             "cost_per_unit_percent",
             "grade",
+        ]
+
+
+class SSAnalysisSerializer(serializers.ModelSerializer):
+    id = IntegerField()
+    category = ChoiceField(choices=PROD_CAT, read_only=True)
+    thumbnail = serializers.ImageField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    sku = serializers.CharField(read_only=True)
+    avg_demand = serializers.IntegerField(read_only=True)
+    max_demand = serializers.IntegerField(read_only=True)
+    avg_lead_tm = serializers.IntegerField(read_only=True)
+    max_lead_tm = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = [
+            "id",
+            "name",
+            "sku",
+            "thumbnail",
+            "category",
+            "avg_demand",
+            "max_demand",
+            "avg_lead_tm",
+            "max_lead_tm",
+        ]
+
+
+class SSAnalysisResultSerializer(SSAnalysisSerializer):
+    thumbnail = serializers.URLField(read_only=True)
+    safety_stock = serializers.IntegerField(read_only=True)
+    restock_point = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = [
+            "id",
+            "name",
+            "sku",
+            "thumbnail",
+            "category",
+            "avg_demand",
+            "max_demand",
+            "avg_lead_tm",
+            "max_lead_tm",
+            "safety_stock",
+            "restock_point",
         ]

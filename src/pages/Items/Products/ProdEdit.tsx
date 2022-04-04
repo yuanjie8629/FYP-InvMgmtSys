@@ -421,11 +421,12 @@ const ProdEdit = () => {
                         label='Ordering/Reorder Cost'
                         name='ordering_cost'
                         tooltip={{
-                          title: 'Cost when reordering the product',
+                          title: 'Cost when reordering the product for each month',
                         }}
                       >
                         <InputNumber
                           addonBefore='RM'
+                          addonAfter='Monthly'
                           precision={2}
                           min={0}
                           placeholder='Input'
@@ -437,11 +438,12 @@ const ProdEdit = () => {
                         label='Carrying/Holding Cost'
                         name='holding_cost'
                         tooltip={{
-                          title: 'Cost for holding inventory in stock',
+                          title: 'Cost for holding inventory in stock for each month',
                         }}
                       >
                         <InputNumber
                           addonBefore='RM'
+                          addonAfter='Monthly'
                           precision={2}
                           min={0}
                           placeholder='Input'

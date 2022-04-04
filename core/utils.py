@@ -273,3 +273,35 @@ def get_date(request):
     #     )
 
     return from_date, to_date
+
+
+def get_month(request):
+    month = request.query_params.get("month", None)
+    if month:
+        try:
+            month = datetime.datetime.strptime(month, "%Y-%m")
+
+        except ValueError:
+            raise serializers.ValidationError(
+                detail={
+                    "error": {
+                        "code": "invalid_date",
+                        "message": "Please ensure the date format is 'YYYY-MM'",
+                    }
+                }
+            )
+    else:
+        raise serializers.ValidationError(
+            {"detail": "require_month"}, status.HTTP_400_BAD_REQUEST
+        )
+
+    if month.month >= datetime.date.today().month:
+        raise serializers.ValidationError(
+            detail={
+                "error": {
+                    "code": "invalid_date",
+                    "message": "Unable to perform analysis on future month.",
+                }
+            }
+        )
+    return month
