@@ -2,12 +2,12 @@ import { MdPersonOutline, MdOutlineSettings, MdLogout } from 'react-icons/md';
 
 const menuList = [
   {
-    key: '/my-acc/profile-management',
+    key: '/my_acc/profile_management',
     label: 'Manage Profile',
     icon: MdPersonOutline,
   },
   {
-    key: '/my-acc/acc-settings',
+    key: '/my_acc/acc_settings',
     label: 'Account Settings',
     icon: MdOutlineSettings,
   },

@@ -1,19 +1,18 @@
 import datetime
 import json
-from unicodedata import category
 import pandas as pd
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status, serializers, generics, pagination
+from rest_framework import status, serializers, generics
 from analysis.serializers import (
     ABCAnalysisResultSerializer,
     ABCAnalysisSerializer,
     HMLAnalysisResultSerializer,
     HMLAnalysisSerializer,
+    SSAnalysisResultSerializer,
 )
-from core.utils import get_date
+from core.utils import get_date, get_month
 from customer.models import Cust, CustPosReg
-from item.filters import ProductFilter
 from item.models import Package, PackageItem, Product
 from order.models import Order, OrderLine
 from django.db.models import (
@@ -23,6 +22,7 @@ from django.db.models import (
     Case,
     When,
     Avg,
+    Max,
     Q,
     QuerySet,
     FloatField,
@@ -33,8 +33,8 @@ from django.db.models import (
 )
 from django.db.models.functions import (
     # ExtractHour,
-    # ExtractDay,
-    # ExtractMonth,
+    ExtractDay,
+    ExtractMonth,
     TruncHour,
     TruncDay,
     TruncMonth,
@@ -685,35 +685,7 @@ class ABCAnalysisView(generics.ListAPIView):
     serializer_class = ABCAnalysisResultSerializer
 
     def get(self, request, *args, **kwargs):
-        month = request.query_params.get("month", None)
-
-        if month:
-            try:
-                month = datetime.datetime.strptime(month, "%Y-%m")
-
-            except ValueError:
-                raise serializers.ValidationError(
-                    detail={
-                        "error": {
-                            "code": "invalid_date",
-                            "message": "Please ensure the date format is 'YYYY-MM'",
-                        }
-                    }
-                )
-        else:
-            raise serializers.ValidationError(
-                {"detail": "require_month"}, status.HTTP_400_BAD_REQUEST
-            )
-
-        if month.month >= datetime.date.today().month:
-            raise serializers.ValidationError(
-                detail={
-                    "error": {
-                        "code": "invalid_date",
-                        "message": "Analysis can only be performed on previous months.",
-                    }
-                }
-            )
+        month = get_month(request)
 
         prod_quantity_in_pack = (
             PackageItem.objects.filter(pack__order__created_at__month=month.month)
@@ -924,39 +896,10 @@ class HMLAnalysisView(generics.ListAPIView):
     queryset = (
         Product.objects.all().prefetch_related("image").order_by(("-last_update"))
     )
-    filterset_class = ProductFilter
     serializer_class = HMLAnalysisResultSerializer
 
     def get(self, request, *args, **kwargs):
-        month = request.query_params.get("month", None)
-
-        if month:
-            try:
-                month = datetime.datetime.strptime(month, "%Y-%m")
-
-            except ValueError:
-                raise serializers.ValidationError(
-                    detail={
-                        "error": {
-                            "code": "invalid_date",
-                            "message": "Please ensure the date format is 'YYYY-MM'",
-                        }
-                    }
-                )
-        else:
-            raise serializers.ValidationError(
-                {"detail": "require_month"}, status.HTTP_400_BAD_REQUEST
-            )
-
-        if month.month >= datetime.date.today().month:
-            raise serializers.ValidationError(
-                detail={
-                    "error": {
-                        "code": "invalid_date",
-                        "message": "Unable to perform analysis on future month.",
-                    }
-                }
-            )
+        month = get_month(request)
 
         data = (
             Product.objects.filter()
@@ -1070,6 +1013,129 @@ class HMLAnalysisView(generics.ListAPIView):
             df = df[df.stock <= float(max_stock)]
 
         data = json.loads(df.to_json(orient="records"))
+        page = self.paginate_queryset(data)
+        serializer = self.get_serializer(page, many=True)
+        data = serializer.data
+
+        if page is not None:
+            return self.get_paginated_response(data)
+        return Response(data, status.HTTP_200_OK)
+
+
+class SSAnalysisView(generics.ListAPIView):
+    queryset = (
+        Product.objects.all().prefetch_related("image").order_by(("-last_update"))
+    )
+    serializer_class = SSAnalysisResultSerializer
+
+    def get(self, request, *args, **kwargs):
+        month = get_month(request)
+
+        prod_quantity_in_pack = (
+            PackageItem.objects.filter(pack__order__created_at__month=month.month)
+            .values("prod")
+            .annotate(
+                demand=Coalesce(Sum(F("quantity") * F("pack__order_line__quantity")), 0)
+            )
+            .values("demand")
+        )
+
+        if prod_quantity_in_pack.exists():
+
+            subquery = (
+                Product.objects.filter(
+                    order__created_at__month=month.month, pk=OuterRef("pk")
+                )
+                .values(
+                    day=TruncDay("order_line__order__created_at"),
+                )
+                .annotate(
+                    demand=Coalesce(
+                        Sum(F("order_line__quantity"))
+                        + Coalesce(
+                            Subquery(
+                                prod_quantity_in_pack.filter(pk=OuterRef("pk")).values(
+                                    "demand"
+                                ),
+                                output_field=IntegerField(),
+                            ),
+                            0,
+                        ),
+                        0,
+                    ),
+                )
+                .order_by("-demand")
+                .values("demand")[:1]
+            )
+
+            query = (
+                Product.objects.filter(order__created_at__month=month.month)
+                .values("id")
+                .annotate(
+                    day=TruncDay("order_line__order__created_at"),
+                    demand=Coalesce(
+                        Sum(F("order_line__quantity"))
+                        + Coalesce(
+                            Subquery(
+                                prod_quantity_in_pack.filter(pk=OuterRef("pk")).values(
+                                    "demand"
+                                ),
+                                output_field=IntegerField(),
+                            ),
+                            0,
+                        ),
+                        0,
+                    ),
+                )
+                .values("id", "demand", "thumbnail")
+                .annotate(
+                    avg_demand=F("demand") / Count("day", distinct=True),
+                    max_demand=Max(Subquery(subquery)),
+                )
+            )
+
+        else:
+
+            subquery = (
+                Product.objects.filter(
+                    order__created_at__month=month.month, pk=OuterRef("pk")
+                )
+                .values(
+                    day=TruncDay("order_line__order__created_at"),
+                )
+                .annotate(demand=Sum(F("order_line__quantity")))
+                .order_by("-demand")
+                .values("demand")[:1]
+            )
+
+            query = (
+                Product.objects.filter(order__created_at__month=month.month)
+                .values("id")
+                .annotate(
+                    day=TruncDay("order_line__order__created_at"),
+                    demand=Sum(F("order_line__quantity")),
+                )
+                .values("id", "demand", "thumbnail")
+                .annotate(
+                    avg_demand=F("demand") / Count("day", distinct=True),
+                    max_demand=Max(Subquery(subquery)),
+                )
+            )
+
+        data = query.annotate(
+            consumption_value=F("demand") * F("cost_per_unit"),
+        ).values(
+            "id",
+            "name",
+            "sku",
+            "category",
+            "thumbnail",
+            "demand",
+            "cost_per_unit",
+            "consumption_value",
+        )
+
+        # data = json.loads(df.to_json(orient="records"))
         page = self.paginate_queryset(data)
         serializer = self.get_serializer(page, many=True)
         data = serializer.data
