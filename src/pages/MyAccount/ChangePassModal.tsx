@@ -118,7 +118,7 @@ const ChangePassModal = ({ onUpdate, ...props }: AccSettingsModalProps) => {
   const showSuccessChangeMsg = () => {
     messageApi.open({
       type: 'success',
-      content: 'Your phone number has been updated.',
+      content: 'Your password has been updated.',
     });
   };
 

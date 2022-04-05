@@ -42,7 +42,7 @@ const ChangeEmailModal = ({ onUpdate, ...props }: AccSettingsModalProps) => {
   const showSuccessChangeMsg = () => {
     messageApi.open({
       type: 'success',
-      content: 'Your phone number has been updated.',
+      content: 'Your email has been updated.',
     });
   };
 
