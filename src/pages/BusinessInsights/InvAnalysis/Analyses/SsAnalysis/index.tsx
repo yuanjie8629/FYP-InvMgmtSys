@@ -74,6 +74,7 @@ const SsAnalysis = ({
       sorter: true,
       defaultSortOrder: getSortOrder('sku'),
       width: 130,
+      
     },
     {
       title: 'Avg Demand',

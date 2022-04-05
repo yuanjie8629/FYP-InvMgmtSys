@@ -32,7 +32,6 @@ export const actionSuccessMsg: (
   length: number
 ) => {
   return {
-    key: action,
     type: 'success',
     content: `${length} ${length === 1 ? recordType : `${recordType}s`} ${
       action === 'activate'

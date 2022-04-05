@@ -70,7 +70,7 @@ const ProdEdit = () => {
   };
 
   const showErrMsg = (errMsg?: string) => {
-    messageApi.open({ key: 'err', type: 'error', content: errMsg });
+    messageApi.open({ type: 'error', content: errMsg });
   };
 
   useEffect(() => {
@@ -421,7 +421,8 @@ const ProdEdit = () => {
                         label='Ordering/Reorder Cost'
                         name='ordering_cost'
                         tooltip={{
-                          title: 'Fixed cost / Setup cost per purchase order (Shipping and handling costs)',
+                          title:
+                            'Fixed cost / Setup cost per purchase order (Shipping and handling costs)',
                         }}
                       >
                         <InputNumber
@@ -438,7 +439,8 @@ const ProdEdit = () => {
                         label='Carrying/Holding Cost'
                         name='holding_cost'
                         tooltip={{
-                          title: 'Cost for storing or holding the inventory in stock per unit, per year',
+                          title:
+                            'Cost for storing or holding the inventory in stock per unit, per year',
                         }}
                       >
                         <InputNumber
@@ -497,7 +499,8 @@ const ProdEdit = () => {
                         label='Average Lead Time'
                         name='avg_lead_tm'
                         tooltip={{
-                          title: 'Average number of days it takes to receive the product once you place a new order',
+                          title:
+                            'Average number of days it takes to receive the product once you place a new order',
                         }}
                       >
                         <InputNumber
@@ -512,7 +515,8 @@ const ProdEdit = () => {
                         label='Maximum Lead Time'
                         name='max_lead_tm'
                         tooltip={{
-                          title: 'Maximum number of days it takes to receive the product once you place a new order',
+                          title:
+                            'Maximum number of days it takes to receive the product once you place a new order',
                         }}
                       >
                         <InputNumber

@@ -42,7 +42,6 @@ import {
   removeSearchParams,
 } from '@utils/urlUtls';
 import { getOrderDetails } from './orderUtils';
-import { saveAs } from 'file-saver';
 
 const OrderMgmt = () => {
   const { Text } = Typography;
@@ -123,7 +122,6 @@ const OrderMgmt = () => {
               })
             )
               .then((res) => {
-                saveAs(res.data, 'invoices.zip');
                 showActionSuccessMsg('invoice');
               })
               .catch((err) => {
@@ -433,7 +431,6 @@ const OrderMgmt = () => {
                   onOk: async () => {
                     await orderInvoiceAPI(data?.id)
                       .then((res) => {
-                        saveAs(res.data, `${data?.id}.pdf`);
                         showActionSuccessMsg('invoice', false);
                       })
                       .catch((err) => {

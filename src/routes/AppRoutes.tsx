@@ -12,6 +12,7 @@ import routeRedirectList from './routeRedirectList';
 import { useEffect, useState } from 'react';
 import { verifyTknAPI } from '@api/services/authAPI';
 import { findRoutePath } from '@utils/routingUtils';
+import ScrollToTop from './ScrollToTop';
 
 export default function AppRoute() {
   const [loading, setLoading] = useState(false);
@@ -34,36 +35,38 @@ export default function AppRoute() {
 
   return (
     <Router>
-      <Routes>
-        {sessionExp && (
-          <Route element={<Navigate to={findRoutePath('login')} />} />
-        )}
-        <Route element={<AuthRoute />}>
-          {routeRedirectList.map((route) => (
-            <Route
-              key={route.path}
-              path={route.path}
-              element={<Navigate to={route.redirect} replace />}
-            />
-          ))}
-          {routeList.map((route) => (
-            <Route
-              key={route.path}
-              path={route.path}
-              element={
-                loading ? (
-                  <PageLoad />
-                ) : (
-                  <>
-                    {route.component}
-                    <SessionExpModal />
-                  </>
-                )
-              }
-            />
-          ))}
-        </Route>
-      </Routes>
+      <ScrollToTop>
+        <Routes>
+          {sessionExp && (
+            <Route element={<Navigate to={findRoutePath('login')} />} />
+          )}
+          <Route element={<AuthRoute />}>
+            {routeRedirectList.map((route) => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={<Navigate to={route.redirect} replace />}
+              />
+            ))}
+            {routeList.map((route) => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={
+                  loading ? (
+                    <PageLoad />
+                  ) : (
+                    <>
+                      {route.component}
+                      <SessionExpModal />
+                    </>
+                  )
+                }
+              />
+            ))}
+          </Route>
+        </Routes>
+      </ScrollToTop>
     </Router>
   );
 }

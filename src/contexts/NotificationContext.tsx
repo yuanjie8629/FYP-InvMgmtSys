@@ -3,8 +3,14 @@ import React, { createContext } from 'react';
 
 export const NotificationContext = createContext(null);
 
-export const Provider = (props) => {
+export const NotificationProvider = (props) => {
   const [notificationAPI] = notification.useNotification();
+
+  notification.config({
+    maxCount: 1,
+    placement: 'bottomRight',
+    duration: 5,
+  });
 
   return (
     <NotificationContext.Provider value={[notificationAPI]}>

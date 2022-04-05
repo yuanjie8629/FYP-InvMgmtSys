@@ -14,8 +14,18 @@ from notification.models import Notification
 
 @receiver(post_save, sender=Item)
 def low_stock_notification(sender, instance, **kwargs):
-    if instance.stock <= 15:
+    type = "product" if instance.type == "prod" else "package"
+    if instance.stock == 10:
         title = "Low Stock"
-        description = "<p><span>{} is currently in low stock.</span></p><p><span>Please consider restocking it.</span></p>".format(instance.name)
-        type = 'product' if instance.type == 'prod' else 'package'
+        description = "<span style={}>{} is currently in low stock.<br/>Please consider restocking it.</span>".format(
+            "word-wrap:break-word", instance.name
+        )
+
+        Notification.objects.create(title=title, description=description, type=type)
+
+    if instance.stock == 0:
+        title = "Out of Stock"
+        description = "<span style={}>{} is out of stock!<br/>It is not available for sale until it is restocked.</span>".format(
+            "word-wrap:break-word", instance.name
+        )
         Notification.objects.create(title=title, description=description, type=type)

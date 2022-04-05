@@ -1,5 +1,6 @@
 import axios from '@api/axiosInstance';
 import { ItemType, RankingType } from '@utils/optionUtils';
+import { saveAs } from 'file-saver';
 
 export const toDoListAPI = () => axios.get(`analysis/to_do_list/`);
 
@@ -58,3 +59,16 @@ export const keyMetricsAPI = (props: KeyMetricsProps) =>
 
 export const invAnalysisAPI = (type: string, searchParam?: string) =>
   axios.get(`analysis/${type}/${searchParam !== undefined ? searchParam : ''}`);
+
+export const generateKeyMetricsReportAPI = (
+  props: Omit<KeyMetricsProps, 'key'>
+) =>
+  axios
+    .get(
+      `analysis/key_metrics/report/?from_date=${props.fromDate}&to_date=${props.toDate}&date_type=${props.dateType}`,
+      { responseType: 'blob' }
+    )
+    .then((res) => {
+      saveAs(res.data, `shrf-report_${props.fromDate}-${props.toDate}`);
+      return Promise.resolve(res);
+    });

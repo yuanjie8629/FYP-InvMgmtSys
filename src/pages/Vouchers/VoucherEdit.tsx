@@ -60,7 +60,7 @@ const VoucherEdit = () => {
   };
 
   const showErrMsg = (errMsg?: string) => {
-    messageApi.open({ key: 'err', type: 'error', content: errMsg });
+    messageApi.open({type: 'error', content: errMsg });
   };
 
   const handleEditVoucher = (values) => {
