@@ -4,7 +4,7 @@ import React, { createContext } from 'react';
 export const NotificationContext = createContext(null);
 
 export const NotificationProvider = (props) => {
-  const [notificationAPI] = notification.useNotification();
+  const [notificationAPI, notificationContext] = notification.useNotification();
 
   notification.config({
     maxCount: 1,
@@ -14,6 +14,7 @@ export const NotificationProvider = (props) => {
 
   return (
     <NotificationContext.Provider value={[notificationAPI]}>
+      {notificationContext}
       {props.children}
     </NotificationContext.Provider>
   );
