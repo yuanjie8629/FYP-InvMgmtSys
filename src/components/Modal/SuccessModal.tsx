@@ -2,8 +2,8 @@ import { Modal, ModalProps, Result } from 'antd';
 import { useState } from 'react';
 
 interface SuccessModalProps extends ModalProps {
-  title: string;
-  subTitle?: string;
+  title: React.ReactNode;
+  subTitle?: React.ReactNode;
   extra?: React.ReactNode;
 }
 

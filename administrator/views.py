@@ -3,8 +3,10 @@ from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django_rest_passwordreset.signals import reset_password_token_created
 from administrator.models import Admin
-from rest_framework import generics
-from .serializers import AdminSerializer
+from rest_framework import generics, status
+from rest_framework.response import Response
+from .serializers import AdminSerializer, ChangePassSerializer
+from django.contrib.auth.hashers import check_password
 
 
 class AdminList(generics.ListCreateAPIView):
@@ -12,11 +14,33 @@ class AdminList(generics.ListCreateAPIView):
     serializer_class = AdminSerializer
 
 
-class AdminDetails(generics.RetrieveAPIView):
+class AdminDetails(generics.RetrieveUpdateAPIView):
     queryset = Admin.objects.all()
     serializer_class = AdminSerializer
     lookup_field = "id"
 
+    def update(self, request, *args, **kwargs):
+        if not check_password(
+            request.data.pop("password", None), self.get_object().password
+        ):
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST, data={"error": "invalid_password"}
+            )
+        return super().update(request, *args, **kwargs)
+
+
+class ChangePassView(generics.UpdateAPIView):
+    queryset = Admin.objects.all()
+    serializer_class = ChangePassSerializer
+
+    def update(self, request, *args, **kwargs):
+        if not check_password(
+            request.data.pop("password", None), self.get_object().password
+        ):
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST, data={"error": "invalid_password"}
+            )
+        return super().update(request, *args, **kwargs)
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(

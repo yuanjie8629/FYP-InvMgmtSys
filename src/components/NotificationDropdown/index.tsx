@@ -119,7 +119,7 @@ const NotificationDropdown = () => {
         key={'notification-content'}
         className='notification-menu-item-group'
       >
-        {false
+        {loading
           ? Array.from(Array(5).keys()).map(() => (
               <Row align='middle' style={{ minHeight: 100, padding: 10 }}>
                 <Col>
