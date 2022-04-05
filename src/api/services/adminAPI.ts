@@ -1,16 +1,13 @@
 import axios from '@api/axiosInstance';
-import Cookies from 'js-cookie';
-import jwtDecode from 'jwt-decode';
-
-let { user_id }: any = jwtDecode(Cookies.get('access_token'));
+import { getAdminInfo } from '@utils/storageUtils';
 
 export const adminDetailsAPI = () => {
-  return axios.get(`admin/${user_id}/`);
+  return axios.get(`admin/${getAdminInfo()}/`);
 };
 
 export const adminUpdateAPI = (data) => {
-  return axios.patch(`admin/${user_id}/`, data);
+  return axios.patch(`admin/${getAdminInfo()}/`, data);
 };
 
 export const changePassAPI = (data) =>
-  axios.patch(`admin/${user_id}/change_pass/`, data);
+  axios.patch(`admin/${getAdminInfo()}/change_pass/`, data);
