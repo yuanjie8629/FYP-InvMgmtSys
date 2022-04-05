@@ -1,4 +1,4 @@
-import { DescIcon } from "../../Icons";
+import { DescIcon } from '../../Icons';
 
 const eoqDesc = {
   header: 'EOQ analysis evaluates the products based on sales per month.',
@@ -28,16 +28,14 @@ const eoqComponent = {
   header: 'Components of EOQ Analysis',
   content: [
     {
-      key: 'orderCost',
+      key: 'ordering_cost',
       label: 'Ordering/Reorder Cost',
-      desc: 'Cost when reordering the product',
-      prodList: ['Sambal Ikan Bilis', 'Pes Mi Goreng'],
+      desc: 'Fixed cost / Setup cost per purchase order (Shipping and handling costs)',
     },
     {
-      key: 'carryCost',
+      key: 'holding_cost',
       label: 'Carrying/Holding Cost',
-      desc: 'Cost for holding inventory in stock',
-      prodList: [],
+      desc: 'Cost for holding inventory in stock per unit, per year',
     },
   ],
 };
@@ -47,4 +45,4 @@ const eoqUtils = {
   component: eoqComponent,
 };
 
-export default eoqUtils
+export default eoqUtils;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Badge,
   Dropdown,
@@ -9,28 +9,78 @@ import {
   Avatar,
   Space,
   Divider,
+  Skeleton,
 } from 'antd';
 import Button from '@components/Button';
 import { MdNotifications } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
-import menuList from './notificationDropdownList';
 import { findRoutePath, findIcon } from '@utils/routingUtils';
 import './NotificationDropdown.less';
+import {
+  notificationListAPI,
+  notificationReadAPI,
+} from '@api/services/notificationAPI';
+import { serverErrMsg } from '@utils/messageUtils';
+import { MessageContext } from '@contexts/MessageContext';
+import { capitalize } from '@utils/strUtils';
 
 const NotificationDropdown = () => {
   let navigate = useNavigate();
   const { Text } = Typography;
-
   const [markAllRead, setMarkAllRead] = useState(false);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [messageApi] = useContext(MessageContext);
 
-  const capitalize = (word: string) => {
-    return word.charAt(0).toUpperCase() + word.slice(1);
+  useEffect(() => {
+    setLoading(true);
+    notificationListAPI()
+      .then((res) => {
+        let allRead = false;
+        res.data?.forEach((datum) => {
+          if (datum.read) {
+            allRead = true;
+          }
+
+
+        });
+        setData(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setLoading(false);
+          showServerErrMsg();
+        }
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const readNotification = (id: any[]) => {
+    notificationReadAPI(
+      id.map((id) => {
+        return { id: id, read: true };
+      })
+    )
+      .then((res) => {})
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setLoading(false);
+          showServerErrMsg();
+        }
+      });
+  };
+
+  const showServerErrMsg = () => {
+    messageApi.open(serverErrMsg);
   };
 
   const menuNotificationDropdown = (
     <Menu
       onClick={(item: { key: string }) => {
-        navigate(item.key.substring(0, item.key.length - 2));
+        let key = item.key.split('-');
+        readNotification([key[1]]);
+        navigate(key[0]);
       }}
       className='notification-menu'
     >
@@ -49,6 +99,7 @@ const NotificationDropdown = () => {
               type='link'
               onClick={() => {
                 setMarkAllRead(true);
+                readNotification(data.map((notification) => notification.id));
               }}
             >
               Mark all as read
@@ -61,59 +112,108 @@ const NotificationDropdown = () => {
         key={'notification-content'}
         className='notification-menu-item-group'
       >
-        {menuList.map((menu, index) => {
-          const Icon = findIcon(menu.cat);
-          return (
-            <>
-              <Menu.Item
-                key={`${findRoutePath(menu.cat)}-${index}`}
-                className='notification-menu-item'
-              >
-                <Row align='middle'>
-                  <Col className='notification-menu-item-avatar'>
-                    <Badge
-                      dot={menu.read}
-                      offset={[-5, 5]}
-                      status={menu.status}
-                      className='notification-menu-item-badge'
-                    >
-                      <Avatar
-                        icon={<Icon size={24} />}
-                        size={42}
-                        className={`center-flex ${menu.status}Background`}
-                      />
-                    </Badge>
-                  </Col>
-                  <Col>
-                    <Row className='notification-menu-item-title'>
-                      {menu.title}
+        {false
+          ? Array.from(Array(5).keys()).map(() => (
+              <Row align='middle' style={{ minHeight: 100, padding: 10 }}>
+                <Col>
+                  <Skeleton
+                    active={loading}
+                    avatar
+                    title={null}
+                    paragraph={null}
+                  />
+                </Col>
+                <Col span={18}>
+                  <Skeleton
+                    active={loading}
+                    title={null}
+                    paragraph={{ rows: 3 }}
+                  />
+                </Col>
+              </Row>
+            ))
+          : data.length > 0 &&
+            data?.map((notification, index) => {
+              const Icon = findIcon(notification.type);
+
+              return (
+                <>
+                  <Menu.Item
+                    key={`${findRoutePath(notification.type)}-${
+                      notification.id
+                    }`}
+                    className='notification-menu-item'
+                  >
+                    <Row align='middle'>
+                      <Col className='notification-menu-item-avatar'>
+                        <Badge
+                          dot={!notification.read}
+                          offset={[-15, -15]}
+                          status={
+                            notification.type === 'order'
+                              ? 'success'
+                              : ['product', 'package'].includes(
+                                  notification.type
+                                )
+                              ? 'error'
+                              : notification.type === 'customer'
+                              ? 'processing'
+                              : null
+                          }
+                          className='notification-menu-item-badge'
+                          style={{ position: 'absolute' }}
+                        />
+                        <Avatar
+                          icon={<Icon size={24} />}
+                          size={42}
+                          className={`center-flex ${
+                            notification.type === 'order'
+                              ? 'success'
+                              : ['product', 'package'].includes(
+                                  notification.type
+                                )
+                              ? 'error'
+                              : notification.type === 'customer'
+                              ? 'info'
+                              : null
+                          }Background`}
+                        />
+                      </Col>
+                      <Col>
+                        <Row className='notification-menu-item-title'>
+                          {notification.title}
+                        </Row>
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: notification.description,
+                          }}
+                          style={{ width: 245 }}
+                        />
+                        <Row>
+                          <Space
+                            split={
+                              <Divider
+                                type='vertical'
+                                style={{ margin: 0 }}
+                                className='notification-menu-item-split'
+                              />
+                            }
+                          >
+                            <Text className='notification-menu-item-info'>
+                              {capitalize(notification.type)}
+                            </Text>
+                            <Text className='notification-menu-item-info'>
+                              {notification.created_at}
+                            </Text>
+                          </Space>
+                        </Row>
+                      </Col>
                     </Row>
-                    {menu.description}
-                    <Row>
-                      <Space
-                        split={
-                          <Divider
-                            type='vertical'
-                            style={{ margin: 0 }}
-                            className='notification-menu-item-split'
-                          />
-                        }
-                      >
-                        <Text className='notification-menu-item-info'>
-                          {capitalize(menu.cat)}
-                        </Text>
-                        <Text className='notification-menu-item-info'>
-                          {menu.timestamp}
-                        </Text>
-                      </Space>
-                    </Row>
-                  </Col>
-                </Row>
-              </Menu.Item>
-              {index !== menuList.length - 1 && <Menu.Divider />}
-            </>
-          );
-        })}
+                  </Menu.Item>
+                  {index !== data.length - 1 && <Menu.Divider />}
+                </>
+              );
+            })}
       </Menu.ItemGroup>
 
       <Menu.Divider key='noti-footer-divider' />

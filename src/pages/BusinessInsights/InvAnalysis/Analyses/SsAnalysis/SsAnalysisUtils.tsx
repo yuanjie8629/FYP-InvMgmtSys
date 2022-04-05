@@ -1,4 +1,4 @@
-import { DescIcon } from "../../Icons";
+import { DescIcon } from '../../Icons';
 
 const ssDesc = {
   header:
@@ -29,20 +29,17 @@ const ssComponent = {
   header: 'Components of Safety Stock Analysis',
   content: [
     {
-      key: 'maxLeadTm',
+      key: 'max_lead_tm',
       label: 'Maximum Lead Time',
       desc: 'Maximum Lead Time',
-      prodList: [],
     },
     {
-      key: 'AvgLeadTm',
+      key: 'avg_lead_tm',
       label: 'Average Lead Time',
       desc: 'Average Lead Time',
-      prodList: [],
     },
   ],
 };
-
 
 const ssUtils = {
   desc: ssDesc,
@@ -50,4 +47,4 @@ const ssUtils = {
   tableScroll: 1500,
 };
 
-export default ssUtils
+export default ssUtils;

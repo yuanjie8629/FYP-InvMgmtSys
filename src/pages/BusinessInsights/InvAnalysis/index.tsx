@@ -25,6 +25,8 @@ import { serverErrMsg } from '@utils/messageUtils';
 import { getPrevMth } from '@utils/dateUtils';
 import AbcFilterInputs from './Analyses/AbcAnalysis/AbcFilterInputs';
 import HmlFilterInputs from './Analyses/HmlAnalysis/HmlFilterInputs';
+import EoqFilterInputs from './Analyses/EoqAnalysis/EoqFilterInputs';
+import SsFilterInputs from './Analyses/SsAnalysis/SsFilterInputs';
 
 export interface InvAnalysisProps extends CardProps {
   data?: any[];
@@ -117,7 +119,6 @@ const InvAnalysis = () => {
         key: string;
         label: string;
         desc: string;
-        prodList: string[];
       }[];
     };
   } =>
@@ -168,7 +169,8 @@ const InvAnalysis = () => {
             label={analysis.component.header}
             suffixIcon={
               analysis.component.content.some(
-                (component) => component.prodList.length > 0
+                (component) =>
+                  list.map((data) => data[component.key] === null).length > 0
               ) ? (
                 <HiXCircle size={20} className='color-error' />
               ) : (
@@ -177,11 +179,22 @@ const InvAnalysis = () => {
             }
           >
             <Row gutter={[30, 30]}>
-              {analysis.component.content.map((component) => (
-                <Col key={component.key} flex='25%'>
-                  <AnalysisCard component={component} />
-                </Col>
-              ))}
+              {analysis.component.content.map((component) => {
+                let errorList = [];
+                list.forEach((data) => {
+                  if (
+                    data[component.key] === null ||
+                    data[component.key] === undefined
+                  ) {
+                    errorList.push(data?.name);
+                  }
+                });
+                return (
+                  <Col key={component.key} flex='25%'>
+                    <AnalysisCard component={component} dataList={errorList} />
+                  </Col>
+                );
+              })}
             </Row>
           </CollapseCard>
         )}
@@ -195,7 +208,11 @@ const InvAnalysis = () => {
             <AbcFilterInputs />
           ) : searchParams.get('type') === 'hml' ? (
             <HmlFilterInputs />
-          ) : null}
+          ) : searchParams.get('type') === 'eoq' ? (
+            <EoqFilterInputs />
+          ) : (
+            <SsFilterInputs />
+          )}
         </MainCard>
         {searchParams.get('type') === 'abc' ? (
           <AbcAnalysis

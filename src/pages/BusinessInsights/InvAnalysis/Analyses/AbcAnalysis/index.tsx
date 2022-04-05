@@ -21,6 +21,7 @@ const AbcAnalysis = ({
   const { Text } = Typography;
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
   const abcColumns: {
     title: string;
     dataIndex?: string | string[];
@@ -34,7 +35,7 @@ const AbcAnalysis = ({
   }[] = [
     {
       title: 'Product',
-      dataIndex: ['name', 'category', 'thumbnail'],
+      dataIndex: ['id','name', 'category', 'thumbnail'],
       key: 'name',
       sorter: true,
       defaultSortOrder: getSortOrder('name'),

@@ -96,6 +96,49 @@ class HMLAnalysisResultSerializer(HMLAnalysisSerializer):
         ]
 
 
+class EOQAnalysisSerializer(serializers.ModelSerializer):
+    id = IntegerField()
+    category = ChoiceField(choices=PROD_CAT, read_only=True)
+    thumbnail = serializers.ImageField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    sku = serializers.CharField(read_only=True)
+    demand = serializers.IntegerField(read_only=True)
+    ordering_cost = serializers.IntegerField(read_only=True)
+    holding_cost = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = [
+            "id",
+            "name",
+            "sku",
+            "thumbnail",
+            "category",
+            "demand",
+            "ordering_cost",
+            "holding_cost",
+        ]
+
+
+class EOQAnalysisResultSerializer(EOQAnalysisSerializer):
+    thumbnail = serializers.URLField(read_only=True)
+    optimal_order_qty = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = [
+            "id",
+            "name",
+            "sku",
+            "thumbnail",
+            "category",
+            "demand",
+            "ordering_cost",
+            "holding_cost",
+            "optimal_order_qty",
+        ]
+
+
 class SSAnalysisSerializer(serializers.ModelSerializer):
     id = IntegerField()
     category = ChoiceField(choices=PROD_CAT, read_only=True)
@@ -125,7 +168,7 @@ class SSAnalysisSerializer(serializers.ModelSerializer):
 class SSAnalysisResultSerializer(SSAnalysisSerializer):
     thumbnail = serializers.URLField(read_only=True)
     safety_stock = serializers.IntegerField(read_only=True)
-    restock_point = serializers.IntegerField(read_only=True)
+    reorder_point = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Product
@@ -140,5 +183,5 @@ class SSAnalysisResultSerializer(SSAnalysisSerializer):
             "avg_lead_tm",
             "max_lead_tm",
             "safety_stock",
-            "restock_point",
+            "reorder_point",
         ]

@@ -30,6 +30,7 @@ export interface InputNumberRangeProps
   value?: number[];
   onChange?: (value: number[]) => void;
   formProps?: FormItemProps;
+  rangeNaming?: 'minmax' | 'startend';
 }
 
 type AdvInputNumberRangeProps = InputNumberRangeProps &
@@ -67,6 +68,7 @@ const InputNumberRange = ({
   value,
   defaultValue,
   formProps,
+  rangeNaming = 'minmax',
   onChange = () => '',
   className,
   ...props
@@ -139,7 +141,12 @@ const InputNumberRange = ({
               />
             )}
             <Form.Item
-              name={formProps && `min_${formProps.name}`}
+              name={
+                formProps &&
+                (rangeNaming === 'minmax'
+                  ? `min_${formProps.name}`
+                  : `${formProps.name}_start`)
+              }
               noStyle
               getValueProps={(value) => {
                 setStart(value);
@@ -172,7 +179,12 @@ const InputNumberRange = ({
               className='input-range-splitter'
             />
             <Form.Item
-              name={formProps && `max_${formProps.name}`}
+              name={
+                formProps &&
+                (rangeNaming === 'minmax'
+                  ? `max_${formProps.name}`
+                  : `${formProps.name}_end`)
+              }
               noStyle
               getValueProps={(value) => {
                 setEnd(value);

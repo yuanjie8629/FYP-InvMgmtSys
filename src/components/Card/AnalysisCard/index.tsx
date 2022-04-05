@@ -7,11 +7,11 @@ export interface AnalysisCardProps extends ColorCardProps {
     key: string;
     label: string;
     desc: string;
-    prodList: string[];
   };
+  dataList: any[];
 }
 
-const AnalysisCard = ({ component, ...props }: AnalysisCardProps) => {
+const AnalysisCard = ({ component, dataList, ...props }: AnalysisCardProps) => {
   const { Text } = Typography;
   return (
     <ColorCard
@@ -39,11 +39,11 @@ const AnalysisCard = ({ component, ...props }: AnalysisCardProps) => {
           </Text>
         )
       }
-      backgroundColor={component.prodList.length <= 0 ? 'success' : 'error'}
-      indicator={component.prodList.length <= 0 ? 'true' : 'false'}
+      backgroundColor={dataList.length <= 0 ? 'success' : 'error'}
+      indicator={dataList.length <= 0 ? 'true' : 'false'}
       bodyStyle={{ padding: 15 }}
     >
-      {component.prodList.length <= 0 ? (
+      {dataList.length <= 0 ? (
         <Text strong className='color-primary'>
           All set!
         </Text>
@@ -53,7 +53,7 @@ const AnalysisCard = ({ component, ...props }: AnalysisCardProps) => {
             Please add the cost for:
           </Text>
           <ul>
-            {component.prodList.map((prod) => (
+            {dataList.map((prod) => (
               <li className='color-error' style={{ fontWeight: 600 }}>
                 {prod}
               </li>

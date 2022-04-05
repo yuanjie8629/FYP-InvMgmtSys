@@ -421,7 +421,7 @@ const ProdEdit = () => {
                         label='Ordering/Reorder Cost'
                         name='ordering_cost'
                         tooltip={{
-                          title: 'Cost when reordering the product for each month',
+                          title: 'Fixed cost / Setup cost per purchase order (Shipping and handling costs)',
                         }}
                       >
                         <InputNumber
@@ -438,7 +438,7 @@ const ProdEdit = () => {
                         label='Carrying/Holding Cost'
                         name='holding_cost'
                         tooltip={{
-                          title: 'Cost for holding inventory in stock for each month',
+                          title: 'Cost for storing or holding the inventory in stock per unit, per year',
                         }}
                       >
                         <InputNumber

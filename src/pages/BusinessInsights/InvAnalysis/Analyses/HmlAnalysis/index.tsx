@@ -35,7 +35,7 @@ const HmlAnalysis = ({
   }[] = [
     {
       title: 'Product',
-      dataIndex: ['name', 'category', 'thumbnail'],
+      dataIndex: ['id','name', 'category', 'thumbnail'],
       key: 'prod',
       sorter: true,
       width: 250,

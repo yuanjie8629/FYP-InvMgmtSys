@@ -1,15 +1,20 @@
+import calendar
 import datetime
 import json
 import pandas as pd
+import numpy as np
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status, serializers, generics
 from analysis.serializers import (
     ABCAnalysisResultSerializer,
     ABCAnalysisSerializer,
+    EOQAnalysisResultSerializer,
+    EOQAnalysisSerializer,
     HMLAnalysisResultSerializer,
     HMLAnalysisSerializer,
     SSAnalysisResultSerializer,
+    SSAnalysisSerializer,
 )
 from core.utils import get_date, get_month
 from customer.models import Cust, CustPosReg
@@ -33,8 +38,8 @@ from django.db.models import (
 )
 from django.db.models.functions import (
     # ExtractHour,
-    ExtractDay,
-    ExtractMonth,
+    # ExtractDay,
+    # ExtractMonth,
     TruncHour,
     TruncDay,
     TruncMonth,
@@ -42,6 +47,7 @@ from django.db.models.functions import (
     Cast,
 )
 from item.choices import PROD_CAT
+from reversion.models import Version
 
 
 def split_by_date(date_field, date_type, queryset: QuerySet):
@@ -687,6 +693,7 @@ class ABCAnalysisView(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         month = get_month(request)
 
+        # Get product demand in packages sold in which the packages contain the product
         prod_quantity_in_pack = (
             PackageItem.objects.filter(pack__order__created_at__month=month.month)
             .values("prod")
@@ -696,33 +703,34 @@ class ABCAnalysisView(generics.ListAPIView):
             .values("demand")
         )
 
-        if prod_quantity_in_pack.exists():
-
-            query = (
-                Product.objects.all()
-                .values("id")
-                .annotate(
-                    cost_per_unit=Coalesce(
-                        Avg(
-                            Case(
-                                When(
-                                    order__created_at__month=month.month,
-                                    then=F("order_line__cost_per_unit"),
-                                )
-                            )
-                        ),
-                        F("cost_per_unit"),
-                    ),
-                    demand=Coalesce(
-                        Sum(
-                            Case(
-                                When(
-                                    order__created_at__month=month.month,
-                                    then=F("order_line__quantity"),
-                                )
+        # Get cost_per_unit for precise result (to avoid any modification of unit cost during the specified period)
+        # Get demand
+        query = (
+            Product.objects.all()
+            .values("id")
+            .annotate(
+                cost_per_unit=Coalesce(
+                    Avg(
+                        Case(
+                            When(
+                                order__created_at__month=month.month,
+                                then=F("order_line__cost_per_unit"),
                             )
                         )
-                        + Subquery(
+                    ),
+                    F("cost_per_unit"),
+                ),
+                demand=Coalesce(
+                    Sum(
+                        Case(
+                            When(
+                                order__created_at__month=month.month,
+                                then=F("order_line__quantity"),
+                            )
+                        )
+                    )
+                    + Coalesce(
+                        Subquery(
                             prod_quantity_in_pack.filter(pk=OuterRef("pk")).values(
                                 "demand"
                             ),
@@ -730,38 +738,12 @@ class ABCAnalysisView(generics.ListAPIView):
                         ),
                         0,
                     ),
-                )
+                    0,
+                ),
             )
-        else:
-            query = (
-                Product.objects.all()
-                .values("id")
-                .annotate(
-                    cost_per_unit=Coalesce(
-                        Avg(
-                            Case(
-                                When(
-                                    order__created_at__month=month.month,
-                                    then=F("order_line__cost_per_unit"),
-                                )
-                            )
-                        ),
-                        F("cost_per_unit"),
-                    ),
-                    demand=Coalesce(
-                        Sum(
-                            Case(
-                                When(
-                                    order__created_at__month=month.month,
-                                    then=F("order_line__quantity"),
-                                )
-                            )
-                        ),
-                        0,
-                    ),
-                )
-            )
+        )
 
+        # Get consumption value
         data = query.annotate(
             consumption_value=F("demand") * F("cost_per_unit"),
         ).values(
@@ -901,6 +883,7 @@ class HMLAnalysisView(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         month = get_month(request)
 
+        # Get cost_per_unit for precise result (to avoid any modification of unit cost during the specified period)
         data = (
             Product.objects.filter()
             .values("id")
@@ -1022,15 +1005,16 @@ class HMLAnalysisView(generics.ListAPIView):
         return Response(data, status.HTTP_200_OK)
 
 
-class SSAnalysisView(generics.ListAPIView):
+class EoqAnalysisView(generics.ListAPIView):
     queryset = (
         Product.objects.all().prefetch_related("image").order_by(("-last_update"))
     )
-    serializer_class = SSAnalysisResultSerializer
+    serializer_class = EOQAnalysisResultSerializer
 
     def get(self, request, *args, **kwargs):
         month = get_month(request)
 
+        # Get product demand in packages sold in which the packages contain the product
         prod_quantity_in_pack = (
             PackageItem.objects.filter(pack__order__created_at__month=month.month)
             .values("prod")
@@ -1040,102 +1024,380 @@ class SSAnalysisView(generics.ListAPIView):
             .values("demand")
         )
 
-        if prod_quantity_in_pack.exists():
-
-            subquery = (
-                Product.objects.filter(
-                    order__created_at__month=month.month, pk=OuterRef("pk")
-                )
-                .values(
-                    day=TruncDay("order_line__order__created_at"),
-                )
-                .annotate(
-                    demand=Coalesce(
-                        Sum(F("order_line__quantity"))
-                        + Coalesce(
-                            Subquery(
-                                prod_quantity_in_pack.filter(pk=OuterRef("pk")).values(
-                                    "demand"
-                                ),
-                                output_field=IntegerField(),
+        # Get demand
+        query = (
+            Product.objects.filter(order__created_at__month=month.month)
+            .values(
+                "id",
+                day=TruncDay("order_line__order__created_at"),
+            )
+            .annotate(
+                demand=Coalesce(
+                    Sum(F("order_line__quantity"))
+                    + Coalesce(
+                        Subquery(
+                            prod_quantity_in_pack.filter(pk=OuterRef("pk")).values(
+                                "demand"
                             ),
-                            0,
+                            output_field=IntegerField(),
                         ),
                         0,
                     ),
-                )
-                .order_by("-demand")
-                .values("demand")[:1]
+                    0,
+                ),
             )
-
-            query = (
-                Product.objects.filter(order__created_at__month=month.month)
-                .values("id")
-                .annotate(
-                    day=TruncDay("order_line__order__created_at"),
-                    demand=Coalesce(
-                        Sum(F("order_line__quantity"))
-                        + Coalesce(
-                            Subquery(
-                                prod_quantity_in_pack.filter(pk=OuterRef("pk")).values(
-                                    "demand"
-                                ),
-                                output_field=IntegerField(),
-                            ),
-                            0,
-                        ),
-                        0,
-                    ),
-                )
-                .values("id", "demand", "thumbnail")
-                .annotate(
-                    avg_demand=F("demand") / Count("day", distinct=True),
-                    max_demand=Max(Subquery(subquery)),
-                )
+            .values(
+                "id",
+                "demand",
             )
-
-        else:
-
-            subquery = (
-                Product.objects.filter(
-                    order__created_at__month=month.month, pk=OuterRef("pk")
-                )
-                .values(
-                    day=TruncDay("order_line__order__created_at"),
-                )
-                .annotate(demand=Sum(F("order_line__quantity")))
-                .order_by("-demand")
-                .values("demand")[:1]
+            .annotate(total_demand=F("demand"))
+            .values(
+                "id",
+                "name",
+                "sku",
+                "category",
+                "thumbnail",
+                "demand",
+                "ordering_cost",
+                "holding_cost",
             )
-
-            query = (
-                Product.objects.filter(order__created_at__month=month.month)
-                .values("id")
-                .annotate(
-                    day=TruncDay("order_line__order__created_at"),
-                    demand=Sum(F("order_line__quantity")),
-                )
-                .values("id", "demand", "thumbnail")
-                .annotate(
-                    avg_demand=F("demand") / Count("day", distinct=True),
-                    max_demand=Max(Subquery(subquery)),
-                )
-            )
-
-        data = query.annotate(
-            consumption_value=F("demand") * F("cost_per_unit"),
-        ).values(
-            "id",
-            "name",
-            "sku",
-            "category",
-            "thumbnail",
-            "demand",
-            "cost_per_unit",
-            "consumption_value",
         )
 
-        # data = json.loads(df.to_json(orient="records"))
+        query = query.union(
+            Product.objects.exclude(pk__in=[q.get("id") for q in query])
+            .annotate(demand=Sum(0))
+            .values(
+                "id",
+                "name",
+                "sku",
+                "category",
+                "thumbnail",
+                "demand",
+                "ordering_cost",
+                "holding_cost",
+            )
+        )
+
+        # Check if the product's lead time is modified and replace to the original lead time during the specified date
+
+        data = []
+        for instance in query:
+            product = Product.objects.get(pk=instance.get("id"))
+
+            # Replace the month to the last date of month
+            month.replace(day=calendar.monthrange(month.year, month.month)[1])
+            product_version = (
+                Version.objects.get_for_object(product)
+                .filter(revision__date_created__lte=month)
+                .order_by("-revision__date_created")
+                .first()
+            )
+
+            ordering_cost = instance.get("ordering_cost", None)
+            holding_cost = instance.get("holding_cost", None)
+
+            if product_version:
+                if product_version.field_dict["ordering_cost"]:
+                    ordering_cost = product_version.field_dict["ordering_cost"]
+
+                if product_version.field_dict["holding_cost"]:
+                    holding_cost = product_version.field_dict["holding_cost"]
+
+            data.append(
+                {
+                    **instance,
+                    "ordering_cost": ordering_cost,
+                    "holding_cost": holding_cost,
+                }
+            )
+
+        serializer = EOQAnalysisSerializer(data, many=True)
+        data = serializer.data
+
+        df = pd.DataFrame(data)
+        df["optimal_order_qty"] = np.sqrt(
+            (2 * df["demand"] * df["ordering_cost"]) / df["holding_cost"]
+        )
+        df["optimal_order_qty"] = df["optimal_order_qty"].round(0) + 1
+
+        # filter & ordering
+        ordering = request.query_params.get("ordering", None)
+
+        if not ordering:
+            df.sort_values(by=["optimal_order_qty"], ascending=False, inplace=True)
+        else:
+            ascending = True
+            if "-" in ordering:
+                ordering = ordering[1:]
+                ascending = False
+
+            else:
+                df.sort_values(by=[ordering], ascending=ascending, inplace=True)
+
+        name = request.query_params.get("name", None)
+        sku = request.query_params.get("sku", None)
+        category = request.query_params.get("category", None)
+        min_demand = request.query_params.get("min_demand", None)
+        max_demand = request.query_params.get("max_demand", None)
+        min_ordering_cost = request.query_params.get("min_ordering_cost", None)
+        max_ordering_cost = request.query_params.get("max_ordering_cost", None)
+        min_holding_cost = request.query_params.get("min_holding_cost", None)
+        max_holding_cost = request.query_params.get("max_holding_cost", None)
+        min_optimal_order_qty = request.query_params.get("min_optimal_order_qty", None)
+        max_optimal_order_qty = request.query_params.get("max_optimal_order_qty", None)
+
+        if name:
+            df = df[df.name.str.contains(name)]
+
+        if sku:
+            df = df[df.sku.str.contains(sku)]
+
+        if category:
+            df = df[df.category == dict(PROD_CAT)[category]]
+
+        if min_demand:
+            df = df[df.demand >= float(min_demand)]
+
+        if max_demand:
+            df = df[df.demand <= float(max_demand)]
+
+        if min_ordering_cost:
+            df = df[df.ordering_cost >= float(min_ordering_cost)]
+
+        if max_ordering_cost:
+            df = df[df.ordering_cost <= float(max_ordering_cost)]
+
+        if min_holding_cost:
+            df = df[df.holding_cost >= float(min_holding_cost)]
+
+        if max_holding_cost:
+            df = df[df.holding_cost <= float(max_holding_cost)]
+
+        if min_optimal_order_qty:
+            df = df[df.optimal_order_qty >= float(min_optimal_order_qty)]
+
+        if max_optimal_order_qty:
+            df = df[df.optimal_order_qty <= float(max_optimal_order_qty)]
+
+        data = json.loads(df.to_json(orient="records"))
+        page = self.paginate_queryset(data)
+        serializer = self.get_serializer(page, many=True)
+        data = serializer.data
+
+        if page is not None:
+            return self.get_paginated_response(data)
+        return Response(data, status.HTTP_200_OK)
+
+
+class SSAnalysisView(generics.ListAPIView):
+    queryset = (
+        Product.objects.all().prefetch_related("image").order_by(("-last_update"))
+    )
+    serializer_class = SSAnalysisResultSerializer
+
+    def get(self, request, *args, **kwargs):
+        month = get_month(request)
+
+        # Get product demand in packages sold in which the packages contain the product
+        prod_quantity_in_pack = (
+            PackageItem.objects.filter(pack__order__created_at__month=month.month)
+            .values("prod")
+            .annotate(
+                demand=Coalesce(Sum(F("quantity") * F("pack__order_line__quantity")), 0)
+            )
+            .values("demand")
+        )
+
+        # Get max daily demand
+        subquery = (
+            Product.objects.filter(
+                order__created_at__month=month.month, pk=OuterRef("pk")
+            )
+            .values(
+                day=TruncDay("order_line__order__created_at"),
+            )
+            .annotate(
+                demand=Coalesce(
+                    Sum(F("order_line__quantity"))
+                    + Coalesce(
+                        Subquery(
+                            prod_quantity_in_pack.filter(pk=OuterRef("pk")).values(
+                                "demand"
+                            ),
+                            output_field=IntegerField(),
+                        ),
+                        0,
+                    ),
+                    0,
+                ),
+            )
+            .order_by("-demand")
+            .values("demand")[:1]
+        )
+
+        # Combine all query and get avg daily demand
+        query = (
+            Product.objects.filter(order__created_at__month=month.month)
+            .values("id")
+            .annotate(
+                day=TruncDay("order_line__order__created_at"),
+                demand=Coalesce(
+                    Sum(F("order_line__quantity"))
+                    + Coalesce(
+                        Subquery(
+                            prod_quantity_in_pack.filter(pk=OuterRef("pk")).values(
+                                "demand"
+                            ),
+                            output_field=IntegerField(),
+                        ),
+                        0,
+                    ),
+                    0,
+                ),
+            )
+            .values(
+                "id",
+                "name",
+                "sku",
+                "category",
+                "thumbnail",
+                "avg_lead_tm",
+                "max_lead_tm",
+                "demand",
+            )
+            .annotate(
+                avg_demand=F("demand") / Count("day", distinct=True),
+                max_demand=Max(Subquery(subquery)),
+            )
+        )
+
+        query = query.union(
+            Product.objects.exclude(pk__in=[q.get("id") for q in query])
+            .annotate(demand=Sum(0))
+            .values(
+                "id",
+                "name",
+                "sku",
+                "category",
+                "thumbnail",
+                "avg_lead_tm",
+                "max_lead_tm",
+                "demand",
+            )
+            .annotate(
+                avg_demand=Sum(0),
+                max_demand=Sum(0),
+            )
+        )
+
+        # Check if the product's lead time is modified and replace to the original lead time during the specified date
+
+        data = []
+        for instance in query:
+            product = Product.objects.get(pk=instance.get("id"))
+
+            # Replace the month to the last date of month
+            month.replace(day=calendar.monthrange(month.year, month.month)[1])
+            product_version = (
+                Version.objects.get_for_object(product)
+                .filter(revision__date_created__lte=month)
+                .order_by("-revision__date_created")
+                .first()
+            )
+
+            avg_lead_tm = instance.get("avg_lead_tm", None)
+            max_lead_tm = instance.get("max_lead_tm", None)
+
+            if product_version:
+                if product_version.field_dict["avg_lead_tm"]:
+                    avg_lead_tm = product_version.field_dict["avg_lead_tm"]
+
+                if product_version.field_dict["max_lead_tm"]:
+                    max_lead_tm = product_version.field_dict["max_lead_tm"]
+
+            data.append(
+                {**instance, "avg_lead_tm": avg_lead_tm, "max_lead_tm": max_lead_tm}
+            )
+
+        serializer = SSAnalysisSerializer(data, many=True)
+        data = serializer.data
+
+        df = pd.DataFrame(data)
+        df["safety_stock"] = (df["max_demand"] * df["max_lead_tm"]) - (
+            df["avg_demand"] * df["avg_lead_tm"]
+        )
+        df["reorder_point"] = (df["avg_demand"] * df["avg_lead_tm"]) + df[
+            "safety_stock"
+        ]
+
+        # filter & ordering
+        ordering = request.query_params.get("ordering", None)
+
+        if not ordering:
+            df.sort_values(by=["reorder_point"], ascending=False, inplace=True)
+        else:
+            ascending = True
+            if "-" in ordering:
+                ordering = ordering[1:]
+                ascending = False
+
+            else:
+                df.sort_values(by=[ordering], ascending=ascending, inplace=True)
+
+        name = request.query_params.get("name", None)
+        sku = request.query_params.get("sku", None)
+        category = request.query_params.get("category", None)
+        avg_demand_start = request.query_params.get("avg_demand_start", None)
+        avg_demand_end = request.query_params.get("avg_demand_end", None)
+        max_demand_start = request.query_params.get("max_demand_start", None)
+        max_demand_end = request.query_params.get("max_demand_end", None)
+        avg_lead_tm_start = request.query_params.get("avg_lead_tm_start", None)
+        avg_lead_tm_end = request.query_params.get("avg_lead_tm_end", None)
+        safety_stock_start = request.query_params.get("safety_stock_start", None)
+        safety_stock_end = request.query_params.get("safety_stock_end", None)
+        reorder_point_start = request.query_params.get("reorder_point_start", None)
+        reorder_point_end = request.query_params.get("reorder_point_end", None)
+
+        if name:
+            df = df[df.name.str.contains(name)]
+
+        if sku:
+            df = df[df.sku.str.contains(sku)]
+
+        if category:
+            df = df[df.category == dict(PROD_CAT)[category]]
+
+        if avg_demand_start:
+            df = df[df.avg_demand >= float(avg_demand_start)]
+
+        if avg_demand_end:
+            df = df[df.avg_demand <= float(avg_demand_end)]
+
+        if max_demand_start:
+            df = df[df.max_demand >= float(max_demand_start)]
+
+        if max_demand_end:
+            df = df[df.max_demand <= float(max_demand_end)]
+
+        if avg_lead_tm_start:
+            df = df[df.avg_lead_tm >= float(avg_lead_tm_start)]
+
+        if avg_lead_tm_end:
+            df = df[df.avg_lead_tm <= float(avg_lead_tm_end)]
+
+        if safety_stock_start:
+            df = df[df.safety_stock >= float(safety_stock_start)]
+
+        if safety_stock_end:
+            df = df[df.safety_stock <= float(safety_stock_end)]
+
+        if reorder_point_start:
+            df = df[df.reorder_point >= float(reorder_point_start)]
+
+        if reorder_point_end:
+            df = df[df.reorder_point <= float(reorder_point_end)]
+
+        data = json.loads(df.to_json(orient="records"))
         page = self.paginate_queryset(data)
         serializer = self.get_serializer(page, many=True)
         data = serializer.data

@@ -19,7 +19,7 @@ import ProfileMgmt from '@pages/MyAccount/ProfileMgmt';
 import AccSettings from '@pages/MyAccount/AccSettings';
 import AdminMgmt from '@pages/Admins/AdminMgmt';
 import AdminAdd from '@pages/Admins/AdminAdd';
-import Help from '@pages/Help/Help';
+import Help from '@pages/Help';
 import NotFound from '@pages/NotFound/NotFound';
 import ResetPass from '@pages/Login/ResetPass';
 import { SuccessResult } from '@pages/ResultFeedback';
