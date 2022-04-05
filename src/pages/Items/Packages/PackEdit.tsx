@@ -80,12 +80,10 @@ const PackEdit = () => {
   const [endTime, setEndTime] = useState<moment.Moment>();
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-
   };
 
   const showErrMsg = (errMsg?: string) => {
-    messageApi.open({ key: 'err', type: 'error', content: errMsg });
-
+    messageApi.open({ type: 'error', content: errMsg });
   };
 
   const handleEditPackage = (values) => {

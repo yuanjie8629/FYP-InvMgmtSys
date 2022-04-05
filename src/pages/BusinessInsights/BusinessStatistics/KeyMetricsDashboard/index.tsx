@@ -20,6 +20,7 @@ import { splitIntoChunks } from '@utils/arrayUtils';
 import keyMetricsList from './keyMetricsList';
 import ColorCard from '@components/Card/ColorCard';
 import {
+  generateKeyMetricsReportAPI,
   keyMetricsAPI,
   KeyMetricsDateType,
   keyMetricsSummaryAPI,
@@ -52,6 +53,7 @@ const KeyMetricsDashboard = (props) => {
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [reportLoading, setReportLoading] = useState(false);
 
   const getKeymetricsSummary = (isMounted = true) => {
     setSummaryLoading(true);
@@ -78,18 +80,15 @@ const KeyMetricsDashboard = (props) => {
       });
   };
 
-  const getKeyMetricsData = (isMounted = true) => {
-    setLoading(true);
-    let fromDate = keyMetricsDtInfo.date.split(' ~ ')[0];
-    let toDate = keyMetricsDtInfo.date.split(' ~ ')[1];
-    let dateType: KeyMetricsDateType;
+  const parseAPIDate = (fromDate, toDate, dateType) => {
+    let type: KeyMetricsDateType;
     if (['byDay', 'tdy', 'ytd'].includes(keyMetricsDtInfo.cat)) {
-      dateType = 'hour';
+      type = 'hour';
       toDate = fromDate;
     } else if (
       ['byWeek', 'byMonth', 'past7d', 'past30d'].includes(keyMetricsDtInfo.cat)
     ) {
-      dateType = 'day';
+      type = 'day';
 
       if (keyMetricsDtInfo.cat === 'byMonth') {
         console.log(compareMonth(toDate, 'DD-MM-YYYY'));
@@ -98,8 +97,18 @@ const KeyMetricsDashboard = (props) => {
         }
       }
     } else if (keyMetricsDtInfo.cat === 'byYear') {
-      dateType = 'month';
+      type = 'month';
     }
+    return { fromDate: fromDate, toDate: toDate, dateType: type };
+  };
+
+  const getKeyMetricsData = (isMounted = true) => {
+    setLoading(true);
+    let { fromDate, toDate, dateType } = parseAPIDate(
+      keyMetricsDtInfo.date.split(' ~ ')[0],
+      keyMetricsDtInfo.date.split(' ~ ')[1],
+      keyMetricsDtInfo.cat
+    );
 
     keyMetricsAPI({
       fromDate: fromDate,
@@ -173,6 +182,26 @@ const KeyMetricsDashboard = (props) => {
       });
   };
 
+  const handleGenerateReport = () => {
+    setReportLoading(true);
+    generateKeyMetricsReportAPI(
+      parseAPIDate(
+        keyMetricsDtInfo.date.split(' ~ ')[0],
+        keyMetricsDtInfo.date.split(' ~ ')[1],
+        keyMetricsDtInfo.cat
+      )
+    )
+      .then((res) => {
+        setReportLoading(false);
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          setReportLoading(false);
+          showServerErrMsg();
+        }
+      });
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -208,7 +237,6 @@ const KeyMetricsDashboard = (props) => {
       selectedKeyMetrics.includes(keyMetrics.key)
     ) {
       messageApi.open({
-        key: 'minSelectedMetrics',
         type: 'warning',
         content: (
           <span>
@@ -226,7 +254,6 @@ const KeyMetricsDashboard = (props) => {
       !selectedKeyMetrics.includes(keyMetrics.key)
     ) {
       messageApi.open({
-        key: 'maxSelectedMetrics',
         type: 'warning',
         content: (
           <span>
@@ -300,7 +327,11 @@ const KeyMetricsDashboard = (props) => {
                 >
                   Export Chart
                 </ExportButton>
-                <PrintButton disabled={loading || summaryLoading}>
+                <PrintButton
+                  disabled={loading || summaryLoading}
+                  onClick={handleGenerateReport}
+                  loading={reportLoading}
+                >
                   Generate Report
                 </PrintButton>
               </Space>
@@ -409,7 +440,7 @@ const KeyMetricsDashboard = (props) => {
             </Col>
           </Row>
           <Suspense fallback={<LoadChart />}>
-            {loading ? (
+            {loading || summaryLoading ? (
               <LoadChart />
             ) : data.length > 0 ? (
               <LineChart

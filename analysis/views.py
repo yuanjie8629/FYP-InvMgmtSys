@@ -1,6 +1,8 @@
 import calendar
 import datetime
+from io import BytesIO
 import json
+from django.http import HttpResponse
 import pandas as pd
 import numpy as np
 from rest_framework.decorators import api_view
@@ -450,6 +452,227 @@ def KeyMetricsSummaryView(request):
     return Response(data, status.HTTP_200_OK)
 
 
+def get_sales_metrics(from_date, to_date, date_type):
+    query = split_by_date(
+        "created_at",
+        date_type,
+        Order.objects.filter(created_at__range=(from_date, to_date)).exclude(
+            status__in=("unpaid", "cancel")
+        ),
+    )
+
+    query = query.annotate(
+        value=Cast(
+            Coalesce(
+                Sum(
+                    Case(
+                        When(
+                            order_line__item__special_price__isnull=True,
+                            then=(F("order_line__quantity") * F("order_line__price")),
+                        ),
+                        When(
+                            order_line__item__special_price__isnull=False,
+                            then=(
+                                F("order_line__quantity")
+                                * F("order_line__special_price")
+                            ),
+                        ),
+                    )
+                ),
+                Value(0),
+            ),
+            FloatField(),
+        )
+    )
+    return sort_by_date("sales", date_type, from_date, to_date, query)
+
+
+def get_profit_metrics(from_date, to_date, date_type):
+    query = split_by_date(
+        "created_at",
+        date_type,
+        Order.objects.filter(created_at__range=(from_date, to_date)).exclude(
+            status__in=("unpaid", "cancel")
+        ),
+    )
+
+    query = query.annotate(
+        value=Sum(
+            Case(
+                When(
+                    order_line__special_price__isnull=True,
+                    then=(
+                        (F("order_line__quantity") * F("order_line__price"))
+                        - (F("order_line__quantity") * F("order_line__cost_per_unit"))
+                    ),
+                ),
+                When(
+                    order_line__special_price__isnull=False,
+                    then=(
+                        (F("order_line__quantity") * F("order_line__special_price"))
+                        - (F("order_line__quantity") * F("order_line__cost_per_unit"))
+                    ),
+                ),
+            )
+        )
+    )
+
+    return sort_by_date("profit", date_type, from_date, to_date, query)
+
+
+def get_orders_metrics(from_date, to_date, date_type):
+    query = split_by_date(
+        "created_at",
+        date_type,
+        Order.objects.filter(created_at__range=(from_date, to_date)),
+    )
+    query = query.annotate(value=Count(F("pk")))
+
+    return sort_by_date("orders", date_type, from_date, to_date, query)
+
+
+def get_customers_metrics(from_date, to_date, date_type):
+    query = split_by_date(
+        "date_joined",
+        date_type,
+        Cust.objects.filter(date_joined__range=(from_date, to_date)),
+    )
+
+    query = query.annotate(value=Count(F("pk")))
+
+    return sort_by_date("customers", date_type, from_date, to_date, query)
+
+
+def get_buyers_metrics(from_date, to_date, date_type):
+    query = split_by_date(
+        "created_at",
+        date_type,
+        Order.objects.filter(created_at__range=(from_date, to_date)),
+    )
+
+    query = query.annotate(value=Count(F("email"), distinct=True))
+
+    return sort_by_date("buyers", date_type, from_date, to_date, query)
+
+
+def get_avg_order_value_metrics(from_date, to_date, date_type):
+    query = split_by_date(
+        "created_at",
+        date_type,
+        Order.objects.filter(created_at__range=(from_date, to_date)).exclude(
+            status__in=("unpaid", "cancel")
+        ),
+    )
+
+    query = query.annotate(
+        value=Avg(
+            Case(
+                When(
+                    order_line__item__special_price__isnull=True,
+                    then=(F("order_line__quantity") * F("order_line__price")),
+                ),
+                When(
+                    order_line__item__special_price__isnull=False,
+                    then=(F("order_line__quantity") * F("order_line__special_price")),
+                ),
+            )
+        )
+    )
+
+    return sort_by_date("avg_order_value", date_type, from_date, to_date, query)
+
+
+def get_units_sold_metrics(from_date, to_date, date_type):
+    query = split_by_date(
+        "order__created_at",
+        date_type,
+        OrderLine.objects.filter(order__created_at__range=(from_date, to_date)).exclude(
+            order__status__in=("unpaid", "cancel")
+        ),
+    )
+
+    query = query.annotate(
+        value=Sum(
+            Case(
+                When(
+                    Q(
+                        order__created_at__range=(
+                            from_date,
+                            to_date,
+                        )
+                    ),
+                    then=F("quantity"),
+                )
+            )
+        ),
+    )
+
+    return sort_by_date("units_sold", date_type, from_date, to_date, query)
+
+
+def get_avg_basket_size_metrics(from_date, to_date, date_type):
+    query = split_by_date(
+        "order__created_at",
+        date_type,
+        OrderLine.objects.filter(order__created_at__range=(from_date, to_date)),
+    )
+
+    query = query.annotate(value=Avg(F("quantity")))
+
+    return sort_by_date("avg_basket_size", date_type, from_date, to_date, query)
+
+
+def get_key_metrics_summary(from_date, to_date):
+    sales = get_sales(from_date, to_date)
+    profit = get_profit(from_date, to_date)
+    orders = Order.objects.filter(created_at__range=(from_date, to_date)).count()
+    customers = Cust.objects.filter(date_joined__range=(from_date, to_date)).count()
+    buyers = (
+        Order.objects.filter(created_at__range=(from_date, to_date))
+        .values("email")
+        .distinct()
+        .count()
+    )
+    avg_order_value = get_avg_sales(from_date, to_date)
+    units_sold = (
+        OrderLine.objects.aggregate(
+            units_sold=Sum(
+                Case(
+                    When(
+                        Q(
+                            order__created_at__range=(
+                                from_date,
+                                to_date,
+                            )
+                        ),
+                        then=F("quantity"),
+                    )
+                )
+            ),
+        ).get("units_sold")
+        or 0
+    )
+
+    avg_basket_size = (
+        OrderLine.objects.filter(order__created_at__range=(from_date, to_date))
+        .aggregate(avg_basket_size=Avg(F("quantity")))
+        .get("avg_basket_size")
+        or 0
+    )
+
+    return {
+        # "date": datetime.today().strftime("%d-%m-%Y"),
+        "sales": sales,
+        "profit": profit,
+        "orders": orders,
+        "customers": customers,
+        "buyers": buyers,
+        "avg_order_value": avg_order_value,
+        "units_sold": units_sold,
+        "avg_basket_size": avg_basket_size,
+    }
+
+
 @api_view(["GET"])
 def KeyMetricsView(request):
     valid_key_metrics = [
@@ -493,186 +716,250 @@ def KeyMetricsView(request):
     data = []
 
     if "sales" in key_metrics_list:
-        query = split_by_date(
-            "created_at",
-            date_type,
-            Order.objects.filter(created_at__range=(from_date, to_date)).exclude(
-                status__in=("unpaid", "cancel")
-            ),
-        )
-
-        query = query.annotate(
-            value=Cast(
-                Coalesce(
-                    Sum(
-                        Case(
-                            When(
-                                order_line__item__special_price__isnull=True,
-                                then=(
-                                    F("order_line__quantity") * F("order_line__price")
-                                ),
-                            ),
-                            When(
-                                order_line__item__special_price__isnull=False,
-                                then=(
-                                    F("order_line__quantity")
-                                    * F("order_line__special_price")
-                                ),
-                            ),
-                        )
-                    ),
-                    Value(0),
-                ),
-                FloatField(),
-            )
-        )
-        query = sort_by_date("sales", date_type, from_date, to_date, query)
-        data.extend(query)
+        data.extend(get_sales_metrics(from_date, to_date, date_type))
 
     if "profit" in key_metrics_list:
-        query = split_by_date(
-            "created_at",
-            date_type,
-            Order.objects.filter(created_at__range=(from_date, to_date)).exclude(
-                status__in=("unpaid", "cancel")
-            ),
-        )
-
-        query = query.annotate(
-            value=Sum(
-                Case(
-                    When(
-                        order_line__special_price__isnull=True,
-                        then=(
-                            (F("order_line__quantity") * F("order_line__price"))
-                            - (
-                                F("order_line__quantity")
-                                * F("order_line__cost_per_unit")
-                            )
-                        ),
-                    ),
-                    When(
-                        order_line__special_price__isnull=False,
-                        then=(
-                            (F("order_line__quantity") * F("order_line__special_price"))
-                            - (
-                                F("order_line__quantity")
-                                * F("order_line__cost_per_unit")
-                            )
-                        ),
-                    ),
-                )
-            )
-        )
-
-        query = sort_by_date("profit", date_type, from_date, to_date, query)
-        data.extend(query)
+        data.extend(get_profit_metrics(from_date, to_date, date_type))
 
     if "orders" in key_metrics_list:
-        query = split_by_date(
-            "created_at",
-            date_type,
-            Order.objects.filter(created_at__range=(from_date, to_date)),
-        )
-        query = query.annotate(value=Count(F("pk")))
-
-        query = sort_by_date("orders", date_type, from_date, to_date, query)
-        data.extend(query)
+        data.extend(get_orders_metrics(from_date, to_date, date_type))
 
     if "customers" in key_metrics_list:
-        query = split_by_date(
-            "date_joined",
-            date_type,
-            Cust.objects.filter(date_joined__range=(from_date, to_date)),
-        )
-
-        query = query.annotate(value=Count(F("pk")))
-
-        query = sort_by_date("customers", date_type, from_date, to_date, query)
-        data.extend(query)
+        data.extend(get_customers_metrics(from_date, to_date, date_type))
 
     if "buyers" in key_metrics_list:
-        query = split_by_date(
-            "created_at",
-            date_type,
-            Order.objects.filter(created_at__range=(from_date, to_date)),
-        )
-
-        query = query.annotate(value=Count(F("email"), distinct=True))
-
-        query = sort_by_date("buyers", date_type, from_date, to_date, query)
-        data.extend(query)
+        data.extend(get_buyers_metrics(from_date, to_date, date_type))
 
     if "avg_order_value" in key_metrics_list:
-        query = split_by_date(
-            "created_at",
-            date_type,
-            Order.objects.filter(created_at__range=(from_date, to_date)).exclude(
-                status__in=("unpaid", "cancel")
-            ),
-        )
-
-        query = query.annotate(
-            value=Avg(
-                Case(
-                    When(
-                        order_line__item__special_price__isnull=True,
-                        then=(F("order_line__quantity") * F("order_line__price")),
-                    ),
-                    When(
-                        order_line__item__special_price__isnull=False,
-                        then=(
-                            F("order_line__quantity") * F("order_line__special_price")
-                        ),
-                    ),
-                )
-            )
-        )
-
-        query = sort_by_date("avg_order_value", date_type, from_date, to_date, query)
-        data.extend(query)
+        data.extend(get_avg_order_value_metrics(from_date, to_date, date_type))
 
     if "units_sold" in key_metrics_list:
-        query = split_by_date(
-            "order__created_at",
-            date_type,
-            OrderLine.objects.filter(
-                order__created_at__range=(from_date, to_date)
-            ).exclude(order__status__in=("unpaid", "cancel")),
-        )
-
-        query = query.annotate(
-            value=Sum(
-                Case(
-                    When(
-                        Q(
-                            order__created_at__range=(
-                                from_date,
-                                to_date,
-                            )
-                        ),
-                        then=F("quantity"),
-                    )
-                )
-            ),
-        )
-
-        query = sort_by_date("units_sold", date_type, from_date, to_date, query)
-        data.extend(query)
+        data.extend(get_units_sold_metrics(from_date, to_date, date_type))
 
     if "avg_basket_size" in key_metrics_list:
-        query = split_by_date(
-            "order__created_at",
-            date_type,
-            OrderLine.objects.filter(order__created_at__range=(from_date, to_date)),
-        )
-
-        query = query.annotate(value=Avg(F("quantity")))
-
-        query = sort_by_date("avg_basket_size", date_type, from_date, to_date, query)
-        data.extend(query)
+        data.extend(get_avg_basket_size_metrics(from_date, to_date, date_type))
 
     return Response(data, status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def KeyMetricsSummaryView(request):
+    from_date, to_date = get_date(request)
+    return Response(get_key_metrics_summary(from_date, to_date), status.HTTP_200_OK)
+
+
+def generate_business_report(df_list: list[pd.DataFrame], spaces, sheets):
+    with BytesIO() as b:
+        # Use the StringIO object as the filehandle.
+        writer = pd.ExcelWriter(b, engine="xlsxwriter")
+        row = 0
+        max_width = {}
+        for df in df_list:
+            df.to_excel(
+                writer,
+                sheet_name=sheets,
+                startrow=row,
+                startcol=0,
+                index=False,
+            )
+
+            for i, width in enumerate(get_col_widths(df)):
+                if i in max_width and width <= max_width[i]:
+                    continue
+                max_width.update({i: width})
+                print(max_width)
+
+            two_dec_point_fmt = writer.book.add_format({"num_format": "#,##0.00"})
+
+            header_format = writer.book.add_format(
+                {
+                    "bold": True,
+                    "text_wrap": True,
+                    "align": "center",
+                    "valign": "vcenter",
+                    "fg_color": "#D9D9D9",
+                    "border": 1,
+                }
+            )
+
+            sub_header_format = writer.book.add_format(
+                {
+                    "bold": False,
+                    "text_wrap": True,
+                    "border": 0,
+                }
+            )
+
+            if row == 0:
+                for col_num, value in enumerate(df.columns.values):
+                    writer.sheets[sheets].write(0, col_num, value, header_format)
+            else:
+                for col_num, value in enumerate(df.columns.values):
+                    writer.sheets[sheets].write(row, col_num, value, sub_header_format)
+            row = row + len(df.index) + spaces + 1
+
+        for i, width in max_width.items():
+            width = width + 5
+            if df.columns[i] in [
+                "Sales",
+                "Profit",
+                "Average Order Value",
+                "Average Basket Size",
+            ]:
+                writer.sheets[sheets].set_column(i, i, width, two_dec_point_fmt)
+            elif df.columns[i] == "Date":
+                writer.sheets[sheets].set_column(i, i, 25, two_dec_point_fmt)
+            else:
+                writer.sheets[sheets].set_column(i, i, width)
+
+        writer.sheets[sheets].set_row(0, 50)
+
+        writer.save()
+        return b.getvalue()
+
+
+def get_col_widths(df: pd.DataFrame):
+    return [
+        max(
+            [len(str(s)) for s in df[col].values] + [len(str(x)) for x in col]
+            if df.columns.nlevels > 1
+            else [len(str(col))]
+        )
+        for col in df.columns
+    ]
+
+
+@api_view(["GET"])
+def KeyMetricsCSVView(request):
+    from_date, to_date = get_date(request)
+    date_type = request.query_params.get("date_type", None)
+
+    valid_date_type = ["hour", "day", "month"]
+
+    if not date_type in valid_date_type:
+        raise serializers.ValidationError(
+            detail={
+                "error": {
+                    "code": "invalida_date_type",
+                    "message": "The valid date type are {}".format(valid_date_type),
+                }
+            }
+        )
+
+    data = []
+    data.extend(get_sales_metrics(from_date, to_date, date_type))
+    data.extend(get_profit_metrics(from_date, to_date, date_type))
+    data.extend(get_orders_metrics(from_date, to_date, date_type))
+    data.extend(get_customers_metrics(from_date, to_date, date_type))
+    data.extend(get_buyers_metrics(from_date, to_date, date_type))
+    data.extend(get_avg_order_value_metrics(from_date, to_date, date_type))
+    data.extend(get_units_sold_metrics(from_date, to_date, date_type))
+    data.extend(get_avg_basket_size_metrics(from_date, to_date, date_type))
+
+    df = pd.DataFrame(data)
+    if date_type == "hour":
+        df[date_type] = pd.to_datetime(df[date_type]).dt.strftime("%d-%m-%Y %H:%M")
+    elif date_type == "day":
+        df[date_type] = pd.to_datetime(df[date_type]).dt.strftime("%d-%m-%Y")
+    else:
+        df[date_type] = pd.to_datetime(df[date_type]).dt.strftime("%Y-%m")
+
+    df = df.round(2)
+    df = df.pivot_table(values="value", index=[date_type], columns="category")
+    df["orders"] = df["orders"].astype("int")
+    df["customers"] = df["customers"].astype("int")
+    df["buyers"] = df["buyers"].astype("int")
+    df["units_sold"] = df["units_sold"].astype("int")
+    df.index.name = None
+    df.columns.name = None
+    df.reset_index(inplace=True)
+    df.rename(
+        columns={
+            "index": "Date",
+            "sales": "Sales",
+            "profit": "Profit",
+            "orders": "Orders",
+            "customers": "Customers",
+            "buyers": "Buyers",
+            "avg_order_value": "Average Order Value",
+            "units_sold": "Units Sold",
+            "avg_basket_size": "Average Basket Size",
+        },
+        inplace=True,
+    )
+
+    # Get summary data
+
+    summary_data = get_key_metrics_summary(from_date, to_date)
+
+    if date_type == "month":
+        summary_data = {
+            "Date": "{} - {}".format(
+                from_date.strftime("%d-%m"), to_date.strftime("%d-%m")
+            ),
+            **summary_data,
+        }
+    else:
+        summary_data = {
+            "Date": "{} - {}".format(
+                from_date.strftime("%d-%m-%Y"), to_date.strftime("%d-%m-%Y")
+            ),
+            **summary_data,
+        }
+
+    df_summary = pd.DataFrame([summary_data.values()], columns=summary_data.keys())
+    df_summary["sales"] = df_summary["sales"].astype("float").round(2)
+    df_summary["profit"] = df_summary["profit"].astype("float").round(2)
+    df_summary["avg_order_value"] = (
+        df_summary["avg_order_value"].astype("float").round(2)
+    )
+    df_summary["avg_basket_size"] = (
+        df_summary["avg_basket_size"].astype("float").round(2)
+    )
+
+    df_summary.rename(
+        columns={
+            "sales": "Sales",
+            "profit": "Profit",
+            "orders": "Orders",
+            "customers": "Customers",
+            "buyers": "Buyers",
+            "avg_order_value": "Average Order Value",
+            "units_sold": "Units Sold",
+            "avg_basket_size": "Average Basket Size",
+        },
+        inplace=True,
+    )
+
+    # Reorder the data column
+    ordering = [
+        "Date",
+        "Sales",
+        "Profit",
+        "Orders",
+        "Customers",
+        "Buyers",
+        "Average Order Value",
+        "Units Sold",
+        "Average Basket Size",
+    ]
+    df = df[ordering]
+    df_summary = df_summary[ordering]
+
+    df_list = [df_summary, df]
+
+    excel = generate_business_report(df_list, 2, "Key Metrics")
+
+    response = HttpResponse(
+        excel,
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+    response["Content-Disposition"] = "attachment; filename={}".format(
+        "shrf-report_{}-{}.xlsx".format(
+            from_date.strftime("%d-%m-%Y"), to_date.strftime("%d-%m-%Y")
+        )
+    )
+    return response
 
 
 def abc_classification(percentage):
@@ -744,17 +1031,21 @@ class ABCAnalysisView(generics.ListAPIView):
         )
 
         # Get consumption value
-        data = query.annotate(
-            consumption_value=F("demand") * F("cost_per_unit"),
-        ).values(
-            "id",
-            "name",
-            "sku",
-            "category",
-            "thumbnail",
-            "demand",
-            "cost_per_unit",
-            "consumption_value",
+        data = (
+            query.annotate(
+                consumption_value=F("demand") * F("cost_per_unit"),
+            )
+            .values(
+                "id",
+                "name",
+                "sku",
+                "category",
+                "thumbnail",
+                "demand",
+                "cost_per_unit",
+                "consumption_value",
+            )
+            .cache()
         )
 
         serializer = ABCAnalysisSerializer(data, many=True)
@@ -909,6 +1200,7 @@ class HMLAnalysisView(generics.ListAPIView):
                 "stock",
                 "cost_per_unit",
             )
+            .cache()
         )
 
         serializer = HMLAnalysisSerializer(data, many=True)
@@ -1076,7 +1368,7 @@ class EoqAnalysisView(generics.ListAPIView):
                 "ordering_cost",
                 "holding_cost",
             )
-        )
+        ).cache()
 
         # Check if the product's lead time is modified and replace to the original lead time during the specified date
 
@@ -1288,7 +1580,7 @@ class SSAnalysisView(generics.ListAPIView):
                 avg_demand=Sum(0),
                 max_demand=Sum(0),
             )
-        )
+        ).cache()
 
         # Check if the product's lead time is modified and replace to the original lead time during the specified date
 

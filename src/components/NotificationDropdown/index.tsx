@@ -27,7 +27,7 @@ import { capitalize } from '@utils/strUtils';
 const NotificationDropdown = () => {
   let navigate = useNavigate();
   const { Text } = Typography;
-  const [markAllRead, setMarkAllRead] = useState(false);
+  const [markAllRead, setMarkAllRead] = useState(true);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [messageApi] = useContext(MessageContext);
@@ -36,15 +36,18 @@ const NotificationDropdown = () => {
     setLoading(true);
     notificationListAPI()
       .then((res) => {
-        let allRead = false;
-        res.data?.forEach((datum) => {
-          if (datum.read) {
-            allRead = true;
-          }
-
-
-        });
         setData(res.data);
+        let allRead = true;
+        res.data?.forEach((datum) => {
+          if (!datum.read) {
+            allRead = false;
+          }
+        });
+        if (allRead) {
+          setMarkAllRead(true);
+        } else {
+          setMarkAllRead(false);
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -57,12 +60,16 @@ const NotificationDropdown = () => {
   }, []);
 
   const readNotification = (id: any[]) => {
+    setMarkAllRead(true);
+
     notificationReadAPI(
       id.map((id) => {
         return { id: id, read: true };
       })
     )
-      .then((res) => {})
+      .then((res) => {
+        setData(res.data);
+      })
       .catch((err) => {
         if (err.response?.status !== 401) {
           setLoading(false);
@@ -147,37 +154,40 @@ const NotificationDropdown = () => {
                     <Row align='middle'>
                       <Col className='notification-menu-item-avatar'>
                         <Badge
-                          dot={!notification.read}
-                          offset={[-15, -15]}
+                          dot={!(notification.read || markAllRead)}
                           status={
-                            notification.type === 'order'
-                              ? 'success'
-                              : ['product', 'package'].includes(
-                                  notification.type
-                                )
-                              ? 'error'
-                              : notification.type === 'customer'
-                              ? 'processing'
-                              : null
+                            !(notification.read || markAllRead)
+                              ? 'default'
+                              : undefined
                           }
-                          className='notification-menu-item-badge'
-                          style={{ position: 'absolute' }}
-                        />
-                        <Avatar
-                          icon={<Icon size={24} />}
-                          size={42}
-                          className={`center-flex ${
+                          color={
                             notification.type === 'order'
-                              ? 'success'
+                              ? '#0e9f6e'
                               : ['product', 'package'].includes(
                                   notification.type
                                 )
-                              ? 'error'
+                              ? '#f05252'
                               : notification.type === 'customer'
-                              ? 'info'
-                              : null
-                          }Background`}
-                        />
+                              ? '#1bacf3'
+                              : undefined
+                          }
+                        >
+                          <Avatar
+                            icon={<Icon size={24} />}
+                            size={42}
+                            className={`center-flex ${
+                              notification.type === 'order'
+                                ? 'success'
+                                : ['product', 'package'].includes(
+                                    notification.type
+                                  )
+                                ? 'error'
+                                : notification.type === 'customer'
+                                ? 'info'
+                                : null
+                            }Background`}
+                          />
+                        </Badge>
                       </Col>
                       <Col>
                         <Row className='notification-menu-item-title'>

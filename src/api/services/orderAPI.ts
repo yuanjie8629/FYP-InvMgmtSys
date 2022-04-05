@@ -1,5 +1,5 @@
 import axios from '@api/axiosInstance';
-
+import { saveAs } from 'file-saver';
 export const orderListAPI = (searchParam?: string) =>
   axios.get(`order/${searchParam !== undefined ? searchParam : ''}`);
 
@@ -18,7 +18,15 @@ export const orderCancelAPI = (
 ) => axios.patch(`order/cancel/`, { list: data });
 
 export const orderBulkInvoicesAPI = (ids: string[]) =>
-  axios.post(`order/invoices/bulk/`, { ids: ids }, { responseType: 'blob' });
+  axios
+    .post(`order/invoices/bulk/`, { ids: ids }, { responseType: 'blob' })
+    .then((res) => {
+      saveAs(res.data, 'invoices.zip');
+      return Promise.resolve(res)
+    });
 
 export const orderInvoiceAPI = (id) =>
-  axios.get(`order/invoice/${id}/`, { responseType: 'blob' });
+  axios.get(`order/invoice/${id}/`, { responseType: 'blob' }).then((res) => {
+    saveAs(res.data, `${id}.pdf`);
+    return Promise.resolve(res)
+  });

@@ -1,21 +1,19 @@
 import { message } from 'antd';
-import { MessageInstance } from 'antd/lib/message';
 import React, { createContext } from 'react';
 
-export const MessageContext =
-  createContext<
-    [
-      MessageInstance,
-      React.ReactElement<any, string | React.JSXElementConstructor<any>>
-    ]
-  >(null);
+export const MessageContext = createContext(null);
 
-export const Provider = (props) => {
-  const [messageApi, context] = message.useMessage();
+export const MessageProvider = (props) => {
+  const [messageApi, messageContext] = message.useMessage();
+
+  message.config({
+    maxCount: 1,
+    duration: 5,
+  });
 
   return (
-    <MessageContext.Provider value={[messageApi, context]}>
-      {context}
+    <MessageContext.Provider value={[messageApi]}>
+      {messageContext}
       {props.children}
     </MessageContext.Provider>
   );
