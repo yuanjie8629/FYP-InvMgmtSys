@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "shipment",
     "postcode",
     "voucher",
+    "notification",
     "django_cleanup.apps.CleanupConfig",
 ]
 

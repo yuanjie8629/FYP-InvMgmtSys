@@ -1,13 +1,15 @@
-import { Col, Row, Image, Space, Typography, Popover } from 'antd';
+import { Col, Row, Image, Space, Typography } from 'antd';
 import { moneyFormatter } from '@utils/numUtils';
 import { getSortOrder } from '@utils/urlUtls';
 import MainCard from '@components/Card/MainCard';
 import { BoldTitle } from '@components/Title';
-import { getDt } from '@utils/dateUtils';
+import { getMthYr } from '@utils/dateUtils';
 import InformativeTable from '@components/Table/InformativeTable';
 import { InvAnalysisProps } from '../..';
 import { HiExclamation } from 'react-icons/hi';
 import { EditButton } from '@components/Button/ActionButton';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import Popover from '@components/Popover';
 
 const EoqAnalysis = ({
   data,
@@ -18,6 +20,8 @@ const EoqAnalysis = ({
   ...props
 }: InvAnalysisProps) => {
   const { Text } = Typography;
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const eoqColumns: {
     title: string;
@@ -32,29 +36,25 @@ const EoqAnalysis = ({
   }[] = [
     {
       title: 'Product',
-      dataIndex: ['prodNm', 'prodCat', 'prodImg'],
-      key: 'prod',
+      dataIndex: ['id', 'name', 'category', 'thumbnail'],
+      key: 'name',
       sorter: true,
+      defaultSortOrder: getSortOrder('name'),
       width: 250,
       fixed: 'left',
       render: (_: any, data: { [x: string]: string }) => (
-        <Row gutter={5}>
-          <Col xs={9} xl={7}>
-            <Image
-              alt={data.name}
-              src={data.thumbnail}
-              height={100}
-              width={100}
-            />
+        <Row gutter={20}>
+          <Col span={8}>
+            <Image src={data.thumbnail} height={80} width={80} />
           </Col>
-          <Col xs={15} xl={17}>
+          <Col span={16}>
             <Space direction='vertical' size={5}>
               <div className='text-button-wrapper'>
                 <Text
                   strong
                   className='text-button'
                   onClick={() => {
-                    // navigate(`/product/${data['id']}`);
+                    navigate(`/product/${data['id']}`);
                   }}
                 >
                   {data.name}
@@ -74,7 +74,7 @@ const EoqAnalysis = ({
       key: 'sku',
       sorter: true,
       defaultSortOrder: getSortOrder('sku'),
-      width: 120,
+      width: 160,
     },
     {
       title: 'Demand',
@@ -92,7 +92,7 @@ const EoqAnalysis = ({
       defaultSortOrder: getSortOrder('ordering_cost'),
       width: 120,
       render: (amount: string) =>
-        amount !== undefined ? (
+        amount !== undefined && amount !== null ? (
           <Text type='secondary'>{moneyFormatter(parseFloat(amount))}</Text>
         ) : (
           <Popover content='Please update the holding cost for this product.'>
@@ -113,7 +113,7 @@ const EoqAnalysis = ({
       defaultSortOrder: getSortOrder('holding_cost'),
       width: 120,
       render: (amount: number) =>
-        amount !== undefined ? (
+        amount !== undefined && amount !== null ? (
           <Text type='secondary'>{moneyFormatter(amount)}</Text>
         ) : (
           <Popover content='Please update the holding cost for this product.'>
@@ -128,17 +128,17 @@ const EoqAnalysis = ({
     },
     {
       title: 'Optimal Order Quantity',
-      dataIndex: 'ooq',
-      key: 'ooq',
+      dataIndex: 'optimal_order_qty',
+      key: 'optimal_order_qty',
       sorter: true,
-      defaultSortOrder: getSortOrder('ooq'),
+      defaultSortOrder: getSortOrder('optimal_order_qty'),
       width: 170,
       fixed: 'right',
       render: (amount: string) =>
-        amount !== undefined ? (
+        amount !== undefined && amount !== null ? (
           <Text type='secondary'>{moneyFormatter(parseFloat(amount))}</Text>
         ) : (
-          <Popover content='Please fill up the ordering and holding costs.'>
+          <Popover content='Please fill up the ordering and holding costs.' >
             <Space size={5}>
               <HiExclamation size={20} className='color-error' />
               <Text strong className='color-error'>
@@ -153,8 +153,14 @@ const EoqAnalysis = ({
       key: 'action',
       width: 100,
       fixed: 'right',
-      render: () => (
-        <EditButton type='link' color='info'>
+      render: (data) => (
+        <EditButton
+          type='link'
+          color='info'
+          onClick={() => {
+            navigate(`/product/${data['id']}`);
+          }}
+        >
           Edit Costs
         </EditButton>
       ),
@@ -167,7 +173,7 @@ const EoqAnalysis = ({
         <Space direction='vertical' size={5}>
           <BoldTitle level={4}>EOQ Analysis</BoldTitle>
           <Text type='secondary'>
-            {getDt(undefined, undefined, 'YYYY MMMM')}
+            {getMthYr(searchParams.get('month'), 'YYYY-MM')}
           </Text>
         </Space>
         <InformativeTable
