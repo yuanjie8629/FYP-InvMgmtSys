@@ -178,7 +178,7 @@ def OrderPickupUpdView(request):
     return Response(status=status.HTTP_200_OK, data=serializer.data)
 
 
-def restore_product_quantity(self, instance):
+def restore_product_quantity(instance):
     item = instance.item
     item.stock = item.stock + instance.quantity
     item.save()
@@ -207,13 +207,16 @@ def OrderCancelView(request):
             )
 
     order_list = list(Order.objects.select_related().filter(id__in=ids))
-    print(order_list)
+
     for order in order_list:
         for data in data_list:
             if order.id == data.get("id"):
                 order.status = "cancel"
                 order.save(update_fields=["last_update", "status"])
-    restore_product_quantity(order)
+
+    order_line = order.order_line.all()
+    for ol in order_line:
+        restore_product_quantity(ol)
 
     serializer = OrderSerializer(order_list, many=True)
 
@@ -236,7 +239,7 @@ def BulkInvoicesView(request):
 
     order_list = list(Order.objects.select_related().filter(id__in=ids))
     files = []
-    print(order_list)
+
     for order in order_list:
         pdf = generate_invoice(order)
         files.append((order.id + ".pdf", pdf))

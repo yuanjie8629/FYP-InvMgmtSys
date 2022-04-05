@@ -205,6 +205,13 @@ const OrderView = () => {
                   >
                     {data['order_time']}
                   </Descriptions.Item>
+                  <Descriptions.Item
+                    label='Customer Email'
+                    span={12}
+                    style={{ fontWeight: 600 }}
+                  >
+                    {data['email']}
+                  </Descriptions.Item>
                 </Descriptions>
               )}
             </Space>
