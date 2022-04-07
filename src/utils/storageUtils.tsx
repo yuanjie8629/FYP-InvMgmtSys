@@ -2,20 +2,21 @@ import Cookies from 'js-cookie';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 
 interface AdminType {
-  id: string;
+  user_id: string;
   name: string;
   role: string;
 }
 
-export const decodedJWT = () =>
-  Cookies.get('access_token') !== undefined
+export const decodedJWT = () => {
+  return Cookies.get('access_token') !== undefined
     ? jwt_decode<JwtPayload & AdminType>(Cookies.get('access_token'))
     : null;
+};
 
 export const getAdminInfo = (): AdminType => {
   const jwt = decodedJWT();
   return {
-    id: jwt.id,
+    user_id: jwt.user_id,
     name: jwt.name,
     role: jwt.role,
   };

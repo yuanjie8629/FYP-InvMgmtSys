@@ -110,7 +110,7 @@ const AccSettings = () => {
         <MainCard>
           <Space direction='vertical' size={30} className='full-width'>
             <BoldTitle level={4}>Login Information</BoldTitle>
-            {loading ? (
+            {loading || Object.keys(data).length <= 0  ? (
               <List
                 dataSource={Array.from(Array(4).keys())}
                 renderItem={(item) => (
