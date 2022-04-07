@@ -1614,86 +1614,88 @@ class SSAnalysisView(generics.ListAPIView):
         serializer = SSAnalysisSerializer(data, many=True)
         data = serializer.data
 
-        df = pd.DataFrame(data)
-        df["safety_stock"] = (df["max_demand"] * df["max_lead_tm"]) - (
-            df["avg_demand"] * df["avg_lead_tm"]
-        )
-        df["reorder_point"] = (df["avg_demand"] * df["avg_lead_tm"]) + df[
-            "safety_stock"
-        ]
+        if data:
 
-        # filter & ordering
-        ordering = request.query_params.get("ordering", None)
+            df = pd.DataFrame(data)
+            df["safety_stock"] = (df["max_demand"] * df["max_lead_tm"]) - (
+                df["avg_demand"] * df["avg_lead_tm"]
+            )
+            df["reorder_point"] = (df["avg_demand"] * df["avg_lead_tm"]) + df[
+                "safety_stock"
+            ]
 
-        if not ordering:
-            df.sort_values(by=["reorder_point"], ascending=False, inplace=True)
-        else:
-            ascending = True
-            if "-" in ordering:
-                ordering = ordering[1:]
-                ascending = False
+            # filter & ordering
+            ordering = request.query_params.get("ordering", None)
 
+            if not ordering:
+                df.sort_values(by=["reorder_point"], ascending=False, inplace=True)
             else:
-                df.sort_values(by=[ordering], ascending=ascending, inplace=True)
+                ascending = True
+                if "-" in ordering:
+                    ordering = ordering[1:]
+                    ascending = False
 
-        name = request.query_params.get("name", None)
-        sku = request.query_params.get("sku", None)
-        category = request.query_params.get("category", None)
-        avg_demand_start = request.query_params.get("avg_demand_start", None)
-        avg_demand_end = request.query_params.get("avg_demand_end", None)
-        max_demand_start = request.query_params.get("max_demand_start", None)
-        max_demand_end = request.query_params.get("max_demand_end", None)
-        avg_lead_tm_start = request.query_params.get("avg_lead_tm_start", None)
-        avg_lead_tm_end = request.query_params.get("avg_lead_tm_end", None)
-        safety_stock_start = request.query_params.get("safety_stock_start", None)
-        safety_stock_end = request.query_params.get("safety_stock_end", None)
-        reorder_point_start = request.query_params.get("reorder_point_start", None)
-        reorder_point_end = request.query_params.get("reorder_point_end", None)
+                else:
+                    df.sort_values(by=[ordering], ascending=ascending, inplace=True)
 
-        if name:
-            df = df[df.name.str.contains(name)]
+            name = request.query_params.get("name", None)
+            sku = request.query_params.get("sku", None)
+            category = request.query_params.get("category", None)
+            avg_demand_start = request.query_params.get("avg_demand_start", None)
+            avg_demand_end = request.query_params.get("avg_demand_end", None)
+            max_demand_start = request.query_params.get("max_demand_start", None)
+            max_demand_end = request.query_params.get("max_demand_end", None)
+            avg_lead_tm_start = request.query_params.get("avg_lead_tm_start", None)
+            avg_lead_tm_end = request.query_params.get("avg_lead_tm_end", None)
+            safety_stock_start = request.query_params.get("safety_stock_start", None)
+            safety_stock_end = request.query_params.get("safety_stock_end", None)
+            reorder_point_start = request.query_params.get("reorder_point_start", None)
+            reorder_point_end = request.query_params.get("reorder_point_end", None)
 
-        if sku:
-            df = df[df.sku.str.contains(sku)]
+            if name:
+                df = df[df.name.str.contains(name)]
 
-        if category:
-            df = df[df.category == dict(PROD_CAT)[category]]
+            if sku:
+                df = df[df.sku.str.contains(sku)]
 
-        if avg_demand_start:
-            df = df[df.avg_demand >= float(avg_demand_start)]
+            if category:
+                df = df[df.category == dict(PROD_CAT)[category]]
 
-        if avg_demand_end:
-            df = df[df.avg_demand <= float(avg_demand_end)]
+            if avg_demand_start:
+                df = df[df.avg_demand >= float(avg_demand_start)]
 
-        if max_demand_start:
-            df = df[df.max_demand >= float(max_demand_start)]
+            if avg_demand_end:
+                df = df[df.avg_demand <= float(avg_demand_end)]
 
-        if max_demand_end:
-            df = df[df.max_demand <= float(max_demand_end)]
+            if max_demand_start:
+                df = df[df.max_demand >= float(max_demand_start)]
 
-        if avg_lead_tm_start:
-            df = df[df.avg_lead_tm >= float(avg_lead_tm_start)]
+            if max_demand_end:
+                df = df[df.max_demand <= float(max_demand_end)]
 
-        if avg_lead_tm_end:
-            df = df[df.avg_lead_tm <= float(avg_lead_tm_end)]
+            if avg_lead_tm_start:
+                df = df[df.avg_lead_tm >= float(avg_lead_tm_start)]
 
-        if safety_stock_start:
-            df = df[df.safety_stock >= float(safety_stock_start)]
+            if avg_lead_tm_end:
+                df = df[df.avg_lead_tm <= float(avg_lead_tm_end)]
 
-        if safety_stock_end:
-            df = df[df.safety_stock <= float(safety_stock_end)]
+            if safety_stock_start:
+                df = df[df.safety_stock >= float(safety_stock_start)]
 
-        if reorder_point_start:
-            df = df[df.reorder_point >= float(reorder_point_start)]
+            if safety_stock_end:
+                df = df[df.safety_stock <= float(safety_stock_end)]
 
-        if reorder_point_end:
-            df = df[df.reorder_point <= float(reorder_point_end)]
+            if reorder_point_start:
+                df = df[df.reorder_point >= float(reorder_point_start)]
 
-        data = json.loads(df.to_json(orient="records"))
-        page = self.paginate_queryset(data)
-        serializer = self.get_serializer(page, many=True)
-        data = serializer.data
+            if reorder_point_end:
+                df = df[df.reorder_point <= float(reorder_point_end)]
 
-        if page is not None:
-            return self.get_paginated_response(data)
+            data = json.loads(df.to_json(orient="records"))
+            page = self.paginate_queryset(data)
+            serializer = self.get_serializer(page, many=True)
+            data = serializer.data
+
+            if page is not None:
+                return self.get_paginated_response(data)
         return Response(data, status.HTTP_200_OK)

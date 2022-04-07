@@ -8,4 +8,3 @@ class CoreConfig(AppConfig):
     def ready(self):
         from core import utils  # noqa
         from core import signals
-        
