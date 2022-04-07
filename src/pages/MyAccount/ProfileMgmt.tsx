@@ -45,9 +45,11 @@ const ProfileMgmt = () => {
         if (isMounted) {
           setData(res.data);
           profileForm.setFieldsValue(res.data);
-          profileForm.setFieldsValue({
-            birthdate: moment(res.data.birthdate, 'DD-MM-YYYY'),
-          });
+          if (res.data.birthdate) {
+            profileForm.setFieldsValue({
+              birthdate: moment(res.data.birthdate, 'DD-MM-YYYY'),
+            });
+          }
           setLoading(false);
         }
       })
@@ -128,7 +130,7 @@ const ProfileMgmt = () => {
       <MainCardContainer className='profile-mgmt'>
         <MainCard>
           <Space direction='vertical' size={50} className='full-width'>
-            {loading ? (
+            {loading || Object.keys(data).length <= 0 ? (
               <>
                 <Row justify='center' align='middle' gutter={50}>
                   <Col>
