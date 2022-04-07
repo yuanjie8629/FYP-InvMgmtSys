@@ -76,7 +76,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "axes.middleware.AxesMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -88,6 +87,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "reversion.middleware.RevisionMiddleware",
+    "axes.middleware.AxesMiddleware",
 ]
 
 
