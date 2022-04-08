@@ -53,10 +53,10 @@ INSTALLED_APPS = [
     "django_seed",
     "polymorphic",
     "cloudinary",
+    "axes",
     "reversion",
     "cacheops",
     "corsheaders",
-    "axes",
     "debug_toolbar",
     "address",
     "administrator",
@@ -281,8 +281,10 @@ SIMPLE_JWT = {
 # Axes Configuration
 AXES_COOLOFF_TIME = timedelta(hours=1)
 AXES_FAILURE_LIMIT = 5
-AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
-
+AXES_META_PRECEDENCE_ORDER = [
+    'HTTP_X_FORWARDED_FOR',
+    'REMOTE_ADDR',
+]
 
 CORS_ALLOW_CREDENTIALS = True
 
