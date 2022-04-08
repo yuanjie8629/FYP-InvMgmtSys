@@ -5,7 +5,6 @@ from django.db.models import Q
 
 class EmailOrUsernameModelBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
-
         user_model = get_user_model()
 
         if username is None:
@@ -17,7 +16,7 @@ class EmailOrUsernameModelBackend(ModelBackend):
         )
 
         for user in users:
-            if user.check_password(password):
+            if user.check_password(password) and self.user_can_authenticate(user):
                 return user
         if not users:
             user_model().set_password(password)

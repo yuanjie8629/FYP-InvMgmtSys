@@ -5,11 +5,11 @@ from .views import (
     CookieTokenRefreshView,
     MyTokenVerifyView,
 )
-
+from axes.decorators import axes_dispatch
 
 urlpatterns = [
     path("admin/", include("administrator.urls")),
-    path("login/", CookieTokenObtainPairView.as_view(), name="login"),
+    path("login/", axes_dispatch(CookieTokenObtainPairView.as_view()), name="login"),
     path("token/refresh/", CookieTokenRefreshView.as_view(), name="token_refresh"),
     path("token/verify/", MyTokenVerifyView.as_view(), name="token_verify"),
     path("logout/", BlacklistToken.as_view(), name="logout"),

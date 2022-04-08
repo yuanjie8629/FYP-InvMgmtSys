@@ -171,6 +171,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTHENTICATION_BACKENDS = [
     # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
     "axes.backends.AxesBackend",
+    # "django.contrib.auth.backends.ModelBackend",
     "core.auth.EmailOrUsernameModelBackend",
 ]
 
