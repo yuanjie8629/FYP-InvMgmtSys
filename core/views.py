@@ -18,6 +18,7 @@ from rest_framework_simplejwt.serializers import (
 )
 from rest_framework_simplejwt.exceptions import InvalidToken
 import jwt
+from axes.utils import reset
 
 
 def index(request):
@@ -31,7 +32,7 @@ class CookieTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["name"] = user.name
         token["role"] = "Super Admin" if user.is_superuser else "Admin"
         token["gender"] = user.gender
-
+        reset(username=user.username)
         return token
 
 
@@ -67,6 +68,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
                 "exp": refresh["exp"],
             }
             csrf.get_token(request)
+            reset(ip=request.META.get("REMOTE_ADDR"))
         return super().finalize_response(request, response, *args, **kwargs)
 
     serializer_class = CookieTokenObtainPairSerializer
