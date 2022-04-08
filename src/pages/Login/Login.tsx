@@ -34,7 +34,7 @@ const Login = (_props) => {
         } else if (e.response?.status === 403) {
           setLoginErr(
             <>
-              Your account has been locked.
+              You have been locked.
               <br />
               Please retry after an hour.
             </>

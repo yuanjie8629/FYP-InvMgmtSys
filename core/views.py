@@ -18,6 +18,8 @@ from rest_framework_simplejwt.serializers import (
 )
 from rest_framework_simplejwt.exceptions import InvalidToken
 import jwt
+from django.db import transaction
+from django.utils.decorators import method_decorator
 
 
 def index(request):
@@ -35,6 +37,7 @@ class CookieTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
 
+@method_decorator(transaction.non_atomic_requests, name="post")
 class CookieTokenObtainPairView(TokenObtainPairView):
     permission_classes = [permissions.AllowAny]
 
