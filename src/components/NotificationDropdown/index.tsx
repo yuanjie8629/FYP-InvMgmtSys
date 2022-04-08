@@ -10,6 +10,7 @@ import {
   Space,
   Divider,
   Skeleton,
+  Empty,
 } from 'antd';
 import Button from '@components/Button';
 import { MdNotifications } from 'react-icons/md';
@@ -119,111 +120,110 @@ const NotificationDropdown = () => {
         key={'notification-content'}
         className='notification-menu-item-group'
       >
-        {loading
-          ? Array.from(Array(5).keys()).map(() => (
-              <Row align='middle' style={{ minHeight: 100, padding: 10 }}>
-                <Col>
-                  <Skeleton
-                    active={loading}
-                    avatar
-                    title={null}
-                    paragraph={null}
-                  />
-                </Col>
-                <Col span={18}>
-                  <Skeleton
-                    active={loading}
-                    title={null}
-                    paragraph={{ rows: 3 }}
-                  />
-                </Col>
-              </Row>
-            ))
-          : data.length > 0 &&
-            data?.map((notification, index) => {
-              const Icon = findIcon(notification.type);
+        {loading ? (
+          Array.from(Array(5).keys()).map(() => (
+            <Row align='middle' style={{ minHeight: 100, padding: 10 }}>
+              <Col>
+                <Skeleton
+                  active={loading}
+                  avatar
+                  title={null}
+                  paragraph={null}
+                />
+              </Col>
+              <Col span={18}>
+                <Skeleton
+                  active={loading}
+                  title={null}
+                  paragraph={{ rows: 3 }}
+                />
+              </Col>
+            </Row>
+          ))
+        ) : data.length > 0 ? (
+          data?.map((notification, index) => {
+            const Icon = findIcon(notification.type);
 
-              return (
-                <>
-                  <Menu.Item
-                    key={`${findRoutePath(notification.type)}-${
-                      notification.id
-                    }`}
-                    className='notification-menu-item'
-                  >
-                    <Row align='middle'>
-                      <Col className='notification-menu-item-avatar'>
-                        <Badge
-                          dot={!(notification.read || markAllRead)}
-                          status={
-                            !(notification.read || markAllRead)
-                              ? 'default'
-                              : undefined
-                          }
-                          color={
+            return (
+              <>
+                <Menu.Item
+                  key={`${findRoutePath(notification.type)}-${notification.id}`}
+                  className='notification-menu-item'
+                >
+                  <Row align='middle'>
+                    <Col className='notification-menu-item-avatar'>
+                      <Badge
+                        dot={!(notification.read || markAllRead)}
+                        status={
+                          !(notification.read || markAllRead)
+                            ? 'default'
+                            : undefined
+                        }
+                        color={
+                          notification.type === 'order'
+                            ? '#0e9f6e'
+                            : ['product', 'package'].includes(notification.type)
+                            ? '#f05252'
+                            : notification.type === 'customer'
+                            ? '#1bacf3'
+                            : undefined
+                        }
+                      >
+                        <Avatar
+                          icon={<Icon size={24} />}
+                          size={42}
+                          className={`center-flex ${
                             notification.type === 'order'
-                              ? '#0e9f6e'
+                              ? 'success'
                               : ['product', 'package'].includes(
                                   notification.type
                                 )
-                              ? '#f05252'
+                              ? 'error'
                               : notification.type === 'customer'
-                              ? '#1bacf3'
-                              : undefined
+                              ? 'info'
+                              : null
+                          }Background`}
+                        />
+                      </Badge>
+                    </Col>
+                    <Col>
+                      <Row className='notification-menu-item-title'>
+                        {notification.title}
+                      </Row>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: notification.description,
+                        }}
+                        style={{ width: 245 }}
+                      />
+                      <Row>
+                        <Space
+                          split={
+                            <Divider
+                              type='vertical'
+                              style={{ margin: 0 }}
+                              className='notification-menu-item-split'
+                            />
                           }
                         >
-                          <Avatar
-                            icon={<Icon size={24} />}
-                            size={42}
-                            className={`center-flex ${
-                              notification.type === 'order'
-                                ? 'success'
-                                : ['product', 'package'].includes(
-                                    notification.type
-                                  )
-                                ? 'error'
-                                : notification.type === 'customer'
-                                ? 'info'
-                                : null
-                            }Background`}
-                          />
-                        </Badge>
-                      </Col>
-                      <Col>
-                        <Row className='notification-menu-item-title'>
-                          {notification.title}
-                        </Row>
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: notification.description,
-                          }}
-                          style={{ width: 245 }}
-                        />
-                        <Row>
-                          <Space
-                            split={
-                              <Divider
-                                type='vertical'
-                                style={{ margin: 0 }}
-                                className='notification-menu-item-split'
-                              />
-                            }
-                          >
-                            <Text className='notification-menu-item-info'>
-                              {capitalize(notification.type)}
-                            </Text>
-                            <Text className='notification-menu-item-info'>
-                              {notification.created_at}
-                            </Text>
-                          </Space>
-                        </Row>
-                      </Col>
-                    </Row>
-                  </Menu.Item>
-                  {index !== data.length - 1 && <Menu.Divider />}
-                </>
-              );
-            })}
+                          <Text className='notification-menu-item-info'>
+                            {capitalize(notification.type)}
+                          </Text>
+                          <Text className='notification-menu-item-info'>
+                            {notification.created_at}
+                          </Text>
+                        </Space>
+                      </Row>
+                    </Col>
+                  </Row>
+                </Menu.Item>
+                {index !== data.length - 1 && <Menu.Divider />}
+              </>
+            );
+          })
+        ) : (
+          <Empty style={{ margin: 20 }} />
+        )}
       </Menu.ItemGroup>
 
       <Menu.Divider key='noti-footer-divider' />

@@ -856,41 +856,43 @@ def KeyMetricsCSVView(request):
     data.extend(get_units_sold_metrics(from_date, to_date, date_type))
     data.extend(get_avg_basket_size_metrics(from_date, to_date, date_type))
 
-    df = pd.DataFrame(data)
-    if date_type == "hour":
-        df[date_type] = pd.to_datetime(df[date_type]).dt.strftime("%d-%m-%Y %H:%M")
-    elif date_type == "day":
-        df[date_type] = pd.to_datetime(df[date_type]).dt.strftime("%d-%m-%Y")
-    else:
-        df[date_type] = pd.to_datetime(df[date_type]).dt.strftime("%Y-%m")
+    if data:
+        df = pd.DataFrame(data)
+        if date_type == "hour":
+            df[date_type] = pd.to_datetime(df[date_type]).dt.strftime("%d-%m-%Y %H:%M")
+        elif date_type == "day":
+            df[date_type] = pd.to_datetime(df[date_type]).dt.strftime("%d-%m-%Y")
+        else:
+            df[date_type] = pd.to_datetime(df[date_type]).dt.strftime("%Y-%m")
 
-    df = df.round(2)
-    df = df.pivot_table(values="value", index=[date_type], columns="category")
-    df["orders"] = df["orders"].astype("int")
-    df["customers"] = df["customers"].astype("int")
-    df["buyers"] = df["buyers"].astype("int")
-    df["units_sold"] = df["units_sold"].astype("int")
-    df.index.name = None
-    df.columns.name = None
-    df.reset_index(inplace=True)
-    df.rename(
-        columns={
-            "index": "Date",
-            "sales": "Sales",
-            "profit": "Profit",
-            "orders": "Orders",
-            "customers": "Customers",
-            "buyers": "Buyers",
-            "avg_order_value": "Average Order Value",
-            "units_sold": "Units Sold",
-            "avg_basket_size": "Average Basket Size",
-        },
-        inplace=True,
-    )
+        df = df.round(2)
+        df = df.pivot_table(values="value", index=[date_type], columns="category")
+        df["orders"] = df["orders"].astype("int")
+        df["customers"] = df["customers"].astype("int")
+        df["buyers"] = df["buyers"].astype("int")
+        df["units_sold"] = df["units_sold"].astype("int")
+        df.index.name = None
+        df.columns.name = None
+        df.reset_index(inplace=True)
+        df.rename(
+            columns={
+                "index": "Date",
+                "sales": "Sales",
+                "profit": "Profit",
+                "orders": "Orders",
+                "customers": "Customers",
+                "buyers": "Buyers",
+                "avg_order_value": "Average Order Value",
+                "units_sold": "Units Sold",
+                "avg_basket_size": "Average Basket Size",
+            },
+            inplace=True,
+        )
 
     # Get summary data
 
     summary_data = get_key_metrics_summary(from_date, to_date)
+
 
     if date_type == "month":
         summary_data = {
@@ -1051,101 +1053,103 @@ class ABCAnalysisView(generics.ListAPIView):
         serializer = ABCAnalysisSerializer(data, many=True)
         data = serializer.data
 
-        df = pd.DataFrame(data)
-        df["demand"] = df["demand"].astype("float")
-        df["consumption_value"] = df["consumption_value"].astype("float")
-        df.sort_values(by=["consumption_value"], ascending=False, inplace=True)
-        df.reset_index(drop=True, inplace=True)
-        df["demand_total"] = df["demand"].sum()
-        df["demand_percent"] = df["demand"] / df["demand_total"]
-        df["consumption_value_total"] = df["consumption_value"].sum()
-        df["consumption_value_percent"] = (
-            df["consumption_value"] / df["consumption_value_total"]
-        )
-        df["consumption_value_cumsum"] = df["consumption_value"].cumsum()
-        df["consumption_value_cumsum_percent"] = (
-            df["consumption_value_cumsum"] / df["consumption_value_total"]
-        ) * 100
-        df["grade"] = df["consumption_value_cumsum_percent"].apply(abc_classification)
+        if data:
 
-        if not any(df["grade"] == "A"):
-            if df.loc[0, "consumption_value_percent"] > 0.8:
-                df = df.copy()
-                df.loc[0, "grade"] = "A"
-
-        if not any(df["grade"] == "B"):
-            df = df.copy()
-            df.loc[
-                ((df["grade"] == "C") & (df["consumption_value_percent"] > 0.15)),
-                "grade",
-            ] = "B"
-
-        df = df.drop(
-            columns=[
-                "demand_total",
-                "consumption_value_total",
-                "consumption_value_cumsum",
-                "consumption_value_cumsum_percent",
-            ],
-        )
-        df = df.round(4)
-        df["consumption_value_percent"] = (
-            df["consumption_value_percent"].astype(float).round(4)
-        )
-        df["cost_per_unit"] = df["cost_per_unit"].astype(float).round(2)
-        df = df.fillna(0)
-
-        # filter & ordering
-        ordering = request.query_params.get("ordering", None)
-
-        if not ordering:
-            df.sort_values(
-                by=["consumption_value_percent"], ascending=False, inplace=True
+            df = pd.DataFrame(data)
+            df["demand"] = df["demand"].astype("float")
+            df["consumption_value"] = df["consumption_value"].astype("float")
+            df.sort_values(by=["consumption_value"], ascending=False, inplace=True)
+            df.reset_index(drop=True, inplace=True)
+            df["demand_total"] = df["demand"].sum()
+            df["demand_percent"] = df["demand"] / df["demand_total"]
+            df["consumption_value_total"] = df["consumption_value"].sum()
+            df["consumption_value_percent"] = (
+                df["consumption_value"] / df["consumption_value_total"]
             )
-        else:
-            ascending = True
-            if "-" in ordering:
-                ordering = ordering[1:]
-                ascending = False
-            df.sort_values(by=[ordering], ascending=ascending, inplace=True)
+            df["consumption_value_cumsum"] = df["consumption_value"].cumsum()
+            df["consumption_value_cumsum_percent"] = (
+                df["consumption_value_cumsum"] / df["consumption_value_total"]
+            ) * 100
+            df["grade"] = df["consumption_value_cumsum_percent"].apply(abc_classification)
 
-        name = request.query_params.get("name", None)
-        sku = request.query_params.get("sku", None)
-        category = request.query_params.get("category", None)
-        min_demand = request.query_params.get("min_demand", None)
-        max_demand = request.query_params.get("max_demand", None)
-        min_consumption_value = request.query_params.get("min_consumption_value", None)
-        max_consumption_value = request.query_params.get("max_consumption_value", None)
+            if not any(df["grade"] == "A"):
+                if df.loc[0, "consumption_value_percent"] > 0.8:
+                    df = df.copy()
+                    df.loc[0, "grade"] = "A"
 
-        if name:
-            df = df[df.name.str.contains(name)]
+            if not any(df["grade"] == "B"):
+                df = df.copy()
+                df.loc[
+                    ((df["grade"] == "C") & (df["consumption_value_percent"] > 0.15)),
+                    "grade",
+                ] = "B"
 
-        if sku:
-            df = df[df.sku.str.contains(sku)]
+            df = df.drop(
+                columns=[
+                    "demand_total",
+                    "consumption_value_total",
+                    "consumption_value_cumsum",
+                    "consumption_value_cumsum_percent",
+                ],
+            )
+            df = df.round(4)
+            df["consumption_value_percent"] = (
+                df["consumption_value_percent"].astype(float).round(4)
+            )
+            df["cost_per_unit"] = df["cost_per_unit"].astype(float).round(2)
+            df = df.fillna(0)
 
-        if category:
-            df = df[df.category == dict(PROD_CAT)[category]]
+            # filter & ordering
+            ordering = request.query_params.get("ordering", None)
 
-        if min_demand:
-            df = df[df.demand >= float(min_demand)]
+            if not ordering:
+                df.sort_values(
+                    by=["consumption_value_percent"], ascending=False, inplace=True
+                )
+            else:
+                ascending = True
+                if "-" in ordering:
+                    ordering = ordering[1:]
+                    ascending = False
+                df.sort_values(by=[ordering], ascending=ascending, inplace=True)
 
-        if max_demand:
-            df = df[df.demand <= float(max_demand)]
+            name = request.query_params.get("name", None)
+            sku = request.query_params.get("sku", None)
+            category = request.query_params.get("category", None)
+            min_demand = request.query_params.get("min_demand", None)
+            max_demand = request.query_params.get("max_demand", None)
+            min_consumption_value = request.query_params.get("min_consumption_value", None)
+            max_consumption_value = request.query_params.get("max_consumption_value", None)
 
-        if min_consumption_value:
-            df = df[df.consumption_value >= float(min_consumption_value)]
+            if name:
+                df = df[df.name.str.contains(name)]
 
-        if max_consumption_value:
-            df = df[df.consumption_value <= float(max_consumption_value)]
+            if sku:
+                df = df[df.sku.str.contains(sku)]
 
-        # summary = df.groupby("grade", as_index=False).agg(
-        #     total_demand=("demand", sum),
-        #     total_consumption_value=("consumption_value", sum),
-        # )
+            if category:
+                df = df[df.category == dict(PROD_CAT)[category]]
 
-        data = json.loads(df.to_json(orient="records"))
-        # summary = json.loads(summary.to_json(orient="records"))
-        # final_data = {"data": data, "summary": summary}
+            if min_demand:
+                df = df[df.demand >= float(min_demand)]
+
+            if max_demand:
+                df = df[df.demand <= float(max_demand)]
+
+            if min_consumption_value:
+                df = df[df.consumption_value >= float(min_consumption_value)]
+
+            if max_consumption_value:
+                df = df[df.consumption_value <= float(max_consumption_value)]
+
+            # summary = df.groupby("grade", as_index=False).agg(
+            #     total_demand=("demand", sum),
+            #     total_consumption_value=("consumption_value", sum),
+            # )
+
+            data = json.loads(df.to_json(orient="records"))
+            # summary = json.loads(summary.to_json(orient="records"))
+            # final_data = {"data": data, "summary": summary}
 
         page = self.paginate_queryset(data)
         serializer = self.get_serializer(page, many=True)
@@ -1206,88 +1210,90 @@ class HMLAnalysisView(generics.ListAPIView):
         serializer = HMLAnalysisSerializer(data, many=True)
         data = serializer.data
 
-        df = pd.DataFrame(data)
-        df["cost_per_unit"] = df["cost_per_unit"].astype("float")
-        df["cost_per_unit_total"] = df["cost_per_unit"].sum()
-        df.sort_values(by=["cost_per_unit"], ascending=False, inplace=True)
-        df.reset_index(drop=True, inplace=True)
-        df["cost_per_unit_percent"] = df["cost_per_unit"] / df["cost_per_unit_total"]
-        df["cost_per_unit_cumsum"] = df["cost_per_unit"].cumsum()
-        df["cost_per_unit_cumsum_percent"] = (
-            df["cost_per_unit_cumsum"] / df["cost_per_unit_total"]
-        ) * 100
-        df["grade"] = df["cost_per_unit_cumsum_percent"].apply(hml_classification)
+        if data:
+            df = pd.DataFrame(data)
+            df["cost_per_unit"] = df["cost_per_unit"].astype("float")
+            df["cost_per_unit_total"] = df["cost_per_unit"].sum()
+            df.sort_values(by=["cost_per_unit"], ascending=False, inplace=True)
+            df.reset_index(drop=True, inplace=True)
+            df["cost_per_unit_percent"] = df["cost_per_unit"] / df["cost_per_unit_total"]
+            df["cost_per_unit_cumsum"] = df["cost_per_unit"].cumsum()
+            df["cost_per_unit_cumsum_percent"] = (
+                df["cost_per_unit_cumsum"] / df["cost_per_unit_total"]
+            ) * 100
+            df["grade"] = df["cost_per_unit_cumsum_percent"].apply(hml_classification)
 
-        if not any(df["grade"] == "H"):
-            if df.loc[0, "cost_per_unit_percent"] > 0.75:
+            if not any(df["grade"] == "H"):
+                if df.loc[0, "cost_per_unit_percent"] > 0.75:
+                    df = df.copy()
+                    df.loc[0, "grade"] = "H"
+
+            if not any(df["grade"] == "M"):
                 df = df.copy()
-                df.loc[0, "grade"] = "H"
+                df.loc[
+                    ((df["grade"] == "L") & (df["cost_per_unit_percent"] > 0.15)),
+                    "grade",
+                ] = "M"
 
-        if not any(df["grade"] == "M"):
-            df = df.copy()
-            df.loc[
-                ((df["grade"] == "L") & (df["cost_per_unit_percent"] > 0.15)),
-                "grade",
-            ] = "M"
+            df = df.drop(
+                columns=[
+                    "cost_per_unit_total",
+                    "cost_per_unit_cumsum",
+                    "cost_per_unit_cumsum_percent",
+                ],
+            )
+            df = df.round(4)
+            df["cost_per_unit"] = df["cost_per_unit"].astype(float).round(2)
+            df = df.fillna(0)
 
-        df = df.drop(
-            columns=[
-                "cost_per_unit_total",
-                "cost_per_unit_cumsum",
-                "cost_per_unit_cumsum_percent",
-            ],
-        )
-        df = df.round(4)
-        df["cost_per_unit"] = df["cost_per_unit"].astype(float).round(2)
-        df = df.fillna(0)
+            # filter & ordering
+            ordering = request.query_params.get("ordering", None)
 
-        # filter & ordering
-        ordering = request.query_params.get("ordering", None)
-
-        if not ordering:
-            df.sort_values(by=["cost_per_unit_percent"], ascending=False, inplace=True)
-        else:
-            ascending = True
-            if "-" in ordering:
-                ordering = ordering[1:]
-                ascending = False
-            if ordering == "grade":
-                df.sort_values(
-                    by=["cost_per_unit_percent"], ascending=ascending, inplace=True
-                )
+            if not ordering:
+                df.sort_values(by=["cost_per_unit_percent"], ascending=False, inplace=True)
             else:
-                df.sort_values(by=[ordering], ascending=ascending, inplace=True)
+                ascending = True
+                if "-" in ordering:
+                    ordering = ordering[1:]
+                    ascending = False
+                if ordering == "grade":
+                    df.sort_values(
+                        by=["cost_per_unit_percent"], ascending=ascending, inplace=True
+                    )
+                else:
+                    df.sort_values(by=[ordering], ascending=ascending, inplace=True)
 
-        name = request.query_params.get("name", None)
-        sku = request.query_params.get("sku", None)
-        category = request.query_params.get("category", None)
-        min_cost_per_unit = request.query_params.get("min_cost_per_unit", None)
-        max_cost_per_unit = request.query_params.get("max_cost_per_unit", None)
-        min_stock = request.query_params.get("min_stock", None)
-        max_stock = request.query_params.get("max_stock", None)
+            name = request.query_params.get("name", None)
+            sku = request.query_params.get("sku", None)
+            category = request.query_params.get("category", None)
+            min_cost_per_unit = request.query_params.get("min_cost_per_unit", None)
+            max_cost_per_unit = request.query_params.get("max_cost_per_unit", None)
+            min_stock = request.query_params.get("min_stock", None)
+            max_stock = request.query_params.get("max_stock", None)
 
-        if name:
-            df = df[df.name.str.contains(name)]
+            if name:
+                df = df[df.name.str.contains(name)]
 
-        if sku:
-            df = df[df.sku.str.contains(sku)]
+            if sku:
+                df = df[df.sku.str.contains(sku)]
 
-        if category:
-            df = df[df.category == dict(PROD_CAT)[category]]
+            if category:
+                df = df[df.category == dict(PROD_CAT)[category]]
 
-        if min_cost_per_unit:
-            df = df[df.cost_per_unit >= float(min_cost_per_unit)]
+            if min_cost_per_unit:
+                df = df[df.cost_per_unit >= float(min_cost_per_unit)]
 
-        if max_cost_per_unit:
-            df = df[df.cost_per_unit <= float(max_cost_per_unit)]
+            if max_cost_per_unit:
+                df = df[df.cost_per_unit <= float(max_cost_per_unit)]
 
-        if min_stock:
-            df = df[df.stock >= float(min_stock)]
+            if min_stock:
+                df = df[df.stock >= float(min_stock)]
 
-        if max_stock:
-            df = df[df.stock <= float(max_stock)]
+            if max_stock:
+                df = df[df.stock <= float(max_stock)]
 
-        data = json.loads(df.to_json(orient="records"))
+            data = json.loads(df.to_json(orient="records"))
+            
         page = self.paginate_queryset(data)
         serializer = self.get_serializer(page, many=True)
         data = serializer.data
@@ -1373,6 +1379,7 @@ class EoqAnalysisView(generics.ListAPIView):
         # Check if the product's lead time is modified and replace to the original lead time during the specified date
 
         data = []
+        
         for instance in query:
             product = Product.objects.get(pk=instance.get("id"))
 
@@ -1405,73 +1412,74 @@ class EoqAnalysisView(generics.ListAPIView):
 
         serializer = EOQAnalysisSerializer(data, many=True)
         data = serializer.data
+        if data:
+            df = pd.DataFrame(data)
+            df["optimal_order_qty"] = np.sqrt(
+                (2 * df["demand"] * df["ordering_cost"]) / df["holding_cost"]
+            )
+            df["optimal_order_qty"] = df["optimal_order_qty"].round(0) + 1
 
-        df = pd.DataFrame(data)
-        df["optimal_order_qty"] = np.sqrt(
-            (2 * df["demand"] * df["ordering_cost"]) / df["holding_cost"]
-        )
-        df["optimal_order_qty"] = df["optimal_order_qty"].round(0) + 1
+            # filter & ordering
+            ordering = request.query_params.get("ordering", None)
 
-        # filter & ordering
-        ordering = request.query_params.get("ordering", None)
-
-        if not ordering:
-            df.sort_values(by=["optimal_order_qty"], ascending=False, inplace=True)
-        else:
-            ascending = True
-            if "-" in ordering:
-                ordering = ordering[1:]
-                ascending = False
-
+            if not ordering:
+                df.sort_values(by=["optimal_order_qty"], ascending=False, inplace=True)
             else:
-                df.sort_values(by=[ordering], ascending=ascending, inplace=True)
+                ascending = True
+                if "-" in ordering:
+                    ordering = ordering[1:]
+                    ascending = False
 
-        name = request.query_params.get("name", None)
-        sku = request.query_params.get("sku", None)
-        category = request.query_params.get("category", None)
-        min_demand = request.query_params.get("min_demand", None)
-        max_demand = request.query_params.get("max_demand", None)
-        min_ordering_cost = request.query_params.get("min_ordering_cost", None)
-        max_ordering_cost = request.query_params.get("max_ordering_cost", None)
-        min_holding_cost = request.query_params.get("min_holding_cost", None)
-        max_holding_cost = request.query_params.get("max_holding_cost", None)
-        min_optimal_order_qty = request.query_params.get("min_optimal_order_qty", None)
-        max_optimal_order_qty = request.query_params.get("max_optimal_order_qty", None)
+                else:
+                    df.sort_values(by=[ordering], ascending=ascending, inplace=True)
 
-        if name:
-            df = df[df.name.str.contains(name)]
+            name = request.query_params.get("name", None)
+            sku = request.query_params.get("sku", None)
+            category = request.query_params.get("category", None)
+            min_demand = request.query_params.get("min_demand", None)
+            max_demand = request.query_params.get("max_demand", None)
+            min_ordering_cost = request.query_params.get("min_ordering_cost", None)
+            max_ordering_cost = request.query_params.get("max_ordering_cost", None)
+            min_holding_cost = request.query_params.get("min_holding_cost", None)
+            max_holding_cost = request.query_params.get("max_holding_cost", None)
+            min_optimal_order_qty = request.query_params.get("min_optimal_order_qty", None)
+            max_optimal_order_qty = request.query_params.get("max_optimal_order_qty", None)
 
-        if sku:
-            df = df[df.sku.str.contains(sku)]
+            if name:
+                df = df[df.name.str.contains(name)]
 
-        if category:
-            df = df[df.category == dict(PROD_CAT)[category]]
+            if sku:
+                df = df[df.sku.str.contains(sku)]
 
-        if min_demand:
-            df = df[df.demand >= float(min_demand)]
+            if category:
+                df = df[df.category == dict(PROD_CAT)[category]]
 
-        if max_demand:
-            df = df[df.demand <= float(max_demand)]
+            if min_demand:
+                df = df[df.demand >= float(min_demand)]
 
-        if min_ordering_cost:
-            df = df[df.ordering_cost >= float(min_ordering_cost)]
+            if max_demand:
+                df = df[df.demand <= float(max_demand)]
 
-        if max_ordering_cost:
-            df = df[df.ordering_cost <= float(max_ordering_cost)]
+            if min_ordering_cost:
+                df = df[df.ordering_cost >= float(min_ordering_cost)]
 
-        if min_holding_cost:
-            df = df[df.holding_cost >= float(min_holding_cost)]
+            if max_ordering_cost:
+                df = df[df.ordering_cost <= float(max_ordering_cost)]
 
-        if max_holding_cost:
-            df = df[df.holding_cost <= float(max_holding_cost)]
+            if min_holding_cost:
+                df = df[df.holding_cost >= float(min_holding_cost)]
 
-        if min_optimal_order_qty:
-            df = df[df.optimal_order_qty >= float(min_optimal_order_qty)]
+            if max_holding_cost:
+                df = df[df.holding_cost <= float(max_holding_cost)]
 
-        if max_optimal_order_qty:
-            df = df[df.optimal_order_qty <= float(max_optimal_order_qty)]
+            if min_optimal_order_qty:
+                df = df[df.optimal_order_qty >= float(min_optimal_order_qty)]
 
-        data = json.loads(df.to_json(orient="records"))
+            if max_optimal_order_qty:
+                df = df[df.optimal_order_qty <= float(max_optimal_order_qty)]
+
+            data = json.loads(df.to_json(orient="records"))
+
         page = self.paginate_queryset(data)
         serializer = self.get_serializer(page, many=True)
         data = serializer.data
@@ -1692,10 +1700,11 @@ class SSAnalysisView(generics.ListAPIView):
                 df = df[df.reorder_point <= float(reorder_point_end)]
 
             data = json.loads(df.to_json(orient="records"))
-            page = self.paginate_queryset(data)
-            serializer = self.get_serializer(page, many=True)
-            data = serializer.data
 
-            if page is not None:
-                return self.get_paginated_response(data)
+        page = self.paginate_queryset(data)
+        serializer = self.get_serializer(page, many=True)
+        data = serializer.data
+
+        if page is not None:
+            return self.get_paginated_response(data)
         return Response(data, status.HTTP_200_OK)
