@@ -3,20 +3,12 @@ import jwt
 import zipfile
 import pdfkit
 import os, sys, subprocess, platform
-from datetime import date
 from django.conf import settings
 from rest_framework.authentication import CSRFCheck
 from rest_framework import exceptions, status, serializers
-from rest_framework.response import Response
 from customer.models import Cust
-from order.models import Order
-from shipment.models import ShippingFee
-from shipment.serializers import ShippingFeeSerializer
-from voucher.models import Voucher
-from voucher.serializers import VoucherSerializer
 from io import BytesIO
 from django.template.loader import get_template
-
 
 def enforce_csrf(request):
     check = CSRFCheck(request)
