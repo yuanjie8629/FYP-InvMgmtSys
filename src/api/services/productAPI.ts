@@ -13,9 +13,9 @@ export const productPrevAllAPI = () => axios.get(`item/product/prev/all/`);
 export const productDetailsAPI = (id: string) =>
   axios.get(`item/product/${id}/`);
 
-export const productCreateAPI = async (data) => {
+export const productCreateAPI = (data) => {
   if (getAccessTknExpiry() < moment().unix()) {
-    return await refreshTknAPI().then((res) =>
+    refreshTknAPI().then((res) =>
       axios.post(`item/product/`, data, {
         headers: {
           'Content-type': 'multipart/form-data',
@@ -31,13 +31,23 @@ export const productCreateAPI = async (data) => {
   }
 };
 
-export const productUpdAPI = (id, data) =>
-  axios.patch(`item/product/${id}/`, data, {
-    headers: {
-      'Content-type': 'multipart/form-data',
-    },
-  });
-
+export const productUpdAPI = (id, data) => {
+  if (getAccessTknExpiry() < moment().unix()) {
+    return refreshTknAPI().then((res) =>
+      axios.patch(`item/product/${id}/`, data, {
+        headers: {
+          'Content-type': 'multipart/form-data',
+        },
+      })
+    );
+  } else {
+    return axios.post(`item/product/`, data, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+      },
+    });
+  }
+};
 export const productDelAPI = (id: number) =>
   axios.delete(`item/product/${id}/`);
 
