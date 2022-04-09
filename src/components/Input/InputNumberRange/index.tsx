@@ -147,9 +147,9 @@ const InputNumberRange = ({
                 setStart(value);
                 return value;
               }}
-              initialValue={defaultValue && defaultValue[0]}
             >
               <InputNumber
+                defaultValue={defaultValue && defaultValue[0]}
                 value={value && value[0]}
                 placeholder={placeholder[0]}
                 disabled={disabled}
@@ -185,9 +185,9 @@ const InputNumberRange = ({
                 setEnd(value);
                 return value;
               }}
-              initialValue={defaultValue && defaultValue[1]}
             >
               <InputNumber
+                defaultValue={defaultValue && defaultValue[1]}
                 value={value && value[1]}
                 placeholder={placeholder[1]}
                 disabled={disabled}
