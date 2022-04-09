@@ -2,6 +2,7 @@
   "name": "inv-mgmt-sys",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:8000",
   "dependencies": {
     "@ant-design/charts": "^1.2.14",
     "@ant-design/compatible": "^1.1.0",
