@@ -18,6 +18,7 @@ export const prodCat = [
   { value: 'rte', label: 'Ready-To-Eat' },
   { value: 'rtc', label: 'Ready-To-Cook' },
   { value: 'paste', label: 'Paste' },
+  { value: 'others', label: 'Others' },
 ];
 
 export const prodStatList = [
