@@ -20,7 +20,8 @@ export const productCreateAPI = async (data) => {
     },
   });
   if (getAccessTknExpiry() < moment().unix()) {
-    return await refreshTknAPI().then((res) => request);
+    await refreshTknAPI();
+    return request;
   } else {
     return request;
   }
