@@ -307,9 +307,12 @@ const PackMgmt = () => {
               selectedStatus === 'hidden' ? 'hide' : 'activate',
               {
                 onOk: async () => {
-                  await packageUpdAPI(data.id, {
-                    status: selectedStatus === 'hidden' ? 'hidden' : 'active',
-                  })
+                  let formData = new FormData();
+                  formData.append(
+                    'status',
+                    selectedStatus === 'hidden' ? 'hide' : 'activate'
+                  );
+                  await packageUpdAPI(data.id, formData)
                     .then((res) => {
                       getTableData();
                       showActionSuccessMsg(

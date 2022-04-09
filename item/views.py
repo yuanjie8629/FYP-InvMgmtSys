@@ -24,6 +24,7 @@ from item.serializers import (
 from urllib.parse import urlparse
 from rest_framework.parsers import MultiPartParser, FormParser
 
+
 def validate_image(instance, request):
     data = request.data.copy()
     thumbnail = data.get("thumbnail")
@@ -295,6 +296,7 @@ class PackageViewSet(viewsets.ModelViewSet):
         .order_by("-last_update")
     )
     serializer_class = PackageSerializer
+    parser_classes = [MultiPartParser, FormParser]
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy()

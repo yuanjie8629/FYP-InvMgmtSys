@@ -221,7 +221,9 @@ const PackInv = () => {
           initialValue={data.stock}
           onSave={(value) => {
             setActionLoading({ loading: true, index: index });
-            packageUpdAPI(data.id, { stock: value })
+            let formData = new FormData();
+            formData.append('stock', String(value));
+            packageUpdAPI(data.id, formData)
               .then(() => {
                 setActionLoading({ loading: false, index: index });
                 showUpdSuccessMsg(1);

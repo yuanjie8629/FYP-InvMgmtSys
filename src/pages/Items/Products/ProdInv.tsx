@@ -207,7 +207,9 @@ const ProdInv = () => {
           initialValue={data.stock}
           onSave={(value) => {
             setActionLoading({ loading: true, index: index });
-            productUpdAPI(data.id, { stock: value })
+            let formData = new FormData();
+            formData.append('stock', String(value));
+            productUpdAPI(data.id, formData)
               .then(() => {
                 setActionLoading({ loading: false, index: index });
                 showUpdSuccessMsg(1);

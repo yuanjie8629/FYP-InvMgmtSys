@@ -19,7 +19,7 @@ import {
 } from 'antd';
 import TextEditor from '@components/Input/TextEditor';
 import { prodCat } from '@utils/optionUtils';
-import { productDetailsAPI, productUpdFileAPI } from '@api/services/productAPI';
+import { productDetailsAPI, productUpdAPI } from '@api/services/productAPI';
 import { removeInvalidData } from '@utils/arrayUtils';
 import { useNavigate, useParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
@@ -146,7 +146,7 @@ const ProdEdit = () => {
     });
 
     setLoading(true);
-    productUpdFileAPI(id, formData)
+    productUpdAPI(id, formData)
       .then((res) => {
         setLoading(false);
         navigate(findRoutePath('prodEditSuccess'));

@@ -24,7 +24,7 @@ import TextEditor from '@components/Input/TextEditor';
 import { useNavigate, useParams } from 'react-router-dom';
 import { serverErrMsg } from '@utils/messageUtils';
 import { removeInvalidData } from '@utils/arrayUtils';
-import { packageDetailsAPI, packageUpdFileAPI } from '@api/services/packageAPI';
+import { packageDetailsAPI, packageUpdAPI } from '@api/services/packageAPI';
 import { findRoutePath } from '@utils/routingUtils';
 import { DeleteButton } from '@components/Button/ActionButton';
 import { getDt } from '@utils/dateUtils';
@@ -139,7 +139,7 @@ const PackEdit = () => {
       // formData.append(`product[${index}]['quantity']`, prod.quantity);
     });
     setLoading(true);
-    packageUpdFileAPI(id, formData)
+    packageUpdAPI(id, formData)
       .then((res) => {
         setLoading(false);
         navigate(findRoutePath('packEditSuccess'));

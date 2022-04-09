@@ -296,9 +296,12 @@ const ProdMgmt = () => {
                 selectedStatus === 'hidden' ? 'hide' : 'activate',
                 {
                   onOk: async () => {
-                    await productUpdAPI(data.id, {
-                      status: selectedStatus === 'hidden' ? 'hidden' : 'active',
-                    })
+                    let formData = new FormData();
+                    formData.append(
+                      'status',
+                      selectedStatus === 'hidden' ? 'hidden' : 'active'
+                    );
+                    await productUpdAPI(data.id, formData)
                       .then((res) => {
                         getTableData();
                         showActionSuccessMsg(
