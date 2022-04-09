@@ -15,7 +15,7 @@ export const productDetailsAPI = (id: string) =>
 
 export const productCreateAPI = async (data) => {
   console.log(getAccessTknExpiry() > moment().unix());
-  if (getAccessTknExpiry() > moment().unix()) {
+  if (getAccessTknExpiry() < moment().unix()) {
     await refreshTknAPI();
   }
   return axios.post(`item/product/`, data, {
