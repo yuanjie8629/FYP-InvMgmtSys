@@ -27,7 +27,8 @@ export const productUpdAPI = (id, data) => {
     },
   });
   if (getAccessTknExpiry() < moment().unix()) {
-    refreshTknAPI().then((res) => request);
+    console.log('refresh token');
+    return refreshTknAPI().then((res) => request);
   } else {
     return request;
   }
