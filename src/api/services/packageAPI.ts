@@ -1,4 +1,7 @@
 import axios from '@api/axiosInstance';
+import { getAccessTknExpiry } from '@utils/storageUtils';
+import moment from 'moment';
+import { refreshTknAPI } from './authAPI';
 
 export const packagePrevAPI = (searchParam?: string) =>
   axios.get(
@@ -8,19 +11,41 @@ export const packagePrevAPI = (searchParam?: string) =>
 export const packageDetailsAPI = (id: string) =>
   axios.get(`item/package/${id}/`);
 
-export const packageCreateAPI = (data) =>
-  axios.post(`item/package/`, data, {
-    headers: {
-      'Content-type': 'multipart/form-data',
-    },
-  });
+export const packageCreateAPI = (data) => {
+  if (getAccessTknExpiry() < moment().unix()) {
+    return refreshTknAPI().then((res) =>
+      axios.post(`item/package/`, data, {
+        headers: {
+          'Content-type': 'multipart/form-data',
+        },
+      })
+    );
+  } else {
+    return axios.post(`item/package/`, data, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+      },
+    });
+  }
+};
 
-export const packageUpdAPI = (id, data) =>
-  axios.patch(`item/package/${id}/`, data, {
-    headers: {
-      'Content-type': 'multipart/form-data',
-    },
-  });
+export const packageUpdAPI = (id, data) => {
+  if (getAccessTknExpiry() < moment().unix()) {
+    return refreshTknAPI().then((res) =>
+      axios.patch(`item/package/${id}/`, data, {
+        headers: {
+          'Content-type': 'multipart/form-data',
+        },
+      })
+    );
+  } else {
+    return axios.patch(`item/package/${id}/`, data, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+      },
+    });
+  }
+};
 
 export const packageDelAPI = (id: number) =>
   axios.delete(`item/package/${id}/`);
