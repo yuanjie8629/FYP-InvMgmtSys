@@ -30,8 +30,8 @@ export const logoutAPI = () => {
 
 export const verifyTknAPI = () => axios.post('token/verify/');
 
-export const refreshTknAPI = async () =>
-  await axios
+export const refreshTknAPI = () =>
+  axios
     .post('token/refresh/')
     .then((res) => {
       setExp(res.data.exp);
