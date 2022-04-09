@@ -12,4 +12,9 @@ ITEM_STATUS = (
 )
 
 
-PROD_CAT = (("rte", "Ready-To-Eat"), ("rtc", "Ready-To-Cook"), ("paste", "Paste"))
+PROD_CAT = (
+    ("rte", "Ready-To-Eat"),
+    ("rtc", "Ready-To-Cook"),
+    ("paste", "Paste"),
+    ("others", "Others"),
+)
