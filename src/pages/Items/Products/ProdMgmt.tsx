@@ -46,7 +46,6 @@ const ProdMgmt = () => {
   const [recordCount, setRecordCount] = useState<number>();
   const [selected, setSelected] = useState([]);
   const [tableLoading, setTableLoading] = useState(false);
-  const [currentPg, setCurrentPg] = useState(1);
   const defPg = 5;
 
   const getTableData = (isMounted: boolean = true) => {
@@ -57,15 +56,11 @@ const ProdMgmt = () => {
         if (isMounted) {
           setList(res.data?.results);
           setRecordCount(res.data?.count);
-          if (searchParams.has('offset')) {
-            let offset = Number(searchParams.get('offset'));
-            setCurrentPg(offset / defPg + 1);
-          }
           setTableLoading(false);
         }
       })
       .catch((err) => {
-        if (err.response?.status !== 401) {
+        if (isMounted && err.response?.status !== 401) {
           setTableLoading(false);
           showServerErrMsg();
         }
@@ -91,7 +86,6 @@ const ProdMgmt = () => {
     messageApi.open(
       actionSuccessMsg('Product', action, isMulti ? selected.length : 1)
     );
-
   };
 
   const showServerErrMsg = () => {
@@ -398,7 +392,6 @@ const ProdMgmt = () => {
               buttons={onItemSelectBtn(selectButtons)}
               loading={tableLoading}
               defPg={defPg}
-              currentPg={currentPg}
               totalRecord={recordCount}
               onSelectChange={handleSelectChange}
             />

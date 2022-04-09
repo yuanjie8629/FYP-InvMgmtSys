@@ -42,7 +42,8 @@ export type ActionModalType =
   | 'suspend'
   | 'accept'
   | 'reject'
-  | 'cancel' | 'invoice';
+  | 'cancel'
+  | 'invoice';
 
 export interface ActionModalContentProps {
   recordType?: string;
@@ -103,7 +104,7 @@ const ActionModal: ActionModalReturnProps = memo(
     const renderModal = () => {
       const ModalRender = ActionModalComponent[modalType]
         ? ActionModalComponent[modalType]
-        : null;
+        : () => null;
       return (
         <ModalRender
           recordType={recordType}

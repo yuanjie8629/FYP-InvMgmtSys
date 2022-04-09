@@ -81,18 +81,13 @@ const InputNumberRange = ({
   const { name, ...formPropsSpread } = formProps !== undefined && formProps;
 
   useEffect(() => {
-    let isMounted = true;
     onChange([start, end]);
-    if (isMounted) {
-      if (start > end) {
-        setValidateFailed(true);
-      } else {
-        setValidateFailed(false);
-      }
+    if (start > end) {
+      setValidateFailed(true);
+    } else {
+      setValidateFailed(false);
     }
-    return () => {
-      isMounted = false;
-    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [end, start]);
 
@@ -152,9 +147,9 @@ const InputNumberRange = ({
                 setStart(value);
                 return value;
               }}
+              initialValue={defaultValue && defaultValue[0]}
             >
               <InputNumber
-                defaultValue={defaultValue && defaultValue[0]}
                 value={value && value[0]}
                 placeholder={placeholder[0]}
                 disabled={disabled}
@@ -190,9 +185,9 @@ const InputNumberRange = ({
                 setEnd(value);
                 return value;
               }}
+              initialValue={defaultValue && defaultValue[1]}
             >
               <InputNumber
-                defaultValue={defaultValue && defaultValue[1]}
                 value={value && value[1]}
                 placeholder={placeholder[1]}
                 disabled={disabled}
