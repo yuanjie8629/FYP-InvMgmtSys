@@ -87,6 +87,10 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all().prefetch_related("image").order_by("-last_update")
     serializer_class = ProductSerializer
 
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        return super().create(request, *args, **kwargs)
+
     def partial_update(self, request, *args, **kwargs):
         data = validate_image(self.get_object(), request)
 
