@@ -484,7 +484,7 @@ const PackAdd = () => {
                       },
                     ]}
                   >
-                    <InputNumber min={0} defaultValue={0} />
+                    <InputNumber min={0} />
                   </Form.Item>
                 </Space>
               </MainCard>
