@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Key, useEffect, useState } from 'react';
 import { Col, Row, Typography, Space, TablePaginationConfig } from 'antd';
 import './InformativeTable.less';
 import { ButtonType } from '@components/Button';
@@ -31,7 +31,6 @@ export type InformativeTableProps = TableProps & {
 
 const InformativeTable = ({
   defPg = 10,
-  currentPg = 1,
   buttons,
   rowSelectable = true,
   onSelectChange = () => '',
@@ -40,25 +39,74 @@ const InformativeTable = ({
 }: InformativeTableProps) => {
   const { Text } = Typography;
   const [searchParams, setSearchParams] = useSearchParams();
-  const [selectedRowKeys, setSelectedRowKeys] = useState();
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>();
   const [selectedRowCount, setSelectedRowCount] = useState(0);
   const [pagination, setPagination] = useState<TablePaginationConfig>();
   const [btnShow, setBtnShow] = useState<Array<{ key: string; show: boolean }>>(
     []
   );
 
+  const [currentPg, setCurrentPg] = useState(1);
+
   useEffect(() => {
-    setSelectedRowCount(0);
-    setSelectedRowKeys(undefined);
-    setBtnShow([]);
-    if (pagination === undefined) {
-      setSearchParams(addSearchParams(searchParams, { limit: String(defPg) }));
+    let isMounted = true;
+    if (isMounted && searchParams.has('offset')) {
+      let offset = Number(searchParams.get('offset'));
+      setCurrentPg(offset / defPg + 1);
     }
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    setSelectedRowCount(0);
+    setSelectedRowKeys([]);
+    setBtnShow([]);
+    if (isMounted) {
+      if (pagination !== undefined) {
+        setCurrentPg(pagination.current);
+        if (
+          Number(searchParams.get('limit')) !== pagination.pageSize ||
+          Number(searchParams.get('offset')) !==
+            (pagination.current - 1) * pagination.pageSize
+        ) {
+          let offset = (pagination.current - 1) * pagination.pageSize;
+          if (offset > 0) {
+            setSearchParams(
+              addSearchParams(searchParams, {
+                limit: String(pagination.pageSize),
+                offset: (pagination.current - 1) * pagination.pageSize,
+              })
+            );
+          } else {
+            setSearchParams(
+              removeSearchParams(
+                new URLSearchParams(
+                  addSearchParams(searchParams, {
+                    limit: String(pagination.pageSize),
+                  })
+                ),
+                'offset'
+              )
+            );
+          }
+        }
+      } else {
+        setSearchParams(
+          addSearchParams(searchParams, { limit: String(defPg) })
+        );
+      }
+    }
+    return () => {
+      isMounted = false;
+    };
   }, [defPg, pagination, searchParams, setSearchParams, props.dataSource]);
 
   const hanldeTableChange = (paginate, _filters, sorter) => {
     setPagination(paginate);
-    console.log(sorter['order']);
     if (sorter['order'] !== undefined) {
       let key = sorter['columnKey'];
       let prefix;
@@ -176,31 +224,6 @@ const InformativeTable = ({
             defaultPageSize: defPg,
             pageSizeOptions: ['5', '10', '15', '20'],
             total: totalRecord,
-            onChange: (page, pageSize) => {
-              if (
-                page > 1 &&
-                (Number(searchParams.get('limit')) !== pageSize ||
-                  Number(searchParams.get('offset')) !== (page - 1) * pageSize)
-              ) {
-                setSearchParams(
-                  addSearchParams(searchParams, {
-                    limit: String(pageSize),
-                    offset: (page - 1) * pageSize,
-                  })
-                );
-              } else if (Number(searchParams.get('limit')) !== pageSize) {
-                setSearchParams(
-                  removeSearchParams(
-                    new URLSearchParams(
-                      addSearchParams(searchParams, {
-                        limit: String(pageSize),
-                      })
-                    ),
-                    'offset'
-                  )
-                );
-              }
-            },
           }}
           onChange={hanldeTableChange}
           {...props}

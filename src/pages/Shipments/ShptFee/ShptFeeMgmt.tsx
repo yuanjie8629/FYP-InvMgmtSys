@@ -35,7 +35,6 @@ const ShptFeeMgmt = () => {
   const [recordCount, setRecordCount] = useState<number>();
   const [selected, setSelected] = useState([]);
   const [tableLoading, setTableLoading] = useState(false);
-  const [currentPg, setCurrentPg] = useState(1);
   const defPg = 10;
 
   const getTableData = (isMounted: boolean = true) => {
@@ -46,10 +45,6 @@ const ShptFeeMgmt = () => {
         if (isMounted) {
           setList(res.data.results);
           setRecordCount(res.data.count);
-          if (searchParams.has('offset')) {
-            let offset = Number(searchParams.get('offset'));
-            setCurrentPg(offset / defPg + 1);
-          }
           setTableLoading(false);
         }
       })
@@ -275,7 +270,6 @@ const ShptFeeMgmt = () => {
               buttons={onSelectBtn}
               loading={tableLoading}
               defPg={defPg}
-              currentPg={currentPg}
               totalRecord={recordCount}
               onSelectChange={handleSelectChange}
             />
