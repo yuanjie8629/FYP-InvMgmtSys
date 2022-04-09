@@ -383,7 +383,7 @@ const ProdAdd = () => {
                         name='holding_cost'
                         tooltip={{
                           title:
-                            'Cost for holding inventory in stock per unit, per year',
+                            'Cost for holding inventory in stock per unit, per month',
                         }}
                       >
                         <InputNumber
