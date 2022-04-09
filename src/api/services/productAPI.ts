@@ -13,22 +13,17 @@ export const productPrevAllAPI = () => axios.get(`item/product/prev/all/`);
 export const productDetailsAPI = (id: string) =>
   axios.get(`item/product/${id}/`);
 
-export const productCreateAPI = async (data) => {
-  console.log(getAccessTknExpiry() > moment().unix());
-  if (getAccessTknExpiry() < moment().unix()) {
-    await refreshTknAPI();
-  }
-  return axios.post(`item/product/`, data, {
+export const productCreateAPI = async (data) =>
+  axios.post(`item/product/`, data, {
     headers: {
-      'content-type': 'multipart/form-data',
+      'Content-type': 'multipart/form-data',
     },
   });
-};
 
 export const productUpdAPI = (id, data) =>
   axios.patch(`item/product/${id}/`, data, {
     headers: {
-      'content-type': 'multipart/form-data',
+      'Content-type': 'multipart/form-data',
     },
   });
 
