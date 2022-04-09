@@ -13,6 +13,11 @@ export const decodedJWT = () => {
     : null;
 };
 
+export const getAccessTknExpiry = () => {
+  const jwt = decodedJWT();
+  return jwt.exp;
+};
+
 export const getAdminInfo = (): AdminType => {
   const jwt = decodedJWT();
   return {
