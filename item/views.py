@@ -22,7 +22,7 @@ from item.serializers import (
     ProductSerializer,
 )
 from urllib.parse import urlparse
-
+from rest_framework.parsers import MultiPartParser, FormParser
 
 def validate_image(instance, request):
     data = request.data.copy()
@@ -86,6 +86,7 @@ class ItemListView(generics.ListAPIView):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all().prefetch_related("image").order_by("-last_update")
     serializer_class = ProductSerializer
+    parser_classes = [MultiPartParser, FormParser]
 
     def partial_update(self, request, *args, **kwargs):
         data = validate_image(self.get_object(), request)
