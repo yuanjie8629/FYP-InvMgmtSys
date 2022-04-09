@@ -26,6 +26,9 @@ export const productUpdAPI = (id, data) => {
       'Content-type': 'multipart/form-data',
     },
   });
+  console.log(getAccessTknExpiry());
+  console.log(moment().unix());
+  console.log(getAccessTknExpiry() < moment().unix());
   if (getAccessTknExpiry() < moment().unix()) {
     console.log('refresh token');
     return refreshTknAPI().then((res) => request);
