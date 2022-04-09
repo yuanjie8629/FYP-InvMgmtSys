@@ -71,13 +71,11 @@ const PackAdd = () => {
   const [dataLoading, setDataLoading] = useState(false);
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-
   };
   const [startTime, setStartTime] = useState<moment.Moment>();
   const [endTime, setEndTime] = useState<moment.Moment>();
   const showErrMsg = (errMsg?: string) => {
     messageApi.open({ key: 'err', type: 'error', content: errMsg });
-
   };
 
   const handleAddPackage = (values) => {
@@ -466,6 +464,7 @@ const PackAdd = () => {
                     validateStatus={errMsg.type === 'invalid_sku' && 'error'}
                     help={errMsg.type === 'invalid_sku' && errMsg.message}
                     style={{ width: '40%' }}
+                    required
                   >
                     <Input
                       placeholder='e.g. SHRF-RTC-NBB'
