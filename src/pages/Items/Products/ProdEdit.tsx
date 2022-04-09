@@ -490,7 +490,7 @@ const ProdEdit = () => {
                         },
                       ]}
                     >
-                      <InputNumber min={0} defaultValue={0} />
+                      <InputNumber min={0} />
                     </Form.Item>
                   </Space>
                   <Divider />

@@ -1,4 +1,7 @@
 import axios from '@api/axiosInstance';
+import { getAccessTknExpiry } from '@utils/storageUtils';
+import moment from 'moment';
+import { refreshTknAPI } from './authAPI';
 
 export const productPrevAPI = (searchParam?: string) =>
   axios.get(
@@ -17,12 +20,18 @@ export const productCreateAPI = (data) =>
     },
   });
 
-export const productUpdAPI = (id, data) =>
-  axios.patch(`item/product/${id}/`, data, {
+export const productUpdAPI = (id, data) => {
+  let request = axios.patch(`item/product/${id}/`, data, {
     headers: {
       'content-type': 'multipart/form-data',
     },
   });
+  if (getAccessTknExpiry() < moment().unix()) {
+    refreshTknAPI().then((res) => request);
+  } else {
+    return request;
+  }
+};
 
 export const productDelAPI = (id: number) =>
   axios.delete(`item/product/${id}/`);
