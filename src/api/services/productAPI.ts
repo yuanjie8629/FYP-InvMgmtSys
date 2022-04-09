@@ -14,16 +14,20 @@ export const productDetailsAPI = (id: string) =>
   axios.get(`item/product/${id}/`);
 
 export const productCreateAPI = async (data) => {
-  let request = axios.post(`item/product/`, data, {
-    headers: {
-      'Content-type': 'multipart/form-data',
-    },
-  });
   if (getAccessTknExpiry() < moment().unix()) {
-    await refreshTknAPI();
-    return request;
+    return await refreshTknAPI().then((res) =>
+      axios.post(`item/product/`, data, {
+        headers: {
+          'Content-type': 'multipart/form-data',
+        },
+      })
+    );
   } else {
-    return request;
+    return axios.post(`item/product/`, data, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+      },
+    });
   }
 };
 
