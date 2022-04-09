@@ -43,6 +43,7 @@ const InvStockInput = ({
           onChange={(e) => {
             setOperation(e.target.value);
           }}
+          disabled={loading}
         />
       </Row>
       <Row gutter={[10, 10]}>

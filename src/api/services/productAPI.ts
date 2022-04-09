@@ -17,7 +17,7 @@ export const productCreateAPI = (data) =>
     },
   });
 
-export const productUpdFileAPI = (id, data) =>
+export const productUpdAPI = (id, data) =>
   axios.patch(`item/product/${id}/`, data, {
     headers: {
       'content-type': 'multipart/form-data',
@@ -30,10 +30,15 @@ export const productDelAPI = (id: number) =>
 export const itemBulkDelAPI = (ids: number[]) =>
   axios.post(`item/bulk/delete/`, { ids: ids });
 
-export const productUpdAPI = (
-  id: number,
-  data: { [key: string]: string | number }
-) => axios.patch(`item/product/${id}/`, data);
+// export const productUpdAPI = (
+//   id: number,
+//   data: { [key: string]: string | number }
+// ) =>
+//   axios.patch(`item/product/${id}/`, data, {
+//     headers: {
+//       'content-type': 'multipart/form-data',
+//     },
+//   });
 
 export const productBulkUpdAPI = (data: { [key: string]: string | number }[]) =>
   axios.patch(`item/product/bulk/update/`, { list: data });
