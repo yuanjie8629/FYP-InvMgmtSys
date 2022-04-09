@@ -26,6 +26,8 @@ import { findRoutePath } from '@utils/routingUtils';
 import { serverErrMsg } from '@utils/messageUtils';
 import FormSpin from '@components/Spin/FormSpin';
 import { MessageContext } from '@contexts/MessageContext';
+import { getAccessTknExpiry } from '@utils/storageUtils';
+import moment from 'moment';
 
 const ProdAdd = () => {
   const { Text, Title } = Typography;
@@ -45,7 +47,9 @@ const ProdAdd = () => {
     width: true,
     height: true,
   });
-
+  console.log(getAccessTknExpiry());
+  console.log(moment().unix());
+  console.log(getAccessTknExpiry() < moment().unix());
   const anchorList = [
     { link: 'basicInfo', title: 'Basic Information' },
     { link: 'pricing', title: 'Pricing' },
