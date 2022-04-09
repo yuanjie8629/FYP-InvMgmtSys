@@ -89,6 +89,10 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     parser_classes = [MultiPartParser, FormParser]
 
+    def create(self, request, *args, **kwargs):
+        print(request)
+        return super().create(request, *args, **kwargs)
+
     def partial_update(self, request, *args, **kwargs):
         data = validate_image(self.get_object(), request)
 

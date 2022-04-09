@@ -58,9 +58,6 @@ axios.interceptors.response.use(
           originalRequest.headers['Authorization'] = `JWT ${Cookies.get(
             'access_token'
           )}`;
-          if (originalRequest.data instanceof FormData) {
-            originalRequest.headers['Content-type'] = 'multipart/form-data';
-          }
           console.log('New session obtained.');
           return await axios(originalRequest);
         })
