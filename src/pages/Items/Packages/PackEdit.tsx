@@ -547,6 +547,7 @@ const PackEdit = () => {
                     validateStatus={errMsg.type === 'invalid_sku' && 'error'}
                     help={errMsg.type === 'invalid_sku' && errMsg.message}
                     style={{ width: '40%' }}
+                    required
                   >
                     <Input
                       placeholder='e.g. SHRF-RTC-NBB'
