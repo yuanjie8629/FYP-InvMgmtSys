@@ -11,14 +11,14 @@ export const packageDetailsAPI = (id: string) =>
 export const packageCreateAPI = (data) =>
   axios.post(`item/package/`, data, {
     headers: {
-      'content-type': 'multipart/form-data',
+      'Content-type': 'multipart/form-data',
     },
   });
 
 export const packageUpdAPI = (id, data) =>
   axios.patch(`item/package/${id}/`, data, {
     headers: {
-      'content-type': 'multipart/form-data',
+      'Content-type': 'multipart/form-data',
     },
   });
 
