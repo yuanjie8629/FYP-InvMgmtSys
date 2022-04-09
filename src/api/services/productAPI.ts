@@ -16,14 +16,14 @@ export const productDetailsAPI = (id: string) =>
 export const productCreateAPI = (data) =>
   axios.post(`item/product/`, data, {
     headers: {
-      'content-type': 'multipart/form-data',
+      'Content-type': 'multipart/form-data',
     },
   });
 
 export const productUpdAPI = (id, data) => {
   let request = axios.patch(`item/product/${id}/`, data, {
     headers: {
-      'content-type': 'multipart/form-data',
+      'Content-type': 'multipart/form-data',
     },
   });
   if (getAccessTknExpiry() < moment().unix()) {
