@@ -45,7 +45,6 @@ const InformativeTable = ({
   const [btnShow, setBtnShow] = useState<Array<{ key: string; show: boolean }>>(
     []
   );
-
   const [currentPg, setCurrentPg] = useState(1);
 
   useEffect(() => {
