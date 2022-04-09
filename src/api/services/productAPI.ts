@@ -13,14 +13,14 @@ export const productPrevAllAPI = () => axios.get(`item/product/prev/all/`);
 export const productDetailsAPI = (id: string) =>
   axios.get(`item/product/${id}/`);
 
-export const productCreateAPI = (data) => {
+export const productCreateAPI = async (data) => {
   let request = axios.post(`item/product/`, data, {
     headers: {
       'Content-type': 'multipart/form-data',
     },
   });
   if (getAccessTknExpiry() < moment().unix()) {
-    refreshTknAPI().then(() => request);
+    return await refreshTknAPI().then((res) => request);
   } else {
     return request;
   }
