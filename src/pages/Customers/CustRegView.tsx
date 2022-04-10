@@ -162,7 +162,7 @@ const CustRegView = () => {
   return (
     <Form name='custForm' layout='vertical' size='small' form={custForm}>
       <Layout>
-        <FormSpin spinning={loading || submitLoading} />
+        <FormSpin visible={loading || submitLoading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>

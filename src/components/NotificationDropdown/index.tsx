@@ -240,7 +240,7 @@ const NotificationDropdown = () => {
   );
 
   return (
-    <Dropdown overlay={menuNotificationDropdown} arrow>
+    <Dropdown placement='bottomLeft' overlay={menuNotificationDropdown} arrow>
       <span className='notification-container'>
         <Badge
           dot={!markAllRead}

@@ -1,4 +1,3 @@
-import ECommerce from '@assets/ComingSoon/eCommerce.gif';
 import { Space, Typography } from 'antd';
 import Layout from '@components/Layout';
 import MainCard from '@components/Card/MainCard';
@@ -19,7 +18,7 @@ const OrderAdd = () => {
         >
           <MainCard bodyStyle={{ padding: 15 }}>
             <LazyLoadImage
-              src={ECommerce}
+              src='https://res.cloudinary.com/yuanjie/image/upload/v1649580973/CommingSoon/eCommerce_xssyk7.gif'
               alt='comingSoonImg'
               height={370}
               width={490}
@@ -38,9 +37,7 @@ const OrderAdd = () => {
           <Button
             type='primary'
             onClick={() =>
-              window.open(
-                'https://fyp-shrf-ecommerce.herokuapp.com/','_blank'
-              )
+              window.open('https://fyp-shrf-ecommerce.herokuapp.com/', '_blank')
             }
           >
             Go to Sharifah Food E-commerce

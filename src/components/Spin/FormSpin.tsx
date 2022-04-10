@@ -1,19 +1,37 @@
-import { Spin, SpinProps } from 'antd';
+import { Modal, ModalProps, Space, Spin, Typography } from 'antd';
+import './Spin.less';
 
-interface FormSpinProps extends SpinProps {}
+interface FormSpinProps extends ModalProps {
+  children?: React.ReactNode;
+}
 
-const FormSpin = (props: FormSpinProps) => {
+const FormSpin = ({ visible, ...props }: FormSpinProps) => {
+  const { Text } = Typography;
   return (
-    <Spin
-      style={{
-        position: 'fixed',
-        top: '50%',
-        transform: 'translate(0,-50%)',
+    <Modal
+      visible={visible}
+      footer={null}
+      closable={false}
+      maskClosable={false}
+      mask={null}
+      width={130}
+      centered
+      bodyStyle={{
+        height: 130,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
+      style={{ opacity: 0.8 }}
+      wrapClassName='form-spin-modal'
+      zIndex={100}
       {...props}
     >
-      {' '}
-    </Spin>
+      <Space direction='vertical' align='center'>
+        <Spin spinning />
+        <Text type='secondary'>Loading...</Text>
+      </Space>
+    </Modal>
   );
 };
 

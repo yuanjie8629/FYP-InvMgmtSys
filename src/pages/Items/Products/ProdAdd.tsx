@@ -130,15 +130,8 @@ const ProdAdd = () => {
       scrollToFirstError={{ behavior: 'smooth', block: 'center' }}
       onFinish={handleAddProduct}
     >
-      <Layout>
-        <FormSpin
-          spinning={loading}
-          style={{
-            position: 'fixed',
-            top: '50%',
-            transform: 'translate(0,-50%)',
-          }}
-        />
+      <Layout gutter={30}>
+        <FormSpin visible={loading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>
@@ -596,7 +589,7 @@ const ProdAdd = () => {
             <AffixAction offsetBottom={0} label='Product' loading={loading} />
           </MainCardContainer>
         </Col>
-        <Col xs={8} xl={5} push={1}>
+        <Col xs={8} xl={5}>
           <Anchor offsetTop={150} targetOffset={targetOffset}>
             {anchorList.map((anchor) => (
               <Link

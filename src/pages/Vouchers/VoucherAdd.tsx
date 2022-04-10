@@ -53,12 +53,10 @@ const VoucherAdd = () => {
   const [endTime, setEndTime] = useState<moment.Moment>();
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-
   };
 
   const showErrMsg = (errMsg?: string) => {
-    messageApi.open({type: 'error', content: errMsg });
- 
+    messageApi.open({ type: 'error', content: errMsg });
   };
 
   const handleAddVoucher = (values) => {
@@ -126,7 +124,7 @@ const VoucherAdd = () => {
       onFinish={handleAddVoucher}
     >
       <Layout>
-        <FormSpin spinning={loading} />
+        <FormSpin visible={loading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>
