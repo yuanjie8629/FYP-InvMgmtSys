@@ -265,9 +265,9 @@ const PackEdit = () => {
       title: 'Product',
       dataIndex: ['name', 'category', 'thumbnail'],
       key: 'name',
-      sorter: (a, b) => a.name > b.name,
+      sorter: (a, b) => a.name < b.name,
       defaultSortOrder: 'descend',
-      sortDirections: ['descend'],
+      sortDirections: [],
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={10}>
           <Col span={8}>

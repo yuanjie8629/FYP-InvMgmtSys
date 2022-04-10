@@ -1,6 +1,7 @@
 import { Input, AutoComplete, AutoCompleteProps } from 'antd';
 import { useState } from 'react';
 import Button from '@components/Button';
+import { groupBy } from '@utils/arrayUtils';
 
 interface ProductListProps extends AutoCompleteProps {
   products?: any[];
@@ -23,13 +24,25 @@ const ProductList = ({
     }
   };
 
+  const getProdByCat = () =>
+    Object.entries(groupBy(products, 'category')).map(([label, products]) => {
+      let prods: any = products;
+      let options = prods?.map((prod) => {
+        return { label: prod?.name, value: prod?.name, extra: prod?.id };
+      });
+      return { label, options };
+    });
+
   return (
     <Input.Group compact>
       <AutoComplete
         placeholder='Product Name'
-        options={products?.map((prod) => {
-          return { label: prod?.name, value: prod?.name, extra: prod?.id };
-        })}
+        options={getProdByCat()}
+        filterOption={(inputValue, option) => {
+          if (value !== '')
+            return option.value?.toString().toLowerCase().includes(inputValue);
+          else return true;
+        }}
         notFoundContent='Not Found'
         style={{ width: '40%' }}
         onChange={(value, option) => {
