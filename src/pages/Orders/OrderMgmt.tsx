@@ -35,12 +35,7 @@ import {
 } from '@api/services/orderAPI';
 import { actionSuccessMsg, serverErrMsg } from '@utils/messageUtils';
 import { ActionModal } from '@components/Modal';
-import {
-  addSearchParams,
-  getSortOrder,
-  parseURL,
-  removeSearchParams,
-} from '@utils/urlUtls';
+import { addSearchParams, getSortOrder, parseURL } from '@utils/urlUtls';
 import { getOrderDetails } from './orderUtils';
 
 const OrderMgmt = () => {
