@@ -30,11 +30,12 @@ import { DeleteButton } from '@components/Button/ActionButton';
 import { getDt } from '@utils/dateUtils';
 import ProductSelect from './ProductSelect';
 import BraftEditor from 'braft-editor';
-import { prodCat } from '@utils/optionUtils';
 import moment from 'moment';
 import { productPrevAllAPI } from '@api/services/productAPI';
 import FormSpin from '@components/Spin/FormSpin';
 import { MessageContext } from '@contexts/MessageContext';
+import { moneyFormatter } from '@utils/numUtils';
+import { prodCat } from '@utils/optionUtils';
 
 const PackEdit = () => {
   const { Text, Title, Paragraph } = Typography;
@@ -251,7 +252,10 @@ const PackEdit = () => {
     title: string;
     dataIndex?: string | string[];
     key: string;
-    sorter?: boolean;
+    sorter?: any;
+    sortOrder?: any;
+    sortDirections?: any;
+    defaultSortOrder?: 'ascend' | 'descend';
     width?: number | string;
     align?: 'left' | 'center' | 'right';
     fixed?: 'left' | 'right';
@@ -261,41 +265,49 @@ const PackEdit = () => {
       title: 'Product',
       dataIndex: ['name', 'category', 'thumbnail'],
       key: 'name',
-      render: (_: any, data: { [x: string]: string | undefined }) => {
-        return (
-          <Row gutter={10}>
-            <Col span={8}>
-              <Image src={data.thumbnail} height={80} width={80} />
-            </Col>
-            <Col>
-              <Space direction='vertical' size={5}>
-                <Button type='link' color='info'>
-                  {data.name}
-                </Button>
-                <Text type='secondary' className='text-sm'>
-                  {prodCat.find((cat) => cat.value === data.category)?.label
-                    ? prodCat.find((cat) => cat.value === data.category)?.label
-                    : data.category}
-                </Text>
-              </Space>
-            </Col>
-          </Row>
-        );
-      },
+      sorter: (a, b) => a.name > b.name,
+      defaultSortOrder: 'descend',
+      sortDirections: ['descend'],
+      render: (_: any, data: { [x: string]: string | undefined }) => (
+        <Row gutter={10}>
+          <Col span={8}>
+            <Image src={data.thumbnail} height={80} width={80} />
+          </Col>
+          <Col>
+            <Space direction='vertical' size={5}>
+              <Button type='link' color='info'>
+                {data.name}
+              </Button>
+              <Text type='secondary' className='text-sm'>
+                {prodCat.find((cat) => cat.value === data.category)?.label
+                  ? prodCat.find((cat) => cat.value === data.category)?.label
+                  : data.category}
+              </Text>
+            </Space>
+          </Col>
+        </Row>
+      ),
     },
     {
       title: 'SKU',
       dataIndex: 'sku',
+      sortOrder: false,
       key: 'sku',
+      render: (data) => <Text type='secondary'>{data}</Text>,
     },
     {
       title: 'Price',
       dataIndex: 'price',
+      sortOrder: false,
       key: 'price',
+      render: (data) => (
+        <Text type='secondary'>{moneyFormatter(parseFloat(data))}</Text>
+      ),
     },
     {
       title: 'Quantity',
       key: 'quantity',
+      sortOrder: false,
       render: (data: any) => {
         return (
           <InputNumber
@@ -316,6 +328,7 @@ const PackEdit = () => {
       dataIndex: 'id',
       width: 100,
       key: 'action',
+      sortOrder: false,
       render: (data: any) => {
         return (
           <DeleteButton
@@ -457,13 +470,12 @@ const PackEdit = () => {
 
                 <Form.Item
                   label='Products To Be Included'
-                  name='product'
                   validateStatus={errMsg.type === 'require_product' && 'error'}
                   help={errMsg.type === 'require_product' && errMsg.message}
                 >
                   <ProductSelect
                     products={products}
-                    onChange={(data) => {
+                    onSelect={(data) => {
                       setSelectedProds([
                         ...selectedProds,
                         {

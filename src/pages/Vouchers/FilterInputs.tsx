@@ -67,11 +67,12 @@ const FilterInputs = () => {
     setSearchParams(
       searchParams.get('status') !== null
         ? {
+            limit: searchParams.get('limit'),
             status: searchParams.get('status'),
             ...value,
             ...availTm,
           }
-        : { ...value, ...availTm }
+        : { limit: searchParams.get('limit'), ...value, ...availTm }
     );
   };
 
@@ -79,9 +80,10 @@ const FilterInputs = () => {
     setSearchParams(
       searchParams.get('status') !== null
         ? {
+            limit: searchParams.get('limit'),
             status: searchParams.get('status'),
           }
-        : {}
+        : { limit: searchParams.get('limit') }
     );
   };
 

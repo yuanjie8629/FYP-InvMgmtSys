@@ -42,10 +42,11 @@ const FilterInputs = () => {
     setSearchParams(
       searchParams.get('type') !== null
         ? {
+            limit: searchParams.get('limit'),
             type: searchParams.get('type'),
             ...values,
           }
-        : values
+        : { limit: searchParams.get('limit'), ...values }
     );
   };
 
@@ -53,9 +54,10 @@ const FilterInputs = () => {
     setSearchParams(
       searchParams.get('type') !== null
         ? {
+            limit: searchParams.get('limit'),
             type: searchParams.get('type'),
           }
-        : {}
+        : { limit: searchParams.get('limit') }
     );
   };
 

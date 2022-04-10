@@ -105,10 +105,11 @@ const CustRegFilterInputs = () => {
     setSearchParams(
       searchParams.get('type') !== null
         ? {
+            limit: searchParams.get('limit'),
             type: searchParams.get('type'),
             ...value,
           }
-        : { ...value, ...registration_date }
+        : { limit: searchParams.get('limit'), ...value, ...registration_date }
     );
   };
 
@@ -116,9 +117,10 @@ const CustRegFilterInputs = () => {
     setSearchParams(
       searchParams.get('type') !== null
         ? {
+            limit: searchParams.get('limit'),
             type: searchParams.get('type'),
           }
-        : {}
+        : { limit: searchParams.get('limit') }
     );
   };
 

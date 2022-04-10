@@ -52,9 +52,7 @@ def validate_image(instance, request):
         ori_path = ori.image.url
         match = False
         for old in old_images:
-            path = urlparse(old).path
-
-            if ori_path == path:
+            if ori_path == old:
                 match = True
                 break
 

@@ -1,5 +1,5 @@
 import React, { Key, useEffect, useState } from 'react';
-import { Col, Row, Typography, Space, TablePaginationConfig } from 'antd';
+import { Col, Row, Typography, Space } from 'antd';
 import './InformativeTable.less';
 import { ButtonType } from '@components/Button';
 import Table, { TableProps } from '@components/Table';
@@ -33,79 +33,26 @@ const InformativeTable = ({
   defPg = 10,
   buttons,
   rowSelectable = true,
-  onSelectChange = () => '',
+  onSelectChange = () => null,
   totalRecord,
+  currentPg,
   ...props
 }: InformativeTableProps) => {
   const { Text } = Typography;
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>();
   const [selectedRowCount, setSelectedRowCount] = useState(0);
-  const [pagination, setPagination] = useState<TablePaginationConfig>();
   const [btnShow, setBtnShow] = useState<Array<{ key: string; show: boolean }>>(
     []
   );
-  const [currentPg, setCurrentPg] = useState(1);
 
   useEffect(() => {
-    let isMounted = true;
-    if (isMounted && searchParams.has('offset')) {
-      let offset = Number(searchParams.get('offset'));
-      setCurrentPg(offset / defPg + 1);
-    }
-    return () => {
-      isMounted = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    let isMounted = true;
     setSelectedRowCount(0);
-    setSelectedRowKeys([]);
+    setSelectedRowKeys(undefined);
     setBtnShow([]);
-    if (isMounted) {
-      if (pagination !== undefined) {
-        setCurrentPg(pagination.current);
-        if (
-          Number(searchParams.get('limit')) !== pagination.pageSize ||
-          Number(searchParams.get('offset')) !==
-            (pagination.current - 1) * pagination.pageSize
-        ) {
-          let offset = (pagination.current - 1) * pagination.pageSize;
-          if (offset > 0) {
-            setSearchParams(
-              addSearchParams(searchParams, {
-                limit: String(pagination.pageSize),
-                offset: (pagination.current - 1) * pagination.pageSize,
-              })
-            );
-          } else {
-            setSearchParams(
-              removeSearchParams(
-                new URLSearchParams(
-                  addSearchParams(searchParams, {
-                    limit: String(pagination.pageSize),
-                  })
-                ),
-                'offset'
-              )
-            );
-          }
-        }
-      } else {
-        setSearchParams(
-          addSearchParams(searchParams, { limit: String(defPg) })
-        );
-      }
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, [defPg, pagination, searchParams, setSearchParams, props.dataSource]);
+  }, [defPg, searchParams, setSearchParams, props.dataSource]);
 
-  const hanldeTableChange = (paginate, _filters, sorter) => {
-    setPagination(paginate);
+  const hanldeTableChange = (pagination, _filters, sorter) => {
     if (sorter['order'] !== undefined) {
       let key = sorter['columnKey'];
       let prefix;
@@ -126,6 +73,35 @@ const InformativeTable = ({
     } else {
       setSearchParams(removeSearchParams(searchParams, 'ordering'));
     }
+
+    if (pagination !== undefined) {
+      if (pagination.current > 1) {
+        if (
+          Number(searchParams.get('limit')) !== pagination.pageSize ||
+          Number(searchParams.get('offset')) !==
+            (pagination.current - 1) * pagination.pageSize
+        ) {
+          setSearchParams(
+            addSearchParams(searchParams, {
+              limit: String(pagination.pageSize),
+              offset: (pagination.current - 1) * pagination.pageSize,
+            })
+          );
+        }
+      } else {
+        setSearchParams(
+          removeSearchParams(
+            new URLSearchParams(
+              addSearchParams(searchParams, {
+                limit: String(pagination.pageSize),
+              })
+            ),
+            'offset'
+          )
+        );
+      }
+    } else
+      setSearchParams(addSearchParams(searchParams, { limit: String(defPg) }));
   };
 
   const handleSelectChange = (selectedRowKeys: any, selectedRows: any) => {

@@ -15,7 +15,7 @@ export const productDetailsAPI = (id: string) =>
 
 export const productCreateAPI = (data) => {
   if (getAccessTknExpiry() < moment().unix()) {
-    refreshTknAPI().then((res) =>
+    return refreshTknAPI().then((res) =>
       axios.post(`item/product/`, data, {
         headers: {
           'Content-type': 'multipart/form-data',
@@ -41,7 +41,7 @@ export const productUpdAPI = (id, data) => {
       })
     );
   } else {
-    return axios.post(`item/product/`, data, {
+    return axios.patch(`item/product/${id}/`, data, {
       headers: {
         'Content-type': 'multipart/form-data',
       },
