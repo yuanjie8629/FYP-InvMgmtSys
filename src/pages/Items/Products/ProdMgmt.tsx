@@ -204,9 +204,11 @@ const ProdMgmt = () => {
 
   const handleTabChange = (key) => {
     if (key !== 'all') {
+      searchParams.delete('offset');
       setSearchParams(addSearchParams(searchParams, { status: key }));
     } else {
       searchParams.delete('status');
+      searchParams.delete('offset');
       setSearchParams(parseURL(searchParams));
     }
   };

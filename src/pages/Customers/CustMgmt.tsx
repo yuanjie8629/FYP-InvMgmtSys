@@ -202,12 +202,14 @@ const CustMgmt = () => {
 
     setSelected(getCustDetails(selectedRecord));
   };
-
-  const handleTabChange = (key: string) => {
+  
+  const handleTabChange = (key) => {
     if (key !== 'all') {
+      searchParams.delete('offset');
       setSearchParams(addSearchParams(searchParams, { type: key }));
     } else {
       searchParams.delete('type');
+      searchParams.delete('offset');
       setSearchParams(parseURL(searchParams));
     }
   };
