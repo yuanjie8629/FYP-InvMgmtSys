@@ -6,7 +6,7 @@ import { BoldTitle } from '@components/Title';
 import { MessageContext } from '@contexts/MessageContext';
 import { getPrevMth } from '@utils/dateUtils';
 import { serverErrMsg } from '@utils/messageUtils';
-import { Col, Row, Space, Table, Typography } from 'antd';
+import { Col, Row, Skeleton, Space, Table, Typography } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { HiExclamation } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
@@ -137,13 +137,20 @@ const InvAnalysis = () => {
           </Col>
         </Row>
         <Row>
-          <Table
-            dataSource={data}
-            columns={ssColumns}
-            pagination={false}
-            loading={loading}
-            className='full-width'
-          />
+          {loading ? (
+            <Skeleton
+              active={loading}
+              title={null}
+              paragraph={{ rows: 13, width: '100%' }}
+            />
+          ) : (
+            <Table
+              dataSource={data}
+              columns={ssColumns}
+              pagination={false}
+              className='full-width'
+            />
+          )}
         </Row>
       </Space>
     </MainCard>

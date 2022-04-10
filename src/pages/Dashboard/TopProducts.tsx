@@ -66,7 +66,7 @@ const TopProducts = () => {
             <Text className='dashboard-grey-text'>{getMthYr()}</Text>
           </Row>
         </div>
-        {loading || data.length <= 0 ? (
+        {loading ? (
           <RankingListSkeleton itemType='product' active={loading} total={6} />
         ) : (
           <RankingList
