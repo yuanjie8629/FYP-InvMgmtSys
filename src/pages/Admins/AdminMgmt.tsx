@@ -1,8 +1,9 @@
 import ComingSoon from '@components/Layout/ComingSoon';
-import Coding from '@assets/ComingSoon/Coding.gif';
 
 const AdminMgmt = () => {
-  return <ComingSoon img={Coding} />;
+  return (
+    <ComingSoon img='https://res.cloudinary.com/yuanjie/image/upload/v1649580968/CommingSoon/Coding_f1mnl7.gif' />
+  );
 };
 
 export default AdminMgmt;

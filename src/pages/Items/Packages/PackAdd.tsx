@@ -288,8 +288,8 @@ const PackAdd = () => {
       scrollToFirstError={{ behavior: 'smooth', block: 'center' }}
       onFinish={handleAddPackage}
     >
-      <Layout>
-        <FormSpin spinning={dataLoading || loading} />
+      <Layout gutter={30}>
+        <FormSpin visible={dataLoading || loading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>
@@ -689,7 +689,7 @@ const PackAdd = () => {
             />
           </MainCardContainer>
         </Col>
-        <Col xs={8} xl={5} push={1}>
+        <Col xs={8} xl={5}>
           <Anchor offsetTop={150} targetOffset={targetOffset}>
             {anchorList.map((anchor) => (
               <Link

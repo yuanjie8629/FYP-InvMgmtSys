@@ -113,7 +113,7 @@ const CustView = () => {
   return (
     <Form name='custForm' layout='vertical' size='small' form={custForm}>
       <Layout>
-        <FormSpin spinning={loading} />
+        <FormSpin visible={loading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>

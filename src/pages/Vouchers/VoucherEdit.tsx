@@ -60,7 +60,7 @@ const VoucherEdit = () => {
   };
 
   const showErrMsg = (errMsg?: string) => {
-    messageApi.open({type: 'error', content: errMsg });
+    messageApi.open({ type: 'error', content: errMsg });
   };
 
   const handleEditVoucher = (values) => {
@@ -164,7 +164,7 @@ const VoucherEdit = () => {
       onFinish={handleEditVoucher}
     >
       <Layout>
-        <FormSpin spinning={dataLoading || loading} />
+        <FormSpin visible={dataLoading || loading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>

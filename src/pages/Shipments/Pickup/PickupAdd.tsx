@@ -64,7 +64,7 @@ const PickupAdd = () => {
       <Layout>
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
-            <FormSpin spinning={submitLoading} />
+            <FormSpin visible={submitLoading} />
             <MainCard>
               <Space direction='vertical' size={20} className='full-width'>
                 <Title level={4} id='pickupLocInfo'>

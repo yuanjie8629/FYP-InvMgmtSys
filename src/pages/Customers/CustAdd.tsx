@@ -89,7 +89,7 @@ const CustAdd = () => {
   const handleSubmit = (values) => {
     let { city, state, ...data } = values;
     data.birthdate = getDt(data.birthdate);
-    data.phone_num = data.phone_num.replace(/-|\s/g,"");
+    data.phone_num = data.phone_num.replace(/-|\s/g, '');
     data = removeInvalidData(data);
     setSubmitLoading(true);
     posRegAPI(data)
@@ -138,8 +138,8 @@ const CustAdd = () => {
       onFinish={handleSubmit}
       scrollToFirstError={{ behavior: 'smooth', block: 'center' }}
     >
-      <Layout>
-        <FormSpin spinning={loading || submitLoading} />
+      <Layout gutter={30}>
+        <FormSpin visible={loading || submitLoading} />
         <Col xs={16} xl={19} className='center-flex'>
           <MainCardContainer>
             <MainCard>
