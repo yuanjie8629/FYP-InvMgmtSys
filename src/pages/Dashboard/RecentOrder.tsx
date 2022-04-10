@@ -146,7 +146,7 @@ const RecentOrder = () => {
           </Col>
         </Row>
         <Row>
-          {loading || data.length <= 0 ? (
+          {loading ? (
             <Skeleton
               active={loading}
               title={null}
