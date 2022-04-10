@@ -186,7 +186,6 @@ const PackAdd = () => {
     setProducts([...products, selectedProds.find((prod) => prod.id === data)]);
     setSelectedProds(selectedProds.filter((prod) => prod.id !== data));
   };
-
   const prodColumns: {
     title: string;
     dataIndex?: string | string[];
@@ -204,9 +203,9 @@ const PackAdd = () => {
       title: 'Product',
       dataIndex: ['name', 'category', 'thumbnail'],
       key: 'name',
-      sorter: (a, b) => a.name > b.name,
+      sorter: (a, b) => a.name < b.name,
       defaultSortOrder: 'descend',
-      sortDirections: ['descend'],
+      sortDirections: [],
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={10}>
           <Col span={8}>

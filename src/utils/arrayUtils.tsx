@@ -22,3 +22,10 @@ export const removeInvalidData = (values) => {
   );
   return values;
 };
+
+export const groupBy = (array: any[], key: string) =>
+  array.reduce((group, obj) => {
+    group[obj[key]] = group[obj[key]] ?? [];
+    group[obj[key]].push(obj);
+    return group;
+  }, {});
