@@ -1,37 +1,43 @@
-import { Input, AutoComplete } from 'antd';
-import { useEffect, useState } from 'react';
+import { Input, AutoComplete, AutoCompleteProps } from 'antd';
+import { useState } from 'react';
 import Button from '@components/Button';
 
-interface ProductListProps {
+interface ProductListProps extends AutoCompleteProps {
   products?: any[];
-  onChange?: (data) => void;
+  onSelect?: (data) => void;
 }
 
-const ProductList = ({ products, onChange = () => null }: ProductListProps) => {
+const ProductList = ({
+  products,
+  onSelect = () => null,
+  ...props
+}: ProductListProps) => {
   const [searchProd, setSearchProd] = useState('');
-  const [dataSource, setDataSource] = useState([]);
-
-  useEffect(() => {
-    setDataSource(products);
-  }, [products]);
+  const [value, setValue] = useState('');
 
   const onDataSourceSelect = () => {
-    if (Number.isInteger(searchProd)) onChange(searchProd);
+    if (Number.isInteger(searchProd)) {
+      onSelect(searchProd);
+      setSearchProd('');
+      setValue('');
+    }
   };
 
   return (
     <Input.Group compact>
       <AutoComplete
         placeholder='Product Name'
-        options={dataSource?.map((prod) => {
+        options={products?.map((prod) => {
           return { label: prod?.name, value: prod?.name, extra: prod?.id };
         })}
-        filterOption
         notFoundContent='Not Found'
         style={{ width: '40%' }}
         onChange={(value, option) => {
           setSearchProd(option['extra']);
+          setValue(value);
         }}
+        value={value}
+        {...props}
       />
       <Button
         type='primary'

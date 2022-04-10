@@ -118,12 +118,18 @@ const CustMgmtFilterInputs = () => {
     setSearchParams(
       searchParams.get('type') !== null
         ? {
+            limit: searchParams.get('limit'),
             type: searchParams.get('type'),
             ...value,
             ...joined_date,
             ...last_order_dt,
           }
-        : { ...value, ...joined_date, ...last_order_dt }
+        : {
+            limit: searchParams.get('limit'),
+            ...value,
+            ...joined_date,
+            ...last_order_dt,
+          }
     );
   };
 
@@ -131,9 +137,10 @@ const CustMgmtFilterInputs = () => {
     setSearchParams(
       searchParams.get('type') !== null
         ? {
+            limit: searchParams.get('limit'),
             type: searchParams.get('type'),
           }
-        : {}
+        : { limit: searchParams.get('limit') }
     );
   };
 

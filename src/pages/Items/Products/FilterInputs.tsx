@@ -7,6 +7,7 @@ import InputSelect from '@components/Input/InputSelect';
 import SelectWithLabel from '@components/Input/SelectWithLabel';
 import { removeInvalidData } from '@utils/arrayUtils';
 import { prodCat } from '@utils/optionUtils';
+import { removeSearchParams } from '@utils/urlUtls';
 import { Form, Row, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useEffect, useState } from 'react';
@@ -54,14 +55,19 @@ const FilterInputs = (props: FilterInputsProps) => {
 
   const handleSearch = (values) => {
     values = removeInvalidData(values);
-
     setSearchParams(
-      searchParams.get('status') !== null
-        ? {
-            status: searchParams.get('status'),
-            ...values,
-          }
-        : values
+      removeSearchParams(
+        new URLSearchParams(
+          searchParams.get('status') !== null
+            ? {
+                limit: searchParams.get('limit'),
+                status: searchParams.get('status'),
+                ...values,
+              }
+            : { limit: searchParams.get('limit'), ...values }
+        ),
+        'offset'
+      )
     );
   };
 
@@ -69,9 +75,10 @@ const FilterInputs = (props: FilterInputsProps) => {
     setSearchParams(
       searchParams.get('status') !== null
         ? {
+            limit: searchParams.get('limit'),
             status: searchParams.get('status'),
           }
-        : {}
+        : { limit: searchParams.get('limit') }
     );
   };
 

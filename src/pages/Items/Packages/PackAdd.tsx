@@ -32,6 +32,8 @@ import { getDt } from '@utils/dateUtils';
 import ProductSelect from './ProductSelect';
 import FormSpin from '@components/Spin/FormSpin';
 import { MessageContext } from '@contexts/MessageContext';
+import moment from 'moment';
+import { moneyFormatter } from '@utils/numUtils';
 
 const PackAdd = () => {
   const { Text, Title, Paragraph } = Typography;
@@ -189,7 +191,10 @@ const PackAdd = () => {
     title: string;
     dataIndex?: string | string[];
     key: string;
-    sorter?: boolean;
+    sorter?: any;
+    sortOrder?: any;
+    sortDirections?: any;
+    defaultSortOrder?: 'ascend' | 'descend';
     width?: number | string;
     align?: 'left' | 'center' | 'right';
     fixed?: 'left' | 'right';
@@ -199,6 +204,9 @@ const PackAdd = () => {
       title: 'Product',
       dataIndex: ['name', 'category', 'thumbnail'],
       key: 'name',
+      sorter: (a, b) => a.name > b.name,
+      defaultSortOrder: 'descend',
+      sortDirections: ['descend'],
       render: (_: any, data: { [x: string]: string | undefined }) => (
         <Row gutter={10}>
           <Col span={8}>
@@ -220,16 +228,23 @@ const PackAdd = () => {
     {
       title: 'SKU',
       dataIndex: 'sku',
+      sortOrder: false,
       key: 'sku',
+      render: (data) => <Text type='secondary'>{data}</Text>,
     },
     {
       title: 'Price',
       dataIndex: 'price',
+      sortOrder: false,
       key: 'price',
+      render: (data) => (
+        <Text type='secondary'>{moneyFormatter(parseFloat(data))}</Text>
+      ),
     },
     {
       title: 'Quantity',
       key: 'quantity',
+      sortOrder: false,
       render: (data: any) => {
         return (
           <InputNumber
@@ -250,6 +265,7 @@ const PackAdd = () => {
       dataIndex: 'id',
       width: 100,
       key: 'action',
+      sortOrder: false,
       render: (data: any) => {
         return (
           <DeleteButton
@@ -374,13 +390,12 @@ const PackAdd = () => {
 
                 <Form.Item
                   label='Products To Be Included'
-                  name='product'
                   validateStatus={errMsg.type === 'require_product' && 'error'}
                   help={errMsg.type === 'require_product' && errMsg.message}
                 >
                   <ProductSelect
                     products={products}
-                    onChange={(data) => {
+                    onSelect={(data) => {
                       setSelectedProds([
                         ...selectedProds,
                         {

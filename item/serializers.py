@@ -97,6 +97,7 @@ class ProductSerializer(serializers.ModelSerializer):
         return product
 
     def update(self, instance, validated_data):
+        print(validated_data)
         if "sku" in validated_data:
             check_sku(validated_data.get("sku"), compare=instance.sku)
         images = validated_data.pop("image", None)

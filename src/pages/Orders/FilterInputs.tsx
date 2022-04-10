@@ -81,11 +81,12 @@ const FilterInputs = () => {
     setSearchParams(
       searchParams.get('type') !== null
         ? {
+            limit: searchParams.get('limit'),
             type: searchParams.get('type'),
             ...value,
             ...order_date,
           }
-        : { ...value, ...order_date }
+        : { limit: searchParams.get('limit'), ...value, ...order_date }
     );
   };
 
@@ -93,9 +94,10 @@ const FilterInputs = () => {
     setSearchParams(
       searchParams.get('type') !== null
         ? {
+            limit: searchParams.get('limit'),
             type: searchParams.get('type'),
           }
-        : {}
+        : { limit: searchParams.get('limit') }
     );
   };
 

@@ -43,6 +43,9 @@ const PackInv = () => {
   const getTableData = (isMounted: boolean = true) => {
     setSelected([]);
     setTableLoading(true);
+    if (!searchParams.has('limit')) {
+      setSearchParams(addSearchParams(searchParams, { limit: String(defPg) }));
+    }
     packagePrevAPI(location.search)
       .then((res) => {
         if (isMounted) {
@@ -51,6 +54,8 @@ const PackInv = () => {
           if (searchParams.has('offset')) {
             let offset = Number(searchParams.get('offset'));
             setCurrentPg(offset / defPg + 1);
+          } else {
+            setCurrentPg(1);
           }
           setTableLoading(false);
         }
@@ -137,7 +142,7 @@ const PackInv = () => {
       title: 'Package',
       dataIndex: ['name', 'sku', 'thumbnail'],
       key: 'name',
-      width: 260,
+      width: 400,
       sorter: true,
       defaultSortOrder: getSortOrder('name'),
       render: (_: any, data: { [x: string]: string | undefined }) => (

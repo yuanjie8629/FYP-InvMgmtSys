@@ -43,6 +43,9 @@ const ProdInv = () => {
   const getTableData = (isMounted: boolean = true) => {
     setSelected([]);
     setTableLoading(true);
+    if (!searchParams.has('limit')) {
+      setSearchParams(addSearchParams(searchParams, { limit: String(defPg) }));
+    }
     productPrevAPI(location.search)
       .then((res) => {
         if (isMounted) {
@@ -51,6 +54,8 @@ const ProdInv = () => {
           if (searchParams.has('offset')) {
             let offset = Number(searchParams.get('offset'));
             setCurrentPg(offset / defPg + 1);
+          } else {
+            setCurrentPg(1);
           }
           setTableLoading(false);
         }
