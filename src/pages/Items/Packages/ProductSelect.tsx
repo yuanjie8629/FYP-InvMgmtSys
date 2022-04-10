@@ -40,7 +40,10 @@ const ProductList = ({
         options={getProdByCat()}
         filterOption={(inputValue, option) => {
           if (value !== '')
-            return option.value?.toString().toLowerCase().includes(inputValue);
+            return option.value
+              ?.toString()
+              .toLowerCase()
+              .includes(inputValue.toLowerCase());
           else return true;
         }}
         notFoundContent='Not Found'
