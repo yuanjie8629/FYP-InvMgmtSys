@@ -274,12 +274,8 @@ const OrderMgmt = () => {
 
   const handleTabChange = (key) => {
     if (key !== 'all') {
-      setSearchParams(
-        addSearchParams(
-          new URLSearchParams(removeSearchParams(searchParams, 'offset')),
-          { status: key }
-        )
-      );
+      searchParams.delete('offset');
+      setSearchParams(addSearchParams(searchParams, { status: key }));
     } else {
       searchParams.delete('status');
       searchParams.delete('offset');

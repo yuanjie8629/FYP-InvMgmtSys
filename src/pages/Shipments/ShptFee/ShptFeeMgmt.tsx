@@ -147,9 +147,11 @@ const ShptFeeMgmt = () => {
 
   const handleTabChange = (key) => {
     if (key !== 'all') {
+      searchParams.delete('offset');
       setSearchParams(addSearchParams(searchParams, { type: key }));
     } else {
       searchParams.delete('type');
+      searchParams.delete('offset');
       setSearchParams(parseURL(searchParams));
     }
   };
