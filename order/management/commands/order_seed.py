@@ -94,6 +94,7 @@ class Command(BaseCommand):
                 .prefetch_related("cust_type")
                 .first()
             )
+            print(voucher)
             if shipment_type == "shipping":
                 ship_fee = random.choice(
                     list(ShippingFee.objects.filter(location=postcode.state))
@@ -127,7 +128,9 @@ class Command(BaseCommand):
                 cust=cust,
                 shipment=shipment,
                 total_amt=0,
+                voucher=voucher,
             )
+
             item = Item.objects.all()
             total_amount = 0
             for x in range(random.randint(1, item.count())):
@@ -182,5 +185,4 @@ class Command(BaseCommand):
             order.total_amt = total_amount
             order.status = "completed"
             order.created_at = order_date
-            order.save()
-
+            order.save(update_fields=["total_amt", "status", "created_at"])
