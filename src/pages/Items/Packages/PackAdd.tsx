@@ -374,7 +374,11 @@ const PackAdd = () => {
                   {/* <Input.TextArea style={{ height: 200 }} /> */}
                   <TextEditor placeholder='Please add the package description here.' />
                 </Form.Item>
-                <Form.Item label='Package Status' name='status'>
+                <Form.Item
+                  label='Package Status'
+                  name='status'
+                  initialValue='active'
+                >
                   <Checkbox
                     onChange={(e) => {
                       if (e.target.checked) {
