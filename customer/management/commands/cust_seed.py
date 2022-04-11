@@ -6,6 +6,7 @@ from customer.models import Cust, CustType
 from customer.choices import MARITAL_STATUS
 from core.choices import GENDER_CHOICES
 from postcode.models import Postcode
+from django.contrib.auth.hashers import make_password
 
 
 class Command(BaseCommand):
@@ -21,9 +22,11 @@ class Command(BaseCommand):
                 "cust_type": lambda x: CustType.objects.get(type="cust"),
                 "name": lambda x: seeder.faker.name(),
                 "email": lambda x: seeder.faker.email(),
-                "password": lambda x: Cust.objects.make_random_password(
-                    length=30,
-                    allowed_chars="abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789[()[\]{}|\\`~!@#$%^&*_\-+=;:'\",<>./?]",
+                "password": lambda x: make_password(
+                    Cust.objects.make_random_password(
+                        length=30,
+                        allowed_chars="abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789[()[\]{}|\\`~!@#$%^&*_\-+=;:'\",<>./?]",
+                    )
                 ),
                 "gender": lambda x: random.choice(gender_list),
                 "birthdate": lambda x: seeder.faker.date_of_birth(

@@ -81,7 +81,7 @@ const PickupAdd = () => {
                   ]}
                   style={{ width: '40%' }}
                 >
-                  <TextArea placeholder='Input' maxLength={200}/>
+                  <TextArea placeholder='Input' maxLength={200} rows={4} showCount/>
                 </Form.Item>
               </Space>
             </MainCard>
