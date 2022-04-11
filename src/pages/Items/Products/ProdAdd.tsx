@@ -74,6 +74,7 @@ const ProdAdd = () => {
   };
 
   const handleAddProduct = (values) => {
+    console.log(values);
     let { profit, description, ...data } = values;
     if (!values.sku) {
       setErrMsg({
@@ -82,7 +83,6 @@ const ProdAdd = () => {
       });
       return;
     }
-    if (data.status === undefined) data.status = 'active';
     data.description = description.toHTML();
     data = removeInvalidData(data);
 
@@ -229,7 +229,17 @@ const ProdAdd = () => {
                   <TextEditor placeholder='Please add the product description here.' />
                 </Form.Item>
                 <Form.Item label='Product Status' name='status'>
-                  <Checkbox>Hidden</Checkbox>
+                  <Checkbox
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        prodForm.setFieldsValue({ status: 'hidden' });
+                      } else {
+                        prodForm.setFieldsValue({ status: 'active' });
+                      }
+                    }}
+                  >
+                    Hidden
+                  </Checkbox>
                 </Form.Item>
               </Space>
             </MainCard>
