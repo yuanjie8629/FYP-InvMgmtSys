@@ -29,6 +29,7 @@ def validate_image(instance, request):
     thumbnail = data.get("thumbnail")
     if not isinstance(thumbnail, InMemoryUploadedFile):
         data.pop("thumbnail", None)
+    else:
         cloudinary.uploader.destroy(instance.thumbnail.public_id, invalidate=True)
 
     ori_images = instance.image.all()
