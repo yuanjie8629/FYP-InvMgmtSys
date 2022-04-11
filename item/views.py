@@ -21,7 +21,6 @@ from item.serializers import (
     ProductPrevSerializer,
     ProductSerializer,
 )
-from urllib.parse import urlparse
 from rest_framework.parsers import MultiPartParser, FormParser
 
 
@@ -30,6 +29,7 @@ def validate_image(instance, request):
     thumbnail = data.get("thumbnail")
     if not isinstance(thumbnail, InMemoryUploadedFile):
         data.pop("thumbnail", None)
+        cloudinary.uploader.destroy(instance.thumbnail.public_id, invalidate=True)
 
     ori_images = instance.image.all()
     new_images = []
