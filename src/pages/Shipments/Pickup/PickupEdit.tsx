@@ -18,7 +18,7 @@ import {
 
 const PickupEdit = () => {
   const { Title } = Typography;
-
+  const { TextArea } = Input;
   const { Link } = Anchor;
   const [pickupForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -106,7 +106,7 @@ const PickupEdit = () => {
                   ]}
                   style={{ width: '40%' }}
                 >
-                  <Input placeholder='Input' />
+                  <TextArea placeholder='Input' maxLength={200} />
                 </Form.Item>
               </Space>
             </MainCard>

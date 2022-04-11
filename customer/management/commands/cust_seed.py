@@ -18,9 +18,13 @@ class Command(BaseCommand):
             Cust,
             30,
             {
-                "cust_type":lambda x: CustType.objects.get(type='cust'),
+                "cust_type": lambda x: CustType.objects.get(type="cust"),
                 "name": lambda x: seeder.faker.name(),
                 "email": lambda x: seeder.faker.email(),
+                "password": lambda x: Cust.objects.make_random_password(
+                    length=30,
+                    allowed_chars="abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789[()[\]{}|\\`~!@#$%^&*_\-+=;:'\",<>./?]",
+                ),
                 "gender": lambda x: random.choice(gender_list),
                 "birthdate": lambda x: seeder.faker.date_of_birth(
                     minimum_age=18, maximum_age=60
@@ -28,7 +32,7 @@ class Command(BaseCommand):
                 "date_joined": lambda x: seeder.faker.date_between_dates(
                     date_start=datetime.datetime(2021, 5, 1),
                     date_end=datetime.datetime.today(),
-                )
+                ),
             },
         )
         seeder.execute()

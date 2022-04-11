@@ -1,5 +1,5 @@
 import datetime
-from stripe import Order
+from order.models import Order
 from voucher.models import Voucher
 from voucher.serializers import VoucherSerializer
 from rest_framework import status

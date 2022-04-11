@@ -346,7 +346,7 @@ const OrderMgmt = () => {
             ? 'Agent'
             : type === 'drpshpr'
             ? 'Dropshipper'
-            : type === 'order'
+            : type === 'cust'
             ? 'Direct Customer'
             : 'Unregistered Customer'}
         </Text>
