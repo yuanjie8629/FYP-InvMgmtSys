@@ -1,6 +1,4 @@
 import csv
-from datetime import datetime
-import time
 from django.core.management import BaseCommand
 from django.utils import timezone
 from shipment.models import ShippingFee

@@ -42,6 +42,7 @@ def add_cust_pos(sender, instance, **kwargs):
                     username=instance.email,
                     cust_type=instance.position,
                     pos_reg=instance,
+                    # date_joined= instance.created_at
                 )
 
                 password = Cust.objects.make_random_password(
@@ -50,7 +51,6 @@ def add_cust_pos(sender, instance, **kwargs):
                 )
 
                 user.set_password(password)
-                print(password)
                 user.save()
 
                 context = {

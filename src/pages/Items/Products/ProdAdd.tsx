@@ -228,7 +228,11 @@ const ProdAdd = () => {
                   {/* <Input.TextArea style={{ height: 200 }} /> */}
                   <TextEditor placeholder='Please add the product description here.' />
                 </Form.Item>
-                <Form.Item label='Product Status' name='status'>
+                <Form.Item
+                  label='Product Status'
+                  name='status'
+                  initialValue='active'
+                >
                   <Checkbox
                     onChange={(e) => {
                       if (e.target.checked) {
