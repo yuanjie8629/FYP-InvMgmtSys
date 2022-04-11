@@ -31,12 +31,12 @@ const ssComponent = {
     {
       key: 'max_lead_tm',
       label: 'Maximum Lead Time',
-      desc: 'Maximum Lead Time',
+      desc: 'Maximum number of days it takes to receive the product once you place a new order',
     },
     {
       key: 'avg_lead_tm',
       label: 'Average Lead Time',
-      desc: 'Average Lead Time',
+      desc: 'Average number of days it takes to receive the product once you place a new order',
     },
   ],
 };

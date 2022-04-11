@@ -35,7 +35,7 @@ const eoqComponent = {
     {
       key: 'holding_cost',
       label: 'Carrying/Holding Cost',
-      desc: 'Cost for holding inventory in stock per unit, per year',
+      desc: 'Cost for holding inventory in stock per unit, per month',
     },
   ],
 };

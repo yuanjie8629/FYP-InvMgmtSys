@@ -168,9 +168,14 @@ const InvAnalysis = () => {
             key={`component-${searchParams.get('type')}`}
             label={analysis.component.header}
             suffixIcon={
-              analysis.component.content.some(
-                (component) =>
-                  list.map((data) => data[component.key] === null).length > 0
+              analysis.component.content.some((component) =>
+                list
+                  .map(
+                    (data) =>
+                      data[component.key] === null ||
+                      data[component.key] === undefined
+                  )
+                  .includes(true)
               ) ? (
                 <HiXCircle size={20} className='color-error' />
               ) : (

@@ -217,51 +217,77 @@ def sort_by_date(
 
         if not queryset.exists():
             queryset = [{"month": None, "value": None}]
-
-        if to_date.date().month >= datetime.date.today().month:
+        end_month = to_date
+        if (
+            to_date.date().month >= datetime.date.today().month
+            and to_date.date().year == datetime.date.today().year
+        ):
             end_month = datetime.date.today()
 
-        month = pd.date_range(
-            start=from_date.replace(day=1),
-            end=end_month,
-            freq="MS",
-            name="month",
-        )
+        if end_month != to_date:
+            month = pd.date_range(
+                start=from_date.replace(day=1),
+                end=end_month,
+                freq="MS",
+                name="month",
+            )
 
-        month_passed = (
-            pd.DataFrame(queryset)
-            .set_index("month")
-            .reindex(month, fill_value=0)
-            .reset_index()
-        )
+            month_passed = (
+                pd.DataFrame(queryset)
+                .set_index("month")
+                .reindex(month, fill_value=0)
+                .reset_index()
+            )
 
-        month_passed["month"] = (
-            month_passed["month"].dt.tz_localize("Asia/Kuala_Lumpur").astype(str)
-        )
+            month_passed["month"] = (
+                month_passed["month"].dt.tz_localize("Asia/Kuala_Lumpur").astype(str)
+            )
 
-        new_month = pd.date_range(
-            start=(end_month),
-            end=to_date,
-            freq="MS",
-            name="month",
-        )
+            new_month = pd.date_range(
+                start=(end_month),
+                end=to_date,
+                freq="MS",
+                name="month",
+            )
 
-        month_future = (
-            pd.DataFrame(queryset)
-            .set_index("month")
-            .reindex(new_month, fill_value=None)
-            .reset_index()
-        )
+            month_future = (
+                pd.DataFrame(queryset)
+                .set_index("month")
+                .reindex(new_month, fill_value=None)
+                .reset_index()
+            )
 
-        month_future["month"] = (
-            month_future["month"].dt.tz_localize("Asia/Kuala_Lumpur").astype(str)
-        )
+            month_future["month"] = (
+                month_future["month"].dt.tz_localize("Asia/Kuala_Lumpur").astype(str)
+            )
 
-        queryset = json.loads(
-            pd.concat([month_passed, month_future])
-            .assign(category=key_metrics)
-            .to_json(orient="records")
-        )
+            queryset = json.loads(
+                pd.concat([month_passed, month_future])
+                .assign(category=key_metrics)
+                .to_json(orient="records")
+            )
+        else:
+            month = pd.date_range(
+                start=from_date.replace(day=1),
+                end=to_date,
+                freq="MS",
+                name="month",
+            )
+
+            result = (
+                pd.DataFrame(queryset)
+                .set_index("month")
+                .reindex(month, fill_value=0)
+                .reset_index()
+            )
+
+            result["month"] = (
+                result["month"].dt.tz_localize("Asia/Kuala_Lumpur").astype(str)
+            )
+
+            queryset = json.loads(
+                result.assign(category=key_metrics).to_json(orient="records")
+            )
 
     return queryset
 
@@ -893,7 +919,6 @@ def KeyMetricsCSVView(request):
 
     summary_data = get_key_metrics_summary(from_date, to_date)
 
-
     if date_type == "month":
         summary_data = {
             "Date": "{} - {}".format(
@@ -1070,7 +1095,9 @@ class ABCAnalysisView(generics.ListAPIView):
             df["consumption_value_cumsum_percent"] = (
                 df["consumption_value_cumsum"] / df["consumption_value_total"]
             ) * 100
-            df["grade"] = df["consumption_value_cumsum_percent"].apply(abc_classification)
+            df["grade"] = df["consumption_value_cumsum_percent"].apply(
+                abc_classification
+            )
 
             if not any(df["grade"] == "A"):
                 if df.loc[0, "consumption_value_percent"] > 0.8:
@@ -1118,8 +1145,12 @@ class ABCAnalysisView(generics.ListAPIView):
             category = request.query_params.get("category", None)
             min_demand = request.query_params.get("min_demand", None)
             max_demand = request.query_params.get("max_demand", None)
-            min_consumption_value = request.query_params.get("min_consumption_value", None)
-            max_consumption_value = request.query_params.get("max_consumption_value", None)
+            min_consumption_value = request.query_params.get(
+                "min_consumption_value", None
+            )
+            max_consumption_value = request.query_params.get(
+                "max_consumption_value", None
+            )
 
             if name:
                 df = df[df.name.str.contains(name)]
@@ -1216,7 +1247,9 @@ class HMLAnalysisView(generics.ListAPIView):
             df["cost_per_unit_total"] = df["cost_per_unit"].sum()
             df.sort_values(by=["cost_per_unit"], ascending=False, inplace=True)
             df.reset_index(drop=True, inplace=True)
-            df["cost_per_unit_percent"] = df["cost_per_unit"] / df["cost_per_unit_total"]
+            df["cost_per_unit_percent"] = (
+                df["cost_per_unit"] / df["cost_per_unit_total"]
+            )
             df["cost_per_unit_cumsum"] = df["cost_per_unit"].cumsum()
             df["cost_per_unit_cumsum_percent"] = (
                 df["cost_per_unit_cumsum"] / df["cost_per_unit_total"]
@@ -1250,7 +1283,9 @@ class HMLAnalysisView(generics.ListAPIView):
             ordering = request.query_params.get("ordering", None)
 
             if not ordering:
-                df.sort_values(by=["cost_per_unit_percent"], ascending=False, inplace=True)
+                df.sort_values(
+                    by=["cost_per_unit_percent"], ascending=False, inplace=True
+                )
             else:
                 ascending = True
                 if "-" in ordering:
@@ -1293,7 +1328,7 @@ class HMLAnalysisView(generics.ListAPIView):
                 df = df[df.stock <= float(max_stock)]
 
             data = json.loads(df.to_json(orient="records"))
-            
+
         page = self.paginate_queryset(data)
         serializer = self.get_serializer(page, many=True)
         data = serializer.data
@@ -1379,7 +1414,7 @@ class EoqAnalysisView(generics.ListAPIView):
         # Check if the product's lead time is modified and replace to the original lead time during the specified date
 
         data = []
-        
+
         for instance in query:
             product = Product.objects.get(pk=instance.get("id"))
 
@@ -1442,8 +1477,12 @@ class EoqAnalysisView(generics.ListAPIView):
             max_ordering_cost = request.query_params.get("max_ordering_cost", None)
             min_holding_cost = request.query_params.get("min_holding_cost", None)
             max_holding_cost = request.query_params.get("max_holding_cost", None)
-            min_optimal_order_qty = request.query_params.get("min_optimal_order_qty", None)
-            max_optimal_order_qty = request.query_params.get("max_optimal_order_qty", None)
+            min_optimal_order_qty = request.query_params.get(
+                "min_optimal_order_qty", None
+            )
+            max_optimal_order_qty = request.query_params.get(
+                "max_optimal_order_qty", None
+            )
 
             if name:
                 df = df[df.name.str.contains(name)]
