@@ -322,7 +322,7 @@ const PackMgmt = () => {
                   let formData = new FormData();
                   formData.append(
                     'status',
-                    selectedStatus === 'hidden' ? 'hide' : 'activate'
+                    selectedStatus === 'hidden' ? 'hide' : 'active'
                   );
                   await packageUpdAPI(data.id, formData)
                     .then((res) => {

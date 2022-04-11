@@ -312,6 +312,16 @@ class PackageViewSet(viewsets.ModelViewSet):
         data.update({"product": [prod.dict() for prod in product_list]})
         print(data)
 
+        if not product_list:
+            raise serializers.ValidationError(
+                detail={
+                    "error": {
+                        "code": "require_product",
+                        "message": "Please add at least ONE product.",
+                    }
+                }
+            )
+
         return super().create(update_request_data(request, data), *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):

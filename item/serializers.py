@@ -223,16 +223,6 @@ class PackageWriteSerializer(serializers.ModelSerializer):
 
         products = validated_data.pop("product", None)
 
-        if products is None:
-            raise serializers.ValidationError(
-                detail={
-                    "error": {
-                        "code": "require_product",
-                        "message": "Please add at least ONE product.",
-                    }
-                }
-            )
-
         images = validated_data.pop("image", None)
 
         for prod in products:
@@ -266,38 +256,31 @@ class PackageWriteSerializer(serializers.ModelSerializer):
 
         products = validated_data.pop("product", None)
 
-        if products is None:
-            raise serializers.ValidationError(
-                detail={
-                    "error": {
-                        "code": "require_product",
-                        "message": "Please add at least ONE product.",
-                    }
-                }
-            )
-
         images = validated_data.pop("image", None)
 
-        for prod in products:
-            products = prod
-
-        product_ids = [prod.get("id") for prod in products]
-
-        product_list = Product.objects.filter(id__in=product_ids)
-        final_products = []
-        for prod_obj in product_list:
+        if products:
             for prod in products:
-                if str(prod_obj.id) == prod.get("id"):
-                    final_products.append(
-                        {"prod": prod_obj, "quantity": prod.get("quantity")}
-                    )
+                products = prod
+
+            product_ids = [prod.get("id") for prod in products]
+
+            product_list = Product.objects.filter(id__in=product_ids)
+            final_products = []
+            for prod_obj in product_list:
+                for prod in products:
+                    if str(prod_obj.id) == prod.get("id"):
+                        final_products.append(
+                            {"prod": prod_obj, "quantity": prod.get("quantity")}
+                        )
         for key in validated_data:
             setattr(instance, key, validated_data[key])
 
         instance.save()
-        PackageItem.objects.filter(pack=instance).delete()
-        for prod_data in final_products:
-            PackageItem.objects.create(**prod_data, pack=instance)
+
+        if products and final_products:
+            PackageItem.objects.filter(pack=instance).delete()
+            for prod_data in final_products:
+                PackageItem.objects.create(**prod_data, pack=instance)
 
         if images:
             for image_data in images:
