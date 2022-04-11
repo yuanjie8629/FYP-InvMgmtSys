@@ -98,7 +98,7 @@ const RecentOrder = () => {
             ? 'Agent'
             : type === 'drpshpr'
             ? 'Dropshipper'
-            : type === 'data'
+            : type === 'cust'
             ? 'Direct Customer'
             : 'Unregistered Customer'}
         </Text>
