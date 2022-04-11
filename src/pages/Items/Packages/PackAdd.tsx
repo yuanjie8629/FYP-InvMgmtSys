@@ -106,7 +106,6 @@ const PackAdd = () => {
       });
       return;
     }
-    if (data.status === undefined) data.status = 'active';
     data.description = description.toHTML();
     data.avail_start_dt = getDt(data.avail_start_dt);
     if (data.avail_end_tm) data.avail_end_tm = getDt(data.avail_end_tm);
@@ -376,7 +375,17 @@ const PackAdd = () => {
                   <TextEditor placeholder='Please add the package description here.' />
                 </Form.Item>
                 <Form.Item label='Package Status' name='status'>
-                  <Checkbox>Hidden</Checkbox>
+                  <Checkbox
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        packForm.setFieldsValue({ status: 'hidden' });
+                      } else {
+                        packForm.setFieldsValue({ status: 'active' });
+                      }
+                    }}
+                  >
+                    Hidden
+                  </Checkbox>
                 </Form.Item>
               </Space>
             </MainCard>
