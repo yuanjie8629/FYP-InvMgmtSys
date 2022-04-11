@@ -53,6 +53,7 @@ const InformativeTable = ({
   }, [defPg, searchParams, setSearchParams, props.dataSource]);
 
   const hanldeTableChange = (pagination, _filters, sorter) => {
+    let newSearchParams = searchParams;
     if (sorter['order'] !== undefined) {
       let key = sorter['columnKey'];
       let prefix;
@@ -65,34 +66,36 @@ const InformativeTable = ({
       if (prefix) {
         ordering = `${prefix}_ordering`;
       }
-      setSearchParams(
-        addSearchParams(searchParams, {
+      newSearchParams = new URLSearchParams(
+        addSearchParams(newSearchParams, {
           [ordering]: `${sorter['order'] === 'descend' ? '-' : ''}${key}`,
         })
       );
     } else {
-      setSearchParams(removeSearchParams(searchParams, 'ordering'));
+      newSearchParams = new URLSearchParams(
+        removeSearchParams(newSearchParams, 'ordering')
+      );
     }
 
     if (pagination !== undefined) {
       if (pagination.current > 1) {
         if (
-          Number(searchParams.get('limit')) !== pagination.pageSize ||
-          Number(searchParams.get('offset')) !==
+          Number(newSearchParams.get('limit')) !== pagination.pageSize ||
+          Number(newSearchParams.get('offset')) !==
             (pagination.current - 1) * pagination.pageSize
         ) {
-          setSearchParams(
-            addSearchParams(searchParams, {
+          newSearchParams = new URLSearchParams(
+            addSearchParams(newSearchParams, {
               limit: String(pagination.pageSize),
               offset: (pagination.current - 1) * pagination.pageSize,
             })
           );
         }
       } else {
-        setSearchParams(
+        newSearchParams = new URLSearchParams(
           removeSearchParams(
             new URLSearchParams(
-              addSearchParams(searchParams, {
+              addSearchParams(newSearchParams, {
                 limit: String(pagination.pageSize),
               })
             ),
@@ -100,8 +103,12 @@ const InformativeTable = ({
           )
         );
       }
-    } else
-      setSearchParams(addSearchParams(searchParams, { limit: String(defPg) }));
+    } else {
+      newSearchParams = new URLSearchParams(
+        addSearchParams(newSearchParams, { limit: String(defPg) })
+      );
+    }
+    setSearchParams(newSearchParams);
   };
 
   const handleSelectChange = (selectedRowKeys: any, selectedRows: any) => {
