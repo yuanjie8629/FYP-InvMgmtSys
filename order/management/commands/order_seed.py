@@ -73,7 +73,7 @@ class Command(BaseCommand):
             ship_fee = 0
             payment_method_list = [method[0] for method in PAYMENT_METHOD]
             date = faker.date_between_dates(
-                date_start=datetime.datetime(2021, 5, 1),
+                date_start=datetime.datetime(2021, 1, 1),
                 date_end=datetime.datetime.today(),
             )
             print(date)
