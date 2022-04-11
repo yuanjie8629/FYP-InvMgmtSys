@@ -119,8 +119,16 @@ const PackEdit = () => {
     if (data.avail_end_dt) {
       data.avail_end_dt = getDt(data.avail_end_dt);
     }
+    data.thumbnail = data.thumbnail[0].originFileObj
+      ? data.thumbnail[0].originFileObj
+      : data.thumbnail[0].url;
 
     data = removeInvalidData(data);
+    let newImageList = imageList.map((img) =>
+      'originFileObj' in img ? img.originFileObj : img.url
+    );
+    data.image = newImageList;
+    
     let formData = new FormData();
     Object.keys(data).forEach((item) => {
       if (item === 'image') {
