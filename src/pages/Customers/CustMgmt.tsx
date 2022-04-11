@@ -202,7 +202,7 @@ const CustMgmt = () => {
 
     setSelected(getCustDetails(selectedRecord));
   };
-  
+
   const handleTabChange = (key) => {
     if (key !== 'all') {
       searchParams.delete('offset');
@@ -294,12 +294,9 @@ const CustMgmt = () => {
       key: 'order/sales_per_month',
       sorter: true,
       defaultSortOrder: getSortOrderWithKey('order', 'sales_per_month'),
-      // sorter: (a, b) =>
-      //   parseFloat(a.sales_per_month) - parseFloat(b.sales_per_month),
-      // defaultSortOrder: getSortOrder('sales_per_month'),
       width: 160,
       render: (amount: string) =>
-        amount !== undefined ? (
+        amount !== undefined && amount !== null ? (
           <Text strong>{moneyFormatter(parseFloat(amount))}</Text>
         ) : (
           '-'
