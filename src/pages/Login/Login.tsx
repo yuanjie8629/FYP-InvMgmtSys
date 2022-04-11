@@ -209,7 +209,7 @@ const Login = (_props) => {
               className='login-logo-wrapper'
             >
               <Image
-                src='https://res.cloudinary.com/yuanjie/image/upload/v1645908976/logo_mvamgs.png'
+                src='https://res.cloudinary.com/yuanjie/image/upload/v1645908976/Shrf/logo_mvamgs.png'
                 alt='logo'
                 width='20%'
                 preview={false}
