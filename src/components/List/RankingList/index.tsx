@@ -38,6 +38,7 @@ export interface RankingListProps extends Omit<ListProps<any>, 'dataSource'> {
   onCardSelect?: (selected: RankingType) => void;
   onSelectChange?: (selected: string) => void;
   onPageChange?: (page: number, pageSize: number) => void;
+  currentPg?: number;
 }
 
 const RankingList = ({
@@ -50,6 +51,7 @@ const RankingList = ({
   onCardSelect = () => null,
   onSelectChange = () => null,
   onPageChange = () => null,
+  currentPg = 1,
   ...props
 }: RankingListProps) => {
   const { Text } = Typography;
@@ -168,6 +170,7 @@ const RankingList = ({
         <Row justify='end'>
           <Col>
             <Pagination
+              current={currentPg}
               showQuickJumper
               onChange={(page, pageSize) => {
                 onPageChange(page, pageSize);

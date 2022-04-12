@@ -17,10 +17,12 @@ const PackageRanking = ({ dateInfo }: RankingDashboardProps) => {
   const [total, setTotal] = useState<number>();
   const [loading, setLoading] = useState(false);
   const [rankingType, setRankingType] = useState<RankingType>('sales');
-  const [pagination, setPagination] = useState({ page: 1, pageSize: 6 });
+  const defPg = 6;
+  const [pagination, setPagination] = useState({ page: 1, pageSize: defPg });
   const [messageApi] = useContext(MessageContext);
 
   const getPackageRanking = (isMounted = true) => {
+    setData([]);
     setLoading(true);
     itemRankingAPI({
       itemType: 'package',
@@ -31,7 +33,7 @@ const PackageRanking = ({ dateInfo }: RankingDashboardProps) => {
       toDate: dateInfo.date.includes(' ~ ')
         ? dateInfo.date.split(' ~ ')[1]
         : dateInfo.date,
-      limit: 6,
+      limit: defPg,
       offset: (pagination.page - 1) * pagination.pageSize,
     })
       .then((res) => {
@@ -59,7 +61,7 @@ const PackageRanking = ({ dateInfo }: RankingDashboardProps) => {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateInfo, rankingType]);
+  }, [dateInfo, rankingType, pagination.page]);
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
@@ -102,11 +104,13 @@ const PackageRanking = ({ dateInfo }: RankingDashboardProps) => {
               }),
             }}
             showPagination
+            currentPg={pagination.page}
             totalData={total}
             cardSelections={rankingCardSelections}
             cardSelected={rankingType}
             onCardSelect={(selected) => {
               setRankingType(selected);
+              setPagination({ page: 1, ...pagination });
             }}
             onPageChange={(page, pageSize) => {
               setPagination({ page: page, pageSize: pageSize });
