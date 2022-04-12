@@ -91,7 +91,7 @@ const AffixOrder = ({
                 </UpdButton>
               </Col>
             )}
-            {pickup && (
+            {pickup && !['cancel', 'unpaid', 'completed'].includes(status) && (
               <Col>
                 <PickupButton
                   size='middle'
