@@ -151,9 +151,11 @@
                         Invoice To:
                       </p>
                       {{contact_name}}<br />
-                      {%if pickup%}
+                      {%if shipment_type == 'Shipping'%}
                       {{address}}<br />
                       {{postcode}}, {{city}}, {{state}}.
+                      {%else%}
+                      {{pickup}}
                       {%endif %}
                     </td>
                   </tr>
