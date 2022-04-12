@@ -65,7 +65,7 @@ class Command(BaseCommand):
         faker = Faker()
         cust_list = Cust.objects.all()
 
-        for x in range(3):
+        for x in range(30):
             cust = random.choice(cust_list)
             shipment_type = random.choice(["shipping", "pickup"])
             contact_num = faker.numerify(text="01########")
@@ -133,7 +133,7 @@ class Command(BaseCommand):
 
             item = Item.objects.all()
             total_amount = 0
-            for x in range(random.randint(1, item.count())):
+            for x in range(random.randint(1, 10)):
                 selected_item = random.choice(list(item))
                 quantity = random.randint(1, 10)
                 while order.order_line.all().filter(item=selected_item).exists():
