@@ -18,10 +18,12 @@ const ProductRanking = ({ dateInfo }: RankingDashboardProps) => {
   const [loading, setLoading] = useState(false);
   const [rankingType, setRankingType] = useState<RankingType>('sales');
   const [category, setCategory] = useState(undefined);
-  const [pagination, setPagination] = useState({ page: 1, pageSize: 6 });
+  const defPg = 6;
+  const [pagination, setPagination] = useState({ page: 1, pageSize: defPg });
   const [messageApi] = useContext(MessageContext);
 
   const getProductRanking = (isMounted = true) => {
+    setData([])
     setLoading(true);
     itemRankingAPI({
       itemType: 'product',
@@ -33,7 +35,7 @@ const ProductRanking = ({ dateInfo }: RankingDashboardProps) => {
         ? dateInfo.date.split(' ~ ')[1]
         : dateInfo.date,
       category: category,
-      limit: 6,
+      limit: defPg,
       offset: (pagination.page - 1) * pagination.pageSize,
     })
       .then((res) => {
@@ -50,7 +52,6 @@ const ProductRanking = ({ dateInfo }: RankingDashboardProps) => {
         }
       });
   };
-
   useEffect(() => {
     let isMounted = true;
 
@@ -61,7 +62,7 @@ const ProductRanking = ({ dateInfo }: RankingDashboardProps) => {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateInfo, rankingType, category]);
+  }, [dateInfo, rankingType, category, pagination.page]);
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
@@ -105,6 +106,7 @@ const ProductRanking = ({ dateInfo }: RankingDashboardProps) => {
               }),
             }}
             showPagination
+            currentPg={pagination.page}
             totalData={total}
             cardSelections={rankingCardSelections}
             cardSelected={rankingType}
@@ -116,9 +118,11 @@ const ProductRanking = ({ dateInfo }: RankingDashboardProps) => {
             }}
             onSelectChange={(selected) => {
               setCategory(selected);
+              setPagination({ ...pagination, page: 1 });
             }}
             onCardSelect={(selected) => {
               setRankingType(selected);
+              setPagination({ ...pagination, page: 1 });
             }}
             onPageChange={(page, pageSize) => {
               setPagination({ page: page, pageSize: pageSize });

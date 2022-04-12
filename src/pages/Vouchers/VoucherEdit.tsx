@@ -126,12 +126,19 @@ const VoucherEdit = () => {
             voucherForm.setFieldsValue({
               avail_start_dt: moment(avail_start_dt, 'DD-MM-YYYY'),
             });
+            setStartTime(moment(avail_start_dt, 'DD-MM-YYYY'));
             voucherForm.setFieldsValue({
               avail_end_dt:
                 avail_end_dt !== '31-12-9999'
                   ? moment(avail_end_dt, 'DD-MM-YYYY')
                   : undefined,
             });
+            setEndTime(
+              avail_end_dt !== '31-12-9999'
+                ? moment(avail_end_dt, 'DD-MM-YYYY')
+                : undefined
+            );
+
             setAutoApply(res.data.auto_apply);
 
             setAvailability(data.total_amt);

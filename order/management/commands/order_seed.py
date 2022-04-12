@@ -133,7 +133,7 @@ class Command(BaseCommand):
 
             item = Item.objects.all()
             total_amount = 0
-            for x in range(random.randint(1, 5)):
+            for x in range(random.randint(1, 12)):
                 selected_item = random.choice(list(item))
                 quantity = random.randint(1, 10)
                 while order.order_line.all().filter(item=selected_item).exists():
