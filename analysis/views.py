@@ -385,10 +385,10 @@ def ToDoListView(request):
     product_oos = Product.objects.filter(status="oos").count()
     package_oos = Package.objects.filter(status="oos").count()
     pending_agent_reg = CustPosReg.objects.filter(
-        accept=False, position__type="agent"
+        accept=None, position__type="agent"
     ).count()
     pending_dropshipper_reg = CustPosReg.objects.filter(
-        accept=False, position__type="drpshpr"
+        accept=None, position__type="drpshpr"
     ).count()
 
     data = {
