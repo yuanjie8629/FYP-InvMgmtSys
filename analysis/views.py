@@ -893,10 +893,10 @@ def KeyMetricsCSVView(request):
 
         df = df.round(2)
         df = df.pivot_table(values="value", index=[date_type], columns="category")
-        df["orders"] = df["orders"].astype("int")
-        df["customers"] = df["customers"].astype("int")
-        df["buyers"] = df["buyers"].astype("int")
-        df["units_sold"] = df["units_sold"].astype("int")
+        df["orders"] = df["orders"].replace(np.nan, 0).astype("int")
+        df["customers"] = df["customers"].replace(np.nan, 0).astype("int")
+        df["buyers"] = df["buyers"].replace(np.nan, 0).astype("int")
+        df["units_sold"] = df["units_sold"].replace(np.nan, 0).astype("int")
         df.index.name = None
         df.columns.name = None
         df.reset_index(inplace=True)
