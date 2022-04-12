@@ -55,7 +55,9 @@ const CustMgmtFilterInputs = () => {
         setSelectedInputSelect(key);
       }
 
-      if (['min_sales_per_month', 'max_sales_per_month'].includes(key)) {
+      if (
+        ['min_order_value_per_month', 'max_order_value_per_month'].includes(key)
+      ) {
         custMgmtFilter.setFieldsValue({ [key]: parseFloat(value) });
       }
 
@@ -190,14 +192,14 @@ const CustMgmtFilterInputs = () => {
           </FilterInputCol>
           <FilterInputCol>
             <InputNumberRange
-              formProps={{ name: 'sales_per_month' }}
-              label='Sales per Month'
+              formProps={{ name: 'order_value_per_month' }}
+              label='Monthly Order Value'
               placeholder={['Start', 'End']}
               defaultValue={
-                searchParams.has('min_sales_per_month') &&
-                searchParams.has('max_sales_per_month') && [
-                  parseFloat(searchParams.get('min_sales_per_month')),
-                  parseFloat(searchParams.get('max_sales_per_month')),
+                searchParams.has('min_order_value_per_month') &&
+                searchParams.has('max_order_value_per_month') && [
+                  parseFloat(searchParams.get('min_order_value_per_month')),
+                  parseFloat(searchParams.get('max_order_value_per_month')),
                 ]
               }
               prefix='RM'
@@ -206,7 +208,7 @@ const CustMgmtFilterInputs = () => {
               precision={2}
               textSpan={7}
               onChange={(value) => {
-                custMgmtFilter.setFieldsValue({ sales_per_month: value });
+                custMgmtFilter.setFieldsValue({ order_value_per_month: value });
               }}
             />
           </FilterInputCol>

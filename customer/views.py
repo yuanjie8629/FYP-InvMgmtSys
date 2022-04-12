@@ -14,6 +14,7 @@ from customer.serializers import (
     CustSerializer,
 )
 
+
 class CustView(viewsets.ModelViewSet):
     queryset = (
         Cust.objects.all()
@@ -39,30 +40,30 @@ class CustView(viewsets.ModelViewSet):
     #     ordering = request.query_params.get("ordering", None)
 
     #     response = super().list(request, *args, **kwargs)
-    #     min_sales_per_month = request.query_params.get("min_sales_per_month", None)
-    #     max_sales_per_month = request.query_params.get("max_sales_per_month", None)
+    #     min_order_value_per_month = request.query_params.get("min_order_value_per_month", None)
+    #     max_order_value_per_month = request.query_params.get("max_order_value_per_month", None)
     #     last_order_dt_before = request.query_params.get("last_order_dt_before", None)
     #     last_order_dt_after = request.query_params.get("last_order_dt_after", None)
 
     #     new_data = response.data.get("results")
 
     #     # Filtering
-    #     if min_sales_per_month:
+    #     if min_order_value_per_month:
     #         new_data = [
     #             data
     #             for data in new_data
     #             for (key, value) in data.items()
-    #             if key == "sales_per_month"
-    #             and float(value) >= float(min_sales_per_month)
+    #             if key == "order_value_per_month"
+    #             and float(value) >= float(min_order_value_per_month)
     #         ]
 
-    #     if max_sales_per_month:
+    #     if max_order_value_per_month:
     #         new_data = [
     #             data
     #             for data in new_data
     #             for (key, value) in data.items()
-    #             if key == "sales_per_month"
-    #             and float(value) <= float(max_sales_per_month)
+    #             if key == "order_value_per_month"
+    #             and float(value) <= float(max_order_value_per_month)
     #         ]
 
     #     if last_order_dt_before:
@@ -92,11 +93,11 @@ class CustView(viewsets.ModelViewSet):
     #             descending = True
     #             ordering = ordering[1:]
 
-    #         if ordering == "sales_per_month":
-    #             print("sort sales_per_month")
+    #         if ordering == "order_value_per_month":
+    #             print("sort order_value_per_month")
     #             new_data = sorted(
     #                 new_data,
-    #                 key=lambda d: float(d["sales_per_month"]),
+    #                 key=lambda d: float(d["order_value_per_month"]),
     #                 reverse=descending,
     #             )
 
@@ -104,7 +105,7 @@ class CustView(viewsets.ModelViewSet):
     #             print("sort last_order_dt")
     #             new_data = sorted(
     #                 new_data,
-    #                 key=lambda d: datetime.strptime(d["sales_per_month"], "%d-%m-%Y"),
+    #                 key=lambda d: datetime.strptime(d["order_value_per_month"], "%d-%m-%Y"),
     #                 reverse=descending,
     #             )
 

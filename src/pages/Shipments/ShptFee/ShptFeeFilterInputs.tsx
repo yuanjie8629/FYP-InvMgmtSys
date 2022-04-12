@@ -111,7 +111,7 @@ const FilterInputs = () => {
               precision={2}
               textSpan={5}
               onChange={(value) => {
-                shptFeeFilter.setFieldsValue({ sales_per_month: value });
+                shptFeeFilter.setFieldsValue({ order_value_per_month: value });
               }}
             />
           </FilterInputCol>
@@ -132,7 +132,7 @@ const FilterInputs = () => {
               min={0}
               textSpan={3}
               onChange={(value) => {
-                shptFeeFilter.setFieldsValue({ sales_per_month: value });
+                shptFeeFilter.setFieldsValue({ order_value_per_month: value });
               }}
             />
           </FilterInputCol>

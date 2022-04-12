@@ -178,7 +178,10 @@ const CustView = () => {
                   <Title level={4} id='posInfo'>
                     Agent / Dropshipper Information
                   </Title>
-                  <Form.Item label='Sales per Month' name='sales_per_month'>
+                  <Form.Item
+                    label='Monthly Order Value'
+                    name='order_value_per_month'
+                  >
                     <InputNumber
                       prefix='RM'
                       precision={2}

@@ -24,10 +24,8 @@ class Cust(Users):
             self.cust_type = CustType.objects.get(type="cust")
 
     @property
-    def get_sales_per_month(self):
-        if self.order.all().exists() and self.cust_type != CustType.objects.get(
-            type="cust"
-        ):
+    def get_order_value_per_month(self):
+        if self.order.all().exists():
             order_list = self.order.all().filter(
                 created_at__month=datetime.datetime.now().month
             )

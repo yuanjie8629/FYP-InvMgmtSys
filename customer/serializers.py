@@ -93,8 +93,8 @@ class CustSerializer(serializers.ModelSerializer):
     last_update = serializers.DateTimeField(
         input_formats=["%d-%m-%Y"], format="%d-%m-%Y"
     )
-    sales_per_month = serializers.DecimalField(
-        decimal_places=2, max_digits=12, source="get_sales_per_month"
+    order_value_per_month = serializers.DecimalField(
+        decimal_places=2, max_digits=12, source="get_order_value_per_month"
     )
     last_order_dt = serializers.DateTimeField(
         input_formats=["%d-%m-%Y"], format="%d-%m-%Y", source="get_last_order_dt"
@@ -119,8 +119,8 @@ class CustPrevSerializer(serializers.ModelSerializer):
     date_joined = serializers.DateTimeField(
         input_formats=["%d-%m-%Y"], format="%d-%m-%Y"
     )
-    sales_per_month = serializers.DecimalField(
-        decimal_places=2, max_digits=12, source="get_sales_per_month"
+    order_value_per_month = serializers.DecimalField(
+        decimal_places=2, max_digits=12, source="get_order_value_per_month"
     )
     last_order_dt = serializers.DateTimeField(
         input_formats=["%d-%m-%Y"], format="%d-%m-%Y", source="get_last_order_dt"
@@ -135,6 +135,6 @@ class CustPrevSerializer(serializers.ModelSerializer):
             "cust_type",
             "date_joined",
             "is_active",
-            "sales_per_month",
+            "order_value_per_month",
             "last_order_dt",
         ]
