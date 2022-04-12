@@ -55,7 +55,7 @@ class Shipment(OrderShipment):
 
 class PickupLoc(SoftDeleteModel):
     id = models.AutoField(primary_key=True)
-    location = models.CharField(max_length=200)
+    location = models.CharField(max_length=80)
 
     class Meta:
         db_table = "pickup_loc"

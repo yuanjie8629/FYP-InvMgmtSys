@@ -12,13 +12,13 @@ import { findRoutePath } from '@utils/routingUtils';
 import FormSpin from '@components/Spin/FormSpin';
 import '@components/Input/InputNumberRange/InputNumberRange.less';
 import {
-  pickupLocAddAPI,
   pickupLocDetailsAPI,
+  pickupLocUpdAPI,
 } from '@api/services/shipmentAPI';
 
 const PickupEdit = () => {
   const { Title } = Typography;
-  const { TextArea } = Input;
+
   const { Link } = Anchor;
   const [pickupForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -65,10 +65,10 @@ const PickupEdit = () => {
   const handleSubmit = (values) => {
     values = removeInvalidData(values);
     setSubmitLoading(true);
-    pickupLocAddAPI(values)
+    pickupLocUpdAPI(id, values)
       .then((res) => {
         setSubmitLoading(false);
-        navigate(findRoutePath('PickupEditSuccess'));
+        navigate(findRoutePath('pickupEditSuccess'));
       })
       .catch((err) => {
         if (err.response?.status !== 401) {
@@ -106,7 +106,7 @@ const PickupEdit = () => {
                   ]}
                   style={{ width: '40%' }}
                 >
-                   <TextArea placeholder='Input' maxLength={200} rows={4} showCount/>
+                  <Input placeholder='Input' />
                 </Form.Item>
               </Space>
             </MainCard>
@@ -114,6 +114,7 @@ const PickupEdit = () => {
             <AffixAction
               offsetBottom={0}
               label='Pickup Location'
+              type='edit'
               loading={submitLoading}
               disabled={loading}
             />
