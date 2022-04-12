@@ -112,9 +112,9 @@ const EoqAnalysis = ({
       sorter: true,
       defaultSortOrder: getSortOrder('holding_cost'),
       width: 120,
-      render: (amount: number) =>
+      render: (amount: string) =>
         amount !== undefined && amount !== null ? (
-          <Text type='secondary'>{moneyFormatter(amount)}</Text>
+          <Text type='secondary'>{moneyFormatter(parseFloat(amount))}</Text>
         ) : (
           <Popover content='Please update the holding cost for this product.'>
             <Space size={5}>
@@ -136,9 +136,9 @@ const EoqAnalysis = ({
       fixed: 'right',
       render: (amount: string) =>
         amount !== undefined && amount !== null ? (
-          <Text type='secondary'>{moneyFormatter(parseFloat(amount))}</Text>
+          <Text type='secondary'>{amount}</Text>
         ) : (
-          <Popover content='Please fill up the ordering and holding costs.' >
+          <Popover content='Please fill up the ordering and holding costs.'>
             <Space size={5}>
               <HiExclamation size={20} className='color-error' />
               <Text strong className='color-error'>

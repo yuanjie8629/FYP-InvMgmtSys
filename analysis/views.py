@@ -1449,6 +1449,8 @@ class EoqAnalysisView(generics.ListAPIView):
         data = serializer.data
         if data:
             df = pd.DataFrame(data)
+            df["ordering_cost"] = df["ordering_cost"].replace("", np.nan).astype(float)
+            df["holding_cost"] = df["holding_cost"].replace("", np.nan).astype(float)
             df["optimal_order_qty"] = np.sqrt(
                 (2 * df["demand"] * df["ordering_cost"]) / df["holding_cost"]
             )
