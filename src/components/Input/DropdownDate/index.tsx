@@ -14,7 +14,6 @@ import {
   validateMonth,
   validateYear,
   validateDropdownDate,
-  getMomentPrevDt,
 } from '@utils/dateUtils';
 import Popover from '@components/Popover';
 
@@ -293,7 +292,7 @@ const DropdownDate = ({
           picker='week'
           open={weekPicker.ind || validateDefOpen('byWeek')}
           value={weekPicker.defVal !== null && weekPicker.defVal}
-          disabledDate={(current) => current > getMomentPrevDt()}
+          disabledDate={(current) => current > moment()}
           onChange={(value) => {
             handlePickerChange(validateWeek(value, 'byWeek'), 'week', value);
           }}

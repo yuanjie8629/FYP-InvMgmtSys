@@ -16,15 +16,15 @@ import {
   getDt,
   getMth,
   getMthDt,
-  getThisMthTilYtd,
   getMthYr,
-  getThisWeekTilYtd,
-  getThisYrTilYtd,
   getWeekDt,
   getWeekOfYear,
   getYr,
   getYrDt,
   parseDateTime,
+  getThisMthTilTdy,
+  getThisWeekTilTdy,
+  getThisYrTilTdy,
 } from '@utils/dateUtils';
 import { keyMetricsAPI, KeyMetricsDateType } from '@api/services/analysisAPI';
 import { useContext } from 'react';
@@ -121,14 +121,14 @@ const Sales = () => {
   const getSalesDate =
     salesDateRange === 'month'
       ? `${getMthYr()} (${formatDt(
-          getThisMthTilYtd(),
+          getThisMthTilTdy(),
           'month',
           'DD-MM-YYYY ~ DD-MM-YYYY',
           'DD-MM-YYYY'
         )})`
       : salesDateRange === 'week'
       ? `${getWeekOfYear()} (${formatDt(
-          getThisWeekTilYtd(),
+          getThisWeekTilTdy(),
           'week',
           'DD-MM-YYYY ~ DD-MM-YYYY',
           'DD-MM-YYYY'
@@ -136,7 +136,7 @@ const Sales = () => {
       : salesDateRange === 'day'
       ? `${formatDt(getDt(), 'byDay', 'DD-MM-YYYY', 'DD MMMM YYYY')}`
       : `${getYr()} (${formatDt(
-          getThisYrTilYtd(),
+          getThisYrTilTdy(),
           'month',
           'DD-MM-YYYY ~ DD-MM-YYYY',
           'DD-MM-YYYY'
