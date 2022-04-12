@@ -41,7 +41,7 @@ def generate_invoice(instance):
 
     total_discount = 0
 
-    code =None
+    code = None
 
     if instance.voucher:
         voucher_version = (
@@ -65,9 +65,9 @@ def generate_invoice(instance):
                 total_discount = subtotal * instance.voucher.discount
             else:
                 total_discount = instance.voucher.discount
-      
-    payment = Payment.objects.filter(order =instance, paid=True).first()
-    
+
+    payment = Payment.objects.filter(order=instance, paid=True).first()
+
     context = {
         "contact_name": shipment.contact_name,
         "contact_num": shipment.contact_num,
@@ -75,6 +75,7 @@ def generate_invoice(instance):
         "postcode": postcode.postcode if hasattr(postcode, "postcode") else None,
         "city": postcode.city if hasattr(postcode, "city") else None,
         "state": postcode.state.name if hasattr(postcode, "state") else None,
+        "pickup": shipment.pickup_loc if hasattr(shipment, "pickup_loc") else None,
         "order_id": instance.id,
         "order_date": instance.created_at,
         "total_price": instance.total_amt,
@@ -87,7 +88,7 @@ def generate_invoice(instance):
         "shipment_type": "Shipping" if check_shipment else "Pickup",
         "invoice_date": datetime.now().strftime("%d-%m-%Y"),
         "voucher": code,
-        "payment_method": payment.get_method_display() if payment else None
+        "payment_method": payment.get_method_display() if payment else None,
     }
 
     template_path = "order_invoice.html"
