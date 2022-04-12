@@ -67,13 +67,18 @@ const InformativeTable = ({
         ordering = `${prefix}_ordering`;
       }
       newSearchParams = new URLSearchParams(
-        addSearchParams(newSearchParams, {
-          [ordering]: `${sorter['order'] === 'descend' ? '-' : ''}${key}`,
-        })
+        addSearchParams(
+          new URLSearchParams(
+            removeSearchParams(newSearchParams, 'ordering', true)
+          ),
+          {
+            [ordering]: `${sorter['order'] === 'descend' ? '-' : ''}${key}`,
+          }
+        )
       );
     } else {
       newSearchParams = new URLSearchParams(
-        removeSearchParams(newSearchParams, 'ordering')
+        removeSearchParams(newSearchParams, 'ordering', true)
       );
     }
 
