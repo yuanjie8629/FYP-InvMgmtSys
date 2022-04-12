@@ -66,11 +66,11 @@ class CustFilter(PropertyFilterSet):
     joined_date_after = filters.DateFilter(
         field_name="date_joined", input_formats=["%d-%m-%Y"], lookup_expr="gte"
     )
-    min_sales_per_month = PropertyNumberFilter(
-        field_name="get_sales_per_month", lookup_expr="gte"
+    min_order_value_per_month = PropertyNumberFilter(
+        field_name="get_order_value_per_month", lookup_expr="gte"
     )
-    max_sales_per_month = PropertyNumberFilter(
-        field_name="get_sales_per_month", lookup_expr="lte"
+    max_order_value_per_month = PropertyNumberFilter(
+        field_name="get_order_value_per_month", lookup_expr="lte"
     )
     last_order_dt_before = PropertyDateTimeFilter(
         field_name="get_last_order_dt", input_formats=["%d-%m-%Y"], lookup_expr="lte"
@@ -90,7 +90,7 @@ class CustFilter(PropertyFilterSet):
 
     order_ordering = PropertyOrderingFilter(
         fields=(
-            ("get_sales_per_month", "sales_per_month"),
+            ("get_order_value_per_month", "order_value_per_month"),
             ("get_last_order_dt_datetime", "last_order_dt"),
         )
     )
