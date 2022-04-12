@@ -116,15 +116,15 @@ class CustPosRegFilter(filters.FilterSet):
     contact_num = filters.CharFilter(field_name="phone_num", lookup_expr="icontains")
     accept = filters.BooleanFilter(field_name="accept")
     pending = filters.BooleanFilter(field_name="accept", lookup_expr="isnull")
-    registration_date_before = filters.DateFilter(
+    created_at_before = filters.DateFilter(
         field_name="created_at", input_formats=["%d-%m-%Y"], lookup_expr="lte"
     )
-    registration_date_after = filters.DateFilter(
+    created_at_after = filters.DateFilter(
         field_name="created_at", input_formats=["%d-%m-%Y"], lookup_expr="gte"
     )
 
     ordering = filters.OrderingFilter(
-        fields=("id", "name", "email", "phone_num", "registration_date", "gender")
+        fields=("id", "name", "email", "phone_num", "created_at", "gender", "position")
     )
 
     class Meta:

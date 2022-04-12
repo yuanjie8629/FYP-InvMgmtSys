@@ -37,7 +37,7 @@ class Cust(Users):
             else:
                 return 0
         else:
-            return None
+            return 0
 
     @property
     def get_last_order_dt(self):
