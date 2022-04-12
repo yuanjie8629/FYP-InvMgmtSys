@@ -49,6 +49,7 @@ const InvAnalysis = () => {
   const getTableData = (isMounted: boolean = true) => {
     if (searchParams.has('month')) {
       setList([]);
+      setCurrentPg(1);
       setTableLoading(true);
       invAnalysisAPI(searchParams.get('type'), location.search)
         .then((res) => {
