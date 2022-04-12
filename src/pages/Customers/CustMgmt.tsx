@@ -290,14 +290,16 @@ const CustMgmt = () => {
     },
     {
       title: 'Sales per Month',
-      dataIndex: 'sales_per_month',
+      dataIndex: ['sales_per_month', 'cust_type'],
       key: 'order/sales_per_month',
       sorter: true,
       defaultSortOrder: getSortOrderWithKey('order', 'sales_per_month'),
       width: 160,
-      render: (amount: string) =>
-        amount !== undefined && amount !== null ? (
-          <Text strong>{moneyFormatter(parseFloat(amount))}</Text>
+      render: (_: any, data: { [x: string]: string }) =>
+        data.sales_per_month !== undefined &&
+        data.sales_per_month !== null &&
+        ['agent', 'drpshpr'].includes(data.cust_type) ? (
+          <Text strong>{moneyFormatter(parseFloat(data.sales_per_month))}</Text>
         ) : (
           '-'
         ),
