@@ -922,7 +922,7 @@ def KeyMetricsCSVView(request):
     if date_type == "month":
         summary_data = {
             "Date": "{} - {}".format(
-                from_date.strftime("%d-%m"), to_date.strftime("%d-%m")
+                from_date.strftime("%Y-%m"), to_date.strftime("%Y-%m")
             ),
             **summary_data,
         }
