@@ -103,8 +103,12 @@ class EOQAnalysisSerializer(serializers.ModelSerializer):
     name = serializers.CharField(read_only=True)
     sku = serializers.CharField(read_only=True)
     demand = serializers.IntegerField(read_only=True)
-    ordering_cost = serializers.IntegerField(read_only=True)
-    holding_cost = serializers.IntegerField(read_only=True)
+    ordering_cost = serializers.DecimalField(
+        max_digits=10, decimal_places=2, read_only=True
+    )
+    holding_cost = serializers.DecimalField(
+        max_digits=10, decimal_places=2, read_only=True
+    )
 
     class Meta:
         model = Product
