@@ -97,13 +97,13 @@ export const getNextWeek = (
     .endOf('week')
     .format(outputFormat)}`;
 
-export const getThisWeekTilYtd = (
+export const getThisWeekTilTdy = (
   date?: moment.Moment | string,
   inputFormat?: string,
   outputFormat: string = 'DD-MM-YYYY'
 ) => {
   let startWeek = moment(date, inputFormat).startOf('week');
-  let end = moment().subtract(1, 'day');
+  let end = moment();
   if (startWeek.isAfter(end)) {
     end = startWeek;
   }
@@ -123,16 +123,14 @@ export const getNextMth = (
     .endOf('month')
     .format(outputFormat)}`;
 
-export const getThisMthTilYtd = (
+export const getThisMthTilTdy = (
   date?: moment.Moment | string,
   inputFormat?: string,
   outputFormat: string = 'DD-MM-YYYY'
 ) =>
   `${moment(date, inputFormat)
     .startOf('month')
-    .format(outputFormat)} ~ ${moment()
-    .subtract(1, 'day')
-    .format('DD-MM-YYYY')}`;
+    .format(outputFormat)} ~ ${moment().format('DD-MM-YYYY')}`;
 
 export const getNextYr = (
   date?: moment.Moment | string,
@@ -147,16 +145,14 @@ export const getNextYr = (
     .endOf('year')
     .format(outputFormat)}`;
 
-export const getThisYrTilYtd = (
+export const getThisYrTilTdy = (
   date?: moment.Moment | string,
   inputFormat?: string,
   outputFormat: string = 'DD-MM-YYYY'
 ) =>
   `${moment(date, inputFormat)
     .startOf('year')
-    .format(outputFormat)} ~ ${moment()
-    .subtract(1, 'day')
-    .format(outputFormat)}`;
+    .format(outputFormat)} ~ ${moment().format(outputFormat)}`;
 
 export const getPrevDt = (
   date?: moment.Moment | string,
@@ -289,8 +285,8 @@ export const validateWeek = (
   if (
     moment(newDt).isBetween(moment().startOf('week'), moment().endOf('week'))
   ) {
-    newDt = getThisWeekTilYtd(newDt, undefined, outputFormat);
-    newLbl = getWeekOfYear(getThisWeekTilYtd(newDt), outputFormat);
+    newDt = getThisWeekTilTdy(newDt, undefined, outputFormat);
+    newLbl = getWeekOfYear(getThisWeekTilTdy(newDt), outputFormat);
   } else {
     newDt = getWeekDt(newDt, undefined, outputFormat);
     newLbl = getWeekOfYear(newDt, outputFormat);
@@ -330,8 +326,8 @@ export const validateMonth = (
   );
 
   if (getMth(newDt) === getMth()) {
-    newDt = getThisMthTilYtd(newDt, undefined, outputFormat);
-    newLbl = getMth(getThisWeekTilYtd(newDt), outputFormat);
+    newDt = getThisMthTilTdy(newDt, undefined, outputFormat);
+    newLbl = getMth(getThisWeekTilTdy(newDt), outputFormat);
   } else {
     newDt = getMthDt(newDt, undefined, outputFormat);
     newLbl = getMth(newDt, outputFormat);
@@ -371,8 +367,8 @@ export const validateYear = (
   );
 
   if (getYr(newDt) === getYr()) {
-    newDt = getThisYrTilYtd(newDt, undefined, outputFormat);
-    newLbl = getYr(getThisWeekTilYtd(newDt), outputFormat);
+    newDt = getThisYrTilTdy(newDt, undefined, outputFormat);
+    newLbl = getYr(getThisWeekTilTdy(newDt), outputFormat);
   } else {
     newDt = getYrDt(newDt, undefined, outputFormat);
     newLbl = getYr(newDt, outputFormat);
