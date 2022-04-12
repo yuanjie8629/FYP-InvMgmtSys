@@ -253,7 +253,7 @@ const CustMgmt = () => {
       key: 'name',
       sorter: true,
       defaultSortOrder: getSortOrder('name'),
-      width: 200,
+      width: 250,
       render: (_: any, data: { [x: string]: string }) => (
         <Space direction='vertical' size={5}>
           {data.name && (
@@ -436,7 +436,7 @@ const CustMgmt = () => {
               totalRecord={recordCount}
               onSelectChange={handleSelectChange}
               currentPg={currentPg}
-              scroll={{ x: 1200 }}
+              scroll={{ x: 1500 }}
             />
           </Space>
         </MainCard>

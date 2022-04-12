@@ -9,9 +9,18 @@ export const addSearchParams = (
 
 export const removeSearchParams = (
   currParams: URLSearchParams,
-  removeKey: string
+  removeKey: string,
+  removeMatch: boolean = false
 ) => {
-  currParams.delete(removeKey);
+  if (removeMatch) {
+    currParams.forEach((_value, key) => {
+      if (key.includes(removeKey)) {
+        currParams.delete(key);
+      }
+    });
+  } else {
+    currParams.delete(removeKey);
+  }
   return parseURL(currParams);
 };
 

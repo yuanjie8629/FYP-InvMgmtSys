@@ -83,7 +83,7 @@ class CustFilter(PropertyFilterSet):
         fields=(
             ("id", "id"),
             ("name", "name"),
-            ("cust_type", "cust_type"),
+            ("cust_type", "type"),
             ("date_joined", "date_joined"),
         )
     )
