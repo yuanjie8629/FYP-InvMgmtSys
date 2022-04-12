@@ -15,7 +15,7 @@ import { pickupLocAddAPI } from '@api/services/shipmentAPI';
 
 const PickupAdd = () => {
   const { Title } = Typography;
-  const { TextArea } = Input;
+
   const { Link } = Anchor;
   const [pickupForm] = Form.useForm();
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -81,7 +81,7 @@ const PickupAdd = () => {
                   ]}
                   style={{ width: '40%' }}
                 >
-                  <TextArea placeholder='Input' maxLength={200} rows={4} showCount/>
+                  <Input placeholder='Input' />
                 </Form.Item>
               </Space>
             </MainCard>

@@ -37,5 +37,5 @@ export const pickupLocDelAPI = (id) =>
 export const pickupLocBulkDelAPI = (ids: number[]) =>
   axios.post(`shipment/pickup_loc/bulk/delete/`, { ids: ids });
 
-export const pickupLocUpdAPI = (data) =>
-  axios.patch(`shipment/pickup_loc/`, data);
+export const pickupLocUpdAPI = (id,data) =>
+  axios.patch(`shipment/pickup_loc/${id}/`, data);
