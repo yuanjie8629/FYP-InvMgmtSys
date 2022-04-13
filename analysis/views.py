@@ -1005,11 +1005,14 @@ class ABCAnalysisView(generics.ListAPIView):
     serializer_class = ABCAnalysisResultSerializer
 
     def get(self, request, *args, **kwargs):
-        month = get_month(request)
+        date = get_month(request)
 
         # Get product demand in packages sold in which the packages contain the product
         prod_quantity_in_pack = (
-            PackageItem.objects.filter(pack__order__created_at__month=month.month)
+            PackageItem.objects.filter(
+                pack__order__created_at__year=date.year,
+                pack__order__created_at__month=date.month,
+            )
             .values("prod")
             .annotate(
                 demand=Coalesce(Sum(F("quantity") * F("pack__order_line__quantity")), 0)
@@ -1027,7 +1030,8 @@ class ABCAnalysisView(generics.ListAPIView):
                     Avg(
                         Case(
                             When(
-                                order__created_at__month=month.month,
+                                order__created_at__year=date.year,
+                                order__created_at__month=date.month,
                                 then=F("order_line__cost_per_unit"),
                             )
                         )
@@ -1038,7 +1042,8 @@ class ABCAnalysisView(generics.ListAPIView):
                     Sum(
                         Case(
                             When(
-                                order__created_at__month=month.month,
+                                order__created_at__year=date.year,
+                                order__created_at__month=date.month,
                                 then=F("order_line__quantity"),
                             )
                         )
@@ -1153,10 +1158,10 @@ class ABCAnalysisView(generics.ListAPIView):
             )
 
             if name:
-                df = df[df.name.str.contains(name)]
+                df = df[df.name.str.contains("(?i){}".format(name))]
 
             if sku:
-                df = df[df.sku.str.contains(sku)]
+                df = df[df.sku.str.contains("(?i){}".format(sku))]
 
             if category:
                 df = df[df.category == dict(PROD_CAT)[category]]
@@ -1207,7 +1212,7 @@ class HMLAnalysisView(generics.ListAPIView):
     serializer_class = HMLAnalysisResultSerializer
 
     def get(self, request, *args, **kwargs):
-        month = get_month(request)
+        date = get_month(request)
 
         # Get cost_per_unit for precise result (to avoid any modification of unit cost during the specified period)
         data = (
@@ -1218,7 +1223,8 @@ class HMLAnalysisView(generics.ListAPIView):
                     Avg(
                         Case(
                             When(
-                                order__created_at__month=month.month,
+                                order__created_at__year=date.year,
+                                order__created_at__month=date.month,
                                 then=F("order_line__cost_per_unit"),
                             )
                         )
@@ -1307,10 +1313,10 @@ class HMLAnalysisView(generics.ListAPIView):
             max_stock = request.query_params.get("max_stock", None)
 
             if name:
-                df = df[df.name.str.contains(name)]
+                df = df[df.name.str.contains("(?i){}".format(name))]
 
             if sku:
-                df = df[df.sku.str.contains(sku)]
+                df = df[df.sku.str.contains("(?i){}".format(sku))]
 
             if category:
                 df = df[df.category == dict(PROD_CAT)[category]]
@@ -1345,11 +1351,14 @@ class EoqAnalysisView(generics.ListAPIView):
     serializer_class = EOQAnalysisResultSerializer
 
     def get(self, request, *args, **kwargs):
-        month = get_month(request)
+        date = get_month(request)
 
         # Get product demand in packages sold in which the packages contain the product
         prod_quantity_in_pack = (
-            PackageItem.objects.filter(pack__order__created_at__month=month.month)
+            PackageItem.objects.filter(
+                pack__order__created_at__year=date.year,
+                pack__order__created_at__month=date.month,
+            )
             .values("prod")
             .annotate(
                 demand=Coalesce(Sum(F("quantity") * F("pack__order_line__quantity")), 0)
@@ -1359,7 +1368,9 @@ class EoqAnalysisView(generics.ListAPIView):
 
         # Get demand
         query = (
-            Product.objects.filter(order__created_at__month=month.month)
+            Product.objects.filter(
+                order__created_at__year=date.year, order__created_at__month=date.month
+            )
             .values(
                 "id",
                 day=TruncDay("order_line__order__created_at"),
@@ -1419,10 +1430,10 @@ class EoqAnalysisView(generics.ListAPIView):
             product = Product.objects.get(pk=instance.get("id"))
 
             # Replace the month to the last date of month
-            month.replace(day=calendar.monthrange(month.year, month.month)[1])
+            date.replace(day=calendar.monthrange(date.year, date.month)[1])
             product_version = (
                 Version.objects.get_for_object(product)
-                .filter(revision__date_created__lte=month)
+                .filter(revision__date_created__lte=date)
                 .order_by("-revision__date_created")
                 .first()
             )
@@ -1487,10 +1498,10 @@ class EoqAnalysisView(generics.ListAPIView):
             )
 
             if name:
-                df = df[df.name.str.contains(name)]
+                df = df[df.name.str.contains("(?i){}".format(name))]
 
             if sku:
-                df = df[df.sku.str.contains(sku)]
+                df = df[df.sku.str.contains("(?i){}".format(sku))]
 
             if category:
                 df = df[df.category == dict(PROD_CAT)[category]]
@@ -1537,11 +1548,14 @@ class SSAnalysisView(generics.ListAPIView):
     serializer_class = SSAnalysisResultSerializer
 
     def get(self, request, *args, **kwargs):
-        month = get_month(request)
+        date = get_month(request)
 
         # Get product demand in packages sold in which the packages contain the product
         prod_quantity_in_pack = (
-            PackageItem.objects.filter(pack__order__created_at__month=month.month)
+            PackageItem.objects.filter(
+                pack__order__created_at__year=date.year,
+                pack__order__created_at__month=date.month,
+            )
             .values("prod")
             .annotate(
                 demand=Coalesce(Sum(F("quantity") * F("pack__order_line__quantity")), 0)
@@ -1552,7 +1566,9 @@ class SSAnalysisView(generics.ListAPIView):
         # Get max daily demand
         subquery = (
             Product.objects.filter(
-                order__created_at__month=month.month, pk=OuterRef("pk")
+                order__created_at__year=date.year,
+                order__created_at__month=date.month,
+                pk=OuterRef("pk"),
             )
             .values(
                 day=TruncDay("order_line__order__created_at"),
@@ -1578,7 +1594,9 @@ class SSAnalysisView(generics.ListAPIView):
 
         # Combine all query and get avg daily demand
         query = (
-            Product.objects.filter(order__created_at__month=month.month)
+            Product.objects.filter(
+                order__created_at__year=date.year, order__created_at__month=date.month
+            )
             .values("id")
             .annotate(
                 day=TruncDay("order_line__order__created_at"),
@@ -1638,10 +1656,10 @@ class SSAnalysisView(generics.ListAPIView):
             product = Product.objects.get(pk=instance.get("id"))
 
             # Replace the month to the last date of month
-            month.replace(day=calendar.monthrange(month.year, month.month)[1])
+            date.replace(day=calendar.monthrange(date.year, date.month)[1])
             product_version = (
                 Version.objects.get_for_object(product)
-                .filter(revision__date_created__lte=month)
+                .filter(revision__date_created__lte=date)
                 .order_by("-revision__date_created")
                 .first()
             )
@@ -1702,10 +1720,10 @@ class SSAnalysisView(generics.ListAPIView):
             reorder_point_end = request.query_params.get("reorder_point_end", None)
 
             if name:
-                df = df[df.name.str.contains(name)]
+                df = df[df.name.str.contains("(?i){}".format(name))]
 
             if sku:
-                df = df[df.sku.str.contains(sku)]
+                df = df[df.sku.str.contains("(?i){}".format(sku))]
 
             if category:
                 df = df[df.category == dict(PROD_CAT)[category]]
