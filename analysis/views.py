@@ -1430,7 +1430,7 @@ class EoqAnalysisView(generics.ListAPIView):
             product = Product.objects.get(pk=instance.get("id"))
 
             # Replace the month to the last date of month
-            date.replace(day=calendar.monthrange(date.year, date.month)[1])
+            date = date.replace(day=calendar.monthrange(date.year, date.month)[1])
             product_version = (
                 Version.objects.get_for_object(product)
                 .filter(revision__date_created__lte=date)
@@ -1656,7 +1656,7 @@ class SSAnalysisView(generics.ListAPIView):
             product = Product.objects.get(pk=instance.get("id"))
 
             # Replace the month to the last date of month
-            date.replace(day=calendar.monthrange(date.year, date.month)[1])
+            date = date.replace(day=calendar.monthrange(date.year, date.month)[1])
             product_version = (
                 Version.objects.get_for_object(product)
                 .filter(revision__date_created__lte=date)
