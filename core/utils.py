@@ -190,7 +190,7 @@ def get_month(request):
 
     if (
         month_date.year >= datetime.date.today().year
-        and month_date.month_date >= datetime.date.today().month_date
+        and month_date.month >= datetime.date.today().month
     ):
         raise serializers.ValidationError(
             detail={
