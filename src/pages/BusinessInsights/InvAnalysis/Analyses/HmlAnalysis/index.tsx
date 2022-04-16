@@ -5,7 +5,7 @@ import { GradeH, GradeL, GradeM } from './HmlAnalysisUtils';
 import MainCard from '@components/Card/MainCard';
 import { InvAnalysisProps } from '../..';
 import { BoldTitle } from '@components/Title';
-import {  getMthYr } from '@utils/dateUtils';
+import { getMthYr } from '@utils/dateUtils';
 import InformativeTable from '@components/Table/InformativeTable';
 import { getSortOrder } from '@utils/urlUtls';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -35,8 +35,8 @@ const HmlAnalysis = ({
   }[] = [
     {
       title: 'Product',
-      dataIndex: ['id','name', 'category', 'thumbnail'],
-      key: 'prod',
+      dataIndex: ['id', 'name', 'category', 'thumbnail'],
+      key: 'name',
       sorter: true,
       width: 250,
       fixed: 'left',

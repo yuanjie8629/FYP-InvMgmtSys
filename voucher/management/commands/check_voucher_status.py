@@ -8,7 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         launching_voucher = Voucher.objects.filter(
-            avail_start_dt__gte=datetime.date.today()
+            avail_start_dt__lte=datetime.date.today(), status="scheduled"
         )
         print("launching voucher")
         print(launching_voucher)
@@ -19,7 +19,9 @@ class Command(BaseCommand):
 
         print("----------------------------")
 
-        expire_voucher = Voucher.objects.filter(avail_end_dt__lt=datetime.date.today())
+        expire_voucher = Voucher.objects.filter(
+            avail_end_dt__lt=datetime.date.today(), status="active"
+        )
         print("expired voucher")
         print(expire_voucher)
         if expire_voucher:

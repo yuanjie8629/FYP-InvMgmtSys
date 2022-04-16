@@ -8,7 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         completing_orders = Order.objects.filter(
-            last_update=datetime.date.today() - datetime.timedelta(days=14),
+            last_update__lte=datetime.date.today() - datetime.timedelta(days=14),
             status="shipping",
         )
         for order in completing_orders:
@@ -16,7 +16,7 @@ class Command(BaseCommand):
             order.save()
 
         unpaid_orders = Order.objects.filter(
-            last_update=datetime.date.today() - datetime.timedelta(days=14),
+            last_update__lte=datetime.date.today() - datetime.timedelta(days=14),
             status="unpaid",
         )
 
