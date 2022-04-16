@@ -10,6 +10,7 @@ from customer.models import Cust
 from io import BytesIO
 from django.template.loader import get_template
 
+
 def enforce_csrf(request):
     check = CSRFCheck(request)
     check.process_request(request)
@@ -179,6 +180,7 @@ def get_date(request):
 
 def get_month(request):
     month = request.query_params.get("month", None)
+    print(month)
     if month:
         try:
             month = datetime.datetime.strptime(month, "%Y-%m")
@@ -197,7 +199,10 @@ def get_month(request):
             {"detail": "require_month"}, status.HTTP_400_BAD_REQUEST
         )
 
-    if month.month >= datetime.date.today().month:
+    if (
+        month.year >= datetime.date.today().year
+        and month.month >= datetime.date.today().month
+    ):
         raise serializers.ValidationError(
             detail={
                 "error": {
