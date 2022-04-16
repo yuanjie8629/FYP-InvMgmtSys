@@ -209,7 +209,7 @@ const ProdInv = () => {
       render: (data: any, _, index: number) => (
         <InvStockInput
           loading={index === actionLoading.index && actionLoading.loading}
-          initialValue={data.stock}
+          stock={data.stock}
           onSave={(value) => {
             setActionLoading({ loading: true, index: index });
             let formData = new FormData();

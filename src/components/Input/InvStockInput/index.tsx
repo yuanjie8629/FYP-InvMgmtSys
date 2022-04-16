@@ -14,22 +14,22 @@ import { invInputOptions } from '@utils/optionUtils';
 export type InvStockInputProps = InputNumberProps & {
   loading?: boolean;
 } & (
-    | { initialValue: number; onSave?: (value: number) => void }
-    | { initialValue?: never; onSave?: never }
+    | { stock: number; onSave?: (value: number) => void }
+    | { stock?: never; onSave?: never }
   );
 
 const InvStockInput = ({
   onSave = () => '',
   loading = false,
-  initialValue,
+  stock,
   ...props
 }: InvStockInputProps) => {
   const [operation, setOperation] = useState(invInputOptions[0].value);
-  const [value, setValue] = useState(0 | initialValue);
+  const [value, setValue] = useState(0);
 
   useEffect(() => {
-    setValue(initialValue);
-  }, [initialValue]);
+    setValue(0);
+  }, [stock]);
 
   return (
     <Space size={10} direction='vertical'>
@@ -67,10 +67,11 @@ const InvStockInput = ({
             type='primary'
             size={'small'}
             onClick={() => {
-              if (initialValue !== undefined) {
-                let newValue = initialValue;
+              if (stock !== undefined) {
+                let newValue = stock;
                 if (operation === '+') {
                   newValue += value;
+                  console.log(newValue);
                 } else if (operation === '-') {
                   if (newValue >= value) {
                     newValue -= value;
