@@ -75,15 +75,9 @@ def render_to_pdf(template_src, context_dict={}):
             "margin-right": "0.5in",
             "margin-bottom": "0.5in",
             "margin-left": "0.5in",
-            # zoom to fix production invoice view
-            # "zoom": "0.7",
             "enable-local-file-access": True,
             "header-html": "core/templates/pdf_header.html",
-            # "header-line": True,
-            # "header-font-size": 7,
             "footer-html": "core/templates/pdf_footer.html",
-            # "footer-line": True,
-            # "footer-font-size": 7,
             "footer-font-name": "Helvetica",
             "header-font-name": "Helvetica",
         }
@@ -110,11 +104,7 @@ def render_to_pdf(template_src, context_dict={}):
             "zoom": "0.8",
             "enable-local-file-access": True,
             "header-html": "core/templates/pdf_header.html",
-            # "header-line": True,
-            # "header-font-size": 7,
             "footer-html": "core/templates/pdf_footer.html",
-            # "footer-line": True,
-            # "footer-font-size": 7,
             "footer-font-name": "Helvetica",
             "header-font-name": "Helvetica",
         }
@@ -179,11 +169,10 @@ def get_date(request):
 
 
 def get_month(request):
-    month = request.query_params.get("month", None)
-    print(month)
-    if month:
+    month_date = request.query_params.get("month", None)
+    if month_date:
         try:
-            month = datetime.datetime.strptime(month, "%Y-%m")
+            month_date = datetime.datetime.strptime(month_date, "%Y-%m")
 
         except ValueError:
             raise serializers.ValidationError(
@@ -200,15 +189,15 @@ def get_month(request):
         )
 
     if (
-        month.year >= datetime.date.today().year
-        and month.month >= datetime.date.today().month
+        month_date.year >= datetime.date.today().year
+        and month_date.month_date >= datetime.date.today().month_date
     ):
         raise serializers.ValidationError(
             detail={
                 "error": {
                     "code": "invalid_date",
-                    "message": "Unable to perform analysis on future month.",
+                    "message": "Unable to perform analysis on future month_date.",
                 }
             }
         )
-    return month
+    return month_date
