@@ -8,7 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         launching_package = Package.objects.filter(
-            avail_start_dt__gte=datetime.date.today()
+            avail_start_dt__lte=datetime.date.today(), status="scheduled"
         )
         print("launching package")
         print(launching_package)
@@ -19,7 +19,9 @@ class Command(BaseCommand):
 
         print("----------------------------")
 
-        expire_package = Package.objects.filter(avail_end_dt__lt=datetime.date.today())
+        expire_package = Package.objects.filter(
+            avail_end_dt__lt=datetime.date.today(), status="active"
+        )
         print("expired package")
         print(expire_package)
         if expire_package:
