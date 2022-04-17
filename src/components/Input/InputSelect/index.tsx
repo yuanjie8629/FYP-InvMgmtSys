@@ -42,11 +42,12 @@ const InputSelect = ({
   selectWidth = 'fit-content',
   onChange = () => null,
   formProps,
+  placeholder,
   ...props
 }: InputProps) => {
   const [selectType, setSelectType] = useState(selectBefore.defaultVal);
   const [selectValue, setSelectValue] = useState('');
-  
+
   const inputSelectBefore = selectBefore && (
     <Select
       defaultValue={selectedKeyValue || selectBefore.defaultVal}
@@ -77,6 +78,11 @@ const InputSelect = ({
           setSelectValue(e.target.value);
           onChange({ type: selectType, value: e.target.value });
         }}
+        placeholder={`${placeholder} ${
+          selectBefore.options.find(
+            (option) => option.value === selectedKeyValue
+          ).label || selectBefore.defaultVal
+        }`}
         {...props}
       />
     </Form.Item>
