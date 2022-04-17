@@ -287,7 +287,7 @@ const CustAdd = () => {
                       message: "Please select the customer's state.",
                     },
                   ]}
-                  style={{ width: '25%' }}
+                  style={{ width: '30%' }}
                 >
                   <Select
                     placeholder='Please select the state'
@@ -312,7 +312,7 @@ const CustAdd = () => {
                       message: "Please select the customer's city.",
                     },
                   ]}
-                  style={{ width: '25%' }}
+                  style={{ width: '30%' }}
                 >
                   <Select
                     placeholder='Please select the city'
@@ -339,7 +339,7 @@ const CustAdd = () => {
                       message: "Please select the customer's postal code.",
                     },
                   ]}
-                  style={{ width: '25%' }}
+                  style={{ width: '30%' }}
                 >
                   <Select
                     placeholder='Please select the postal code'

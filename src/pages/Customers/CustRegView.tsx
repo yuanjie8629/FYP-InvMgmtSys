@@ -274,7 +274,7 @@ const CustRegView = () => {
                       message: "Please select the customer's state.",
                     },
                   ]}
-                  style={{ width: '25%' }}
+                  style={{ width: '30%' }}
                 >
                   <Select
                     disabled
@@ -299,7 +299,7 @@ const CustRegView = () => {
                       message: "Please select the customer's city.",
                     },
                   ]}
-                  style={{ width: '25%' }}
+                  style={{ width: '30%' }}
                 >
                   <Select
                     disabled
@@ -325,7 +325,7 @@ const CustRegView = () => {
                       message: "Please select the customer's postal code.",
                     },
                   ]}
-                  style={{ width: '25%' }}
+                  style={{ width: '30%' }}
                 >
                   <Select disabled>
                     {sortByOrder(getPostcodes(postcode, city)).map(
