@@ -1,5 +1,6 @@
 from dataclasses import field
 from rest_framework import serializers
+from core.models import Users
 from customer.models import Cust, CustPosReg, CustType
 from customer.signals import cust_status_email
 from postcode.models import Postcode
@@ -48,8 +49,29 @@ class CustPosRegWriteSerializer(serializers.ModelSerializer):
         list_serializer_class = CustListSerializer
 
     def create(self, validated_data):
+        self.check_email(validated_data.get("email"))
         validated_data.update({"accept": True})
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        self.check_email(validated_data.get("email"), compare=instance.email)
+        return super().update(instance, validated_data)
+
+    def check_email(self, value, *args, **kwargs):
+        compare = kwargs.get("compare")
+        check_query = Users.objects.filter(email=value)
+        print(check_query)
+        if check_query.exists():
+            if not compare or compare != value:
+                raise serializers.ValidationError(
+                    detail={
+                        "error": {
+                            "code": "duplicate_email",
+                            "message": "Email already exists.",
+                        }
+                    }
+                )
+        return value
 
 
 class CustPosRegSerializer(serializers.ModelSerializer):

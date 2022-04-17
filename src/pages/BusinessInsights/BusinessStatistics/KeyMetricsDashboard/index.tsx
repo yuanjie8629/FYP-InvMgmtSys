@@ -2,11 +2,11 @@ import MainCard from '@components/Card/MainCard';
 import { MessageContext } from '@contexts/MessageContext';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import {
-  compareMonth,
   formatDt,
   getDayOfWeek,
   getDt,
   getEndMthDt,
+  getEndYrDt,
   getMth,
   parseDateTime,
 } from '@utils/dateUtils';
@@ -91,13 +91,11 @@ const KeyMetricsDashboard = (props) => {
       type = 'day';
 
       if (keyMetricsDtInfo.cat === 'byMonth') {
-        console.log(compareMonth(toDate, 'DD-MM-YYYY'));
-        if (compareMonth(toDate, 'DD-MM-YYYY')) {
-          toDate = getEndMthDt(toDate, 'DD-MM-YYYY');
-        }
+        toDate = getEndMthDt(toDate, 'DD-MM-YYYY');
       }
     } else if (keyMetricsDtInfo.cat === 'byYear') {
       type = 'month';
+      toDate = getEndYrDt(toDate, 'DD-MM-YYYY');
     }
     return { fromDate: fromDate, toDate: toDate, dateType: type };
   };
