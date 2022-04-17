@@ -327,6 +327,7 @@ const PackEdit = () => {
                 { ...selected, quantity: value },
               ]);
             }}
+            min={1}
           />
         );
       },

@@ -254,6 +254,7 @@ const PackAdd = () => {
                 { ...selected, quantity: value },
               ]);
             }}
+            min={1}
           />
         );
       },
