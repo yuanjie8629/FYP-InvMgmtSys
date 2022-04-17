@@ -49,6 +49,7 @@ const CustAdd = () => {
   const [targetOffset, setTargetOffset] = useState<number | undefined>(
     undefined
   );
+  const [errMsg, setErrMsg] = useState({ type: undefined, message: undefined });
   const [messageApi] = useContext(MessageContext);
   const navigate = useNavigate();
   const anchorList = [
@@ -86,6 +87,10 @@ const CustAdd = () => {
     messageApi.open(serverErrMsg);
   };
 
+  const showErrMsg = (errMsg?: string) => {
+    messageApi.open({ type: 'error', content: errMsg });
+  };
+
   const handleSubmit = (values) => {
     let { city, state, ...data } = values;
     data.birthdate = getDt(data.birthdate);
@@ -100,7 +105,15 @@ const CustAdd = () => {
       .catch((err) => {
         if (err.response?.status !== 401) {
           setSubmitLoading(false);
-          showServerErrMsg();
+          if (err.response?.data?.error?.code === 'duplicate_email') {
+            setErrMsg({
+              type: 'duplicate_email',
+              message: err.response?.data?.error?.message,
+            });
+            showErrMsg(err.response?.data?.error?.message);
+          } else {
+            showServerErrMsg();
+          }
         }
       });
   };
@@ -232,16 +245,29 @@ const CustAdd = () => {
                     label='Email Address'
                     name='email'
                     rules={[
-                      {
-                        required: true,
-                        message: "Please enter the customer's email address.",
-                      },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (!value) {
+                            return Promise.reject(
+                              "Please enter customer's email address."
+                            );
+                          }
+                          if (errMsg.type === 'duplicate_email') {
+                            return Promise.reject(errMsg.message);
+                          }
+                          return Promise.resolve();
+                        },
+                      }),
                     ]}
+                    required
                   >
                     <Input
                       type='email'
                       placeholder='e.g. xxxxx@gmail.com'
                       style={{ width: '40%' }}
+                      onChange={(e) => {
+                        setErrMsg({ type: undefined, message: undefined });
+                      }}
                     />
                   </Form.Item>
                 </Space>

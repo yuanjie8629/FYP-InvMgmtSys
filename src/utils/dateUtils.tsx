@@ -458,11 +458,8 @@ export const getMthYr = (
   outputFormat: string = 'YYYY MMMM'
 ) => moment(date, inputFormat).format(outputFormat);
 
-export const compareMonth = (
-  firstDate?: string,
-  firstInputFormat?: string,
-  secondDate?: string,
-  secondInputFormat?: string
-) =>
-  moment(firstDate, firstInputFormat).month() ===
-  moment(secondDate, secondInputFormat).month();
+export const getEndYrDt = (
+  date?: string,
+  inputFormat?: string,
+  outputFormat: string = 'DD-MM-YYYY'
+) => moment(date, inputFormat).endOf('year').format(outputFormat);

@@ -49,7 +49,7 @@ const StatisticsDashboard = () => {
         {getDt(undefined, undefined, 'DD MMMM YYYY')}
       </Text>
       <Space
-        direction={'vertical'}
+        direction='vertical'
         size={40}
         style={{ width: '100%', paddingTop: 25 }}
       >

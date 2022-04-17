@@ -488,8 +488,21 @@ const PackAdd = () => {
                   <Form.Item
                     label='Stock Keeping Unit (SKU)'
                     name='sku'
-                    validateStatus={errMsg.type === 'invalid_sku' && 'error'}
-                    help={errMsg.type === 'invalid_sku' && errMsg.message}
+                    rules={[
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (!value) {
+                            return Promise.reject(
+                              'Please enter product SKU.'
+                            );
+                          }
+                          if (errMsg.type === 'invalid_sku') {
+                            return Promise.reject(errMsg.message);
+                          }
+                          return Promise.resolve();
+                        },
+                      }),
+                    ]}
                     style={{ width: '40%' }}
                     required
                   >
