@@ -58,14 +58,15 @@ const KeyMetricsDashboard = (props) => {
   const getKeymetricsSummary = (isMounted = true) => {
     setSummaryLoading(true);
     setSummaryData({});
-    keyMetricsSummaryAPI(
+    let formattedDate = parseAPIDate(
       keyMetricsDtInfo.date.includes(' ~ ')
         ? keyMetricsDtInfo.date.split(' ~ ')[0]
         : keyMetricsDtInfo.date,
       keyMetricsDtInfo.date.includes(' ~ ')
         ? keyMetricsDtInfo.date.split(' ~ ')[1]
         : keyMetricsDtInfo.date
-    )
+    );
+    keyMetricsSummaryAPI(formattedDate.fromDate, formattedDate.toDate)
       .then((res) => {
         if (isMounted) {
           setSummaryData(res?.data);
@@ -80,7 +81,7 @@ const KeyMetricsDashboard = (props) => {
       });
   };
 
-  const parseAPIDate = (fromDate, toDate, dateType) => {
+  const parseAPIDate = (fromDate: string, toDate: string) => {
     let type: KeyMetricsDateType;
     if (['byDay', 'tdy', 'ytd'].includes(keyMetricsDtInfo.cat)) {
       type = 'hour';
@@ -104,8 +105,7 @@ const KeyMetricsDashboard = (props) => {
     setLoading(true);
     let { fromDate, toDate, dateType } = parseAPIDate(
       keyMetricsDtInfo.date.split(' ~ ')[0],
-      keyMetricsDtInfo.date.split(' ~ ')[1],
-      keyMetricsDtInfo.cat
+      keyMetricsDtInfo.date.split(' ~ ')[1]
     );
 
     keyMetricsAPI({
@@ -185,8 +185,7 @@ const KeyMetricsDashboard = (props) => {
     generateKeyMetricsReportAPI(
       parseAPIDate(
         keyMetricsDtInfo.date.split(' ~ ')[0],
-        keyMetricsDtInfo.date.split(' ~ ')[1],
-        keyMetricsDtInfo.cat
+        keyMetricsDtInfo.date.split(' ~ ')[1]
       )
     )
       .then((res) => {
