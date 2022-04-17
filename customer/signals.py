@@ -14,6 +14,9 @@ def add_cust_pos(sender, instance, **kwargs):
             user = Cust.objects.filter(email=instance.email).first()
             if user is not None:
                 user.cust_type = instance.position
+                user.name = instance.name
+                user.birthdate = instance.birthdate
+                user.gender = instance.gender
                 user.pos_reg = instance
                 user.save()
 
