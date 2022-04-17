@@ -212,6 +212,7 @@ const PackInv = () => {
       title: 'Stock',
       dataIndex: 'stock',
       key: 'stock',
+      width: 100,
       sorter: true,
       defaultSortOrder: getSortOrder('sku'),
     },
