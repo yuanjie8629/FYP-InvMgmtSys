@@ -261,9 +261,7 @@ const CustMgmt = () => {
               {data.name}
             </Text>
           )}
-          <Text strong={data.name ? true : false} type='secondary'>
-            {data.email}
-          </Text>
+          <Text type='secondary'>{data.email}</Text>
         </Space>
       ),
     },
