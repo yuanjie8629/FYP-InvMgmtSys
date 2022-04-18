@@ -60,6 +60,14 @@ export const keyMetricsAPI = (props: KeyMetricsProps) =>
 export const invAnalysisAPI = (type: string, searchParam?: string) =>
   axios.get(`analysis/${type}/${searchParam !== undefined ? searchParam : ''}`);
 
+export const invAnalysisCheckAPI = (type?: string, searchParam?: string) => {
+  if (['ss', 'eoq'].includes(type))
+    return axios.get(
+      `analysis/${type}/check/${searchParam !== undefined ? searchParam : ''}`
+    );
+  return axios.get(undefined);
+};
+
 export const generateKeyMetricsReportAPI = (
   props: Omit<KeyMetricsProps, 'key'>
 ) =>
