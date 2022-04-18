@@ -1344,6 +1344,46 @@ class HMLAnalysisView(generics.ListAPIView):
         return Response(data, status.HTTP_200_OK)
 
 
+@api_view(["GET"])
+def CheckEOQComponent(request):
+    date = get_month(request)
+    product_list = Product.objects.all()
+    incomplete_ordering_cost = []
+    incomplete_holding_cost = []
+    for product in product_list:
+        # Replace the month to the last date of month
+        date = date.replace(day=calendar.monthrange(date.year, date.month)[1])
+        product_version = (
+            Version.objects.get_for_object(product)
+            .filter(revision__date_created__lte=date)
+            .order_by("-revision__date_created")
+            .first()
+        )
+
+        ordering_cost = product.ordering_cost
+        holding_cost = product.holding_cost
+
+        if product_version:
+            if product_version.field_dict["ordering_cost"]:
+                ordering_cost = product_version.field_dict["ordering_cost"]
+
+            if product_version.field_dict["holding_cost"]:
+                holding_cost = product_version.field_dict["holding_cost"]
+
+        if ordering_cost is None:
+            incomplete_ordering_cost.append({"id": product.id, "name": product.name})
+        if holding_cost is None:
+            incomplete_holding_cost.append({"id": product.id, "name": product.name})
+
+    return Response(
+        {
+            "ordering_cost": incomplete_ordering_cost,
+            "holding_cost": incomplete_holding_cost,
+        },
+        status.HTTP_200_OK,
+    )
+
+
 class EoqAnalysisView(generics.ListAPIView):
     queryset = (
         Product.objects.all().prefetch_related("image").order_by(("-last_update"))
@@ -1539,6 +1579,43 @@ class EoqAnalysisView(generics.ListAPIView):
         if page is not None:
             return self.get_paginated_response(data)
         return Response(data, status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def CheckSSComponent(request):
+    date = get_month(request)
+    product_list = Product.objects.all()
+    incomplete_avg_lead_tm = []
+    incomplete_max_lead_tm = []
+    for product in product_list:
+        # Replace the month to the last date of month
+        date = date.replace(day=calendar.monthrange(date.year, date.month)[1])
+        product_version = (
+            Version.objects.get_for_object(product)
+            .filter(revision__date_created__lte=date)
+            .order_by("-revision__date_created")
+            .first()
+        )
+
+        avg_lead_tm = product.avg_lead_tm
+        max_lead_tm = product.max_lead_tm
+
+        if product_version:
+            if product_version.field_dict["avg_lead_tm"]:
+                avg_lead_tm = product_version.field_dict["avg_lead_tm"]
+
+            if product_version.field_dict["max_lead_tm"]:
+                max_lead_tm = product_version.field_dict["max_lead_tm"]
+
+        if avg_lead_tm is None:
+            incomplete_avg_lead_tm.append({"id": product.id, "name": product.name})
+        if max_lead_tm is None:
+            incomplete_max_lead_tm.append({"id": product.id, "name": product.name})
+
+    return Response(
+        {"avg_lead_tm": incomplete_avg_lead_tm, "max_lead_tm": incomplete_max_lead_tm},
+        status.HTTP_200_OK,
+    )
 
 
 class SSAnalysisView(generics.ListAPIView):

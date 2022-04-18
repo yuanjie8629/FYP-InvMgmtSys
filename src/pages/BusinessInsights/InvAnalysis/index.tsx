@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { Row, Col, CardProps } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout';
 import MainCardContainer from '@components/Container/MainCardContainer';
@@ -19,7 +20,7 @@ import {
 } from './Analyses';
 import './InvAnalysis.less';
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
-import { invAnalysisAPI } from '@api/services/analysisAPI';
+import { invAnalysisAPI, invAnalysisCheckAPI } from '@api/services/analysisAPI';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { getPrevMth } from '@utils/dateUtils';
@@ -43,6 +44,8 @@ const InvAnalysis = () => {
   const [list, setList] = useState([]);
   const [recordCount, setRecordCount] = useState<number>();
   const [tableLoading, setTableLoading] = useState(false);
+  const [invalidComponentData, setInvalidComponentData] = useState([]);
+  const [componentLoading, setComponentLoading] = useState(false);
   const [currentPg, setCurrentPg] = useState(1);
   const defPg = 5;
 
@@ -72,6 +75,40 @@ const InvAnalysis = () => {
     }
   };
 
+  const getInvalidComponents = (isMounted: boolean = true) => {
+    if (
+      searchParams.has('month') &&
+      ['ss', 'eoq'].includes(searchParams.get('type'))
+    ) {
+      let type =
+        searchParams.get('type') === 'ss'
+          ? 'ss'
+          : searchParams.get('type') === 'eoq'
+          ? 'eoq'
+          : undefined;
+
+      setInvalidComponentData([]);
+      setComponentLoading(true);
+      invAnalysisCheckAPI(type, `?month=${searchParams.get('month')}`)
+        .then((res) => {
+          if (isMounted) {
+            setInvalidComponentData(res?.data);
+            if (searchParams.has('offset')) {
+              let offset = Number(searchParams.get('offset'));
+              setCurrentPg(offset / defPg + 1);
+            }
+            setComponentLoading(false);
+          }
+        })
+        .catch((err) => {
+          if (err.response?.status !== 401) {
+            setComponentLoading(false);
+            showServerErrMsg();
+          }
+        });
+    }
+  };
+
   useEffect(
     () => {
       if (!(searchParams.has('month') && searchParams.has('type'))) {
@@ -83,6 +120,7 @@ const InvAnalysis = () => {
       }
       let isMounted = true;
       getTableData(isMounted);
+      getInvalidComponents(isMounted);
       return () => {
         isMounted = false;
       };
@@ -169,15 +207,16 @@ const InvAnalysis = () => {
             key={`component-${searchParams.get('type')}`}
             label={analysis.component.header}
             suffixIcon={
-              analysis.component.content.some((component) =>
-                list
-                  .map(
-                    (data) =>
-                      data[component.key] === null ||
-                      data[component.key] === undefined
-                  )
-                  .includes(true)
-              ) ? (
+              componentLoading ? (
+                <LoadingOutlined className='color-grey' />
+              ) : analysis.component.content.map((component) => {
+                  Object.keys(invalidComponentData).forEach((key) => {
+                    if (component.key === key) {
+                      if (invalidComponentData[key].length > 0) return true;
+                    }
+                  });
+                  return false;
+                }) ? (
                 <HiXCircle size={20} className='color-error' />
               ) : (
                 <HiCheckCircle size={20} className='color-primary' />
@@ -186,18 +225,13 @@ const InvAnalysis = () => {
           >
             <Row gutter={[30, 30]}>
               {analysis.component.content.map((component) => {
-                let errorList = [];
-                list.forEach((data) => {
-                  if (
-                    data[component.key] === null ||
-                    data[component.key] === undefined
-                  ) {
-                    errorList.push(data?.name);
-                  }
-                });
                 return (
                   <Col key={component.key} flex='25%'>
-                    <AnalysisCard component={component} dataList={errorList} />
+                    <AnalysisCard
+                      component={component}
+                      dataList={invalidComponentData[component.key]}
+                      loading={componentLoading}
+                    />
                   </Col>
                 );
               })}

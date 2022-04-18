@@ -74,7 +74,6 @@ const ProdAdd = () => {
   };
 
   const handleAddProduct = (values) => {
-    console.log(values);
     let { profit, description, ...data } = values;
     if (!values.sku) {
       setErrMsg({

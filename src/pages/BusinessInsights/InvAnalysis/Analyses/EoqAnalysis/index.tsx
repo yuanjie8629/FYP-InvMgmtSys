@@ -90,7 +90,7 @@ const EoqAnalysis = ({
       key: 'ordering_cost',
       sorter: true,
       defaultSortOrder: getSortOrder('ordering_cost'),
-      width: 120,
+      width: 130,
       render: (amount: string) =>
         amount !== undefined && amount !== null ? (
           <Text type='secondary'>{moneyFormatter(parseFloat(amount))}</Text>
@@ -111,7 +111,7 @@ const EoqAnalysis = ({
       key: 'holding_cost',
       sorter: true,
       defaultSortOrder: getSortOrder('holding_cost'),
-      width: 120,
+      width: 130,
       render: (amount: string) =>
         amount !== undefined && amount !== null ? (
           <Text type='secondary'>{moneyFormatter(parseFloat(amount))}</Text>
@@ -132,7 +132,7 @@ const EoqAnalysis = ({
       key: 'optimal_order_qty',
       sorter: true,
       defaultSortOrder: getSortOrder('optimal_order_qty'),
-      width: 170,
+      width: 200,
       fixed: 'right',
       render: (amount: string) =>
         amount !== undefined && amount !== null ? (
@@ -185,6 +185,7 @@ const EoqAnalysis = ({
           currentPg={currentPg}
           totalRecord={totalCount}
           defPg={defPg}
+          scroll={{ x: 1000 }}
         />
       </Space>
     </MainCard>
