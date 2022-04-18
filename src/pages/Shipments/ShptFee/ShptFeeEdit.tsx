@@ -155,7 +155,12 @@ const ShptFeeEdit = () => {
                   ]}
                   style={{ width: '40%' }}
                 >
-                  <Select placeholder='Please select the state' disabled />
+                  <Select
+                    showSearch
+                    filterOption
+                    placeholder='Please select the state'
+                    disabled
+                  />
                 </Form.Item>
                 <Form.Item label='Weight (g) & Shipping Fee (RM)' required>
                   <Form.List name='list'>

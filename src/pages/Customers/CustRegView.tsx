@@ -277,6 +277,8 @@ const CustRegView = () => {
                   style={{ width: '30%' }}
                 >
                   <Select
+                    showSearch
+                    filterOption
                     disabled
                     onChange={(value: string) => {
                       setState(value);
@@ -302,6 +304,8 @@ const CustRegView = () => {
                   style={{ width: '30%' }}
                 >
                   <Select
+                    showSearch
+                    filterOption
                     disabled
                     onChange={(value: string) => {
                       setCity(value);
@@ -327,7 +331,7 @@ const CustRegView = () => {
                   ]}
                   style={{ width: '30%' }}
                 >
-                  <Select disabled>
+                  <Select showSearch filterOption disabled>
                     {sortByOrder(getPostcodes(postcode, city)).map(
                       (postcode: string) => (
                         <Option value={postcode} key={postcode}>

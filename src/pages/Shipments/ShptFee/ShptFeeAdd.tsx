@@ -130,7 +130,11 @@ const ShptFeeAdd = () => {
                   ]}
                   style={{ width: '40%' }}
                 >
-                  <Select placeholder='Please select the state'>
+                  <Select
+                    showSearch
+                    filterOption
+                    placeholder='Please select the state'
+                  >
                     {sortByOrder(state).map((state: string) => (
                       <Option key={state}>{state}</Option>
                     ))}
