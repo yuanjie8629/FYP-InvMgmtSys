@@ -17,3 +17,6 @@ class Payment(SoftDeleteModel):
 
     class Meta:
         db_table = "payment"
+    
+    def __str__(self):
+        return "{} ({})".format(self.reference_num, self.order.id)

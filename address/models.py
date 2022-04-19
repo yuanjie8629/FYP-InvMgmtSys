@@ -14,3 +14,6 @@ class Address(SoftDeleteModel):
 
     class Meta:
         db_table = "address"
+
+    def __str__(self):
+        return "({}) {}".format(self.cust.email, self.address)

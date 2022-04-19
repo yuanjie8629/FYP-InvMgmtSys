@@ -44,6 +44,9 @@ class Order(SoftDeleteModel):
 
     class Meta:
         db_table = "order"
+    
+    def __str__(self):
+        return "{}".format(self.id)
 
     @property
     def get_subtotal_price(self):
@@ -88,6 +91,9 @@ class OrderLine(models.Model):
 
     class Meta:
         db_table = "order_line"
+
+    def __str__(self):
+        return "{} - {} ({})".format(self.order.id, self.item.name, self.quantity)
 
     @property
     def line_total(self):
