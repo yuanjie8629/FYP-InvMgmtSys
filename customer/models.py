@@ -70,6 +70,9 @@ class CustPosReg(SoftDeleteModel):
     class Meta:
         db_table = "cust_pos_reg"
 
+    def __str__(self):
+        return "{}, {} ({})".format(self.name, self.email, self.position.type)
+
 
 class CustType(models.Model):
     id = models.AutoField(primary_key=True)

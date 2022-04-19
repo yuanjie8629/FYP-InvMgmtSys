@@ -50,7 +50,7 @@ class Shipment(OrderShipment):
         self.type = "shipping"
     
     def __str__(self):
-        return "{}: {}".format(self.pk, "shipment")
+        return "{} - {} ({})".format("Shipment",self.pk,  self.track_num)
 
 
 class PickupLoc(SoftDeleteModel):
@@ -78,6 +78,7 @@ class Pickup(OrderShipment):
         self.type = "pickup"
     
     def __str__(self):
-        return "{}: {}".format(self.pk, "pickup")
+         return "{} - {} ({})".format("Pickup",self.pk,  self.pickup_loc)
+
 
 
