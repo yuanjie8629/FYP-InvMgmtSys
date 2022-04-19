@@ -1,4 +1,5 @@
 from django.contrib import admin
+from core.admin import SoftDeleteAdmin
 from item.models import ImageItemLine, Item, PackageItem, Product, Package
 from django.contrib import admin
 from polymorphic.admin import (
@@ -9,7 +10,7 @@ from reversion.admin import VersionAdmin
 from reversion import revisions
 
 
-class ItemChildAdmin(PolymorphicChildModelAdmin, VersionAdmin):
+class ItemChildAdmin(SoftDeleteAdmin, PolymorphicChildModelAdmin, VersionAdmin):
     base_model = Item
 
 
@@ -21,7 +22,7 @@ class PackageAdmin(ItemChildAdmin, VersionAdmin):
     base_model = Item
 
 
-class ItemParentAdmin(VersionAdmin, PolymorphicParentModelAdmin):
+class ItemParentAdmin(SoftDeleteAdmin, VersionAdmin, PolymorphicParentModelAdmin):
     base_model = Item
     child_models = (Product, Package)
 

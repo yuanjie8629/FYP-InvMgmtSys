@@ -1,4 +1,5 @@
 from django.contrib import admin
+from core.admin import SoftDeleteAdmin
 from shipment.models import OrderShipment, Shipment, Pickup, ShippingFee, PickupLoc
 from django.contrib import admin
 from polymorphic.admin import (
@@ -9,7 +10,9 @@ from reversion.admin import VersionAdmin
 from reversion import revisions
 
 
-class OrderShipmentChildAdmin(PolymorphicChildModelAdmin, VersionAdmin):
+class OrderShipmentChildAdmin(
+    SoftDeleteAdmin, PolymorphicChildModelAdmin, VersionAdmin
+):
     base_model = OrderShipment
 
 
@@ -21,23 +24,25 @@ class PickupAdmin(OrderShipmentChildAdmin, VersionAdmin):
     base_model = OrderShipment
 
 
-class ItemParentAdmin(VersionAdmin, PolymorphicParentModelAdmin):
+class OrderShipmentParentAdmin(
+    SoftDeleteAdmin, VersionAdmin, PolymorphicParentModelAdmin
+):
     base_model = OrderShipment
     child_models = (Shipment, Pickup)
 
 
 @admin.register(ShippingFee)
-class ShippingFeeAdmin(VersionAdmin):
+class ShippingFeeAdmin(SoftDeleteAdmin, VersionAdmin):
     pass
 
 
 @admin.register(PickupLoc)
-class PickupLocAdmin(VersionAdmin):
+class PickupLocAdmin(SoftDeleteAdmin, VersionAdmin):
     pass
 
 
 revisions.register(Shipment, follow=["ordershipment_ptr"])
 revisions.register(Pickup, follow=["ordershipment_ptr"])
-admin.site.register(OrderShipment, ItemParentAdmin)
+admin.site.register(OrderShipment, OrderShipmentParentAdmin)
 admin.site.register(Shipment, ShipmentAdmin)
 admin.site.register(Pickup, PickupAdmin)

@@ -59,7 +59,7 @@ class Item(PolySoftDeleteModel, PolymorphicModel):
         db_table = "item"
 
     def __str__(self):
-        return "{}: {}".format(self.type, self.name)
+        return "{} ({})".format(self.name, self.type)
 
     def save(self, *args, **kwargs):
         if self.stock <= 0 and self.status == "active":
