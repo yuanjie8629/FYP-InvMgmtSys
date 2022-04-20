@@ -233,7 +233,6 @@ const OrderMgmt = () => {
       key: 'bulkUpd',
       fltr: [
         { fld: 'shipment', value: 'shipping', rel: 'eq' },
-        { fld: 'track_num', value: null, rel: 'eq' },
         { fld: 'status', value: 'cancel', rel: 'neq' },
         { fld: 'status', value: 'completed', rel: 'neq' },
         { fld: 'status', value: 'unpaid', rel: 'neq' },
@@ -244,18 +243,16 @@ const OrderMgmt = () => {
       key: 'pickup',
       fltr: [
         { fld: 'shipment', value: 'pickup', rel: 'eq' },
-        { fld: 'status', value: 'cancel', rel: 'neq' },
-        { fld: 'status', value: 'completed', rel: 'neq' },
-        { fld: 'status', value: 'unpaid', rel: 'neq' },
+        { fld: 'status', value: 'toPick', rel: 'eq' },
       ],
     },
     {
       element: cancelBtn,
       key: 'cancel',
       fltr: [
-        { fld: 'status', value: 'toPick', rel: 'eq' },
-        { fld: 'status', value: 'toShip', rel: 'eq' },
-        { fld: 'status', value: 'unpaid', rel: 'eq' },
+        { fld: 'status', value: 'shipping', rel: 'neq' },
+        { fld: 'status', value: 'completed', rel: 'neq' },
+        { fld: 'status', value: 'cancel', rel: 'neq' },
       ],
     },
   ];
@@ -290,7 +287,7 @@ const OrderMgmt = () => {
     render?: any;
   }[] = [
     {
-      title: 'Order ID',
+      title: 'Order Number',
       dataIndex: 'id',
       key: 'id',
       sorter: true,

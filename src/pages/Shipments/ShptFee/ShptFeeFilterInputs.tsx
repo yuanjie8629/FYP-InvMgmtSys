@@ -84,6 +84,7 @@ const FilterInputs = () => {
               selectBefore={shptFeeInputSelect}
               placeholder='Input'
               selectWidth={150}
+              selectedKeyValue={selectedInputSelect}
               onChange={(selected) => {
                 shptFeeFilter.setFieldsValue({
                   [selected.type]: selected.value,

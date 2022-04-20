@@ -203,7 +203,7 @@ const ProdInv = () => {
       defaultSortOrder: getSortOrder('stock'),
     },
     {
-      title: 'Update Stock',
+      title: 'Action',
       key: 'action',
       width: 280,
       render: (data: any, _, index: number) => (

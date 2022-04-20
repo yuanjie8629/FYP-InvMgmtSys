@@ -71,7 +71,7 @@ const PackageRanking = ({ dateInfo }: RankingDashboardProps) => {
     <MainCard>
       <Space direction='vertical' size={5} className='full-width'>
         <div>
-          <BoldTitle level={5}>Promotion Rankings</BoldTitle>
+          <BoldTitle level={5}>Pacakge Rankings</BoldTitle>
 
           <Text type='secondary'>
             {formatDt(

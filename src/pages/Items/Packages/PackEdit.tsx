@@ -128,7 +128,7 @@ const PackEdit = () => {
       'originFileObj' in img ? img.originFileObj : img.url
     );
     data.image = newImageList;
-    
+
     let formData = new FormData();
     Object.keys(data).forEach((item) => {
       if (item === 'image') {
@@ -565,13 +565,17 @@ const PackEdit = () => {
                   <Form.Item
                     label='Stock Keeping Unit (SKU)'
                     name='sku'
+                    validateStatus={
+                      errMsg.type === 'invalid_sku' ? 'error' : undefined
+                    }
+                    help={
+                      errMsg.type === 'invalid_sku' ? errMsg.message : undefined
+                    }
                     rules={[
                       ({ getFieldValue }) => ({
                         validator(_, value) {
                           if (!value) {
-                            return Promise.reject(
-                              'Please enter product SKU.'
-                            );
+                            return Promise.reject('Please enter product SKU.');
                           }
                           if (errMsg.type === 'invalid_sku') {
                             return Promise.reject(errMsg.message);
