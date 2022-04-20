@@ -244,6 +244,14 @@ const CustAdd = () => {
                   <Form.Item
                     label='Email Address'
                     name='email'
+                    validateStatus={
+                      errMsg.type === 'duplicate_email' ? 'error' : undefined
+                    }
+                    help={
+                      errMsg.type === 'duplicate_email'
+                        ? errMsg.message
+                        : undefined
+                    }
                     rules={[
                       ({ getFieldValue }) => ({
                         validator(_, value) {

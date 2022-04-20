@@ -11,17 +11,17 @@ from reversion import revisions
 
 
 class OrderShipmentChildAdmin(
-    SoftDeleteAdmin, PolymorphicChildModelAdmin, VersionAdmin
+    SoftDeleteAdmin, VersionAdmin, PolymorphicChildModelAdmin
 ):
     base_model = OrderShipment
 
 
-class ShipmentAdmin(OrderShipmentChildAdmin, VersionAdmin):
-    base_model = OrderShipment
+class ShipmentAdmin(OrderShipmentChildAdmin):
+    pass
 
 
-class PickupAdmin(OrderShipmentChildAdmin, VersionAdmin):
-    base_model = OrderShipment
+class PickupAdmin(OrderShipmentChildAdmin):
+    pass
 
 
 class OrderShipmentParentAdmin(
@@ -35,11 +35,9 @@ class OrderShipmentParentAdmin(
 class ShippingFeeAdmin(SoftDeleteAdmin, VersionAdmin):
     pass
 
-
 @admin.register(PickupLoc)
 class PickupLocAdmin(SoftDeleteAdmin, VersionAdmin):
     pass
-
 
 revisions.register(Shipment, follow=["ordershipment_ptr"])
 revisions.register(Pickup, follow=["ordershipment_ptr"])

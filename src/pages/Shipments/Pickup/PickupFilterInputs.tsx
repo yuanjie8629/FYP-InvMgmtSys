@@ -75,6 +75,7 @@ const FilterInputs = () => {
               formProps={{ name: selectedInputSelect }}
               selectBefore={pickupLocInputSelect}
               placeholder='Input'
+              selectedKeyValue={selectedInputSelect}
               selectWidth={150}
               onChange={(selected) => {
                 pickupLocFilter.setFieldsValue({

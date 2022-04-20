@@ -415,6 +415,14 @@ const ProdAdd = () => {
                     <Form.Item
                       label='Stock Keeping Unit (SKU)'
                       name='sku'
+                      validateStatus={
+                        errMsg.type === 'invalid_sku' ? 'error' : undefined
+                      }
+                      help={
+                        errMsg.type === 'invalid_sku'
+                          ? errMsg.message
+                          : undefined
+                      }
                       rules={[
                         ({ getFieldValue }) => ({
                           validator(_, value) {

@@ -26,7 +26,7 @@ const FilterInputs = () => {
   } = {
     defaultVal: 'id',
     options: [
-      { value: 'id', label: 'Order ID' },
+      { value: 'id', label: 'Order Number' },
       { value: 'cust_name', label: 'Customer Name' },
       { value: 'email', label: 'Customer Email' },
       { value: 'track_num', label: 'Tracking Number' },

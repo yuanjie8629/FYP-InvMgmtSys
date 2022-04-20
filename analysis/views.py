@@ -88,7 +88,7 @@ def sort_by_date(
             hour = pd.date_range(
                 start=from_date.replace(hour=0, minute=0, second=0, microsecond=0),
                 end=datetime.datetime.today().replace(
-                    hour=end_hour - 1 if end_hour != 0 else end_hour,
+                    hour=end_hour,
                     minute=0,
                     second=0,
                     microsecond=0,
@@ -99,7 +99,10 @@ def sort_by_date(
 
             new_hour = pd.date_range(
                 start=datetime.datetime.today().replace(
-                    hour=end_hour, minute=0, second=0, microsecond=0
+                    hour=end_hour + 1 if end_hour != 0 else end_hour,
+                    minute=0,
+                    second=0,
+                    microsecond=0,
                 ),
                 end=to_date.replace(hour=23, minute=0, second=0, microsecond=0),
                 freq="H",

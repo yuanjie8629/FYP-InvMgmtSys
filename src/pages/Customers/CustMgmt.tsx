@@ -295,13 +295,10 @@ const CustMgmt = () => {
       width: 160,
       render: (_: any, data: { [x: string]: string }) =>
         data.order_value_per_month !== undefined &&
-        data.order_value_per_month !== null &&
-        ['agent', 'drpshpr'].includes(data.cust_type) ? (
+        data.order_value_per_month !== null && (
           <Text strong>
             {moneyFormatter(parseFloat(data.order_value_per_month))}
           </Text>
-        ) : (
-          '-'
         ),
     },
     {

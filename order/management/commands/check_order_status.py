@@ -16,7 +16,7 @@ class Command(BaseCommand):
             order.save()
 
         unpaid_orders = Order.objects.filter(
-            last_update__lte=datetime.date.today() - datetime.timedelta(days=14),
+            last_update__lte=datetime.date.today() - datetime.timedelta(days=3),
             status="unpaid",
         )
 

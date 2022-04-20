@@ -1,3 +1,4 @@
+import { capitalize } from '@utils/strUtils';
 import {
   Form,
   FormItemProps,
@@ -6,6 +7,7 @@ import {
   Select,
 } from 'antd';
 import { useState } from 'react';
+import './InputSelect.less';
 
 interface OnSelectProps {
   type: string;
@@ -43,6 +45,7 @@ const InputSelect = ({
   onChange = () => null,
   formProps,
   placeholder,
+  className,
   ...props
 }: InputProps) => {
   const [selectType, setSelectType] = useState(selectBefore.defaultVal);
@@ -81,8 +84,9 @@ const InputSelect = ({
         placeholder={`${placeholder} ${
           selectBefore.options.find(
             (option) => option.value === selectedKeyValue
-          ).label || selectBefore.defaultVal
+          )?.label || capitalize(selectBefore.defaultVal)
         }`}
+        className={`input-select${className ? ` ${className}` : ''}`}
         {...props}
       />
     </Form.Item>
