@@ -10,7 +10,7 @@ import InformativeTable, {
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { moneyFormatter } from '@utils/numUtils';
-import { DeleteButton } from '@components/Button/ActionButton';
+import { DeleteButton, EditButton } from '@components/Button/ActionButton';
 
 import { BoldTitle } from '@components/Title';
 import { MessageContext } from '@contexts/MessageContext';
@@ -225,25 +225,34 @@ const ShptFeeMgmt = () => {
       fixed: 'right',
       width: 100,
       render: (data: any) => (
-        <DeleteButton
-          type='link'
-          color='info'
-          onClick={() => {
-            setSelected(getShptFeeDetails([data]));
-            ActionModal.show('delete', {
-              onOk: async () => {
-                await shippingFeeDelAPI(data.id)
-                  .then((res) => {
-                    getTableData();
-                    showActionSuccessMsg('delete', false);
-                  })
-                  .catch((err) => {
-                    showServerErrMsg();
-                  });
-              },
-            });
-          }}
-        />
+        <Space direction='vertical' size={5}>
+          <EditButton
+            type='link'
+            color='info'
+            onClick={() => {
+              navigate(`/shipment/shipping_fee/${data.location}`);
+            }}
+          />
+          <DeleteButton
+            type='link'
+            color='info'
+            onClick={() => {
+              setSelected(getShptFeeDetails([data]));
+              ActionModal.show('delete', {
+                onOk: async () => {
+                  await shippingFeeDelAPI(data.id)
+                    .then((res) => {
+                      getTableData();
+                      showActionSuccessMsg('delete', false);
+                    })
+                    .catch((err) => {
+                      showServerErrMsg();
+                    });
+                },
+              });
+            }}
+          />
+        </Space>
       ),
     },
   ];
