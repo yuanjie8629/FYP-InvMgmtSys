@@ -217,7 +217,7 @@ const PackInv = () => {
       defaultSortOrder: getSortOrder('sku'),
     },
     {
-      title: 'Update Stock',
+      title: 'Update Inventory Stock',
       key: 'action',
       width: 250,
       render: (data: any, _, index: number) => (
