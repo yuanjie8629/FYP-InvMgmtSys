@@ -100,9 +100,9 @@ const PackEdit = () => {
     if (endTime && startTime.isAfter(endTime)) {
       setErrMsg({
         type: 'invalid_avail_tm',
-        message: 'Start time cannot after end time.',
+        message: 'Start date cannot after end date.',
       });
-      showErrMsg('Start time cannot after end time.');
+      showErrMsg('Start date cannot after end date.');
       return;
     }
 
@@ -749,13 +749,13 @@ const PackEdit = () => {
                     />
                   )}
                   <Form.Item
-                    label='Start Time'
+                    label='Start Date'
                     name='avail_start_dt'
                     rules={[
                       {
                         required: true,
                         message:
-                          'Please select the start time to launch the package.',
+                          'Please select the start date to launch the package.',
                       },
                     ]}
                   >
@@ -772,11 +772,11 @@ const PackEdit = () => {
                       setHideEndTime(!e.target.checked);
                     }}
                   >
-                    Set End Time
+                    Set End Date
                   </Checkbox>
 
                   <Form.Item
-                    label='End Time'
+                    label='End Date'
                     name='avail_end_dt'
                     hidden={hideEndTime}
                   >

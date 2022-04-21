@@ -9,7 +9,7 @@ import InformativeTable, {
 } from '@components/Table/InformativeTable';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
-import { DeleteButton } from '@components/Button/ActionButton';
+import { DeleteButton, EditButton } from '@components/Button/ActionButton';
 import { BoldTitle } from '@components/Title';
 import { MessageContext } from '@contexts/MessageContext';
 import { actionSuccessMsg, serverErrMsg } from '@utils/messageUtils';
@@ -188,25 +188,34 @@ const PickupMgmt = () => {
       fixed: 'right',
       width: 100,
       render: (data: any) => (
-        <DeleteButton
-          type='link'
-          color='info'
-          onClick={() => {
-            setSelected(getPickupLocDetails([data]));
-            ActionModal.show('delete', {
-              onOk: async () => {
-                await pickupLocDelAPI(data.id)
-                  .then((res) => {
-                    getTableData();
-                    showActionSuccessMsg('delete', false);
-                  })
-                  .catch((err) => {
-                    showServerErrMsg();
-                  });
-              },
-            });
-          }}
-        />
+        <Space direction='vertical' size={5}>
+          <EditButton
+            type='link'
+            color='info'
+            onClick={() => {
+              navigate(`/shipment/pickup/${data.id}`);
+            }}
+          />
+          <DeleteButton
+            type='link'
+            color='info'
+            onClick={() => {
+              setSelected(getPickupLocDetails([data]));
+              ActionModal.show('delete', {
+                onOk: async () => {
+                  await pickupLocDelAPI(data.id)
+                    .then((res) => {
+                      getTableData();
+                      showActionSuccessMsg('delete', false);
+                    })
+                    .catch((err) => {
+                      showServerErrMsg();
+                    });
+                },
+              });
+            }}
+          />
+        </Space>
       ),
     },
   ];

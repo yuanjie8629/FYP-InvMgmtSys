@@ -354,7 +354,7 @@ const VoucherMgmt = () => {
         ),
     },
     {
-      title: 'Start Time',
+      title: 'Start Date',
       dataIndex: 'avail_start_dt',
       key: 'avail_start_dt',
       sorter: true,
@@ -362,7 +362,7 @@ const VoucherMgmt = () => {
       width: 150,
     },
     {
-      title: 'End Time',
+      title: 'End Date',
       dataIndex: 'avail_end_dt',
       key: 'avail_end_dt',
       sorter: true,
