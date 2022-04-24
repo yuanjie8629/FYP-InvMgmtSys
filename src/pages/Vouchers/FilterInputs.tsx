@@ -10,13 +10,13 @@ import { custCat } from '@utils/optionUtils';
 import { Form, Row, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import moment from 'moment';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const FilterInputs = () => {
   const [voucherFilter] = useForm();
   const [searchParams, setSearchParams] = useSearchParams();
-  const orderInputSelect: {
+  const voucherInputSelect: {
     defaultVal: string;
     options: {
       value: string;
@@ -26,6 +26,10 @@ const FilterInputs = () => {
     defaultVal: 'voucherCde',
     options: [{ value: 'voucherCde', label: 'Voucher Code' }],
   };
+
+  const [selectedInputSelect, setSelectedInputSelect] = useState(
+    voucherInputSelect.defaultVal
+  );
 
   const custCatSelect = {
     placeholder: 'Select Customer Type',
@@ -56,13 +60,17 @@ const FilterInputs = () => {
   }, [searchParams]);
 
   const handleSearch = (values) => {
+    console.log(values);
     values = removeInvalidData(values);
     let { avail_dt, ...value } = values;
 
-    let availTm = {
-      avail_start_dt: getDt(avail_dt[0]),
-      avail_end_dt: getDt(avail_dt[1]),
-    };
+    let availTm = undefined;
+    if (avail_dt) {
+      availTm = {
+        avail_start_dt: getDt(avail_dt[0]),
+        avail_end_dt: getDt(avail_dt[1]),
+      };
+    }
 
     setSearchParams(
       searchParams.get('status') !== null
@@ -99,9 +107,16 @@ const FilterInputs = () => {
           <FilterInputCol>
             <InputSelect
               formProps={{ name: 'code' }}
-              selectBefore={orderInputSelect}
+              selectBefore={voucherInputSelect}
+              selectedKeyValue={selectedInputSelect}
               placeholder='Input'
               selectWidth={150}
+              onChange={(selected) => {
+                voucherFilter.setFieldsValue({
+                  [selected.type]: selected.value,
+                });
+                setSelectedInputSelect(selected.type);
+              }}
             ></InputSelect>
           </FilterInputCol>
           <FilterInputCol>
