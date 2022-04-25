@@ -178,7 +178,7 @@ const InvAnalysis = () => {
       limit: String(defPg),
     });
   };
-
+  
   return (
     <Layout>
       <MainCardContainer
@@ -209,14 +209,16 @@ const InvAnalysis = () => {
             suffixIcon={
               componentLoading ? (
                 <LoadingOutlined className='color-grey' />
-              ) : analysis.component.content.map((component) => {
-                  Object.keys(invalidComponentData).forEach((key) => {
-                    if (component.key === key) {
-                      if (invalidComponentData[key].length > 0) return true;
-                    }
-                  });
-                  return false;
-                }) ? (
+              ) : analysis.component.content
+                  .map((component) => {
+                    Object.keys(invalidComponentData).forEach((key) => {
+                      if (component.key === key) {
+                        if (invalidComponentData[key].length > 0) return true;
+                      }
+                    });
+                    return false;
+                  })
+                  .includes(true) ? (
                 <HiXCircle size={20} className='color-error' />
               ) : (
                 <HiCheckCircle size={20} className='color-primary' />
