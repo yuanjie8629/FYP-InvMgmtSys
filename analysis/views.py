@@ -1137,13 +1137,14 @@ class ABCAnalysisView(generics.ListAPIView):
             # filter & ordering
             ordering = request.query_params.get("ordering", None)
 
-            if not ordering:
-                df.sort_values(
-                    by=["consumption_value_percent", "grade"],
-                    ascending=False,
-                    inplace=True,
-                )
-            else:
+            # if not ordering:
+            #     df.sort_values(
+            #         by=["consumption_value_percent", "grade"],
+            #         ascending=False,
+            #         inplace=True,
+            #     )
+            # else:
+            if ordering:
                 ascending = True
                 if "-" in ordering:
                     ordering = ordering[1:]
@@ -1293,22 +1294,18 @@ class HMLAnalysisView(generics.ListAPIView):
             # filter & ordering
             ordering = request.query_params.get("ordering", None)
 
-            if not ordering:
-                df.sort_values(
-                    by=["cost_per_unit_percent", "grade"], ascending=False, inplace=True
-                )
-            else:
+            # if not ordering:
+            #     df.sort_values(
+            #         by=["cost_per_unit_percent", "grade"], ascending=False, inplace=True
+            #     )
+
+            # else:
+            if ordering:
                 ascending = True
                 if "-" in ordering:
                     ordering = ordering[1:]
                     ascending = False
-                if ordering == "grade":
-                    df.sort_values(
-                        by=["cost_per_unit_percent", "grade"],
-                        ascending=ascending,
-                        inplace=True,
-                    )
-                else:
+                if not ordering == "grade":
                     df.sort_values(by=[ordering], ascending=ascending, inplace=True)
 
             name = request.query_params.get("name", None)
