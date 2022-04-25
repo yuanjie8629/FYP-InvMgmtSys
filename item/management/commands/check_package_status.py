@@ -28,3 +28,4 @@ class Command(BaseCommand):
             for pack in expire_package:
                 pack.status = "expired"
                 pack.save()
+        return

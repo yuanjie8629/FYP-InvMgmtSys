@@ -13,9 +13,9 @@ class Command(BaseCommand):
         print("launching voucher")
         print(launching_voucher)
         if launching_voucher:
-            for pack in launching_voucher:
-                pack.status = "active"
-                pack.save()
+            for voucher in launching_voucher:
+                voucher.status = "active"
+                voucher.save()
 
         print("----------------------------")
 
@@ -25,6 +25,8 @@ class Command(BaseCommand):
         print("expired voucher")
         print(expire_voucher)
         if expire_voucher:
-            for pack in expire_voucher:
-                pack.status = "expired"
-                pack.save()
+            for voucher in expire_voucher:
+                voucher.status = "expired"
+                voucher.save()
+            
+        return

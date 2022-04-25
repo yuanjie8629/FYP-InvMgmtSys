@@ -23,3 +23,4 @@ class Command(BaseCommand):
         for order in unpaid_orders:
             order.status = "cancel"
             order.save()
+        return
