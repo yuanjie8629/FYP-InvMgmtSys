@@ -375,7 +375,9 @@ const CustReg = () => {
           <Space direction='vertical' size={15} className='full-width'>
             <Row justify='space-between'>
               <Col>
-                <BoldTitle level={4}>Customer List</BoldTitle>
+                <BoldTitle level={4}>
+                  Agent/Dropshipper Registration List
+                </BoldTitle>
               </Col>
               <Col>
                 <Button
