@@ -89,10 +89,8 @@ class ProductViewSet(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser, FormParser]
 
     def create(self, request, *args, **kwargs):
-        data = validate_image(self.get_object(), request)
-        return super().partial_update(
-            update_request_data(request, data), *args, **kwargs
-        )
+        print(request)
+        return super().create(request, *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):
         data = validate_image(self.get_object(), request)
@@ -304,9 +302,8 @@ class PackageViewSet(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser, FormParser]
 
     def create(self, request, *args, **kwargs):
-        data = validate_image(self.get_object(), request)
         data = request.data.copy()
-        
+
         product_list = []
         for key, value in list(data.items()):
             if re.search("product\[\d\]", key):
