@@ -7,7 +7,7 @@ Email:
 Password:
 {{password}}
 
-Please change your password after first login to seure your account.
+Please change your password after first login to secure your account.
 You can click the following link to enter our website.
 https://fyp-shrf-ecommerce.herokuapp.com/
 
