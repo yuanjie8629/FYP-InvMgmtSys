@@ -16,12 +16,7 @@ import {
 } from 'antd';
 import { MaskedInput } from 'antd-mask-input';
 import { removeInvalidData, sortByOrder } from '@utils/arrayUtils';
-import {
-  custPositionCat,
-  custStatusCat,
-  genderCat,
-  maritalStatCat,
-} from '@utils/optionUtils';
+import { custPositionCat, genderCat, maritalStatCat } from '@utils/optionUtils';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { postcodeListAPI } from '@api/services/addressAPI';
@@ -435,19 +430,6 @@ const CustAdd = () => {
                   ]}
                 >
                   <Radio.Group options={custPositionCat} />
-                </Form.Item>
-                <Form.Item
-                  label='Status'
-                  name='status'
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please select the customer's status.",
-                    },
-                  ]}
-                  initialValue='active'
-                >
-                  <Radio.Group options={custStatusCat} />
                 </Form.Item>
               </Space>
             </MainCard>
