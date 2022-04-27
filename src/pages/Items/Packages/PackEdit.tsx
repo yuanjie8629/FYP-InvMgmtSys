@@ -199,7 +199,7 @@ const PackEdit = () => {
               avail_start_dt: moment(avail_start_dt, 'DD-MM-YYYY'),
             });
             setStartTime(moment(avail_start_dt, 'DD-MM-YYYY'));
-            if (avail_end_dt) {
+            if (avail_end_dt && avail_end_dt !== '31-12-9999') {
               packForm.setFieldsValue({
                 avail_end_dt: moment(avail_end_dt, 'DD-MM-YYYY'),
               });

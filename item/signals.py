@@ -1,6 +1,7 @@
+import datetime
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from item.models import Item
+from item.models import Item, Package
 from notification.models import Notification
 
 # @receiver(pre_save, sender=OrderLine)
@@ -10,6 +11,23 @@ from notification.models import Notification
 #         raise serializers.ValidationError({"detail": "no_stock"})
 #     item.stock = item.stock - instance.quantity
 #     item.save()
+
+
+@receiver(post_save, sender=Package)
+def check_package_status(sender, instance, **kwargs):
+    print(instance)
+    if (
+        instance.avail_start_dt <= datetime.date.today()
+        and instance.status == "scheduled"
+    ):
+        instance.status = "active"
+        instance.save()
+        print('active')
+
+    if instance.avail_end_dt < datetime.date.today() and instance.status == "active":
+        instance.status = "expired"
+        instance.save()
+        print('expired')
 
 
 @receiver(post_save, sender=Item)
