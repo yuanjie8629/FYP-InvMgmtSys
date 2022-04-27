@@ -91,6 +91,7 @@ class ProductSerializer(serializers.ModelSerializer):
         product = Product.objects.create(**validated_data)
        
         if images:
+            print(images)
             for image_data in images:
                 image = Image.objects.create(**image_data)
                 product.image.add(image)
