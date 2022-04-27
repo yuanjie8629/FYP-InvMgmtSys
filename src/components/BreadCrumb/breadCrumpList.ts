@@ -20,6 +20,7 @@ const breadcrumbNameMap: any = {
   '/shipment/pickup/:id': 'Edit Location',
   '/customer': 'Customer',
   '/customer/registration': 'Agent/Dropshipper Registration',
+  '/customer/registration/:id': 'View',
   '/customer/add': 'Add Customer',
   '/customer/:id': 'Edit Customer',
   '/business_insights': 'Business Insights',
