@@ -83,7 +83,11 @@ const VoucherEdit = () => {
     values.usage_limit = usageLimit;
 
     values.avail_start_dt = getDt(values.avail_start_dt);
-    if (values.avail_end_dt) values.avail_end_dt = getDt(values.avail_end_dt);
+    if (values.avail_end_dt) {
+      values.avail_end_dt = getDt(values.avail_end_dt);
+    } else {
+      values.avail_end_dt = '31-12-9999';
+    }
     values = removeInvalidData(values);
 
     setLoading(true);
@@ -127,17 +131,13 @@ const VoucherEdit = () => {
               avail_start_dt: moment(avail_start_dt, 'DD-MM-YYYY'),
             });
             setStartTime(moment(avail_start_dt, 'DD-MM-YYYY'));
-            voucherForm.setFieldsValue({
-              avail_end_dt:
-                avail_end_dt !== '31-12-9999'
-                  ? moment(avail_end_dt, 'DD-MM-YYYY')
-                  : undefined,
-            });
-            setEndTime(
-              avail_end_dt !== '31-12-9999'
-                ? moment(avail_end_dt, 'DD-MM-YYYY')
-                : undefined
-            );
+            if (avail_end_dt && avail_end_dt !== '31-12-9999') {
+              voucherForm.setFieldsValue({
+                avail_end_dt: moment(avail_end_dt, 'DD-MM-YYYY'),
+              });
+              setEndTime(moment(avail_end_dt, 'DD-MM-YYYY'));
+              setHideEndTime(false);
+            }
 
             setAutoApply(res.data.auto_apply);
 
