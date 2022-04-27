@@ -170,7 +170,6 @@ const InvAnalysis = () => {
       : ssUtils;
 
   const analysis = getAnalysis(searchParams.get('type'));
-
   const handleTabChange = (key: string) => {
     setSearchParams({
       type: key,
@@ -178,7 +177,7 @@ const InvAnalysis = () => {
       limit: String(defPg),
     });
   };
-  
+
   return (
     <Layout>
       <MainCardContainer
@@ -211,12 +210,14 @@ const InvAnalysis = () => {
                 <LoadingOutlined className='color-grey' />
               ) : analysis.component.content
                   .map((component) => {
+                    let match = false;
                     Object.keys(invalidComponentData).forEach((key) => {
                       if (component.key === key) {
-                        if (invalidComponentData[key].length > 0) return true;
+                        console.log(invalidComponentData[key]);
+                        if (invalidComponentData[key].length > 0) match = true;
                       }
                     });
-                    return false;
+                    return match;
                   })
                   .includes(true) ? (
                 <HiXCircle size={20} className='color-error' />
