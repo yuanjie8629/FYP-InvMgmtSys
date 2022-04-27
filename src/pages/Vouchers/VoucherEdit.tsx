@@ -475,7 +475,10 @@ const VoucherEdit = () => {
                 </Form.Item>
                 <Checkbox
                   checked={!hideEndTime}
-                  onChange={(e) => setHideEndTime(!e.target.checked)}
+                  onChange={(e) => {
+                    setHideEndTime(!e.target.checked);
+                    voucherForm.resetFields(['avail_end_dt']);
+                  }}
                 >
                   Set End Date
                 </Checkbox>
