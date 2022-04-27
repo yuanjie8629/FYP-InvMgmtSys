@@ -118,6 +118,8 @@ const PackEdit = () => {
     data.avail_start_dt = getDt(data.avail_start_dt);
     if (data.avail_end_dt) {
       data.avail_end_dt = getDt(data.avail_end_dt);
+    } else {
+      data.avail_end_dt = '31-12-9999';
     }
     data.thumbnail = data.thumbnail[0].originFileObj
       ? data.thumbnail[0].originFileObj
@@ -770,6 +772,7 @@ const PackEdit = () => {
                     checked={!hideEndTime}
                     onChange={(e) => {
                       setHideEndTime(!e.target.checked);
+                      packForm.resetFields(['avail_end_dt']);
                     }}
                   >
                     Set End Date

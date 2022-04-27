@@ -15,19 +15,28 @@ from notification.models import Notification
 
 @receiver(post_save, sender=Package)
 def check_package_status(sender, instance, **kwargs):
-    print(instance)
+    if (
+        instance.avail_start_dt <= datetime.date.today()
+        and instance.avail_end_dt >= datetime.date.today()
+        and instance.status != "active"
+    ):
+        instance.status = "active"
+        instance.save()
+        print("active")
+
     if (
         instance.avail_start_dt <= datetime.date.today()
         and instance.status == "scheduled"
     ):
         instance.status = "active"
         instance.save()
-        print('active')
+        print("active")
 
     if instance.avail_end_dt < datetime.date.today() and instance.status == "active":
         instance.status = "expired"
         instance.save()
-        print('expired')
+        print("expired")
+    return
 
 
 @receiver(post_save, sender=Item)

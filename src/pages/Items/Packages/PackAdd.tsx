@@ -108,7 +108,7 @@ const PackAdd = () => {
     }
     data.description = description.toHTML();
     data.avail_start_dt = getDt(data.avail_start_dt);
-    if (data.avail_end_tm) data.avail_end_tm = getDt(data.avail_end_tm);
+    if (data.avail_end_dt) data.avail_end_dt = getDt(data.avail_end_dt);
     data = removeInvalidData(data);
     let formData = new FormData();
     Object.keys(data).forEach((item) => {
@@ -493,17 +493,13 @@ const PackAdd = () => {
                       errMsg.type === 'invalid_sku' ? 'error' : undefined
                     }
                     help={
-                      errMsg.type === 'invalid_sku'
-                        ? errMsg.message
-                        : undefined
+                      errMsg.type === 'invalid_sku' ? errMsg.message : undefined
                     }
                     rules={[
                       ({ getFieldValue }) => ({
                         validator(_, value) {
                           if (!value) {
-                            return Promise.reject(
-                              'Please enter product SKU.'
-                            );
+                            return Promise.reject('Please enter product SKU.');
                           }
                           if (errMsg.type === 'invalid_sku') {
                             return Promise.reject(errMsg.message);
@@ -696,14 +692,17 @@ const PackAdd = () => {
                   </Form.Item>
                   <Checkbox
                     checked={!hideEndTime}
-                    onChange={(e) => setHideEndTime(!e.target.checked)}
+                    onChange={(e) => {
+                      setHideEndTime(!e.target.checked);
+                      packForm.resetFields(['avail_end_dt']);
+                    }}
                   >
                     Set End Date
                   </Checkbox>
 
                   <Form.Item
                     label='End Date'
-                    name='avail_end_tm'
+                    name='avail_end_dt'
                     hidden={hideEndTime}
                   >
                     <DatePicker
