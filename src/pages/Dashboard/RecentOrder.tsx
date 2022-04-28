@@ -55,7 +55,7 @@ const RecentOrder = () => {
     render?: any;
   }[] = [
     {
-      title: 'Order ID',
+      title: 'Order Number',
       dataIndex: 'id',
       key: 'id',
       fixed: 'left',
