@@ -27,6 +27,7 @@
     "braft-utils": "^3.0.12",
     "classnames": "^2.3.1",
     "craco-less": "^1.20.0",
+    "create-react-app": "^5.0.1",
     "file-saver": "^2.0.5",
     "image-to-base64": "^2.2.0",
     "js-cookie": "^3.0.1",

@@ -135,14 +135,14 @@ DATABASES = {
 
 # Redis Cache
 
-# CACHEOPS_REDIS = "rediss://:p98c2c6a3610c1a6e8b7453c8ea0a9ee1b987b4d9d372e4f9d0e374b8b89527ad@ec2-52-1-142-237.compute-1.amazonaws.com:7610/?ssl_cert_reqs=none"
-# CACHEOPS_DEFAULTS = {"timeout": 60 * 15}
-# CACHEOPS_DEGRADE_ON_FAILURE = True
-# CACHEOPS = {
-#     "*.*": {},
-#     "postcode.*": {"ops": "all"},
-#     "customer.CustType": {"ops": "all"},
-# }
+CACHEOPS_REDIS = "rediss://:p326bfb2586de6ed2cb6092d591a20569cf76cf0cab37035a9e7ea09db4d083a6@ec2-52-55-201-35.compute-1.amazonaws.com:25880/?ssl_cert_reqs=none"
+CACHEOPS_DEFAULTS = {"timeout": 60 * 15}
+CACHEOPS_DEGRADE_ON_FAILURE = True
+CACHEOPS = {
+    "*.*": {},
+    "postcode.*": {"ops": "all"},
+    "customer.CustType": {"ops": "all"},
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
