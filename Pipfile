@@ -128,6 +128,9 @@ PyPDF3 = "==1.0.6"
 PyYAML = "==6.0"
 Rx = "==1.6.1"
 XlsxWriter = "==3.0.3"
+black = "==22.1.0"
+django-environ = "==0.9.0"
+click = "==8.0.4"
 
 [dev-packages]
 
