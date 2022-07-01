@@ -8,17 +8,15 @@
 
 ## Overview
 
-<div style='text-align: justify;'>
-Sharifah Food is a food processing company that specialises in the ready meals market. Over the years, Sharifah Food had to manually take orders from its customer through WhatsApp and record the sales data in Excel sheets. Nevertheless, it was discovered that it became difficult to keep track of all sales, orders, and inventory as the company grew. Therefore, this project aims to implement a web-based computerised inventory management system that helps the company streamline the inventory management process.</div>
+Sharifah Food is a food processing company that specialises in the ready meals market. Over the years, Sharifah Food had to manually take orders from its customer through WhatsApp and record the sales data in Excel sheets. Nevertheless, it was discovered that it became difficult to keep track of all sales, orders, and inventory as the company grew. Therefore, this project aims to implement a web-based computerised inventory management system that helps the company streamline the inventory management process.
 
 #### Multi-level Marketing System
 
-<div style='text-align: justify;'>
-Sharifah Food applies Multi-level Marketing (MLM) system to sell its products. The customers can apply as **agents** or **dropshippers** to promote and sell the company's products by purchasing the products at discounts. For instance, an agent and a dropshipper can receive 30 percent and 20 percent discounts, respectively, if they order a large quantity of products.</div>
+Sharifah Food applies Multi-level Marketing (MLM) system to sell its products. The customers can apply as **agents** or **dropshippers** to promote and sell the company's products by purchasing the products at discounts. For instance, an agent and a dropshipper can receive 30 percent and 20 percent discounts, respectively, if they order a large quantity of products.
 
 ## Demo :rocket:
 
-##### \*NOTE: This project is only for demonstration purposes. Please do not enter any sensitive information on the website.
+##### NOTE: This project is only for demonstration purposes. Please do not enter any sensitive information on the website.
 
 https://fyp-shrf.herokuapp.com/
 
@@ -26,49 +24,49 @@ https://fyp-shrf.herokuapp.com/
 
 ### Login Credentials
 
-Username: uattester<br>
-Password: Testing@123
+Username:   uattester<br>
+Password:   Testing@123
 
 ## Features
 
 1. Login<br>
-<div style='text-align: justify;'>The admin is able to log in to the inventory management system by entering their username and password.</div>
+   The admin is able to log in to the inventory management system by entering their username and password.
 
 2. Profile Management<br>
-   <div style='text-align: justify;'>The admins can manage their profiles and change their current password, phone number, email, gender, etc.</div>
+   The admins can manage their profiles and change their current password, phone number, email, gender, etc.
 
 3. Product Stock Management<br>
-   <div style='text-align: justify;'>The admin can manage the product inventory, such as add new products, add new stocks to the products, modify the product information, remove the existing product, and check the products’ information.</div>
+   The admin can manage the product inventory, such as add new products, add new stocks to the products, modify the product information, remove the existing product, and check the products’ information.
 
 4. Promotional Packages Management<br>
-   <div style='text-align: justify;'>The admin can manage the promotions by adding new promotional packages as well as modifying and deleting the existing promotional packages.</div>
+   The admin can manage the promotions by adding new promotional packages as well as modifying and deleting the existing promotional packages.
 
 5. Order Management<br>
-   <div style='text-align: justify;'>The admin can view all orders from direct customers, agents and dropshippers. In addition, the admin can update the status of each order or even cancel the customers’ orders.</div>
+   The admin can view all orders from direct customers, agents and dropshippers. In addition, the admin can update the status of each order or even cancel the customers’ orders.
 
 6. Agent and Dropshipper Management<br>
-   <div style='text-align: justify;'>The admin can view the lists of agents and dropshippers and their respective orders to confirm their sales performance. In addition, the admin can also view, accept and reject the applications of the agents and dropshippers.</div>
+   The admin can view the lists of agents and dropshippers and their respective orders to confirm their sales performance. In addition, the admin can also view, accept and reject the applications of the agents and dropshippers.
 
 7. Shipping Fee Management<br>
-   <div style='text-align: justify;'>The admin can add, edit, delete and view the shipping fee in different states. Besides, the admin can customize the shipping fee for different weight ranges. The shipping fees added will be applied to the total order amount when the customers place an order.</div>
+   The admin can add, edit, delete and view the shipping fee in different states. Besides, the admin can customize the shipping fee for different weight ranges. The shipping fees added will be applied to the total order amount when the customers place an order.
 
 8. Pickup Location Management<br>
-   <div style='text-align: justify;'>The admin can add the pickup location for the placed orders. This allows the customers to choose whether to ship their orders to their addresses or pick up the order at the pickup location.</div>
+   The admin can add the pickup location for the placed orders. This allows the customers to choose whether to ship their orders to their addresses or pick up the order at the pickup location.
 
 9. Discount Management<br>
-   <div style='text-align: justify;'>The admin can manage and create discount codes that can be applied while making payments on the e-commerce platform. The discount can be specified either as a percentage or a fixed amount and is customizable for various criteria such as minimum order spend, a maximum discount, customer eligibility, etc.</div>
+   The admin can manage and create discount codes that can be applied while making payments on the e-commerce platform. The discount can be specified either as a percentage or a fixed amount and is customizable for various criteria such as minimum order spend, a maximum discount, customer eligibility, etc.
 
 10. Business Insights<br>
-    <div style='text-align: justify;'>The admin can view the sales analysis to gain more insight into the company's business performance. Sales and inventory analyses are crucial for the business as they help cut unnecessary costs and predict the demand for products. There are many inventory analyses such as ABC analysis, HML analysis, SS analysis, EOQ analysis, etc. This system uses these analyses to provide the information for better inventory control on Sharifah Food.</div>
+    The admin can view the sales analysis to gain more insight into the company's business performance. Sales and inventory analyses are crucial for the business as they help cut unnecessary costs and predict the demand for products. There are many inventory analyses such as ABC analysis, HML analysis, SS analysis, EOQ analysis, etc. This system uses these analyses to provide the information for better inventory control on Sharifah Food.
 
 11. Invoice Generator<br>
-    <div style='text-align: justify;'>The admin can generate an invoice for each order placed by a customer.</div>
+    The admin can generate an invoice for each order placed by a customer.
 
 12. Sales Report Generator<br>
-    <div style='text-align: justify;'>The system can generate a sales reports in Excel format at the admin’s request.</div>
+    The system can generate a sales reports in Excel format at the admin’s request.
 
 13. Email Notification<br>
-    <div style='text-align: justify;'>Email notifications automatically alert the admin when new orders are placed,products are in low stock, or pending approvals for the registrations for agent and dropshipper.</div>
+    Email notifications automatically alert the admin when new orders are placed,products are in low stock, or pending approvals for the registrations for agent and dropshipper.
 
 ## Tech Stack
 
@@ -116,7 +114,7 @@ https://tinyurl.com/FYPInvMgmtSysPrototype
 - SQL Database
 - [Cloudinary Account](https://cloudinary.com/)
 - SMTP Account
-- Redis
+- [Redis](https://redis.io/)
 - [Python 3.10.2](https://www.python.org/downloads/release/python-3102/)
 - [Yarn](https://yarnpkg.com/)
 
