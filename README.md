@@ -10,8 +10,9 @@ Sharifah Food is a food processing company that specialises in the ready meals m
 Sharifah Food applies Multi-level Marketing (MLM) system to sell its products. The customers can apply as **agents** or **dropshippers** to promote and sell the company's products by purchasing the products at discounts. For instance, an agent and a dropshipper can receive 30 percent and 20 percent discounts, respectively, if they order a large quantity of products.
 
 ## Demo :rocket:
-##### *Might take some time to wake up the system due to inactivity
+##### *NOTE: This project is only for demonstration purposes. Please do not enter any sensitive information on the website.
 https://fyp-shrf.herokuapp.com/
+###### *Might take some time to wake up the system due to inactivity
 
 ### Login Credentials
 Username:   uattester<br>
