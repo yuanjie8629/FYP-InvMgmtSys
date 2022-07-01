@@ -10,52 +10,50 @@ Sharifah Food is a food processing company that specialises in the ready meals m
 Sharifah Food applies Multi-level Marketing (MLM) system to sell its products. The customers can apply as **agents** or **dropshippers** to promote and sell the company's products by purchasing the products at discounts. For instance, an agent and a dropshipper can receive 30 percent and 20 percent discounts, respectively, if they order a large quantity of products.
 
 ## Demo :rocket:
+##### *Might take some time to wake up the system due to inactivity
 https://fyp-shrf.herokuapp.com/
 
-<span style="color:red">*Might take some time to wake up the system due to inactivity</span>
-
-##### Login Credentials
-Username:   uattester
-Password:   Testing@123
+### Login Credentials
+Username:   uattester<br>Password:   Testing@123
 
 ## Features
-1. Login
+1. Login<br>
     The admin is able to log in to the inventory management system by entering their username and password.
 
-2. Profile Management
+2. Profile Management<br>
     The admins can manage their profiles and change their current password, phone number, email, gender, etc.
 
-3. Product Stock Management
+3. Product Stock Management<br>
     The admin can manage the product inventory, such as add new products, add new stocks to the products, modify the product information, remove the existing product, and check the products’ information.
 
-4. Promotional Packages Management
+4. Promotional Packages Management<br>
     The admin can manage the promotions by adding new promotional packages as well as modifying and deleting the existing promotional packages.
 
-5. Order Management
+5. Order Management<br>
     The admin can view all orders from direct customers, agents and dropshippers. In addition, the admin can update the status of each order or even cancel the customers’ orders.
 
-6. Agent and Dropshipper Management
+6. Agent and Dropshipper Management<br>
     The admin can view the lists of agents and dropshippers and their respective orders to confirm their sales performance. In addition, the admin can also view, accept and reject the applications of the agents and dropshippers.
 
-7. Shipping Fee Management
+7. Shipping Fee Management<br>
     The admin can add, edit, delete and view the shipping fee in different states. Besides, the admin can customize the shipping fee for different weight ranges. The shipping fees added will be applied to the total order amount when the customers place an order.
 
-8. Pickup Location Management
+8. Pickup Location Management<br>
     The admin can add the pickup location for the placed orders. This allows the customers to choose whether to ship their orders to their addresses or pick up the order at the pickup location.
 
-9. Discount Management
+9. Discount Management<br>
     The admin can manage and create discount codes that can be applied while making payments on the e-commerce platform. The discount can be specified either as a percentage or a fixed amount and is customizable for various criteria such as minimum order spend, a maximum discount, customer eligibility, etc.
 
-10. Business Insights
+10. Business Insights<br>
     The admin can view the sales reports such as daily sales, monthly sales, number of new customers, product rankings, etc., to gain more insight into the company's business performance. Sales and inventory analyses are crucial for the business as they help cut unnecessary costs and predict the demand for products. There are many inventory analyses such as ABC analysis, HML analysis, SS analysis, EOQ analysis, etc. This system uses these analyses to provide the information for better inventory control on Sharifah Food.
 
-11. Invoice Generator
+11. Invoice Generator<br>
     The admin can generate an invoice for each order placed by a customer.
 
-12. Sales Report Generator
+12. Sales Report Generator<br>
     The system can generate a sales reports in Excel format at the admin’s request.
 
-13. Email Notification
+13. Email Notification<br>
     Email notifications automatically alert the admin when new orders are placed,products are in low stock, or pending approvals for the registrations for agent and dropshipper.
 
 ## Tech Stack
