@@ -1,0 +1,45 @@
+{
+  "projectName": "Inventory Management System",
+  "projectOwner": "yuanjie8629",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "yuanjie8629",
+      "name": "Tan Yuan Jie",
+      "avatar_url": "https://avatars.githubusercontent.com/u/86699785?v=4",
+      "profile": "https://github.com/yuanjie8629",
+      "contributions": [
+        "a11y",
+        "question",
+        "bug",
+        "code",
+        "data",
+        "design",
+        "doc",
+        "eventOrganizing",
+        "ideas",
+        "infra",
+        "maintenance",
+        "mentoring",
+        "platform",
+        "plugin",
+        "projectManagement",
+        "research",
+        "review",
+        "security",
+        "talk",
+        "test",
+        "tool",
+        "userTesting"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}
