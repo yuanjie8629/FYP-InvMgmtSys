@@ -14,7 +14,8 @@ Sharifah Food applies Multi-level Marketing (MLM) system to sell its products. T
 https://fyp-shrf.herokuapp.com/
 
 ### Login Credentials
-Username:   uattester<br>Password:   Testing@123
+Username:   uattester<br>
+Password:   Testing@123
 
 ## Features
 1. Login<br>
@@ -45,7 +46,7 @@ Username:   uattester<br>Password:   Testing@123
     The admin can manage and create discount codes that can be applied while making payments on the e-commerce platform. The discount can be specified either as a percentage or a fixed amount and is customizable for various criteria such as minimum order spend, a maximum discount, customer eligibility, etc.
 
 10. Business Insights<br>
-    The admin can view the sales reports such as daily sales, monthly sales, number of new customers, product rankings, etc., to gain more insight into the company's business performance. Sales and inventory analyses are crucial for the business as they help cut unnecessary costs and predict the demand for products. There are many inventory analyses such as ABC analysis, HML analysis, SS analysis, EOQ analysis, etc. This system uses these analyses to provide the information for better inventory control on Sharifah Food.
+    The admin can view the sales analysis to gain more insight into the company's business performance. Sales and inventory analyses are crucial for the business as they help cut unnecessary costs and predict the demand for products. There are many inventory analyses such as ABC analysis, HML analysis, SS analysis, EOQ analysis, etc. This system uses these analyses to provide the information for better inventory control on Sharifah Food.
 
 11. Invoice Generator<br>
     The admin can generate an invoice for each order placed by a customer.
@@ -63,6 +64,7 @@ Username:   uattester<br>Password:   Testing@123
 - Redis (with Heroku)
 - Cloudinary
 - Gmail SMTP
+- Ant Design
 - LESS
 - Heroku
 - Figma
@@ -87,7 +89,17 @@ Username:   uattester<br>Password:   Testing@123
 ### Prototype Design
 https://tinyurl.com/FYPInvMgmtSysPrototype
 
-## Installation Steps
+## Installation
+
+### Prerequisites
+- SQL Database
+- [Cloudinary Account](https://cloudinary.com/)
+- SMTP Account
+- Redis
+- [Python 3.10.2](https://www.python.org/downloads/release/python-3102/)
+- [Yarn](https://yarnpkg.com/)
+
+### Installation Steps
 1. Install the frontend packages using yarn.
 	```
  	 yarn install
@@ -145,6 +157,8 @@ https://tinyurl.com/FYPInvMgmtSysPrototype
 12. Business Insights - Inventory Analysis <br> <img src="previews/InventoryAnalysis.png"><br><br>
 13. Profile Management <br> <img src="previews/ProfileManagement.png"><br><br>
 14. Account Settings <br> <img src="previews/AccountSettings.png"><br><br>
+15. Invoice Generated <br> <img src="previews/Invoice.png"><br><br>
+16. Notification <br> <img src="previews/Notification.png"><br><br>
 
 ## Documentation
 ### Poster
