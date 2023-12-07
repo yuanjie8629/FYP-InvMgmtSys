@@ -185,11 +185,11 @@ https://tinyurl.com/FYPInvMgmtSysPrototype
 
 ### Poster
 
-https://tinyurl.com/FYPInvMgmtSysPoster
+https://tinyurl.com/YJFYPPOSTER
 
 ### Report
 
-https://tinyurl.com/FYPInvMgmtSysReport
+https://tinyurl.com/YJFYP
 
 ## Contributors ✨
 
